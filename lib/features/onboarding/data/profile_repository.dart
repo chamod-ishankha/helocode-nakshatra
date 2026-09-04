@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/app_locale.dart';
+import '../../../core/config/chart_style.dart';
 import '../../../core/logging/app_logger.dart';
 import '../domain/birth_profile.dart';
 
@@ -22,6 +23,7 @@ class ProfileRepository {
 
   static const _profileKey = 'birth_profile_v1';
   static const _localeKey = 'app_locale_v1';
+  static const _chartStyleKey = 'chart_style_v1';
 
   BirthProfile? load() {
     final raw = _prefs.getString(_profileKey);
@@ -47,6 +49,12 @@ class ProfileRepository {
 
   Future<void> saveLocale(AppLocale locale) =>
       _prefs.setString(_localeKey, locale.code);
+
+  ChartStyle loadChartStyle() =>
+      ChartStyle.fromName(_prefs.getString(_chartStyleKey));
+
+  Future<void> saveChartStyle(ChartStyle style) =>
+      _prefs.setString(_chartStyleKey, style.name);
 }
 
 /// Overridden at startup with the real instance, once SharedPreferences has
@@ -91,4 +99,26 @@ class LocaleNotifier extends Notifier<AppLocale> {
 
 final localeProvider = NotifierProvider<LocaleNotifier, AppLocale>(
   LocaleNotifier.new,
+);
+
+/// Persisted so the choice survives a restart — a user who reads North Indian
+/// charts should never have to re-pick it.
+class ChartStyleNotifier extends Notifier<ChartStyle> {
+  @override
+  ChartStyle build() => ref.watch(profileRepositoryProvider).loadChartStyle();
+
+  Future<void> set(ChartStyle style) async {
+    await ref.read(profileRepositoryProvider).saveChartStyle(style);
+    state = style;
+  }
+
+  Future<void> toggle() => set(
+    state == ChartStyle.southIndian
+        ? ChartStyle.northIndian
+        : ChartStyle.southIndian,
+  );
+}
+
+final chartStyleProvider = NotifierProvider<ChartStyleNotifier, ChartStyle>(
+  ChartStyleNotifier.new,
 );

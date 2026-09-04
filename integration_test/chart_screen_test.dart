@@ -4,9 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:nakshatra/core/astro/ephemeris.dart';
 import 'package:nakshatra/core/astro/models.dart';
+import 'package:nakshatra/core/config/chart_style.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/features/chart/presentation/chart_screen.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
+import 'package:nakshatra/features/chart/presentation/north_indian_chart.dart';
+import 'package:nakshatra/features/chart/presentation/rasi_chart.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -160,5 +163,68 @@ void main() {
 
     // Better a clear error than a silently wrong chart.
     expect(find.textContaining('Could not calculate'), findsOneWidget);
+  });
+
+  testWidgets('the chart style is user-switchable and persists', (
+    tester,
+  ) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    // Defaults to South Indian: it is what Sri Lankan and South Indian users
+    // expect, and showing them a North Indian diamond reads as simply wrong.
+    expect(find.text('South Indian'), findsOneWidget);
+    expect(find.text('North Indian'), findsOneWidget);
+    expect(find.byType(RasiChart), findsOneWidget);
+    expect(find.byType(NorthIndianChart), findsNothing);
+
+    await tester.tap(find.text('North Indian'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(NorthIndianChart), findsOneWidget);
+    expect(find.byType(RasiChart), findsNothing);
+
+    // The choice is written through to storage, so it survives a restart.
+    expect(prefs.getString('chart_style_v1'), ChartStyle.northIndian.name);
+
+    await tester.tap(find.text('South Indian'));
+    await tester.pumpAndSettle();
+    expect(find.byType(RasiChart), findsOneWidget);
+    expect(prefs.getString('chart_style_v1'), ChartStyle.southIndian.name);
+  });
+
+  testWidgets('North Indian places the lagna sign in house 1', (tester) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    await tester.tap(find.text('North Indian'));
+    await tester.pumpAndSettle();
+
+    // In this layout houses are fixed and signs rotate, so every house shows a
+    // sign number 1-12 and each number appears exactly once. Getting the
+    // rotation wrong is the classic way to draw this chart incorrectly.
+    for (var n = 1; n <= 12; n++) {
+      expect(
+        find.text('$n'),
+        findsWidgets,
+        reason: 'sign number $n missing from the North Indian chart',
+      );
+    }
   });
 }

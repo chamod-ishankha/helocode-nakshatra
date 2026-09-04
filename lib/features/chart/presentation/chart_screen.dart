@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
+import '../../../core/config/chart_style.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../onboarding/data/profile_repository.dart';
+import 'north_indian_chart.dart';
 import 'rasi_chart.dart';
 
 /// The computed chart for the saved profile.
@@ -34,6 +36,7 @@ class ChartScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
     final result = ref.watch(chartProvider);
+    final style = ref.watch(chartStyleProvider);
     final theme = Theme.of(context);
 
     if (profile == null || result == null) {
@@ -60,7 +63,22 @@ class ChartScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           children: [
             if (!profile.birthTimeKnown) const _ApproximateBanner(),
-            RasiChart(chart: chart, approximateHouses: !profile.birthTimeKnown),
+            _StyleSwitcher(style: style),
+            const SizedBox(height: 12),
+            // Keyed by style so Flutter rebuilds rather than trying to reuse
+            // the previous layout's element tree, which shares no structure.
+            switch (style) {
+              ChartStyle.southIndian => RasiChart(
+                key: const ValueKey('south'),
+                chart: chart,
+                approximateHouses: !profile.birthTimeKnown,
+              ),
+              ChartStyle.northIndian => NorthIndianChart(
+                key: const ValueKey('north'),
+                chart: chart,
+                approximateHouses: !profile.birthTimeKnown,
+              ),
+            },
             const SizedBox(height: 24),
             _SummaryCard(chart: chart),
             const SizedBox(height: 16),
@@ -85,6 +103,26 @@ class ChartScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StyleSwitcher extends ConsumerWidget {
+  const _StyleSwitcher({required this.style});
+
+  final ChartStyle style;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SegmentedButton<ChartStyle>(
+      segments: [
+        for (final s in ChartStyle.values)
+          ButtonSegment(value: s, label: Text(s.label)),
+      ],
+      selected: {style},
+      showSelectedIcon: false,
+      onSelectionChanged: (selection) =>
+          ref.read(chartStyleProvider.notifier).set(selection.first),
     );
   }
 }

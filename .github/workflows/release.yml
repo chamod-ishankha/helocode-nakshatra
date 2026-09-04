@@ -10,13 +10,29 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: "What this build is for (label only, nothing is uploaded)"
+        description: "Play track to publish to"
+        required: true
+        default: internal
+        type: choice
+        options: [internal, alpha, beta, production]
+      dry_run:
+        description: "Build and sign only — do not upload to Play"
         required: false
-        default: "internal"
+        default: false
+        type: boolean
 
 env:
   FLUTTER_VERSION: "3.41.7"
   JAVA_VERSION: "21"
+
+  # versionCode is derived from the workflow run number, which only ever
+  # increases. Play permanently rejects a duplicate versionCode, so it must
+  # never be hand-maintained.
+  #
+  # The offset clears codes already used by manual uploads: run 1 becomes 101,
+  # safely above anything uploaded by hand. Never lower this — going backwards
+  # produces codes Play has already seen and will refuse.
+  VERSION_CODE_OFFSET: 100
 
 jobs:
   bundle:
@@ -76,12 +92,23 @@ jobs:
           storeFile=upload-keystore.jks
           PROPS
 
+      - name: Resolve version
+        id: version
+        run: |
+          NAME=$(grep '^version:' pubspec.yaml | sed -E 's/version:[[:space:]]*([^+]+)\+.*/\1/' | tr -d ' ')
+          CODE=$(( ${{ github.run_number }} + VERSION_CODE_OFFSET ))
+          echo "name=$NAME"  >> "$GITHUB_OUTPUT"
+          echo "code=$CODE"  >> "$GITHUB_OUTPUT"
+          echo "Building $NAME ($CODE)"
+
       - name: Build app bundle
         run: |
           flutter build appbundle --release \
             --flavor prod \
             --target lib/main_prod.dart \
-            --dart-define-from-file=env/prod.json
+            --dart-define-from-file=env/prod.json \
+            --build-name=${{ steps.version.outputs.name }} \
+            --build-number=${{ steps.version.outputs.code }}
 
       - name: Verify it is signed with the upload key, not debug keys
         run: |
@@ -95,11 +122,53 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: nakshatra-prod-release-aab
+          name: nakshatra-${{ steps.version.outputs.name }}-${{ steps.version.outputs.code }}
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           retention-days: 30
+
+      # Publishing to Play. Skipped automatically when the service account
+      # secret is absent, so the workflow stays useful before it is configured
+      # and for dry runs.
+      - name: Check for Play credentials
+        id: play
+        env:
+          SA: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -n "$SA" ] && [ "${{ inputs.dry_run }}" != "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping Play upload (no credentials, or dry run). The signed bundle is attached as an artifact."
+          fi
+
+      - name: Upload to Play
+        if: steps.play.outputs.enabled == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: io.helocode.nakshatra
+          releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          track: ${{ inputs.track || 'internal' }}
+          # completed = live to that track's testers immediately. Internal
+          # testing has no review queue, so this is the whole release.
+          status: completed
+          releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
 
       # Secrets are scrubbed even if an earlier step fails.
       - name: Remove signing material
         if: always()
         run: rm -f android/upload-keystore.jks android/key.properties
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Nakshatra ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| versionName | ${{ steps.version.outputs.name }} |"
+            echo "| versionCode | ${{ steps.version.outputs.code }} |"
+            echo "| Track | ${{ inputs.track || 'internal' }} |"
+            echo "| Uploaded to Play | ${{ steps.play.outputs.enabled == 'true' && 'yes' || 'no — artifact only' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

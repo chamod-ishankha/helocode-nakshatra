@@ -92,6 +92,50 @@ visible in logs, which is fine:
 None of these are needed until AdMob lands; the release workflow builds fine
 with them empty.
 
+## Releasing
+
+`.github/workflows/release.yml` builds, signs, and optionally publishes to Play.
+Trigger it from **Actions -> Release -> Run workflow**, choosing a track, or by
+pushing a `v*` tag.
+
+### versionCode is automatic
+
+Play permanently rejects a duplicate `versionCode`, so it is never hand-edited.
+CI derives it from the workflow run number:
+
+```
+versionCode = github.run_number + VERSION_CODE_OFFSET   (offset 100)
+```
+
+Run numbers only increase, so codes only increase. The offset clears codes
+already burned by manual uploads — run 1 becomes 101. **Never lower the offset**;
+that regenerates codes Play has already seen and will refuse. `versionName`
+still comes from `pubspec.yaml`, so bump that by hand for a real version change.
+
+### Publishing to Play automatically
+
+Uploading needs a Google Play service account. One-time setup:
+
+1. **Play Console -> Setup -> API access -> Create new service account**, which
+   sends you to Google Cloud.
+2. In Google Cloud: create a service account, then **Keys -> Add key -> JSON**
+   and download it.
+3. Back in Play Console, grant that account access to this app with the
+   **Release manager** role (or at minimum: release to testing tracks).
+4. Add the JSON file's entire contents as the repository secret
+   `PLAY_SERVICE_ACCOUNT_JSON`.
+
+Until that secret exists the workflow still builds and signs, and attaches the
+bundle as an artifact for manual upload — it just skips publishing. The
+`dry_run` input forces that behaviour deliberately.
+
+> Google requires at least one bundle uploaded manually through the console
+> before the API will accept uploads for an app. Do the first internal release
+> by hand; automation works from the second onwards.
+
+That service account JSON is the most dangerous credential in this project — it
+can publish to production. Treat it like the keystore.
+
 ## Release signing
 
 Release builds read credentials from `android/key.properties` (git-ignored).

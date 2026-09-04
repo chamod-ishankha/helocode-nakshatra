@@ -24,8 +24,8 @@ Verify with `flutter doctor -v` before building.
 ## Getting started
 
 ```bash
-git clone https://github.com/chamod-ishankha/helacode-nakshatra.git
-cd helacode-nakshatra
+git clone https://github.com/chamod-ishankha/helocode-nakshatra.git
+cd helocode-nakshatra
 flutter pub get
 flutter run
 ```

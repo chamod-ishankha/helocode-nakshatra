@@ -2,29 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/home/presentation/home_screen.dart';
+import '../../features/chart/presentation/chart_screen.dart';
+import '../../features/onboarding/data/profile_repository.dart';
+import '../../features/onboarding/presentation/onboarding_screen.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
-  static const String home = '/';
+  static const String onboarding = '/onboarding';
   static const String chart = '/chart';
+
+  // Land in KAN-27, KAN-29 and KAN-30.
+  static const String home = '/';
   static const String calendar = '/calendar';
   static const String compatibility = '/compatibility';
   static const String settings = '/settings';
-
-  /// Shown until onboarding lands (KAN-26). Until then the app starts at home.
-  static const String onboarding = '/onboarding';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: Routes.home,
+    initialLocation: Routes.chart,
     debugLogDiagnostics: true,
+    // A user with no saved profile has nothing to show, so every route
+    // redirects into onboarding until one exists. Reading the profile through
+    // the provider means completing onboarding re-evaluates this immediately.
+    redirect: (context, state) {
+      final hasProfile = ref.read(profileProvider) != null;
+      final onOnboarding = state.matchedLocation == Routes.onboarding;
+
+      if (!hasProfile && !onOnboarding) return Routes.onboarding;
+      if (hasProfile && onOnboarding) return Routes.chart;
+      return null;
+    },
     routes: [
       GoRoute(
-        path: Routes.home,
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
+        path: Routes.onboarding,
+        name: 'onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.chart,
+        name: 'chart',
+        builder: (context, state) => const ChartScreen(),
       ),
     ],
     errorBuilder: (context, state) => _RouteErrorScreen(error: state.error),
@@ -59,7 +77,7 @@ class _RouteErrorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               FilledButton(
-                onPressed: () => context.go(Routes.home),
+                onPressed: () => context.go(Routes.chart),
                 child: const Text('Go home'),
               ),
             ],

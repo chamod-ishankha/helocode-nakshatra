@@ -49,6 +49,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -91,3 +93,37 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# ─────────────────────────────────────────────────────────────────────────────
+# App icon generation.  Regenerate with:
+#   dart run flutter_launcher_icons
+# The adaptive foreground keeps the star inside the centre 60% of the canvas:
+# Android crops adaptive icons to a circle/squircle and anything outside the
+# safe zone is cut off.  icon.png is deliberately RGB (no alpha) because iOS
+# rejects app icons with an alpha channel.
+flutter_launcher_icons:
+  image_path: "assets/icon/icon.png"
+
+  android: "ic_launcher"
+  adaptive_icon_background: "assets/icon/icon_background.png"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  min_sdk_android: 24
+
+  ios: true
+  remove_alpha_ios: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Native splash screen.  Regenerate with:
+#   dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#171437"
+  image: "assets/splash/splash_logo.png"
+  android_gravity: center
+  ios_content_mode: center
+
+  android_12:
+    color: "#171437"
+    image: "assets/splash/splash_logo.png"
+    icon_background_color: "#171437"
+
+  web: false

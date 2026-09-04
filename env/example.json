@@ -1,0 +1,9 @@
+{
+  "_comment": "Copy to env/dev.json and env/prod.json and fill in. Those two are git-ignored. Nothing here is a true secret: every value below ships inside the APK and can be extracted from it. They live outside source control so dev and prod can differ and so identifiers are easy to rotate, not because they are confidential. Real secrets (the keystore, Play service account JSON, RevenueCat SECRET key) must never appear here.",
+
+  "ADMOB_APP_ID": "",
+  "ADMOB_BANNER_UNIT_ID": "",
+  "ADMOB_INTERSTITIAL_UNIT_ID": "",
+  "ADMOB_REWARDED_UNIT_ID": "",
+  "REVENUECAT_PUBLIC_SDK_KEY": ""
+}

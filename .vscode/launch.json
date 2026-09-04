@@ -6,7 +6,11 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
-      "args": ["--flavor", "dev"]
+      "args": [
+        "--flavor",
+        "dev",
+        "--dart-define-from-file=env/dev.json"
+      ]
     },
     {
       "name": "Nakshatra dev (profile)",
@@ -14,21 +18,33 @@
       "type": "dart",
       "program": "lib/main_dev.dart",
       "flutterMode": "profile",
-      "args": ["--flavor", "dev"]
+      "args": [
+        "--flavor",
+        "dev",
+        "--dart-define-from-file=env/dev.json"
+      ]
     },
     {
       "name": "Nakshatra staging",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_staging.dart",
-      "args": ["--flavor", "staging"]
+      "args": [
+        "--flavor",
+        "staging",
+        "--dart-define-from-file=env/dev.json"
+      ]
     },
     {
       "name": "Nakshatra prod",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_prod.dart",
-      "args": ["--flavor", "prod"]
+      "args": [
+        "--flavor",
+        "prod",
+        "--dart-define-from-file=env/prod.json"
+      ]
     },
     {
       "name": "Nakshatra prod (release)",
@@ -36,7 +52,11 @@
       "type": "dart",
       "program": "lib/main_prod.dart",
       "flutterMode": "release",
-      "args": ["--flavor", "prod"]
+      "args": [
+        "--flavor",
+        "prod",
+        "--dart-define-from-file=env/prod.json"
+      ]
     }
   ]
 }

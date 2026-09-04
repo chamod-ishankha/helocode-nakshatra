@@ -55,10 +55,10 @@ android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
 
-# API keys and environment
-.env
-.env.*
-!.env.example
+# Build-time configuration. env/example.json is the committed template;
+# the real per-flavor files stay local so identifiers can differ and rotate.
+env/*.json
+!env/example.json
 
 # Local IDE state
 .idea/

@@ -1,0 +1,11 @@
+# Staging flavor icon: amber/bronze, distinct from both dev teal and prod indigo.
+# Regenerate with: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  image_path: "assets/icon/icon_staging.png"
+
+  android: "ic_launcher"
+  adaptive_icon_background: "assets/icon/icon_background_staging.png"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  min_sdk_android: 24
+
+  ios: false

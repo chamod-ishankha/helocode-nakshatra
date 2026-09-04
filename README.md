@@ -93,6 +93,29 @@ do not invoke `./gradlew` directly on a fresh clone.
 `io.helocode.nakshatra` — permanent. This is bound to the Play Store listing and
 cannot be changed after publication.
 
+## Licence
+
+Nakshatra is free software under the **GNU Affero General Public License v3.0
+or later**. See [LICENSE](LICENSE).
+
+It links the [Swiss Ephemeris](https://www.astro.com/swisseph/) by Astrodienst
+AG, which is dual-licensed AGPL or commercial. We use the AGPL edition, so this
+app must be AGPL too and its source must remain available to anyone who receives
+a build. That is why this repository is public.
+
+The AGPL permits commercial use: advertising and paid features are fine. The
+obligation is source availability, not giving the app away.
+
+If you fork this, your fork must also be AGPL and must publish its source.
+
+### Third-party components
+
+| Component | Author | Licence |
+| --- | --- | --- |
+| Swiss Ephemeris | Astrodienst AG | AGPL-3.0 |
+| IANA Time Zone Database | IANA | Public domain |
+| Flutter | Google LLC | BSD-3-Clause |
+
 ---
 
 Built by HeloCode Labs.

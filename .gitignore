@@ -63,7 +63,10 @@ lib/firebase_options.dart
 # Local IDE state
 .idea/
 *.iml
-.vscode/
+.vscode/*
+# ...but launch configs are shared: flavors make them mandatory, since a bare
+# `flutter run` cannot produce an APK once productFlavors are declared.
+!.vscode/launch.json
 
 # Build output
 /build/

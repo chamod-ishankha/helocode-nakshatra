@@ -20,20 +20,41 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // PERMANENT. Bound to the Play Store listing on first publish and can
+        // never be changed afterwards. Flavors append a suffix to this; prod
+        // deliberately appends nothing, so prod ships exactly this id.
         applicationId = "io.helocode.nakshatra"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "Nakshatra Dev")
+        }
+        create("staging") {
+            dimension = "env"
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            resValue("string", "app_name", "Nakshatra Staging")
+        }
+        create("prod") {
+            dimension = "env"
+            resValue("string", "app_name", "Nakshatra")
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // TODO(KAN-46): replace with the real upload keystore.
+            // Debug keys are used for now so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }

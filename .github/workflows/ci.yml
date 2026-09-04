@@ -79,12 +79,14 @@ jobs:
       # `gradlew` and `gradle-wrapper.jar` are not tracked (Flutter's default
       # ignore rules), so the wrapper must be regenerated before Gradle runs.
       # Building through `flutter build` handles that; never call ./gradlew here.
-      - name: Build debug APK
-        run: flutter build apk --debug
+      # A flavor and target are mandatory now that productFlavors are declared:
+      # a bare `flutter build apk` fails once flavorDimensions exist.
+      - name: Build debug APK (dev flavor)
+        run: flutter build apk --debug --flavor dev --target lib/main_dev.dart
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: nakshatra-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: nakshatra-dev-debug-apk
+          path: build/app/outputs/flutter-apk/app-dev-debug.apk
           retention-days: 7

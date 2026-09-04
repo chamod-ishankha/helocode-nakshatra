@@ -1,0 +1,11 @@
+# Copy to android/key.properties and fill in with your own values.
+#
+# NEVER commit android/key.properties — it is git-ignored for good reason.
+# It contains the passwords protecting your upload key.
+#
+# storeFile is resolved relative to the android/ directory.
+
+storePassword=<the keystore password you chose>
+keyPassword=<the key password you chose>
+keyAlias=upload
+storeFile=upload-keystore.jks

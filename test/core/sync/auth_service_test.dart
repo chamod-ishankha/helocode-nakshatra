@@ -142,10 +142,16 @@ void main() {
   });
 
   group('with no Firebase', () {
-    test('status is none and the stream still emits', () async {
+    test('status is none and the stream emits nothing at all', () async {
       const service = AuthService();
       expect(service.status.kind, AccountKind.none);
-      expect((await service.changes.first).kind, AccountKind.none);
+
+      // Deliberately empty rather than a single "none". A Stream.value here
+      // delivers on a microtask that can land mid-build, marking the provider
+      // scope dirty while it builds — that threw and took down the home
+      // screen. Readers default to none when there is no value, so emitting
+      // nothing shows the same thing without the reentrant notification.
+      expect(await service.changes.toList(), isEmpty);
     });
 
     test('every operation fails softly rather than throwing', () async {

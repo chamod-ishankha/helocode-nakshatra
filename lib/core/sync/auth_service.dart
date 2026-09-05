@@ -111,9 +111,17 @@ class AuthService {
   AccountStatus get status => AccountStatus.of(_auth?.currentUser);
 
   /// Emits on every sign-in, sign-out and link.
+  ///
+  /// With no Firebase this emits nothing rather than a single "none". A
+  /// `Stream.value` delivers on a microtask that can land in the middle of a
+  /// build, which marks the provider scope dirty while it is building and
+  /// throws — it took down the home screen on a build with sync unavailable.
+  /// Emitting nothing leaves the provider without a value, and both readers
+  /// already fall back to [AccountKind.none], so the displayed state is the
+  /// same without the reentrant notification.
   Stream<AccountStatus> get changes =>
       _auth?.userChanges().map(AccountStatus.of) ??
-      Stream.value(const AccountStatus(kind: AccountKind.none));
+      const Stream<AccountStatus>.empty();
 
   /// Attaches an email and password to the current anonymous account.
   ///

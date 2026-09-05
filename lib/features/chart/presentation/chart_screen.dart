@@ -46,6 +46,10 @@ class ChartScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(profile.name.isEmpty ? 'Chart' : profile.name),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go(Routes.home),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

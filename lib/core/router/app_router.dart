@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/chart/presentation/chart_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 
@@ -20,7 +21,7 @@ abstract final class Routes {
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: Routes.chart,
+    initialLocation: Routes.home,
     debugLogDiagnostics: true,
     // A user with no saved profile has nothing to show, so every route
     // redirects into onboarding until one exists. Reading the profile through
@@ -30,7 +31,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onOnboarding = state.matchedLocation == Routes.onboarding;
 
       if (!hasProfile && !onOnboarding) return Routes.onboarding;
-      if (hasProfile && onOnboarding) return Routes.chart;
+      if (hasProfile && onOnboarding) return Routes.home;
       return null;
     },
     routes: [
@@ -38,6 +39,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.onboarding,
         name: 'onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.home,
+        name: 'home',
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: Routes.chart,
@@ -77,7 +83,7 @@ class _RouteErrorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               FilledButton(
-                onPressed: () => context.go(Routes.chart),
+                onPressed: () => context.go(Routes.home),
                 child: const Text('Go home'),
               ),
             ],

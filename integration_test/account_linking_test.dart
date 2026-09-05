@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -67,6 +68,27 @@ void main() {
     } on Object {
       // Best effort. A leftover throwaway account is not worth failing on.
     }
+  });
+
+  test('starting the Google SDK never takes the app down', () async {
+    // Whether an OAuth client exists cannot be asserted here: finding out
+    // requires calling authenticate(), which opens a chooser and would hang a
+    // headless run. Verify what can be verified — startup is safe and the
+    // resulting state is coherent — and report the rest for the operator.
+    await AuthService.initializeGoogle();
+
+    debugPrint(
+      AuthService.googleAvailable
+          ? 'Google button will be offered (config proven only on first tap)'
+          : 'Google unavailable at startup: ${AuthService.googleError}',
+    );
+
+    // Ruling out only happens on a real configuration error, so a fresh
+    // startup must never be in that state.
+    expect(
+      AuthService.googleError,
+      anyOf(isNull, isNot(contains('ruled out'))),
+    );
   });
 
   test('linking keeps the uid, so the backup is not orphaned', () async {

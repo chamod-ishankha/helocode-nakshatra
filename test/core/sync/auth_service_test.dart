@@ -175,6 +175,46 @@ void main() {
     });
   });
 
+  group('Google when it is not set up', () {
+    setUp(AuthService.resetGoogleForTesting);
+
+    test('stays unavailable until the platform has actually been probed', () {
+      // initializeGoogle has not run, so nothing is known about the platform.
+      // Defaulting to available here would put a button on screen in unit
+      // tests and on any host where the SDK never started.
+      expect(AuthService.googleAvailable, isFalse);
+    });
+
+    test('both Google paths refuse before opening any chooser', () async {
+      const service = AuthService();
+
+      for (final result in [
+        await service.linkGoogle(),
+        await service.signInGoogle(),
+      ]) {
+        expect(result.isSuccess, isFalse);
+        final failure = result.failureOrNull! as AuthFailure;
+        // Not a generic error: the code is what the UI keys off to hide the
+        // button rather than show a dead end.
+        expect(failure.code, anyOf('google-unavailable', 'no-current-user',
+            'no-firebase'));
+        expect(failure.message, isNotEmpty);
+      }
+    });
+
+    test('signing in does not abandon the backup when Google cannot run',
+        () async {
+      final sync = _FakeSync();
+      const service = AuthService();
+
+      await service.signInGoogle(onAbandon: sync.clear);
+
+      // The chooser never opened, so there is nothing to abandon. Deleting
+      // here would destroy a backup for an action that never happened.
+      expect(sync.clears, 0);
+    });
+  });
+
   group('reconciling after signing in to another account', () {
     test('the account has nothing, so this phone fills it', () async {
       final sync = _FakeSync(remote: null);

@@ -86,6 +86,47 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     }
   }
 
+  /// One button for both cases.
+  ///
+  /// Linking is tried first because it is the one that keeps the uid and so
+  /// cannot lose the backup. Only when Google says the account already exists
+  /// here does this fall back to signing in, which is the path that has to
+  /// reconcile two profiles.
+  Future<void> _google() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+
+    final auth = ref.read(authServiceProvider);
+    final profiles = ref.read(profileProvider.notifier);
+    final sync = ref.read(profileSyncProvider);
+
+    var result = await auth.linkGoogle();
+
+    final failure = result.failureOrNull;
+    if (failure is AuthFailure && AuthService.isEmailTaken(failure.code)) {
+      result = await auth.signInGoogle(onAbandon: sync.clear);
+      if (result.isSuccess) {
+        await _reconcile(profiles);
+      }
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _busy = false;
+      final f = result.failureOrNull;
+      // Backing out of the Google sheet is not an error. Showing one would
+      // accuse the user of a mistake they did not make.
+      _error = (f is AuthFailure && f.code == 'google-canceled')
+          ? null
+          : f?.message;
+    });
+
+    if (result.isSuccess) _confirm('Signed in with Google.');
+  }
+
   /// Resolves the two-profile fork, asking only when it is genuinely a choice.
   Future<void> _reconcile(ProfileNotifier profiles) async {
     final remote = await profiles.reconcileAfterSignIn();
@@ -144,7 +185,26 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             _SignedIn(busy: _busy, onSignOut: _signOut)
           else if (kind == AccountKind.none)
             const _Unavailable()
-          else
+          else ...[
+            if (AuthService.googleAvailable) ...[
+              OutlinedButton.icon(
+                onPressed: _busy ? null : _google,
+                icon: const Icon(Icons.account_circle_outlined),
+                label: const Text('Continue with Google'),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text('or', style: theme.textTheme.bodySmall),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
             _Form(
               formKey: _formKey,
               email: _email,
@@ -158,6 +218,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 _error = null;
               }),
             ),
+          ],
           const SizedBox(height: 24),
           Text(
             'Your chart, nekath and the almanac are worked out on this phone '

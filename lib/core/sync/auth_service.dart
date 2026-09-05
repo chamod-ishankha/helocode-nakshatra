@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../error/result.dart';
 import '../logging/app_logger.dart';
@@ -59,6 +60,50 @@ class AccountStatus {
 /// day they need it.
 class AuthService {
   const AuthService();
+
+  static bool _googleSupported = false;
+  static bool _googleRuledOut = false;
+  static String? _googleError;
+
+  /// Whether to offer the Google button.
+  ///
+  /// This cannot be known for certain before the first attempt. The SDK's own
+  /// `supportsAuthenticate` answers "can this platform do Google sign-in",
+  /// which on Android is always yes — it says nothing about whether *this app*
+  /// has an OAuth client. The client id lives in the `default_web_client_id`
+  /// resource that the Google Services Gradle plugin generates only once the
+  /// provider is enabled in the Firebase console and a SHA-1 is registered,
+  /// and nothing exposes its absence to Dart.
+  ///
+  /// So this is optimistic until proven otherwise: the button shows, and the
+  /// first configuration error rules it out for the rest of the session. That
+  /// costs one failed tap on an unconfigured build, and none on a configured
+  /// one — the alternative, a flag someone has to remember to flip, costs the
+  /// feature silently going missing on a build that could have run it.
+  static bool get googleAvailable => _googleSupported && !_googleRuledOut;
+
+  /// Why Google sign-in is unavailable, for diagnostics.
+  static String? get googleError => _googleError;
+
+  /// Prepares the Google SDK. Called once at startup and never throws.
+  static Future<void> initializeGoogle() async {
+    try {
+      await GoogleSignIn.instance.initialize();
+      _googleSupported = GoogleSignIn.instance.supportsAuthenticate();
+      if (!_googleSupported) _googleError = 'platform cannot authenticate';
+    } on Object catch (e) {
+      _googleError = '$e';
+      _googleSupported = false;
+      AppLogger.info('Google sign-in unavailable: $e');
+    }
+  }
+
+  /// Test seam — resets the memoised Google state.
+  static void resetGoogleForTesting() {
+    _googleSupported = false;
+    _googleRuledOut = false;
+    _googleError = null;
+  }
 
   FirebaseAuth? get _auth =>
       FirebaseService.isAvailable ? FirebaseAuth.instance : null;
@@ -139,6 +184,156 @@ class AuthService {
     }
   }
 
+  /// Attaches a Google account to the current anonymous one.
+  ///
+  /// Same uid, same guarantees as [linkEmail]. `credential-already-in-use`
+  /// means that Google account is already an account here, which the caller
+  /// turns into [signInGoogle] rather than an error.
+  Future<Result<AccountStatus>> linkGoogle() async {
+    final user = _auth?.currentUser;
+    if (user == null) {
+      return const Result.failure(
+        AuthFailure('Not signed in yet.', code: 'no-current-user'),
+      );
+    }
+
+    final credential = await _googleCredential();
+    return switch (credential) {
+      FailureResult(:final failure) => Result.failure(failure),
+      Success(value: final c) => await _run(
+        () async => AccountStatus.of((await user.linkWithCredential(c)).user),
+        'Anonymous account linked to Google',
+      ),
+    };
+  }
+
+  /// Signs in with Google to an account that already exists.
+  ///
+  /// Carries the same uid-swap consequence as [signInEmail], so [onAbandon]
+  /// has the same job: delete the anonymous backup before it becomes
+  /// unreachable.
+  Future<Result<AccountStatus>> signInGoogle({
+    Future<void> Function()? onAbandon,
+  }) async {
+    final auth = _auth;
+    if (auth == null) {
+      return const Result.failure(
+        AuthFailure('Sync is unavailable.', code: 'no-firebase'),
+      );
+    }
+
+    final credential = await _googleCredential();
+    if (credential case FailureResult(:final failure)) {
+      return Result.failure(failure);
+    }
+
+    final leaving = auth.currentUser;
+    if (leaving != null && leaving.isAnonymous && onAbandon != null) {
+      await onAbandon();
+    }
+
+    return _run(
+      () async => AccountStatus.of(
+        (await auth.signInWithCredential(
+          (credential as Success<AuthCredential>).value,
+        )).user,
+      ),
+      'Signed in with Google',
+    );
+  }
+
+  /// Runs the Google chooser and converts the result into a Firebase
+  /// credential.
+  ///
+  /// Cancelling is not a failure worth a message — the user closed a sheet
+  /// they opened — so it comes back with its own code for the caller to
+  /// swallow silently.
+  Future<Result<AuthCredential>> _googleCredential() async {
+    if (!googleAvailable) {
+      return const Result.failure(
+        AuthFailure(
+          'Google sign-in is not set up for this app yet.',
+          code: 'google-unavailable',
+        ),
+      );
+    }
+
+    try {
+      final account = await GoogleSignIn.instance.authenticate();
+      final idToken = account.authentication.idToken;
+
+      if (idToken == null) {
+        return const Result.failure(
+          AuthFailure('Google did not return a usable sign-in.',
+              code: 'google-no-id-token'),
+        );
+      }
+
+      return Result.success(GoogleAuthProvider.credential(idToken: idToken));
+    } on GoogleSignInException catch (e) {
+      return Result.failure(_describeGoogle(e));
+    } on Object catch (e, s) {
+      AppLogger.warn('Google sign-in failed', e, s);
+      return Result.failure(
+        AuthFailure('Could not sign in with Google.',
+            cause: e, code: 'google-unknown'),
+      );
+    }
+  }
+
+  static AuthFailure _describeGoogle(GoogleSignInException e) {
+    AppLogger.warn('Google sign-in error ${e.code}: ${e.description}');
+    return switch (e.code) {
+      GoogleSignInExceptionCode.canceled => const AuthFailure(
+        '',
+        code: 'google-canceled',
+      ),
+      // The only definitive answer available: this build has no OAuth client.
+      // Remember it, so the button goes away instead of failing again.
+      GoogleSignInExceptionCode.clientConfigurationError ||
+      GoogleSignInExceptionCode.providerConfigurationError => () {
+        _googleRuledOut = true;
+        _googleError = e.description;
+        return AuthFailure(
+          'Google sign-in is not set up for this app yet.',
+          cause: e,
+          code: 'google-unavailable',
+        );
+      }(),
+      GoogleSignInExceptionCode.interrupted ||
+      GoogleSignInExceptionCode.uiUnavailable => AuthFailure(
+        'Google sign-in was interrupted. Please try again.',
+        cause: e,
+        code: 'google-interrupted',
+      ),
+      _ => AuthFailure(
+        'Could not sign in with Google.',
+        cause: e,
+        code: 'google-unknown',
+      ),
+    };
+  }
+
+  /// Shared tail for the Firebase half of both Google paths.
+  Future<Result<AccountStatus>> _run(
+    Future<AccountStatus> Function() action,
+    String log,
+  ) async {
+    try {
+      final status = await action();
+      AppLogger.info(log);
+      return Result.success(status);
+    } on FirebaseAuthException catch (e) {
+      return Result.failure(describe(e));
+    } on Object catch (e, s) {
+      AppLogger.warn('Google auth failed', e, s);
+      return Result.failure(
+        AuthFailure('Could not sign in with Google.',
+            cause: e, code: 'unknown'),
+      );
+    }
+  }
+
   /// Returns to a fresh anonymous account.
   ///
   /// Signing out does not stop the backup: an anonymous account is this app's
@@ -154,6 +349,16 @@ class AuthService {
     }
 
     try {
+      // Without this the Google chooser silently reuses the last account, so
+      // "sign out" would appear not to have worked.
+      if (googleAvailable) {
+        try {
+          await GoogleSignIn.instance.signOut();
+        } on Object catch (e) {
+          AppLogger.warn('Google sign-out failed, continuing: $e');
+        }
+      }
+
       await auth.signOut();
       await auth.signInAnonymously();
       AppLogger.info('Signed out, back to an anonymous account');

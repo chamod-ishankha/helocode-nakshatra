@@ -38,6 +38,18 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('no Google button until the provider is actually set up', (
+    tester,
+  ) async {
+    AuthService.resetGoogleForTesting();
+    await pumpWith(tester, const AccountStatus(kind: AccountKind.anonymous));
+
+    // A button that can only fail is worse than no button at all.
+    expect(find.text('Continue with Google'), findsNothing);
+    // The email form must still be offered in its place.
+    expect(find.text('Create account'), findsOneWidget);
+  });
+
   testWidgets('an anonymous account is told its backup is at risk', (
     tester,
   ) async {

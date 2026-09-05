@@ -6,6 +6,7 @@ import 'app.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/flavor.dart';
 import 'core/logging/app_logger.dart';
+import 'core/sync/auth_service.dart';
 import 'core/sync/firebase_service.dart';
 import 'features/onboarding/data/profile_repository.dart';
 
@@ -32,6 +33,11 @@ Future<void> bootstrap(Flavor flavor) async {
   // google-services.json, or a phone with no signal, still gets a fully
   // working app — charts and nekath are computed on-device.
   await FirebaseService.initialize();
+
+  // Decides whether the account screen offers a Google button at all. Also
+  // never throws: a project without the Google provider switched on is the
+  // normal state, not an error.
+  await AuthService.initializeGoogle();
 
   final container = ProviderContainer(
     overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],

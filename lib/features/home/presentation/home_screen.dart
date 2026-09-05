@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
@@ -51,6 +52,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             const _DateSwitcher(),
             const SizedBox(height: 16),
+            const _PoyaTodayBanner(),
             const _NowBanner(),
             _RahuKalayaCard(panchanga: panchanga),
             const SizedBox(height: 16),
@@ -61,6 +63,8 @@ class HomeScreen extends ConsumerWidget {
             const _OtherPeriods(),
             const SizedBox(height: 16),
             const _AuspiciousCard(),
+            const SizedBox(height: 16),
+            const _NextPoyaCard(),
             const SizedBox(height: 24),
             const _ComingSoon(),
             const SizedBox(height: 24),
@@ -463,6 +467,129 @@ class _AuspiciousCard extends ConsumerWidget {
   }
 }
 
+/// Shown when the selected day is itself a poya.
+class _PoyaTodayBanner extends ConsumerWidget {
+  const _PoyaTodayBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final poya = ref.watch(poyaTodayProvider);
+    if (poya == null) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.accent.withValues(alpha: 0.12),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Text(
+            poya.si ?? poya.name,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: AppColors.accent,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(poya.name, style: theme.textTheme.bodySmall),
+          const SizedBox(height: 6),
+          Text(
+            poya.note ?? '',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Full moon at ${DateFormat('h:mm a').format(poya.fullMoon)}',
+            style: theme.textTheme.labelSmall,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Countdown to the next poya, and the next festival if that is sooner.
+class _NextPoyaCard extends ConsumerWidget {
+  const _NextPoyaCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final date = ref.watch(selectedDateProvider);
+    final poya = ref.watch(nextPoyaProvider);
+    final festival = ref.watch(nextFestivalProvider);
+    if (poya == null) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final entries = <Festival>[
+      poya,
+      if (festival != null && festival.date != poya.date) festival,
+    ]..sort((a, b) => a.date.compareTo(b.date));
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Coming up', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 8),
+            for (final f in entries)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      f.kind == FestivalKind.poya
+                          ? Icons.brightness_1
+                          : Icons.celebration_outlined,
+                      size: 16,
+                      color: AppColors.accent,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            f.name,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            DateFormat('EEEE, d MMMM').format(f.date),
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      _countdown(f.daysFrom(date)),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: AppColors.accent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static String _countdown(int days) => switch (days) {
+    0 => 'today',
+    1 => 'tomorrow',
+    _ => 'in $days days',
+  };
+}
+
 /// Honest placeholder for the sections whose engines do not exist yet.
 ///
 /// Deliberately not filled with invented readings: showing made-up astrology
@@ -485,8 +612,10 @@ class _ComingSoon extends StatelessWidget {
           Text('Still to come', style: theme.textTheme.titleSmall),
           const SizedBox(height: 6),
           Text(
-            'Daily horoscope, the poya and festival calendar, and your current '
-            'daśā period.',
+            'Daily horoscope and your current daśā period.\n\n'
+            'Deepavali and Eid are not listed: their dates follow regional '
+            'convention and moon sighting rather than calculation, and a '
+            'confidently wrong religious date would be worse than none.',
             style: theme.textTheme.bodySmall,
           ),
         ],

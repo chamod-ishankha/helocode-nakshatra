@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/nekath.dart';
 import '../../../core/astro/panchanga.dart';
 import '../../../core/astro/panchanga_models.dart';
+import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../onboarding/data/profile_repository.dart';
 
 /// The day the home screen is showing.
@@ -83,4 +85,26 @@ final currentlyInauspiciousProvider = Provider<TimeWindow?>((ref) {
     if (w.contains(now)) return w;
   }
   return null;
+});
+
+/// The next poya on or after the selected day.
+///
+/// Scanning a year of full moons is not free, so this is computed from the
+/// selected date rather than the clock, which keeps it stable while the user
+/// pages through days.
+final nextPoyaProvider = Provider<PoyaDay?>(
+  (ref) => SriLankanCalendar.nextPoya(ref.watch(selectedDateProvider)),
+);
+
+/// The next festival of any kind, poya included.
+final nextFestivalProvider = Provider<Festival?>(
+  (ref) => SriLankanCalendar.nextFestival(ref.watch(selectedDateProvider)),
+);
+
+/// The poya falling exactly on the selected day, if there is one.
+final poyaTodayProvider = Provider<PoyaDay?>((ref) {
+  final date = ref.watch(selectedDateProvider);
+  final next = ref.watch(nextPoyaProvider);
+  if (next == null) return null;
+  return next.date == DateTime(date.year, date.month, date.day) ? next : null;
 });

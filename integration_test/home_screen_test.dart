@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:nakshatra/core/astro/ephemeris.dart';
+import 'package:nakshatra/core/astro/calendar_models.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/features/home/domain/daily_providers.dart';
 import 'package:nakshatra/features/home/presentation/home_screen.dart';
@@ -180,5 +181,72 @@ void main() {
     // is built on, so the gap is stated instead.
     expect(find.text('Still to come'), findsOneWidget);
     expect(find.textContaining('entertainment purposes'), findsOneWidget);
+  });
+
+  group('poya and festivals', () {
+    testWidgets('a "Coming up" card lists what is next', (tester) async {
+      await pumpHome(tester);
+      await tester.scrollUntilVisible(
+        find.text('Coming up'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Coming up'), findsOneWidget);
+
+      // The next poya is always shown, and never as a past date.
+      final poya = container.read(nextPoyaProvider)!;
+      expect(
+        poya.daysFrom(container.read(selectedDateProvider)),
+        greaterThanOrEqualTo(0),
+      );
+      expect(find.text(poya.name), findsOneWidget);
+    });
+
+    testWidgets('the next poya carries a real poya name', (tester) async {
+      await pumpHome(tester);
+      final poya = container.read(nextPoyaProvider)!;
+      expect(poya.name, contains('Poya'));
+      expect(poya.si, isNotNull);
+      expect(poya.kind, FestivalKind.poya);
+    });
+
+    testWidgets('the poya banner appears only on a poya day', (tester) async {
+      await pumpHome(tester);
+
+      // Today is almost never a poya, so the banner should be absent; assert
+      // the relationship rather than a fixed outcome.
+      final today = container.read(poyaTodayProvider);
+      final poyaBanner = find.textContaining('Full moon at');
+      if (today == null) {
+        expect(poyaBanner, findsNothing);
+      } else {
+        expect(poyaBanner, findsOneWidget);
+      }
+    });
+
+    testWidgets('stepping onto the next poya shows the banner', (tester) async {
+      await pumpHome(tester);
+      final poya = container.read(nextPoyaProvider)!;
+      final days = poya.daysFrom(container.read(selectedDateProvider));
+
+      // Jump straight to that date rather than tapping through.
+      container.read(selectedDateProvider.notifier).shift(days);
+      await tester.pumpAndSettle();
+
+      expect(container.read(poyaTodayProvider), isNotNull);
+      expect(find.textContaining('Full moon at'), findsOneWidget);
+    });
+
+    testWidgets('uncomputable festivals are explained, not hidden', (
+      tester,
+    ) async {
+      await pumpHome(tester);
+      await tester.scrollUntilVisible(
+        find.textContaining('entertainment purposes'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.textContaining('Deepavali and Eid'), findsOneWidget);
+    });
   });
 }

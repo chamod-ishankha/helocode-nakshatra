@@ -112,8 +112,10 @@ void main() {
     });
 
     test('a full moon falls on Purnima in the waxing half', () {
-      // Vesak poya 2026 falls on 1 May. Poya days are full moons, which are by
-      // definition the fifteenth tithi of the waxing fortnight.
+      // 1 May 2026 is a full moon, and a full moon is by definition the
+      // fifteenth tithi of the waxing fortnight. Which poya name that day
+      // carries is a calendrical question, not an astronomical one — May 2026
+      // holds two full moons, so see calendar_test.dart.
       final p = on(2026, 5, 1);
       expect(p.paksha, Paksha.shukla);
       expect(p.tithi.value, Tithi.purnimaAmavasya);

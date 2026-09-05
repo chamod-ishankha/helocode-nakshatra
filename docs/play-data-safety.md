@@ -2,18 +2,27 @@
 
 The answers to enter in **Play Console → App content → Data safety**.
 
-This describes the build as it stands: `firebase_core`, `firebase_auth` and
-`cloud_firestore`, and nothing else that touches the network. It is checked in
+This describes the build as it stands: `firebase_core`, `firebase_auth`,
+`cloud_firestore` and `google_sign_in`, and nothing else that touches the
+network. It is checked in
 so that a change to what the app collects and a change to what we declare land
 in the same commit. **If you add AdMob, Crashlytics or RevenueCat, this file is
 wrong until you update it** — see [When this changes](#when-this-changes).
 
-Last verified against the release manifest on 2026-09-06:
+Last verified against the release manifest on 2026-09-06, after KAN-48:
 
 ```
 uses-permission android.permission.INTERNET
 uses-permission android.permission.ACCESS_NETWORK_STATE
+uses-permission android.permission.USE_BIOMETRIC
+uses-permission android.permission.USE_FINGERPRINT
 ```
+
+The two biometric permissions arrive with `google_sign_in`, which depends on
+Credential Manager — Android offers biometric unlock when picking a saved
+credential. **The app never requests, receives or stores biometric data**, and
+there is nothing to declare for them on the form. They are listed here because
+they are visible on the Play listing and will otherwise look unexplained.
 
 ---
 
@@ -30,11 +39,18 @@ local storage and deletes the Firestore document in one action. This is the
 same route the privacy policy names, and Play does check that a stated route
 exists.
 
+> **Open obligation.** Now that KAN-48 lets a user create a real account, Play's
+> account-deletion policy applies: it wants a **web** deletion route as well as
+> the in-app one, reachable without installing the app. A page on the HeloCode
+> site satisfies it. This is not yet built, and it is an app-content
+> requirement rather than a Data Safety answer — but it is checked at review,
+> so it blocks the first release that ships sign-in.
+
 ---
 
 ## 2. Data types
 
-Only three entries are collected. Everything else in the form is **No**.
+Four entries are collected. Everything else in the form is **No**.
 
 ### Personal info → Name
 
@@ -45,6 +61,20 @@ Only three entries are collected. Everything else in the form is **No**.
 | Processed ephemerally | **No** — it is stored |
 | Required or optional | **Optional** — the app works with the field left blank |
 | Purpose | **App functionality** |
+
+### Personal info → Email address
+
+| Field | Answer |
+| --- | --- |
+| Collected | **Yes** |
+| Shared | **No** |
+| Processed ephemerally | **No** |
+| Required or optional | **Optional** — the app is fully usable on an anonymous account |
+| Purpose | **App functionality**, **Account management** |
+
+Only reaches us if the user chooses to sign in (KAN-48). An anonymous account
+holds no address. Nothing is ever sent to it: sign-up is deliberately not
+verified, so the address is a recovery handle and nothing else.
 
 ### Personal info → User IDs
 
@@ -111,7 +141,7 @@ here. Nothing is transferred to a third party for their own use.
 | **AdMob** | Device or other IDs → Yes (Advertising ID), Shared → Yes, purpose Advertising. Location may become approximate-from-IP. This is the largest change and needs a consent flow for the EEA and UK. |
 | **Crashlytics** | App info and performance → Crash logs and Diagnostics → Yes, purpose Analytics. |
 | **RevenueCat** | Purchase history under Financial info, and a purchase identifier under User IDs. |
-| **Google / email sign-in (KAN-48)** | Email address → Yes under Personal info. Also brings the app under Play's account-deletion policy, which wants a **web** deletion route as well as the in-app one — a page on the HeloCode site would satisfy it. |
+| **~~Google / email sign-in (KAN-48)~~** | Done — Email address is declared above. |
 
 Keep this in step with `nakshatra/privacy.html` in the `helocode-site` repo. The
 two have to agree: the policy is the prose version of this table, and Play

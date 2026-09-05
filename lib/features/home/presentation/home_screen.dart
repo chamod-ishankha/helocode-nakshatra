@@ -37,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.grid_on),
             tooltip: 'Birth chart',
-            onPressed: () => context.go(Routes.chart),
+            onPressed: () => context.push(Routes.chart),
           ),
           const _AccountAction(),
         ],
@@ -100,7 +100,7 @@ class _AccountAction extends ConsumerWidget {
 
     return IconButton(
       tooltip: 'Account',
-      onPressed: () => context.go(Routes.account),
+      onPressed: () => context.push(Routes.account),
       icon: Badge(
         isLabelVisible: kind == AccountKind.anonymous,
         backgroundColor: Theme.of(context).colorScheme.error,

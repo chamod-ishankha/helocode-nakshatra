@@ -21,6 +21,14 @@ abstract final class Routes {
   static const String settings = '/settings';
 }
 
+/// Goes back one screen, or home when there is nothing behind this one.
+///
+/// A screen is normally reached by a push and has a stack behind it. It can
+/// also be landed on directly — a redirect, or a restart that restores a
+/// location — and popping then would close the app instead of going back.
+void popOrHome(BuildContext context) =>
+    context.canPop() ? context.pop() : context.go(Routes.home);
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: Routes.home,

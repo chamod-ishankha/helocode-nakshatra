@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
@@ -173,7 +172,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         title: const Text('Account'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go(Routes.home),
+          onPressed: () => popOrHome(context),
         ),
       ),
       body: ListView(

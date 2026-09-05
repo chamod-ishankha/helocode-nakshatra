@@ -48,7 +48,7 @@ class ChartScreen extends ConsumerWidget {
         title: Text(profile.name.isEmpty ? 'Chart' : profile.name),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go(Routes.home),
+          onPressed: () => popOrHome(context),
         ),
         actions: [
           IconButton(

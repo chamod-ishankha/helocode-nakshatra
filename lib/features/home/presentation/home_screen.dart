@@ -7,6 +7,7 @@ import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../domain/daily_providers.dart';
@@ -38,6 +39,7 @@ class HomeScreen extends ConsumerWidget {
             tooltip: 'Birth chart',
             onPressed: () => context.go(Routes.chart),
           ),
+          const _AccountAction(),
         ],
       ),
       body: RefreshIndicator(
@@ -76,6 +78,37 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Entry point to the account screen.
+///
+/// An anonymous account gets a dot on the icon. It is the only hint that the
+/// backup dies with the phone, and a quiet marker is the right weight for it —
+/// the app works perfectly without an account, so nagging would be dishonest,
+/// but saying nothing until the phone is lost would be worse.
+class _AccountAction extends ConsumerWidget {
+  const _AccountAction();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kind =
+        ref.watch(accountStatusProvider).value?.kind ?? AccountKind.none;
+
+    return IconButton(
+      tooltip: 'Account',
+      onPressed: () => context.go(Routes.account),
+      icon: Badge(
+        isLabelVisible: kind == AccountKind.anonymous,
+        backgroundColor: Theme.of(context).colorScheme.error,
+        smallSize: 8,
+        child: Icon(
+          kind == AccountKind.permanent
+              ? Icons.verified_user_outlined
+              : Icons.account_circle_outlined,
         ),
       ),
     );

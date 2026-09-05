@@ -108,6 +108,56 @@ class ProfileNotifier extends Notifier<BirthProfile?> {
     AppLogger.info('Birth profile restored from backup');
     return true;
   }
+
+  /// Reconciles this device against an account that was just signed in to.
+  ///
+  /// Signing in to an existing account swaps the uid, so there can now be two
+  /// profiles: the one on this phone and the one the account already held.
+  ///
+  /// Three of the four combinations settle themselves — this pushes up when
+  /// the account has nothing, pulls down when the phone has nothing, and does
+  /// nothing when they already agree. The fourth, two profiles that differ, is
+  /// a genuine fork that only the user can decide, so it is returned rather
+  /// than resolved. [keepAccountProfile] and [keepDeviceProfile] apply that
+  /// decision.
+  Future<BirthProfile?> reconcileAfterSignIn() async {
+    final local = state;
+    final remote = await ref.read(profileSyncProvider).pull();
+
+    if (remote == null) {
+      if (local != null) await ref.read(profileSyncProvider).push(local);
+      return null;
+    }
+
+    if (local == null) {
+      await ref.read(profileRepositoryProvider).save(remote);
+      state = remote;
+      return null;
+    }
+
+    return _sameProfile(local, remote) ? null : remote;
+  }
+
+  /// Takes the account's copy, replacing this device's.
+  Future<void> keepAccountProfile(BirthProfile remote) async {
+    await ref.read(profileRepositoryProvider).save(remote);
+    state = remote;
+    AppLogger.info('Kept the account profile over this device');
+  }
+
+  /// Keeps this device's copy, replacing the account's.
+  Future<void> keepDeviceProfile() async {
+    final local = state;
+    if (local == null) return;
+    await ref.read(profileSyncProvider).push(local);
+    AppLogger.info('Kept this device profile over the account');
+  }
+
+  /// Compared through JSON because [BirthProfile] has no value equality and
+  /// this is the only place that needs it. `toJson` writes a literal map, so
+  /// the encoding is stable enough to compare.
+  static bool _sameProfile(BirthProfile a, BirthProfile b) =>
+      jsonEncode(a.toJson()) == jsonEncode(b.toJson());
 }
 
 final profileProvider = NotifierProvider<ProfileNotifier, BirthProfile?>(

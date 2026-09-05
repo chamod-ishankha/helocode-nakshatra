@@ -35,6 +35,17 @@ class StorageFailure extends Failure {
   const StorageFailure(super.message, {super.cause});
 }
 
+/// Sign-in, sign-out or account linking failed.
+///
+/// [code] is the raw Firebase code, kept alongside the readable [message]
+/// because the caller sometimes has to branch on it — "that email is taken" is
+/// an offer to sign in instead, not something to apologise for.
+class AuthFailure extends Failure {
+  const AuthFailure(super.message, {super.cause, required this.code});
+
+  final String code;
+}
+
 class UnexpectedFailure extends Failure {
   const UnexpectedFailure(super.message, {super.cause});
 }

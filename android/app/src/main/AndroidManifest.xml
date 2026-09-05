@@ -1,4 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Declared explicitly rather than inherited from a dependency's manifest.
+         Flutter only adds INTERNET to the debug and profile manifests, so
+         without this line the release build silently loses network: no ads,
+         no profile backup and no purchase validation, and only after upload.
+         Chart and nekath calculation stay offline regardless. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"

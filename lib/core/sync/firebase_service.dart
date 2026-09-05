@@ -29,12 +29,21 @@ import '../logging/app_logger.dart';
 abstract final class FirebaseService {
   static bool _available = false;
   static bool _attempted = false;
+  static String? _lastError;
 
   /// Whether Firebase started and a user is signed in.
   ///
   /// False on a build with no `google-services.json`, which is the normal state
   /// for a fresh clone.
   static bool get isAvailable => _available;
+
+  /// Why the last [initialize] failed, or null if it succeeded.
+  ///
+  /// Failures are deliberately swallowed so they cannot take the app down,
+  /// which also makes them invisible. This keeps the cause reportable — tests
+  /// assert against it, and it is the difference between "sync is off" and
+  /// knowing the phone had no network.
+  static String? get lastError => _lastError;
 
   static User? get currentUser =>
       _available ? FirebaseAuth.instance.currentUser : null;
@@ -58,14 +67,17 @@ abstract final class FirebaseService {
       }
 
       _available = auth.currentUser != null;
+      if (!_available) _lastError = 'signed in but currentUser was null';
       AppLogger.info('Firebase ready (uid ${auth.currentUser?.uid})');
     } on FirebaseException catch (e) {
       // The overwhelmingly common cause is a build without Firebase
       // configured, which is expected and not worth alarming about.
       AppLogger.warn('Firebase unavailable, continuing offline: ${e.code}');
+      _lastError = '${e.code}: ${e.message}';
       _available = false;
     } on Object catch (e, s) {
       AppLogger.warn('Firebase init failed, continuing offline', e, s);
+      _lastError = '${e.runtimeType}: $e';
       _available = false;
     }
   }
@@ -74,6 +86,7 @@ abstract final class FirebaseService {
   static void resetForTesting() {
     _available = false;
     _attempted = false;
+    _lastError = null;
   }
 }
 

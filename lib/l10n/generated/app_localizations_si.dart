@@ -396,6 +396,9 @@ class L10nSi extends L10n {
       'Google වෙතින් භාවිත කළ හැකි පිවිසුමක් ලැබුණේ නැත.';
 
   @override
+  String get language => 'භාෂාව';
+
+  @override
   String get routeNotFound => 'පිටුව හමු නොවීය';
 
   @override

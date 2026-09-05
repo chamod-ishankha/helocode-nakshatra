@@ -126,6 +126,8 @@
   "authErrorGoogleFailed": "Google உடன் உள்நுழைய முடியவில்லை.",
   "authErrorGoogleNoToken": "Google இடமிருந்து பயன்படுத்தக்கூடிய உள்நுழைவு கிடைக்கவில்லை.",
 
+  "language": "மொழி",
+
   "routeNotFound": "பக்கம் கிடைக்கவில்லை",
   "routeGoHome": "முகப்புக்குச் செல்"
 }

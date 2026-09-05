@@ -801,6 +801,12 @@ abstract class L10n {
   /// **'Google did not return a usable sign-in.'**
   String get authErrorGoogleNoToken;
 
+  /// Tooltip and menu label for the language switcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
   /// No description provided for @routeNotFound.
   ///
   /// In en, this message translates to:

@@ -9,6 +9,7 @@ import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/language_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../domain/daily_providers.dart';
@@ -41,6 +42,7 @@ class HomeScreen extends ConsumerWidget {
             onPressed: () => context.push(Routes.chart),
           ),
           const _AccountAction(),
+          const LanguageButton(),
         ],
       ),
       body: RefreshIndicator(
@@ -197,6 +199,8 @@ class _NowBanner extends ConsumerWidget {
   }
 }
 
+const String _rahuInSinhala = 'රාහු කාලය';
+
 /// The headline. This is what the app is opened for.
 class _RahuKalayaCard extends ConsumerWidget {
   const _RahuKalayaCard({required this.panchanga});
@@ -228,14 +232,19 @@ class _RahuKalayaCard extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         child: Column(
           children: [
+            // The Sinhala spelling is the form people recognise on a
+            // printed litha, so it leads regardless of interface language.
+            // The translated name sits under it — unless it is the same
+            // string, which it is in Sinhala.
             Text(
-              'රාහු කාලය',
+              _rahuInSinhala,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: AppColors.inauspicious,
               ),
             ),
-            Text(L10n.of(context).homeRahuKalaya,
-                style: theme.textTheme.bodySmall),
+            if (L10n.of(context).homeRahuKalaya != _rahuInSinhala)
+              Text(L10n.of(context).homeRahuKalaya,
+                  style: theme.textTheme.bodySmall),
             const SizedBox(height: 12),
             Text(
               '${fmt.format(rahu.start)}  —  ${fmt.format(rahu.end)}',

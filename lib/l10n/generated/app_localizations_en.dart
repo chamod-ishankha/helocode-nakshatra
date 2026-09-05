@@ -397,6 +397,9 @@ class L10nEn extends L10n {
       'Google did not return a usable sign-in.';
 
   @override
+  String get language => 'Language';
+
+  @override
   String get routeNotFound => 'Page not found';
 
   @override

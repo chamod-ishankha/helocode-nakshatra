@@ -402,6 +402,9 @@ class L10nTa extends L10n {
       'Google இடமிருந்து பயன்படுத்தக்கூடிய உள்நுழைவு கிடைக்கவில்லை.';
 
   @override
+  String get language => 'மொழி';
+
+  @override
   String get routeNotFound => 'பக்கம் கிடைக்கவில்லை';
 
   @override

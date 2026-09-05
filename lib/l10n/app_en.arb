@@ -135,6 +135,9 @@
   "authErrorGoogleFailed": "Could not sign in with Google.",
   "authErrorGoogleNoToken": "Google did not return a usable sign-in.",
 
+  "language": "Language",
+  "@language": { "description": "Tooltip and menu label for the language switcher." },
+
   "routeNotFound": "Page not found",
   "routeGoHome": "Go home"
 }

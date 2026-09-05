@@ -7,6 +7,7 @@ import 'package:nakshatra/core/astro/calendar_models.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/features/home/domain/daily_providers.dart';
 import 'package:nakshatra/features/home/presentation/home_screen.dart';
+import 'package:nakshatra/l10n/generated/app_localizations.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,7 +58,15 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: HomeScreen()),
+        child: const MaterialApp(
+          // The screen reads its labels through L10n, so it cannot
+          // build without the delegates. Pinned to English so the
+          // assertions below stay readable.
+          locale: Locale('en'),
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          home: HomeScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

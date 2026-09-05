@@ -9,6 +9,7 @@ import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../domain/daily_providers.dart';
 
@@ -36,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.grid_on),
-            tooltip: 'Birth chart',
+            tooltip: L10n.of(context).homeBirthChart,
             onPressed: () => context.push(Routes.chart),
           ),
           const _AccountAction(),
@@ -71,7 +72,7 @@ class HomeScreen extends ConsumerWidget {
             const _ComingSoon(),
             const SizedBox(height: 24),
             Text(
-              'For entertainment purposes only.',
+              L10n.of(context).entertainmentOnly,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -99,7 +100,7 @@ class _AccountAction extends ConsumerWidget {
         ref.watch(accountStatusProvider).value?.kind ?? AccountKind.none;
 
     return IconButton(
-      tooltip: 'Account',
+      tooltip: L10n.of(context).homeAccount,
       onPressed: () => context.push(Routes.account),
       icon: Badge(
         isLabelVisible: kind == AccountKind.anonymous,
@@ -149,7 +150,10 @@ class _DateSwitcher extends ConsumerWidget {
           onPressed: () => notifier.shift(1),
         ),
         if (!isToday)
-          TextButton(onPressed: notifier.today, child: const Text('Today')),
+          TextButton(
+            onPressed: notifier.today,
+            child: Text(L10n.of(context).today),
+          ),
       ],
     );
   }
@@ -230,7 +234,8 @@ class _RahuKalayaCard extends ConsumerWidget {
                 color: AppColors.inauspicious,
               ),
             ),
-            Text('Rāhu kālaya', style: theme.textTheme.bodySmall),
+            Text(L10n.of(context).homeRahuKalaya,
+                style: theme.textTheme.bodySmall),
             const SizedBox(height: 12),
             Text(
               '${fmt.format(rahu.start)}  —  ${fmt.format(rahu.end)}',
@@ -246,7 +251,7 @@ class _RahuKalayaCard extends ConsumerWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              'avoid starting anything important',
+              L10n.of(context).homeAvoidImportant,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -269,39 +274,39 @@ class _PanchangaStrip extends StatelessWidget {
     final fmt = DateFormat('h:mm a');
 
     String until(DateTime? end) =>
-        end == null ? '' : 'until ${fmt.format(end)}';
+        end == null ? '' : L10n.of(context).homeRunningUntil(fmt.format(end));
 
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _row(context, 'Vāra', switch (locale) {
+            _row(context, L10n.of(context).panchangaVara, switch (locale) {
               AppLocale.si => panchanga.vara.si,
               AppLocale.ta => panchanga.vara.ta,
               AppLocale.en => panchanga.vara.en,
             }, ''),
             _row(
               context,
-              'Tithi',
+              L10n.of(context).panchangaTithi,
               '${panchanga.tithi.value.en} (${panchanga.paksha.description})',
               until(panchanga.tithi.endsAt),
             ),
             _row(
               context,
-              'Nakṣatra',
+              L10n.of(context).panchangaNakshatra,
               panchanga.nakshatra.value,
               until(panchanga.nakshatra.endsAt),
             ),
             _row(
               context,
-              'Yoga',
+              L10n.of(context).panchangaYoga,
               panchanga.yoga.value.en,
               until(panchanga.yoga.endsAt),
             ),
             _row(
               context,
-              'Karana',
+              L10n.of(context).panchangaKarana,
               panchanga.karana.value.en +
                   (panchanga.karana.value.isInauspicious ? '  ⚠' : ''),
               until(panchanga.karana.endsAt),
@@ -364,19 +369,19 @@ class _SunMoonCard extends StatelessWidget {
             _item(
               context,
               Icons.wb_twilight,
-              'Sunrise',
+              L10n.of(context).homeSunrise,
               fmt.format(panchanga.sunrise),
             ),
             _item(
               context,
               Icons.wb_sunny_outlined,
-              'Sunset',
+              L10n.of(context).homeSunset,
               fmt.format(panchanga.sunset),
             ),
             _item(
               context,
               Icons.nightlight_outlined,
-              'Moonrise',
+              L10n.of(context).homeMoonrise,
               panchanga.moonrise == null
                   ? '—'
                   : fmt.format(panchanga.moonrise!),
@@ -421,7 +426,7 @@ class _OtherPeriods extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Other inauspicious periods',
+              L10n.of(context).homeOtherInauspicious,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -464,14 +469,14 @@ class _AuspiciousCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Clear times today',
+              L10n.of(context).homeClearTimes,
               style: Theme.of(
                 context,
               ).textTheme.titleSmall?.copyWith(color: AppColors.auspicious),
             ),
             const SizedBox(height: 4),
             Text(
-              'Daylight not claimed by any inauspicious period.',
+              L10n.of(context).homeClearTimesHelp,
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 10),
@@ -536,7 +541,9 @@ class _PoyaTodayBanner extends ConsumerWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Full moon at ${DateFormat('h:mm a').format(poya.fullMoon)}',
+            L10n.of(context).homeFullMoonAt(
+              DateFormat('h:mm a').format(poya.fullMoon),
+            ),
             style: theme.textTheme.labelSmall,
           ),
         ],
@@ -568,7 +575,8 @@ class _NextPoyaCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Coming up', style: theme.textTheme.titleSmall),
+            Text(L10n.of(context).homeComingUp,
+                style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
             for (final f in entries)
               Padding(
@@ -602,7 +610,7 @@ class _NextPoyaCard extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      _countdown(f.daysFrom(date)),
+                      _countdown(L10n.of(context), f.daysFrom(date)),
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: AppColors.accent,
                       ),
@@ -616,10 +624,10 @@ class _NextPoyaCard extends ConsumerWidget {
     );
   }
 
-  static String _countdown(int days) => switch (days) {
-    0 => 'today',
-    1 => 'tomorrow',
-    _ => 'in $days days',
+  static String _countdown(L10n l, int days) => switch (days) {
+    0 => l.todayLower,
+    1 => l.tomorrowLower,
+    _ => l.inDays(days),
   };
 }
 
@@ -642,13 +650,12 @@ class _ComingSoon extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Still to come', style: theme.textTheme.titleSmall),
+          Text(L10n.of(context).homeStillToCome,
+              style: theme.textTheme.titleSmall),
           const SizedBox(height: 6),
           Text(
-            'Daily horoscope and your current daśā period.\n\n'
-            'Deepavali and Eid are not listed: their dates follow regional '
-            'convention and moon sighting rather than calculation, and a '
-            'confidently wrong religious date would be worse than none.',
+            '${L10n.of(context).homeComingSoon}\n\n'
+            '${L10n.of(context).homeFestivalsExcluded}',
             style: theme.textTheme.bodySmall,
           ),
         ],

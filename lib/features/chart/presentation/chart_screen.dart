@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/config/chart_style.dart';
@@ -45,7 +47,9 @@ class ChartScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(profile.name.isEmpty ? 'Chart' : profile.name),
+        title: Text(
+          profile.name.isEmpty ? L10n.of(context).chartTitle : profile.name,
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => popOrHome(context),
@@ -53,7 +57,7 @@ class ChartScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Start over',
+            tooltip: L10n.of(context).chartStartOver,
             onPressed: () async {
               await ref.read(profileProvider.notifier).clear();
               if (context.mounted) context.go(Routes.onboarding);
@@ -86,19 +90,19 @@ class ChartScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             _SummaryCard(chart: chart),
             const SizedBox(height: 16),
-            Text('Planetary positions', style: theme.textTheme.titleMedium),
+            Text(L10n.of(context).chartPositions, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             _PositionsTable(chart: chart),
             const SizedBox(height: 24),
             Text(
-              'Ayanāṃśa (Lahiri): ${chart.ayanamsa.toStringAsFixed(4)}°',
+              L10n.of(context).chartAyanamsa(chart.ayanamsa.toStringAsFixed(4)),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 32),
             Text(
-              'For entertainment purposes only.',
+              L10n.of(context).entertainmentOnly,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -150,8 +154,7 @@ class _ApproximateBanner extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Birth time unknown — sunrise was assumed. Planetary positions '
-              'are accurate; the lagna and houses are approximate.',
+              L10n.of(context).chartApproximate,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -173,11 +176,11 @@ class _SummaryCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _row(context, 'Lagna (ascendant)', chart.lagnaRasi.en),
-            _row(context, 'Moon sign (rāśi)', moon.rasi.en),
+            _row(context, L10n.of(context).chartLagna, chart.lagnaRasi.en),
+            _row(context, L10n.of(context).chartMoonSign, moon.rasi.en),
             _row(
               context,
-              'Birth nakṣatra',
+              L10n.of(context).chartBirthNakshatra,
               '${chart.birthNakshatra.en} — pada ${moon.pada}',
             ),
           ],
@@ -210,6 +213,8 @@ class _PositionsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L10n.of(context);
+
     return Card(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -218,13 +223,13 @@ class _PositionsTable extends StatelessWidget {
           headingRowHeight: 40,
           dataRowMinHeight: 38,
           dataRowMaxHeight: 46,
-          columns: const [
-            DataColumn(label: Text('Graha')),
-            DataColumn(label: Text('Rāśi')),
-            DataColumn(label: Text('Degree')),
-            DataColumn(label: Text('Nakṣatra')),
-            DataColumn(label: Text('Pada')),
-            DataColumn(label: Text('House')),
+          columns: [
+            DataColumn(label: Text(l.chartColumnGraha)),
+            DataColumn(label: Text(l.chartColumnRasi)),
+            DataColumn(label: Text(l.chartColumnDegree)),
+            DataColumn(label: Text(l.chartColumnNakshatra)),
+            DataColumn(label: Text(l.chartColumnPada)),
+            DataColumn(label: Text(l.chartColumnHouse)),
           ],
           rows: [
             for (final g in Graha.values)
@@ -272,7 +277,7 @@ class _ChartError extends StatelessWidget {
             const Icon(Icons.error_outline, size: 48),
             const SizedBox(height: 16),
             Text(
-              'Could not calculate the chart',
+              L10n.of(context).chartCalculationFailed,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),

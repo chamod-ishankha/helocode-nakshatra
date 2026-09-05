@@ -5,6 +5,7 @@ import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/core/sync/auth_service.dart';
 import 'package:nakshatra/core/sync/firebase_service.dart';
 import 'package:nakshatra/features/account/presentation/account_screen.dart';
+import 'package:nakshatra/l10n/generated/app_localizations.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +33,14 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: AccountScreen()),
+        child: const MaterialApp(
+          // The screen reads every label through L10n, so without the
+          // delegates it cannot build at all.
+          locale: Locale('en'),
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          home: AccountScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

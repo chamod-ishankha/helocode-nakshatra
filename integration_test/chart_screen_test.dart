@@ -7,6 +7,7 @@ import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/core/config/chart_style.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/features/chart/presentation/chart_screen.dart';
+import 'package:nakshatra/l10n/generated/app_localizations.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
 import 'package:nakshatra/features/chart/presentation/north_indian_chart.dart';
 import 'package:nakshatra/features/chart/presentation/rasi_chart.dart';
@@ -51,7 +52,15 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: ChartScreen()),
+        child: const MaterialApp(
+          // The screen reads its labels through L10n, so it cannot
+          // build without the delegates. Pinned to English so the
+          // assertions below stay readable.
+          locale: Locale('en'),
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          home: ChartScreen(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

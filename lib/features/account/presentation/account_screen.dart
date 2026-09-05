@@ -6,7 +6,9 @@ import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/sync/profile_sync.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/domain/birth_profile.dart';
+import 'auth_messages.dart';
 
 /// Attaching a real identity to the anonymous account (KAN-48).
 ///
@@ -69,15 +71,19 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         if (_signingIn) await _reconcile(profiles);
         if (!mounted) return;
         setState(() => _busy = false);
+        final l = L10n.of(context);
         _confirm(
-          _signingIn ? 'Signed in.' : 'Account created. Your chart is safe.',
+          _signingIn ? l.accountSignedInToast : l.accountCreatedToast,
         );
       case FailureResult(:final failure):
         final taken =
             failure is AuthFailure && AuthService.isEmailTaken(failure.code);
+        final text = failure is AuthFailure
+            ? authMessage(context, failure)
+            : L10n.of(context).authErrorGeneric;
         setState(() {
           _busy = false;
-          _error = failure.message;
+          _error = text;
           // The address existing is not a dead end, it is the sign-in case.
           // Flipping the form is the whole remedy, so do it for them.
           if (taken) _signingIn = true;
@@ -113,17 +119,19 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     if (!mounted) return;
 
+    final f = result.failureOrNull;
+    // Backing out of the Google sheet is not an error. Showing one would
+    // accuse the user of a mistake they did not make.
+    final text = (f is! AuthFailure || f.code == 'google-canceled')
+        ? null
+        : authMessage(context, f);
+
     setState(() {
       _busy = false;
-      final f = result.failureOrNull;
-      // Backing out of the Google sheet is not an error. Showing one would
-      // accuse the user of a mistake they did not make.
-      _error = (f is AuthFailure && f.code == 'google-canceled')
-          ? null
-          : f?.message;
+      _error = text;
     });
 
-    if (result.isSuccess) _confirm('Signed in with Google.');
+    if (result.isSuccess) _confirm(L10n.of(context).accountSignedInGoogleToast);
   }
 
   /// Resolves the two-profile fork, asking only when it is genuinely a choice.
@@ -148,11 +156,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     setState(() => _busy = true);
     final result = await ref.read(authServiceProvider).signOut();
     if (!mounted) return;
+    final f = result.failureOrNull;
+    final text = f is AuthFailure ? authMessage(context, f) : null;
     setState(() {
       _busy = false;
-      _error = result.failureOrNull?.message;
+      _error = text;
     });
-    if (result.isSuccess) _confirm('Signed out.');
+    if (result.isSuccess) _confirm(L10n.of(context).accountSignedOutToast);
   }
 
   void _confirm(String message) {
@@ -169,7 +179,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
+        title: Text(L10n.of(context).accountTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => popOrHome(context),
@@ -189,7 +199,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               OutlinedButton.icon(
                 onPressed: _busy ? null : _google,
                 icon: const Icon(Icons.account_circle_outlined),
-                label: const Text('Continue with Google'),
+                label: Text(L10n.of(context).accountContinueWithGoogle),
               ),
               const SizedBox(height: 16),
               Row(
@@ -197,7 +207,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   const Expanded(child: Divider()),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('or', style: theme.textTheme.bodySmall),
+                    child: Text(
+                      L10n.of(context).accountOr,
+                      style: theme.textTheme.bodySmall,
+                    ),
                   ),
                   const Expanded(child: Divider()),
                 ],
@@ -220,9 +233,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           ],
           const SizedBox(height: 24),
           Text(
-            'Your chart, nekath and the almanac are worked out on this phone '
-            'and keep working with no account and no connection. An account '
-            'only decides whether your birth details survive losing the phone.',
+            L10n.of(context).accountFooter,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -243,27 +254,26 @@ class _StatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final l = L10n.of(context);
+
     final (IconData icon, String title, String body, Color colour) =
         switch (kind) {
           AccountKind.permanent => (
             Icons.verified_user_outlined,
-            'Saved to $email',
-            'Sign in with this email on a new phone and your birth details '
-                'come back.',
+            l.accountSavedToEmail(email ?? ''),
+            l.accountSavedToEmailHelp,
             theme.colorScheme.primary,
           ),
           AccountKind.anonymous => (
             Icons.phonelink_lock_outlined,
-            'Saved to this phone only',
-            'Your birth details are backed up, but the backup belongs to this '
-                'installation. Clearing app data or moving to a new phone '
-                'loses it for good.',
+            l.accountPhoneOnly,
+            l.accountPhoneOnlyHelp,
             theme.colorScheme.error,
           ),
           AccountKind.none => (
             Icons.cloud_off_outlined,
-            'Backup unavailable',
-            'No connection to the backup service. Everything else works.',
+            l.accountUnavailable,
+            l.accountUnavailableHelp,
             theme.colorScheme.onSurfaceVariant,
           ),
         };
@@ -320,6 +330,7 @@ class _Form extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = L10n.of(context);
 
     return Form(
       key: formKey,
@@ -327,7 +338,7 @@ class _Form extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            signingIn ? 'Sign in' : 'Keep your chart safe',
+            signingIn ? l.accountSignIn : l.accountKeepSafe,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 16),
@@ -337,17 +348,17 @@ class _Form extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
             autofillHints: const [AutofillHints.email],
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l.accountEmail,
+              border: const OutlineInputBorder(),
             ),
             validator: (v) {
               final value = v?.trim() ?? '';
-              if (value.isEmpty) return 'Enter your email';
+              if (value.isEmpty) return l.accountEnterEmail;
               // Deliberately loose. Anything stricter rejects addresses that
               // are perfectly valid, and Firebase checks it properly anyway.
               if (!value.contains('@') || !value.contains('.')) {
-                return 'That does not look like an email address';
+                return l.accountInvalidEmail;
               }
               return null;
             },
@@ -358,16 +369,16 @@ class _Form extends StatelessWidget {
             enabled: !busy,
             obscureText: true,
             autofillHints: const [AutofillHints.password],
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l.accountPassword,
+              border: const OutlineInputBorder(),
             ),
             validator: (v) {
-              if ((v ?? '').isEmpty) return 'Enter a password';
+              if ((v ?? '').isEmpty) return l.accountEnterPassword;
               // Firebase's own minimum. Checking it here turns a round trip
               // and a raw error code into an instant, readable one.
               if (!signingIn && v!.length < 6) {
-                return 'Use at least 6 characters';
+                return l.accountPasswordTooShort;
               }
               return null;
             },
@@ -394,15 +405,13 @@ class _Form extends StatelessWidget {
                     width: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(signingIn ? 'Sign in' : 'Create account'),
+                : Text(signingIn ? l.accountSignIn : l.accountCreate),
           ),
           const SizedBox(height: 8),
           TextButton(
             onPressed: busy ? null : onToggleMode,
             child: Text(
-              signingIn
-                  ? 'No account yet? Create one'
-                  : 'Already have an account? Sign in',
+              signingIn ? l.accountToggleToCreate : l.accountToggleToSignIn,
             ),
           ),
         ],
@@ -434,9 +443,7 @@ class _VerificationNotice extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'We do not send a confirmation email, so you can start straight '
-              'away. That also means a mistyped address cannot be recovered — '
-              'use one you really own.',
+              L10n.of(context).accountNoVerification,
               style: theme.textTheme.bodySmall,
             ),
           ),
@@ -460,12 +467,11 @@ class _SignedIn extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: busy ? null : onSignOut,
           icon: const Icon(Icons.logout),
-          label: const Text('Sign out'),
+          label: Text(L10n.of(context).accountSignOut),
         ),
         const SizedBox(height: 8),
         Text(
-          'Signing out leaves your chart on this phone. It goes back to being '
-          'backed up anonymously until you sign in again.',
+          L10n.of(context).accountSignedOutHelp,
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -479,8 +485,7 @@ class _Unavailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Accounts need a connection. Try again once you are online — nothing '
-      'else in the app is waiting on it.',
+      L10n.of(context).accountOfflineNotice,
       style: Theme.of(context).textTheme.bodyMedium,
     );
   }
@@ -495,22 +500,20 @@ class _ConflictDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = remote.name.isEmpty ? 'an unnamed profile' : remote.name;
+    final l = L10n.of(context);
+    final name = remote.name.isEmpty ? l.accountConflictUnnamed : remote.name;
 
     return AlertDialog(
-      title: const Text('Two charts'),
-      content: Text(
-        'This account already holds $name, which is different from the chart '
-        'on this phone. Only one can be kept.',
-      ),
+      title: Text(l.accountConflictTitle),
+      content: Text(l.accountConflictBody(name)),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Keep this phone’s'),
+          child: Text(l.accountConflictKeepPhone),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Keep the account’s'),
+          child: Text(l.accountConflictKeepAccount),
         ),
       ],
     );

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
@@ -148,7 +150,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(
-                          _step == _stepCount - 1 ? 'See my chart' : 'Continue',
+                          _step == _stepCount - 1
+                              ? L10n.of(context).onboardingSeeChart
+                              : L10n.of(context).continueLabel,
                         ),
                 ),
               ),
@@ -205,7 +209,7 @@ class _LanguageStep extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(localeProvider);
     return _StepScaffold(
-      title: 'Choose your language',
+      title: L10n.of(context).onboardingChooseLanguage,
       subtitle: 'භාෂාව තෝරන්න · மொழியைத் தேர்ந்தெடுக்கவும்',
       child: ListView(
         children: [
@@ -244,15 +248,15 @@ class _NameStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _StepScaffold(
-      title: 'What is your name?',
-      subtitle: 'Used only to label your chart. It stays on this device.',
+      title: L10n.of(context).onboardingNameQuestion,
+      subtitle: L10n.of(context).onboardingNameHelp,
       child: TextField(
         controller: controller,
         autofocus: true,
         textCapitalization: TextCapitalization.words,
-        decoration: const InputDecoration(
-          labelText: 'Name',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          labelText: L10n.of(context).onboardingNameLabel,
+          border: const OutlineInputBorder(),
         ),
         onChanged: (_) => onChanged(),
       ),
@@ -268,8 +272,8 @@ class _DateStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _StepScaffold(
-      title: 'When were you born?',
-      subtitle: 'The date decides your rāśi and every planetary position.',
+      title: L10n.of(context).onboardingDateQuestion,
+      subtitle: L10n.of(context).onboardingDateHelp,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -277,7 +281,7 @@ class _DateStep extends StatelessWidget {
             icon: const Icon(Icons.calendar_today),
             label: Text(
               value == null
-                  ? 'Select date of birth'
+                  ? L10n.of(context).onboardingDatePickerTitle
                   : DateFormat('d MMMM yyyy').format(value!),
             ),
             onPressed: () async {
@@ -289,7 +293,7 @@ class _DateStep extends StatelessWidget {
                 // engine refuses rather than returning a silently wrong chart.
                 firstDate: DateTime(1900),
                 lastDate: now,
-                helpText: 'Date of birth',
+                helpText: L10n.of(context).onboardingDateLabel,
               );
               if (picked != null) onChanged(picked);
             },
@@ -315,10 +319,8 @@ class _TimeStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return _StepScaffold(
-      title: 'What time were you born?',
-      subtitle:
-          'The ascendant changes roughly every two hours, so this '
-          'matters more than the date for house placements.',
+      title: L10n.of(context).onboardingTimeQuestion,
+      subtitle: L10n.of(context).onboardingTimeHelp,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -326,7 +328,7 @@ class _TimeStep extends StatelessWidget {
             icon: const Icon(Icons.schedule),
             label: Text(
               value == null || !known
-                  ? 'Select time of birth'
+                  ? L10n.of(context).onboardingTimePickerTitle
                   : _format(value!),
             ),
             onPressed: () async {
@@ -338,7 +340,7 @@ class _TimeStep extends StatelessWidget {
                         hour: value!.inHours,
                         minute: value!.inMinutes % 60,
                       ),
-                helpText: 'Time of birth',
+                helpText: L10n.of(context).onboardingTimeLabel,
               );
               if (picked != null) {
                 onChanged(
@@ -356,7 +358,7 @@ class _TimeStep extends StatelessWidget {
             value: !known,
             onChanged: (v) => onChanged(value, !(v ?? false)),
             title: const Text("I don't know my birth time"),
-            subtitle: const Text('We will use sunrise (6:00 AM)'),
+            subtitle: Text(L10n.of(context).onboardingTimeUnknown),
             contentPadding: EdgeInsets.zero,
           ),
           if (!known)
@@ -370,9 +372,7 @@ class _TimeStep extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                'Your rāśi, nakṣatra and planetary positions will still be '
-                'accurate. The ascendant and house placements will be '
-                'approximate, and the app will mark them as such.',
+                L10n.of(context).onboardingTimeUnknownHelp,
                 style: theme.textTheme.bodySmall,
               ),
             ),
@@ -408,17 +408,15 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
     final results = ref.watch(placeSearchProvider(_query));
 
     return _StepScaffold(
-      title: 'Where were you born?',
-      subtitle:
-          'Coordinates set the ascendant. Search in Sinhala, Tamil or '
-          'English.',
+      title: L10n.of(context).onboardingPlaceQuestion,
+      subtitle: L10n.of(context).onboardingPlaceHelp,
       child: Column(
         children: [
           TextField(
-            decoration: const InputDecoration(
-              labelText: 'Search town or district',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: L10n.of(context).onboardingPlaceSearch,
+              prefixIcon: const Icon(Icons.search),
+              border: const OutlineInputBorder(),
             ),
             onChanged: (v) => setState(() => _query = v),
           ),
@@ -426,9 +424,15 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
           Expanded(
             child: results.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Could not load places: $e')),
+              error: (e, _) => Center(
+                child: Text(
+                  L10n.of(context).onboardingPlaceLoadFailed('$e'),
+                ),
+              ),
               data: (places) => places.isEmpty
-                  ? const Center(child: Text('No matching place'))
+                  ? Center(
+                      child: Text(L10n.of(context).onboardingPlaceNoMatch),
+                    )
                   : ListView.builder(
                       itemCount: places.length,
                       itemBuilder: (context, i) {

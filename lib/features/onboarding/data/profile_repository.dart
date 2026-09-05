@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,7 +53,18 @@ class ProfileRepository {
 
   Future<void> clear() => _prefs.remove(_profileKey);
 
-  AppLocale loadLocale() => AppLocale.fromCode(_prefs.getString(_localeKey));
+  /// The saved language, or the device's if the user has not chosen yet.
+  ///
+  /// Defaulting to English would show an English first screen to a Sinhala
+  /// phone, which is the wrong first impression for this audience. The picker
+  /// in onboarding then confirms rather than introduces the choice.
+  AppLocale loadLocale() {
+    final saved = _prefs.getString(_localeKey);
+    if (saved != null) return AppLocale.fromCode(saved);
+    return AppLocale.fromCode(
+      PlatformDispatcher.instance.locale.languageCode,
+    );
+  }
 
   Future<void> saveLocale(AppLocale locale) =>
       _prefs.setString(_localeKey, locale.code);

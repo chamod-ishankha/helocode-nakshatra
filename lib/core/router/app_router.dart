@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/generated/app_localizations.dart';
+
 import '../../features/account/presentation/account_screen.dart';
 import '../../features/chart/presentation/chart_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -87,7 +89,7 @@ class _RouteErrorScreen extends StatelessWidget {
               const Icon(Icons.error_outline, size: 48),
               const SizedBox(height: 16),
               Text(
-                'Page not found',
+                L10n.of(context).routeNotFound,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
@@ -99,7 +101,7 @@ class _RouteErrorScreen extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: () => context.go(Routes.home),
-                child: const Text('Go home'),
+                child: Text(L10n.of(context).routeGoHome),
               ),
             ],
           ),

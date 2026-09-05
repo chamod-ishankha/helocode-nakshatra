@@ -131,7 +131,7 @@ class AuthService {
     final user = _auth?.currentUser;
     if (user == null) {
       return const Result.failure(
-        AuthFailure('Not signed in yet.', code: 'no-current-user'),
+        AuthFailure('no current user', code: 'no-current-user'),
       );
     }
 
@@ -146,7 +146,7 @@ class AuthService {
     } on Object catch (e, s) {
       AppLogger.warn('Link failed', e, s);
       return Result.failure(
-        AuthFailure('Could not create the account.', cause: e, code: 'unknown'),
+        AuthFailure('link failed', cause: e, code: 'unknown'),
       );
     }
   }
@@ -166,7 +166,7 @@ class AuthService {
     final auth = _auth;
     if (auth == null) {
       return const Result.failure(
-        AuthFailure('Sync is unavailable.', code: 'no-firebase'),
+        AuthFailure('firebase unavailable', code: 'no-firebase'),
       );
     }
 
@@ -187,7 +187,7 @@ class AuthService {
     } on Object catch (e, s) {
       AppLogger.warn('Sign-in failed', e, s);
       return Result.failure(
-        AuthFailure('Could not sign in.', cause: e, code: 'unknown'),
+        AuthFailure('sign-in failed', cause: e, code: 'unknown'),
       );
     }
   }
@@ -201,7 +201,7 @@ class AuthService {
     final user = _auth?.currentUser;
     if (user == null) {
       return const Result.failure(
-        AuthFailure('Not signed in yet.', code: 'no-current-user'),
+        AuthFailure('no current user', code: 'no-current-user'),
       );
     }
 
@@ -226,7 +226,7 @@ class AuthService {
     final auth = _auth;
     if (auth == null) {
       return const Result.failure(
-        AuthFailure('Sync is unavailable.', code: 'no-firebase'),
+        AuthFailure('firebase unavailable', code: 'no-firebase'),
       );
     }
 
@@ -259,10 +259,7 @@ class AuthService {
   Future<Result<AuthCredential>> _googleCredential() async {
     if (!googleAvailable) {
       return const Result.failure(
-        AuthFailure(
-          'Google sign-in is not set up for this app yet.',
-          code: 'google-unavailable',
-        ),
+        AuthFailure('google not configured', code: 'google-unavailable'),
       );
     }
 
@@ -272,8 +269,7 @@ class AuthService {
 
       if (idToken == null) {
         return const Result.failure(
-          AuthFailure('Google did not return a usable sign-in.',
-              code: 'google-no-id-token'),
+          AuthFailure('no id token', code: 'google-no-id-token'),
         );
       }
 
@@ -283,43 +279,33 @@ class AuthService {
     } on Object catch (e, s) {
       AppLogger.warn('Google sign-in failed', e, s);
       return Result.failure(
-        AuthFailure('Could not sign in with Google.',
-            cause: e, code: 'google-unknown'),
+        AuthFailure('google sign-in failed', cause: e, code: 'google-unknown'),
       );
     }
   }
 
   static AuthFailure _describeGoogle(GoogleSignInException e) {
     AppLogger.warn('Google sign-in error ${e.code}: ${e.description}');
-    return switch (e.code) {
-      GoogleSignInExceptionCode.canceled => const AuthFailure(
-        '',
-        code: 'google-canceled',
-      ),
+
+    final code = switch (e.code) {
+      GoogleSignInExceptionCode.canceled => 'google-canceled',
       // The only definitive answer available: this build has no OAuth client.
-      // Remember it, so the button goes away instead of failing again.
       GoogleSignInExceptionCode.clientConfigurationError ||
-      GoogleSignInExceptionCode.providerConfigurationError => () {
-        _googleRuledOut = true;
-        _googleError = e.description;
-        return AuthFailure(
-          'Google sign-in is not set up for this app yet.',
-          cause: e,
-          code: 'google-unavailable',
-        );
-      }(),
+      GoogleSignInExceptionCode.providerConfigurationError =>
+        'google-unavailable',
       GoogleSignInExceptionCode.interrupted ||
-      GoogleSignInExceptionCode.uiUnavailable => AuthFailure(
-        'Google sign-in was interrupted. Please try again.',
-        cause: e,
-        code: 'google-interrupted',
-      ),
-      _ => AuthFailure(
-        'Could not sign in with Google.',
-        cause: e,
-        code: 'google-unknown',
-      ),
+      GoogleSignInExceptionCode.uiUnavailable => 'google-interrupted',
+      _ => 'google-unknown',
     };
+
+    // Remember an unconfigured build, so the button goes away rather than
+    // failing a second time.
+    if (code == 'google-unavailable') {
+      _googleRuledOut = true;
+      _googleError = e.description;
+    }
+
+    return AuthFailure(e.description ?? code, cause: e, code: code);
   }
 
   /// Shared tail for the Firebase half of both Google paths.
@@ -336,8 +322,7 @@ class AuthService {
     } on Object catch (e, s) {
       AppLogger.warn('Google auth failed', e, s);
       return Result.failure(
-        AuthFailure('Could not sign in with Google.',
-            cause: e, code: 'unknown'),
+        AuthFailure('google auth failed', cause: e, code: 'unknown'),
       );
     }
   }
@@ -352,7 +337,7 @@ class AuthService {
     final auth = _auth;
     if (auth == null) {
       return const Result.failure(
-        AuthFailure('Sync is unavailable.', code: 'no-firebase'),
+        AuthFailure('firebase unavailable', code: 'no-firebase'),
       );
     }
 
@@ -376,35 +361,20 @@ class AuthService {
     } on Object catch (e, s) {
       AppLogger.warn('Sign-out failed', e, s);
       return Result.failure(
-        AuthFailure('Could not sign out.', cause: e, code: 'unknown'),
+        AuthFailure('sign-out failed', cause: e, code: 'unknown'),
       );
     }
   }
 
-  /// Maps a Firebase error code to something a user can act on.
+  /// Wraps a Firebase error, preserving its code.
   ///
-  /// The raw messages name credentials and providers, which reads as nonsense
-  /// to someone who only wanted to keep their chart.
+  /// Deliberately does not produce a sentence for the user. The code is the
+  /// contract; features/account/presentation/auth_messages.dart turns it into
+  /// words, because only a widget knows what language to use. The message kept
+  /// here is Firebase's own and exists for logs.
   static AuthFailure describe(FirebaseAuthException e) {
-    final message = switch (e.code) {
-      'email-already-in-use' ||
-      'credential-already-in-use' ||
-      'account-exists-with-different-credential' =>
-        'That email already has an account. Sign in to it instead.',
-      'invalid-email' => 'That does not look like an email address.',
-      'weak-password' => 'Use at least 6 characters.',
-      'wrong-password' || 'invalid-credential' => 'Wrong email or password.',
-      'user-not-found' => 'No account for that email.',
-      'user-disabled' => 'That account has been disabled.',
-      'too-many-requests' => 'Too many attempts. Try again in a few minutes.',
-      'network-request-failed' =>
-        'No connection. Your chart still works offline.',
-      'operation-not-allowed' =>
-        'Email sign-in is not enabled for this app yet.',
-      _ => 'Could not complete that. Please try again.',
-    };
     AppLogger.warn('Auth error ${e.code}');
-    return AuthFailure(message, cause: e, code: e.code);
+    return AuthFailure(e.message ?? e.code, cause: e, code: e.code);
   }
 
   /// Whether [code] means the address is already taken, which is an offer to

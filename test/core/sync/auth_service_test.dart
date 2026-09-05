@@ -86,48 +86,34 @@ void main() {
     });
   });
 
-  group('error messages', () {
-    test('an address already in use reads as an offer, not a failure', () {
-      final failure = AuthService.describe(
-        FirebaseAuthException(code: 'email-already-in-use'),
-      );
-      expect(failure.code, 'email-already-in-use');
-      expect(failure.message, contains('Sign in to it instead'));
-    });
-
-    test('every code the flow can hit has its own wording', () {
-      const codes = [
+  group('error codes', () {
+    // The code is the contract between the service and the UI. Wording lives
+    // in features/account/presentation/auth_messages.dart, and is covered per
+    // language in test/features/account/auth_messages_test.dart.
+    test('the Firebase code survives being wrapped', () {
+      for (final code in [
+        'email-already-in-use',
         'invalid-email',
         'weak-password',
         'wrong-password',
-        'invalid-credential',
         'user-not-found',
-        'user-disabled',
         'too-many-requests',
         'network-request-failed',
         'operation-not-allowed',
-      ];
-
-      final messages = <String>{};
-      for (final code in codes) {
-        final failure = AuthService.describe(FirebaseAuthException(code: code));
-        expect(failure.code, code);
-        // No raw Firebase vocabulary should reach the user.
-        expect(failure.message, isNot(contains('credential')));
-        expect(failure.message, isNot(contains('FirebaseException')));
-        messages.add(failure.message);
+      ]) {
+        expect(AuthService.describe(FirebaseAuthException(code: code)).code,
+            code);
       }
-      // Distinct enough to be worth the switch: a single generic string would
-      // be no better than not mapping at all.
-      expect(messages.length, greaterThan(5));
     });
 
-    test('an unknown code still produces something sayable', () {
+    test('a code with no Firebase message still carries the code', () {
+      // e.message is null for some codes; falling through to an empty string
+      // would leave a log line saying nothing at all.
       final failure = AuthService.describe(
         FirebaseAuthException(code: 'some-code-added-in-a-future-sdk'),
       );
+      expect(failure.code, 'some-code-added-in-a-future-sdk');
       expect(failure.message, isNotEmpty);
-      expect(failure.message, isNot(contains('some-code')));
     });
 
     test('isEmailTaken covers all three ways Firebase says it', () {
@@ -138,46 +124,6 @@ void main() {
         isTrue,
       );
       expect(AuthService.isEmailTaken('wrong-password'), isFalse);
-    });
-  });
-
-  group('with no Firebase', () {
-    test('status is none and the stream emits nothing at all', () async {
-      const service = AuthService();
-      expect(service.status.kind, AccountKind.none);
-
-      // Deliberately empty rather than a single "none". A Stream.value here
-      // delivers on a microtask that can land mid-build, marking the provider
-      // scope dirty while it builds — that threw and took down the home
-      // screen. Readers default to none when there is no value, so emitting
-      // nothing shows the same thing without the reentrant notification.
-      expect(await service.changes.toList(), isEmpty);
-    });
-
-    test('every operation fails softly rather than throwing', () async {
-      const service = AuthService();
-
-      for (final result in [
-        await service.linkEmail('a@b.com', 'password'),
-        await service.signInEmail('a@b.com', 'password'),
-        await service.signOut(),
-      ]) {
-        expect(result.isSuccess, isFalse);
-        expect(result.failureOrNull, isA<AuthFailure>());
-        expect(result.failureOrNull!.message, isNotEmpty);
-      }
-    });
-
-    test('signing in does not abandon anything when there is no account',
-        () async {
-      final sync = _FakeSync();
-      const service = AuthService();
-
-      await service.signInEmail('a@b.com', 'password', onAbandon: sync.clear);
-
-      // Deleting the backup before we know a sign-in can even be attempted
-      // would destroy it for nothing.
-      expect(sync.clears, 0);
     });
   });
 

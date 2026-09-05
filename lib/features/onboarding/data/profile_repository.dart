@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/sync/profile_sync.dart';
 import '../domain/birth_profile.dart';
 
 /// Local storage for the saved profile and language choice.
@@ -14,8 +16,13 @@ import '../domain/birth_profile.dart';
 /// KAN-19, which is also when multiple saved profiles arrive — this class
 /// deliberately stores a single profile and nothing else.
 ///
-/// Birth details never leave the device. There is no sync, no account, and no
-/// backup to any server, which is what the privacy policy commits to.
+/// Local storage is the source of truth. Firestore holds a backup copy
+/// (KAN-47), pushed after every save and read only when this device has
+/// nothing — the app never waits on the network to show a chart.
+///
+/// Birth details are backed up to Firestore under an anonymous account so they
+/// survive a reinstall. Everything else — charts, nekath, the almanac — is
+/// computed on-device and nothing about app usage is stored.
 class ProfileRepository {
   ProfileRepository(this._prefs);
 
@@ -75,11 +82,31 @@ class ProfileNotifier extends Notifier<BirthProfile?> {
   Future<void> save(BirthProfile profile) async {
     await ref.read(profileRepositoryProvider).save(profile);
     state = profile;
+    // Deliberately not awaited: a slow or absent network must not hold up the
+    // navigation to the user's chart.
+    unawaited(ref.read(profileSyncProvider).push(profile));
   }
 
   Future<void> clear() async {
     await ref.read(profileRepositoryProvider).clear();
     state = null;
+    unawaited(ref.read(profileSyncProvider).clear());
+  }
+
+  /// Restores a backed-up profile when this device has none.
+  ///
+  /// Called once at startup. Returns true if something was recovered, which is
+  /// what lets a reinstall skip onboarding entirely.
+  Future<bool> restoreFromBackup() async {
+    if (state != null) return false;
+
+    final remote = await ref.read(profileSyncProvider).pull();
+    if (remote == null) return false;
+
+    await ref.read(profileRepositoryProvider).save(remote);
+    state = remote;
+    AppLogger.info('Birth profile restored from backup');
+    return true;
   }
 }
 

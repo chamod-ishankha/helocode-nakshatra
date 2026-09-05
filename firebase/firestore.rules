@@ -1,0 +1,31 @@
+rules_version = '2';
+
+// Firestore security rules for Nakshatra.
+//
+// Paste these into Firebase Console -> Firestore Database -> Rules, or deploy
+// with `firebase deploy --only firestore:rules`.
+//
+// The default rules Firebase offers when you create a database are either
+// "allow all" (every user's birth data readable by anyone) or "deny all"
+// (sync silently never works). Neither is right, so these are explicit.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // A user's own document, keyed by their Firebase uid — anonymous or not.
+    //
+    // Birth date, time and place are personal data, so the only account that
+    // may read or write a document is the one it belongs to. There is no
+    // listing rule: nothing in this app enumerates users, and allowing it
+    // would let one account discover others.
+    match /users/{userId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    // Anything not matched above is denied. Stated explicitly rather than
+    // relied upon, so a later rule cannot widen access by accident.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

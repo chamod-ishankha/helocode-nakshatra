@@ -148,9 +148,6 @@ class L10nSi extends L10n {
   String get homeAccount => 'ගිණුම';
 
   @override
-  String get homeComingSoon => 'ඔබේ කේන්දරයට අනුව දෛනික ලග්න පලාපල.';
-
-  @override
   String get homeFestivalsExcluded =>
       'දීපාවලි සහ ඊද් මෙහි ලැයිස්තුගත කර නැත: ඒවායේ දිනයන් ගණනය කිරීමට වඩා කලාපීය සම්ප්‍රදාය සහ සඳ දැකීම අනුව තීරණය වන අතර, විශ්වාසයෙන් වැරදි ආගමික දිනයක් දැක්වීමට වඩා නොදැක්වීම හොඳය.';
 
@@ -870,4 +867,74 @@ class L10nSi extends L10n {
   @override
   String get authErrorGoogleRepeated =>
       'Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.';
+
+  @override
+  String get horoscopeTitle => 'දෛනික ලග්න පලාපල';
+
+  @override
+  String horoscopeForSign(String sign) {
+    return '$sign ලග්නය සඳහා';
+  }
+
+  @override
+  String get horoscopeUnavailable =>
+      'ලග්න පලාපල සඳහා ඔබේ උපන් තොරතුරු අවශ්‍යයි. කේන්දරය සකසා අවසන් කරන්න.';
+
+  @override
+  String get horoscopeGeneral => 'අද දිනය';
+
+  @override
+  String get horoscopeCareer => 'රැකියාව';
+
+  @override
+  String get horoscopeMoney => 'මුදල්';
+
+  @override
+  String get horoscopeLove => 'සබඳතා';
+
+  @override
+  String get horoscopeHealth => 'සෞඛ්‍යය';
+
+  @override
+  String get horoscopeAdvice => 'උපදෙස්';
+
+  @override
+  String get horoscopeLuckyNumber => 'සුබ අංකය';
+
+  @override
+  String get horoscopeLuckyColour => 'සුබ වර්ණය';
+
+  @override
+  String get homeHoroscopeSubtitle =>
+      'අද දින ග්‍රහ ගමන ඔබේ කේන්දරයට අනුව කියවා ඇත.';
+
+  @override
+  String get colourWhite => 'සුදු';
+
+  @override
+  String get colourRed => 'රතු';
+
+  @override
+  String get colourYellow => 'කහ';
+
+  @override
+  String get colourGreen => 'කොළ';
+
+  @override
+  String get colourBlue => 'නිල්';
+
+  @override
+  String get colourOrange => 'තැඹිලි';
+
+  @override
+  String get colourBrown => 'දුඹුරු';
+
+  @override
+  String get colourGold => 'රන්';
+
+  @override
+  String get colourSilver => 'රිදී';
+
+  @override
+  String get colourPurple => 'දම්';
 }

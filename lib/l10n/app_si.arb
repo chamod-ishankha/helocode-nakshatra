@@ -1,15 +1,12 @@
 {
   "@@locale": "si",
-
   "appTitle": "නක්ෂත්‍ර",
-
   "continueLabel": "ඉදිරියට",
   "today": "අද",
   "todayLower": "අද",
   "tomorrowLower": "හෙට",
   "inDays": "දින {days}කින්",
   "entertainmentOnly": "විනෝදාස්වාදය සඳහා පමණි.",
-
   "onboardingChooseLanguage": "ඔබේ භාෂාව තෝරන්න",
   "onboardingNameQuestion": "ඔබේ නම කුමක්ද?",
   "onboardingNameLabel": "නම",
@@ -30,7 +27,6 @@
   "onboardingPlaceNoMatch": "ගැළපෙන ස්ථානයක් නැත",
   "onboardingPlaceLoadFailed": "ස්ථාන පූරණය කළ නොහැකි විය: {error}",
   "onboardingSeeChart": "මගේ කේන්දරය බලන්න",
-
   "homeRahuKalaya": "රාහු කාලය",
   "homeRahuShort": "රාහු",
   "homeAvoidImportant": "වැදගත් කිසිවක් ආරම්භ කිරීමෙන් වළකින්න",
@@ -46,15 +42,12 @@
   "homeFullMoonAt": "පුර පසළොස්වක {time} ට",
   "homeBirthChart": "කේන්දර සටහන",
   "homeAccount": "ගිණුම",
-  "homeComingSoon": "ඔබේ කේන්දරයට අනුව දෛනික ලග්න පලාපල.",
   "homeFestivalsExcluded": "දීපාවලි සහ ඊද් මෙහි ලැයිස්තුගත කර නැත: ඒවායේ දිනයන් ගණනය කිරීමට වඩා කලාපීය සම්ප්‍රදාය සහ සඳ දැකීම අනුව තීරණය වන අතර, විශ්වාසයෙන් වැරදි ආගමික දිනයක් දැක්වීමට වඩා නොදැක්වීම හොඳය.",
-
   "panchangaTithi": "තිථිය",
   "panchangaVara": "වාරය",
   "panchangaNakshatra": "නක්ෂත්‍රය",
   "panchangaYoga": "යෝගය",
   "panchangaKarana": "කරණය",
-
   "chartTitle": "කේන්දරය",
   "chartStartOver": "නැවත ආරම්භ කරන්න",
   "chartCalculationFailed": "කේන්දරය ගණනය කළ නොහැකි විය",
@@ -70,14 +63,12 @@
   "chartColumnPada": "පාදය",
   "chartColumnHouse": "භාවය",
   "chartApproximate": "උපන් වේලාව නොදනී — හිරු උදාව උපකල්පනය කරන ලදී. ග්‍රහ පිහිටීම් නිවැරදිය; ලග්නය සහ භාව දළ වේ.",
-
   "dashaTitle": "දශා කාල",
   "dashaRunningNow": "දැන් ක්‍රියාත්මකයි",
   "dashaSubPeriods": "අන්තර් දශා",
   "dashaEnds": "{date} දින අවසන් වේ",
   "dashaBalanceNote": "ඔබ උපදින විට ඔබේ පළමු දශාව දැනටමත් ආරම්භ වී තිබූ බැවින්, එය එහි සම්පූර්ණ දිගට වඩා කෙටියෙන් දැක්වේ.",
   "dashaUnreliableTime": "ඔබේ උපන් වේලාව නොදන්නා බැවින් හිරු උදාව උපකල්පනය කරන ලදී. චන්ද්‍රයා පැයකට අංශක භාගයක් පමණ ගමන් කරන අතර, එය මෙම දිනයන් වසර ගණනකින් වෙනස් කළ හැකි අතර පළමු දශාවේ අධිපති ග්‍රහයා පවා වෙනස් විය හැක. ඔබේ උපන් වේලාව දැනගන්නා තෙක් මෙය දළ මාර්ගෝපදේශයක් ලෙස සලකන්න.",
-
   "detailHouse": "{n} වන භාවය",
   "detailRetrograde": "වක්‍ර",
   "detailNoGraha": "මෙම භාවයේ ග්‍රහයෙක් නැත.",
@@ -86,11 +77,9 @@
   "dignityExalted": "උච්ච",
   "dignityDebilitated": "නීච",
   "dignityNodeNote": "රාහු සහ කේතු කිසිදු රාශියක් අධිපති නොවන අතර ඔවුන් උච්ච වන්නේ කොහිද යන්න පිළිබඳ සම්ප්‍රදායන් අතර එකඟතාවක් නැත — එබැවින් මෙහි කිසිදු බලයක් දක්වා නැත.",
-
   "chartShare": "කේන්දරය බෙදාගන්න",
   "chartShareFailed": "රූපය සෑදිය නොහැකි විය.",
   "chartShareCaption": "{name} · {date} · {place}",
-
   "compatTitle": "ගැළපීම",
   "compatIntro": "විවාහ ගැළපීම උපතේදී චන්ද්‍රයාගේ පිහිටීම අනුව කියවේ, එබැවින් දෙදෙනාගේම උපන් තොරතුරු අවශ්‍යයි.",
   "compatYourDetails": "ඔබ",
@@ -120,7 +109,6 @@
   "verdictGood": "ගැළපේ",
   "verdictPartial": "අඩක් ගැළපේ",
   "verdictPoor": "නොගැළපේ",
-
   "factorVarna": "වර්ණ",
   "factorVarnaAbout": "චන්ද්‍ර රාශි දෙකේ මූලද්‍රව්‍ය සංසන්දනය කරයි.",
   "factorVashya": "වශ්‍ය",
@@ -151,7 +139,6 @@
   "factorRajjuAbout": "එකම අංගයට වැටීම මෙහි විරෝධයයි, වෙනස් වීම නොවේ.",
   "factorVedha": "වේධ",
   "factorVedhaAbout": "සමහර නැකත් යුගල එකිනෙක විදින බව සැලකේ.",
-
   "settingsTitle": "සැකසුම්",
   "settingsSectionProfile": "ඔබේ තොරතුරු",
   "settingsEditProfile": "උපන් තොරතුරු වෙනස් කරන්න",
@@ -177,7 +164,6 @@
   "settingsTerms": "නියම",
   "settingsVersion": "අනුවාදය {version}",
   "settingsLinkFailed": "එම සබැඳිය විවෘත කළ නොහැකි විය.",
-
   "calendarTitle": "නැකත් දින දර්ශනය",
   "calendarPoya": "පොහොය",
   "calendarFestival": "උත්සවය",
@@ -205,10 +191,8 @@
   "reasonVaraUnfavourable": "මෙයට වාරය එතරම් සුදුසු නැත",
   "reasonVaraFavourable": "සුදුසු වාරයකි",
   "reasonShortenedByChange": "දිනය තුළ ලිත වෙනස් වන බැවින් කෙටි කර ඇත",
-
   "authErrorRequiresRecentLogin": "ඔබේ ආරක්ෂාව සඳහා, ගිණුම මකා දැමීමට පෙර නැවත පිවිසෙන්න.",
   "settingsDeleteFailed": "ඔබේ තොරතුරු මෙම දුරකථනයෙන් ඉවත් කරන ලදී, නමුත් උපස්ථයට සම්බන්ධ විය නොහැකි විය. ඔබ සබැඳි වූ පසු නැවත උත්සාහ කරන්න.",
-
   "accountTitle": "ගිණුම",
   "accountSavedToEmail": "{email} වෙත සුරකින ලදී",
   "accountSavedToEmailHelp": "නව දුරකථනයක මෙම ඊමේල් ලිපිනයෙන් පිවිසුණු විට ඔබේ උපන් තොරතුරු නැවත ලැබේ.",
@@ -243,7 +227,6 @@
   "accountConflictUnnamed": "නම් නොකළ පැතිකඩක්",
   "accountConflictKeepPhone": "දුරකථනයේ එක තබා ගන්න",
   "accountConflictKeepAccount": "ගිණුමේ එක තබා ගන්න",
-
   "authErrorEmailTaken": "එම ඊමේල් ලිපිනයට දැනටමත් ගිණුමක් ඇත. ඒ වෙනුවට එයට පිවිසෙන්න.",
   "authErrorInvalidEmail": "එය ඊමේල් ලිපිනයක් ලෙස නොපෙනේ.",
   "authErrorWeakPassword": "අවම වශයෙන් අකුරු 6ක් භාවිත කරන්න.",
@@ -263,12 +246,9 @@
   "authErrorSignOutFailed": "පිටවිය නොහැකි විය.",
   "authErrorGoogleFailed": "Google සමඟ පිවිසිය නොහැකි විය.",
   "authErrorGoogleNoToken": "Google වෙතින් භාවිත කළ හැකි පිවිසුමක් ලැබුණේ නැත.",
-
   "language": "භාෂාව",
-
   "routeNotFound": "පිටුව හමු නොවීය",
   "routeGoHome": "මුල් පිටුවට",
-
   "unlockWatch": "කෙටි වීඩියෝවක් බලන්න",
   "unlockLoading": "වීඩියෝව පූරණය වෙමින්…",
   "unlockFailed": "වීඩියෝවක් නොලැබුණි. මොහොතකින් නැවත උත්සාහ කරන්න.",
@@ -277,5 +257,27 @@
   "unlockCompatBody": "සෑම සාධකයක්ම වෙන් වෙන් වශයෙන් ලකුණු කර ඇති ආකාරය බලන්න.",
   "unlockFutureTitle": "වෙනත් දිනවල නැකත්",
   "unlockFutureBody": "ඉදිරි ඕනෑම දිනක් බලන්න — සුබ මුහූර්ත, රාහු කාලය සහ සම්පූර්ණ පංචාංගය.",
-  "authErrorGoogleRepeated": "Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක."
+  "authErrorGoogleRepeated": "Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.",
+  "horoscopeTitle": "දෛනික ලග්න පලාපල",
+  "horoscopeForSign": "{sign} ලග්නය සඳහා",
+  "horoscopeUnavailable": "ලග්න පලාපල සඳහා ඔබේ උපන් තොරතුරු අවශ්‍යයි. කේන්දරය සකසා අවසන් කරන්න.",
+  "horoscopeGeneral": "අද දිනය",
+  "horoscopeCareer": "රැකියාව",
+  "horoscopeMoney": "මුදල්",
+  "horoscopeLove": "සබඳතා",
+  "horoscopeHealth": "සෞඛ්‍යය",
+  "horoscopeAdvice": "උපදෙස්",
+  "horoscopeLuckyNumber": "සුබ අංකය",
+  "horoscopeLuckyColour": "සුබ වර්ණය",
+  "homeHoroscopeSubtitle": "අද දින ග්‍රහ ගමන ඔබේ කේන්දරයට අනුව කියවා ඇත.",
+  "colourWhite": "සුදු",
+  "colourRed": "රතු",
+  "colourYellow": "කහ",
+  "colourGreen": "කොළ",
+  "colourBlue": "නිල්",
+  "colourOrange": "තැඹිලි",
+  "colourBrown": "දුඹුරු",
+  "colourGold": "රන්",
+  "colourSilver": "රිදී",
+  "colourPurple": "දම්"
 }

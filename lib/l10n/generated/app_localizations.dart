@@ -351,12 +351,6 @@ abstract class L10n {
   /// **'Account'**
   String get homeAccount;
 
-  /// No description provided for @homeComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Daily horoscope, personalised to your chart.'**
-  String get homeComingSoon;
-
   /// No description provided for @homeFestivalsExcluded.
   ///
   /// In en, this message translates to:
@@ -1652,6 +1646,138 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.'**
   String get authErrorGoogleRepeated;
+
+  /// No description provided for @horoscopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily horoscope'**
+  String get horoscopeTitle;
+
+  /// Heading naming the reader's moon sign.
+  ///
+  /// In en, this message translates to:
+  /// **'For {sign}'**
+  String horoscopeForSign(String sign);
+
+  /// No description provided for @horoscopeUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Your horoscope needs your birth details. Finish setting up your chart to see it.'**
+  String get horoscopeUnavailable;
+
+  /// No description provided for @horoscopeGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'The day'**
+  String get horoscopeGeneral;
+
+  /// No description provided for @horoscopeCareer.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get horoscopeCareer;
+
+  /// No description provided for @horoscopeMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get horoscopeMoney;
+
+  /// No description provided for @horoscopeLove.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationships'**
+  String get horoscopeLove;
+
+  /// No description provided for @horoscopeHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get horoscopeHealth;
+
+  /// No description provided for @horoscopeAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Advice'**
+  String get horoscopeAdvice;
+
+  /// No description provided for @horoscopeLuckyNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Lucky number'**
+  String get horoscopeLuckyNumber;
+
+  /// No description provided for @horoscopeLuckyColour.
+  ///
+  /// In en, this message translates to:
+  /// **'Lucky colour'**
+  String get horoscopeLuckyColour;
+
+  /// No description provided for @homeHoroscopeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read from today\'s transits against your chart.'**
+  String get homeHoroscopeSubtitle;
+
+  /// No description provided for @colourWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get colourWhite;
+
+  /// No description provided for @colourRed.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get colourRed;
+
+  /// No description provided for @colourYellow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yellow'**
+  String get colourYellow;
+
+  /// No description provided for @colourGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get colourGreen;
+
+  /// No description provided for @colourBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get colourBlue;
+
+  /// No description provided for @colourOrange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get colourOrange;
+
+  /// No description provided for @colourBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown'**
+  String get colourBrown;
+
+  /// No description provided for @colourGold.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get colourGold;
+
+  /// No description provided for @colourSilver.
+  ///
+  /// In en, this message translates to:
+  /// **'Silver'**
+  String get colourSilver;
+
+  /// No description provided for @colourPurple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get colourPurple;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

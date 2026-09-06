@@ -1,18 +1,25 @@
 {
   "@@locale": "en",
-
   "appTitle": "Nakshatra",
-  "@appTitle": { "description": "App name. Not translated — it is the brand." },
-
+  "@appTitle": {
+    "description": "App name. Not translated — it is the brand."
+  },
   "continueLabel": "Continue",
   "today": "Today",
   "todayLower": "today",
   "tomorrowLower": "tomorrow",
   "inDays": "in {days} days",
-  "@inDays": { "placeholders": { "days": { "type": "int" } } },
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "entertainmentOnly": "For entertainment purposes only.",
-  "@entertainmentOnly": { "description": "Required disclaimer. Must appear on every screen showing astrological output." },
-
+  "@entertainmentOnly": {
+    "description": "Required disclaimer. Must appear on every screen showing astrological output."
+  },
   "onboardingChooseLanguage": "Choose your language",
   "onboardingNameQuestion": "What is your name?",
   "onboardingNameLabel": "Name",
@@ -32,14 +39,25 @@
   "onboardingPlaceHelp": "Coordinates set the ascendant. Search in Sinhala, Tamil or English.",
   "onboardingPlaceNoMatch": "No matching place",
   "onboardingPlaceLoadFailed": "Could not load places: {error}",
-  "@onboardingPlaceLoadFailed": { "placeholders": { "error": { "type": "String" } } },
+  "@onboardingPlaceLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "onboardingSeeChart": "See my chart",
-
   "homeRahuKalaya": "Rāhu kālaya",
   "homeRahuShort": "Rāhu",
   "homeAvoidImportant": "avoid starting anything important",
   "homeRunningUntil": "until {time}",
-  "@homeRunningUntil": { "placeholders": { "time": { "type": "String" } } },
+  "@homeRunningUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeOtherInauspicious": "Other inauspicious periods",
   "homeClearTimes": "Clear times today",
   "homeClearTimesHelp": "Daylight not claimed by any inauspicious period.",
@@ -49,18 +67,21 @@
   "homeSunset": "Sunset",
   "homeMoonrise": "Moonrise",
   "homeFullMoonAt": "Full moon at {time}",
-  "@homeFullMoonAt": { "placeholders": { "time": { "type": "String" } } },
+  "@homeFullMoonAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeBirthChart": "Birth chart",
   "homeAccount": "Account",
-  "homeComingSoon": "Daily horoscope, personalised to your chart.",
   "homeFestivalsExcluded": "Deepavali and Eid are not listed: their dates follow regional convention and moon sighting rather than calculation, and a confidently wrong religious date would be worse than none.",
-
   "panchangaTithi": "Tithi",
   "panchangaVara": "Vāra",
   "panchangaNakshatra": "Nakṣatra",
   "panchangaYoga": "Yoga",
   "panchangaKarana": "Karana",
-
   "chartTitle": "Chart",
   "chartStartOver": "Start over",
   "chartCalculationFailed": "Could not calculate the chart",
@@ -68,7 +89,13 @@
   "chartMoonSign": "Moon sign (rāśi)",
   "chartBirthNakshatra": "Birth nakṣatra",
   "chartAyanamsa": "Ayanāṃśa (Lahiri): {degrees}°",
-  "@chartAyanamsa": { "placeholders": { "degrees": { "type": "String" } } },
+  "@chartAyanamsa": {
+    "placeholders": {
+      "degrees": {
+        "type": "String"
+      }
+    }
+  },
   "chartPositions": "Planetary positions",
   "chartColumnGraha": "Graha",
   "chartColumnRasi": "Rāśi",
@@ -77,31 +104,60 @@
   "chartColumnPada": "Pada",
   "chartColumnHouse": "House",
   "chartApproximate": "Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.",
-
   "dashaTitle": "Daśā periods",
   "dashaRunningNow": "Running now",
   "dashaSubPeriods": "Sub-periods",
   "dashaEnds": "ends {date}",
-  "@dashaEnds": { "placeholders": { "date": { "type": "String" } } },
+  "@dashaEnds": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "dashaBalanceNote": "Your first period had already begun when you were born, so it is shown shorter than its full length.",
   "dashaUnreliableTime": "Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.",
-
   "detailHouse": "House {n}",
-  "@detailHouse": { "placeholders": { "n": { "type": "int" } } },
+  "@detailHouse": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "detailRetrograde": "Retrograde",
   "detailNoGraha": "No graha sits in this house.",
   "detailExaltedIn": "Exalted in {rasi} at {degree}°",
-  "@detailExaltedIn": { "placeholders": { "rasi": { "type": "String" }, "degree": { "type": "int" } } },
+  "@detailExaltedIn": {
+    "placeholders": {
+      "rasi": {
+        "type": "String"
+      },
+      "degree": {
+        "type": "int"
+      }
+    }
+  },
   "dignityOwn": "Own sign",
   "dignityExalted": "Exalted",
   "dignityDebilitated": "Debilitated",
   "dignityNodeNote": "Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.",
-
   "chartShare": "Share chart",
   "chartShareFailed": "Could not create the image.",
   "chartShareCaption": "{name} · {date} · {place}",
-  "@chartShareCaption": { "placeholders": { "name": { "type": "String" }, "date": { "type": "String" }, "place": { "type": "String" } } },
-
+  "@chartShareCaption": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
   "compatTitle": "Compatibility",
   "compatIntro": "Marriage matching is read from the Moon at birth, so both sets of birth details are needed.",
   "compatYourDetails": "You",
@@ -117,9 +173,27 @@
   "compatChangePartner": "Change partner",
   "compatNeedPartner": "Enter your partner's birth details to see a match.",
   "compatScoreOutOf": "{score} of {max}",
-  "@compatScoreOutOf": { "placeholders": { "score": { "type": "String" }, "max": { "type": "int" } } },
+  "@compatScoreOutOf": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "compatMatchedOutOf": "{matched} of {judged} matched",
-  "@compatMatchedOutOf": { "placeholders": { "matched": { "type": "int" }, "judged": { "type": "int" } } },
+  "@compatMatchedOutOf": {
+    "placeholders": {
+      "matched": {
+        "type": "int"
+      },
+      "judged": {
+        "type": "int"
+      }
+    }
+  },
   "compatPorondamIncomplete": "Twelve porondam are judged here. Sri Lankan almanacs count twenty, but the remaining eight are stated differently from one almanac to the next, so they are left out rather than guessed at.",
   "compatCaveat": "This is guidance, not a ruling. A chart has never decided whether two people are good to each other - talk to a trusted astrologer, and to each other, before it decides anything for you.",
   "compatTimeUnknown": "A birth time is missing, so sunrise was assumed. The Moon crosses about one star a day, which can put it in the neighbouring one and change several factors at once. Treat this as indicative until both times are known.",
@@ -133,7 +207,6 @@
   "verdictGood": "Met",
   "verdictPartial": "Partly met",
   "verdictPoor": "Not met",
-
   "factorVarna": "Varna",
   "factorVarnaAbout": "Compares the elements of the two Moon signs.",
   "factorVashya": "Vashya",
@@ -164,7 +237,6 @@
   "factorRajjuAbout": "Falling in the same limb is the objection here, not differing.",
   "factorVedha": "Vedha",
   "factorVedhaAbout": "Certain star pairs are held to pierce one another.",
-
   "settingsTitle": "Settings",
   "settingsSectionProfile": "Your details",
   "settingsEditProfile": "Edit birth details",
@@ -189,9 +261,14 @@
   "settingsPrivacy": "Privacy policy",
   "settingsTerms": "Terms",
   "settingsVersion": "Version {version}",
-  "@settingsVersion": { "placeholders": { "version": { "type": "String" } } },
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "settingsLinkFailed": "Could not open that link.",
-
   "calendarTitle": "Nekath calendar",
   "calendarPoya": "Poya",
   "calendarFestival": "Festival",
@@ -203,7 +280,13 @@
   "calendarDayDetail": "Panchanga",
   "calendarClearWindows": "Clear windows",
   "calendarScoreLabel": "Score {score}",
-  "@calendarScoreLabel": { "placeholders": { "score": { "type": "int" } } },
+  "@calendarScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
   "activityTravel": "Travel",
   "activityWorkOrStudy": "Starting work or study",
   "activityBusiness": "Business or signing",
@@ -220,13 +303,17 @@
   "reasonVaraUnfavourable": "The weekday is not the best for this",
   "reasonVaraFavourable": "A suitable weekday",
   "reasonShortenedByChange": "Shortened because the almanac changes during the day",
-
   "authErrorRequiresRecentLogin": "For your security, please sign in again before deleting your account.",
   "settingsDeleteFailed": "Your details were removed from this phone, but the backup could not be reached. Try again once you are online.",
-
   "accountTitle": "Account",
   "accountSavedToEmail": "Saved to {email}",
-  "@accountSavedToEmail": { "placeholders": { "email": { "type": "String" } } },
+  "@accountSavedToEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "accountSavedToEmailHelp": "Sign in with this email on a new phone and your birth details come back.",
   "accountPhoneOnly": "Saved to this phone only",
   "accountPhoneOnlyHelp": "Your birth details are backed up, but the backup belongs to this installation. Clearing app data or moving to a new phone loses it for good.",
@@ -256,11 +343,16 @@
   "accountSignedOutToast": "Signed out.",
   "accountConflictTitle": "Two charts",
   "accountConflictBody": "This account already holds {name}, which is different from the chart on this phone. Only one can be kept.",
-  "@accountConflictBody": { "placeholders": { "name": { "type": "String" } } },
+  "@accountConflictBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "accountConflictUnnamed": "an unnamed profile",
   "accountConflictKeepPhone": "Keep this phone’s",
   "accountConflictKeepAccount": "Keep the account’s",
-
   "authErrorEmailTaken": "That email already has an account. Sign in to it instead.",
   "authErrorInvalidEmail": "That does not look like an email address.",
   "authErrorWeakPassword": "Use at least 6 characters.",
@@ -280,13 +372,12 @@
   "authErrorSignOutFailed": "Could not sign out.",
   "authErrorGoogleFailed": "Could not sign in with Google.",
   "authErrorGoogleNoToken": "Google did not return a usable sign-in.",
-
   "language": "Language",
-  "@language": { "description": "Tooltip and menu label for the language switcher." },
-
+  "@language": {
+    "description": "Tooltip and menu label for the language switcher."
+  },
   "routeNotFound": "Page not found",
   "routeGoHome": "Go home",
-
   "unlockWatch": "Watch a short video",
   "unlockLoading": "Loading the video…",
   "unlockFailed": "No video was available. Please try again in a moment.",
@@ -295,5 +386,35 @@
   "unlockCompatBody": "See every factor scored one by one, and what each one judges.",
   "unlockFutureTitle": "Nekath for other days",
   "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga.",
-  "authErrorGoogleRepeated": "Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app."
+  "authErrorGoogleRepeated": "Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.",
+  "horoscopeTitle": "Daily horoscope",
+  "horoscopeForSign": "For {sign}",
+  "@horoscopeForSign": {
+    "description": "Heading naming the reader's moon sign.",
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      }
+    }
+  },
+  "horoscopeUnavailable": "Your horoscope needs your birth details. Finish setting up your chart to see it.",
+  "horoscopeGeneral": "The day",
+  "horoscopeCareer": "Work",
+  "horoscopeMoney": "Money",
+  "horoscopeLove": "Relationships",
+  "horoscopeHealth": "Health",
+  "horoscopeAdvice": "Advice",
+  "horoscopeLuckyNumber": "Lucky number",
+  "horoscopeLuckyColour": "Lucky colour",
+  "homeHoroscopeSubtitle": "Read from today's transits against your chart.",
+  "colourWhite": "White",
+  "colourRed": "Red",
+  "colourYellow": "Yellow",
+  "colourGreen": "Green",
+  "colourBlue": "Blue",
+  "colourOrange": "Orange",
+  "colourBrown": "Brown",
+  "colourGold": "Gold",
+  "colourSilver": "Silver",
+  "colourPurple": "Purple"
 }

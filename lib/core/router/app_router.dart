@@ -12,6 +12,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/horoscope/presentation/horoscope_screen.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
@@ -24,6 +25,7 @@ abstract final class Routes {
   static const String calendar = '/calendar';
   static const String compatibility = '/compatibility';
   static const String settings = '/settings';
+  static const String horoscope = '/horoscope';
 }
 
 /// Goes back one screen, or home when there is nothing behind this one.
@@ -78,6 +80,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.account,
         name: 'account',
         builder: (context, state) => const AccountScreen(),
+      ),
+      GoRoute(
+        path: Routes.horoscope,
+        name: 'horoscope',
+        builder: (context, state) => const HoroscopeScreen(),
       ),
       GoRoute(
         path: Routes.compatibility,

@@ -151,9 +151,6 @@ class L10nTa extends L10n {
   String get homeAccount => 'கணக்கு';
 
   @override
-  String get homeComingSoon => 'உங்கள் ஜாதகத்திற்கேற்ற தினசரி ராசிபலன்.';
-
-  @override
   String get homeFestivalsExcluded =>
       'தீபாவளியும் ஈதும் இங்கு பட்டியலிடப்படவில்லை: அவற்றின் தேதிகள் கணக்கீட்டை விட வட்டார மரபு மற்றும் பிறை பார்த்தலைப் பொறுத்தே அமைகின்றன. தவறான ஒரு மத நாளை உறுதியாகக் காட்டுவதை விடக் காட்டாமல் இருப்பது நல்லது.';
 
@@ -882,4 +879,74 @@ class L10nTa extends L10n {
   @override
   String get authErrorGoogleRepeated =>
       'Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்.';
+
+  @override
+  String get horoscopeTitle => 'தினசரி ராசி பலன்';
+
+  @override
+  String horoscopeForSign(String sign) {
+    return '$sign ராசிக்கு';
+  }
+
+  @override
+  String get horoscopeUnavailable =>
+      'ராசி பலனுக்கு உங்கள் பிறப்பு விவரங்கள் தேவை. ஜாதகத்தை அமைத்து முடிக்கவும்.';
+
+  @override
+  String get horoscopeGeneral => 'இன்றைய நாள்';
+
+  @override
+  String get horoscopeCareer => 'வேலை';
+
+  @override
+  String get horoscopeMoney => 'பணம்';
+
+  @override
+  String get horoscopeLove => 'உறவுகள்';
+
+  @override
+  String get horoscopeHealth => 'உடல்நலம்';
+
+  @override
+  String get horoscopeAdvice => 'அறிவுரை';
+
+  @override
+  String get horoscopeLuckyNumber => 'அதிர்ஷ்ட எண்';
+
+  @override
+  String get horoscopeLuckyColour => 'அதிர்ஷ்ட நிறம்';
+
+  @override
+  String get homeHoroscopeSubtitle =>
+      'இன்றைய கோள் நிலைகள் உங்கள் ஜாதகத்துடன் பார்க்கப்பட்டது.';
+
+  @override
+  String get colourWhite => 'வெள்ளை';
+
+  @override
+  String get colourRed => 'சிவப்பு';
+
+  @override
+  String get colourYellow => 'மஞ்சள்';
+
+  @override
+  String get colourGreen => 'பச்சை';
+
+  @override
+  String get colourBlue => 'நீலம்';
+
+  @override
+  String get colourOrange => 'ஆரஞ்சு';
+
+  @override
+  String get colourBrown => 'பழுப்பு';
+
+  @override
+  String get colourGold => 'தங்கம்';
+
+  @override
+  String get colourSilver => 'வெள்ளி';
+
+  @override
+  String get colourPurple => 'ஊதா';
 }

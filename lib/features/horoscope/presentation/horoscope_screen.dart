@@ -1,0 +1,225 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/ads/rewarded_unlock.dart';
+import '../../../core/ads/rewarded_unlock_card.dart';
+import '../../../core/router/app_router.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../l10n/generated/app_localizations.dart';
+import '../../home/domain/daily_providers.dart';
+import '../../onboarding/data/profile_repository.dart';
+import '../domain/fragment.dart';
+import '../domain/horoscope_engine.dart';
+import '../domain/horoscope_providers.dart';
+
+/// The daily reading (KAN-31).
+///
+/// Reads for the day selected on the home screen, not always today, so the
+/// date switcher and the calendar keep working the way they do everywhere
+/// else in the app.
+class HoroscopeScreen extends ConsumerWidget {
+  const HoroscopeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+    final locale = ref.watch(localeProvider);
+    final date = ref.watch(selectedDateProvider);
+
+    // Days ahead are gated exactly as they are on the home screen. Gating one
+    // and not the other would make the lock look arbitrary, and would leave an
+    // obvious way around it.
+    final now = DateTime.now();
+    final ahead = date.isAfter(DateTime(now.year, now.month, now.day));
+    final locked =
+        ahead &&
+        !ref.watch(unlockStoreProvider).isOpen(RewardedUnlock.futureDay);
+
+    final horoscope = locked ? null : ref.watch(horoscopeProvider);
+    final rasi = ref.watch(janmaRasiProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l.horoscopeTitle),
+        leading: BackButton(onPressed: () => popOrHome(context)),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        children: [
+          if (rasi != null)
+            Text(
+              l.horoscopeForSign(rasi.label(locale)),
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+          const SizedBox(height: 16),
+
+          if (locked)
+            RewardedUnlockCard(
+              unlock: RewardedUnlock.futureDay,
+              title: l.unlockFutureTitle,
+              body: l.unlockFutureBody,
+            )
+          else if (horoscope == null)
+            // No chart yet, or no bundled copy for this build. Neither is
+            // worth an error: the rest of the app still works.
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: Text(
+                l.horoscopeUnavailable,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            )
+          else ...[
+            for (final category in HoroscopeEngine.sectionOrder)
+              if (horoscope[category] case final text?)
+                _Section(category: category, text: text),
+            const SizedBox(height: 8),
+            _LuckyRow(horoscope: horoscope),
+          ],
+
+          const SizedBox(height: 24),
+          Text(
+            l.entertainmentOnly,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Section extends StatelessWidget {
+  const _Section({required this.category, required this.text});
+
+  final HoroscopeCategory category;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l = L10n.of(context);
+
+    final (label, icon) = switch (category) {
+      HoroscopeCategory.general => (
+        l.horoscopeGeneral,
+        Icons.wb_sunny_outlined,
+      ),
+      HoroscopeCategory.career => (l.horoscopeCareer, Icons.work_outline),
+      HoroscopeCategory.money => (l.horoscopeMoney, Icons.savings_outlined),
+      HoroscopeCategory.love => (l.horoscopeLove, Icons.favorite_outline),
+      HoroscopeCategory.health => (l.horoscopeHealth, Icons.spa_outlined),
+      HoroscopeCategory.advice => (l.horoscopeAdvice, Icons.lightbulb_outline),
+    };
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: AppColors.accent),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: AppColors.accent,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(text, style: theme.textTheme.bodyMedium),
+        ],
+      ),
+    );
+  }
+}
+
+class _LuckyRow extends StatelessWidget {
+  const _LuckyRow({required this.horoscope});
+
+  final Horoscope horoscope;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L10n.of(context);
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      color: AppColors.auspicious.withValues(alpha: 0.07),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.auspicious.withValues(alpha: 0.4)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _Lucky(
+              label: l.horoscopeLuckyNumber,
+              value: '${horoscope.luckyNumber}',
+            ),
+            Container(width: 1, height: 32, color: theme.dividerColor),
+            _Lucky(
+              label: l.horoscopeLuckyColour,
+              value: _colourName(l, horoscope.luckyColour),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The engine names colours in English; the reader sees their own language.
+  static String _colourName(L10n l, String key) => switch (key) {
+    'white' => l.colourWhite,
+    'red' => l.colourRed,
+    'yellow' => l.colourYellow,
+    'green' => l.colourGreen,
+    'blue' => l.colourBlue,
+    'orange' => l.colourOrange,
+    'brown' => l.colourBrown,
+    'gold' => l.colourGold,
+    'silver' => l.colourSilver,
+    _ => l.colourPurple,
+  };
+}
+
+class _Lucky extends StatelessWidget {
+  const _Lucky({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: AppColors.auspicious,
+          ),
+        ),
+      ],
+    );
+  }
+}

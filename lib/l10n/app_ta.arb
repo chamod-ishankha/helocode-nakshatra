@@ -1,15 +1,12 @@
 {
   "@@locale": "ta",
-
   "appTitle": "நட்சத்திரா",
-
   "continueLabel": "தொடரவும்",
   "today": "இன்று",
   "todayLower": "இன்று",
   "tomorrowLower": "நாளை",
   "inDays": "{days} நாட்களில்",
   "entertainmentOnly": "பொழுதுபோக்கிற்காக மட்டுமே.",
-
   "onboardingChooseLanguage": "உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்",
   "onboardingNameQuestion": "உங்கள் பெயர் என்ன?",
   "onboardingNameLabel": "பெயர்",
@@ -30,7 +27,6 @@
   "onboardingPlaceNoMatch": "பொருந்தும் இடம் இல்லை",
   "onboardingPlaceLoadFailed": "இடங்களை ஏற்ற முடியவில்லை: {error}",
   "onboardingSeeChart": "எனது ஜாதகத்தைப் பார்க்க",
-
   "homeRahuKalaya": "ராகு காலம்",
   "homeRahuShort": "ராகு",
   "homeAvoidImportant": "முக்கியமான எதையும் தொடங்குவதைத் தவிர்க்கவும்",
@@ -46,15 +42,12 @@
   "homeFullMoonAt": "{time} மணிக்கு பௌர்ணமி",
   "homeBirthChart": "ஜாதகம்",
   "homeAccount": "கணக்கு",
-  "homeComingSoon": "உங்கள் ஜாதகத்திற்கேற்ற தினசரி ராசிபலன்.",
   "homeFestivalsExcluded": "தீபாவளியும் ஈதும் இங்கு பட்டியலிடப்படவில்லை: அவற்றின் தேதிகள் கணக்கீட்டை விட வட்டார மரபு மற்றும் பிறை பார்த்தலைப் பொறுத்தே அமைகின்றன. தவறான ஒரு மத நாளை உறுதியாகக் காட்டுவதை விடக் காட்டாமல் இருப்பது நல்லது.",
-
   "panchangaTithi": "திதி",
   "panchangaVara": "வாரம்",
   "panchangaNakshatra": "நட்சத்திரம்",
   "panchangaYoga": "யோகம்",
   "panchangaKarana": "கரணம்",
-
   "chartTitle": "ஜாதகம்",
   "chartStartOver": "மீண்டும் தொடங்கு",
   "chartCalculationFailed": "ஜாதகத்தைக் கணக்கிட முடியவில்லை",
@@ -70,14 +63,12 @@
   "chartColumnPada": "பாதம்",
   "chartColumnHouse": "பாவம்",
   "chartApproximate": "பிறந்த நேரம் தெரியவில்லை — சூரிய உதயம் கருதப்பட்டது. கிரக நிலைகள் சரியானவை; லக்னமும் பாவங்களும் தோராயமானவை.",
-
   "dashaTitle": "தசா காலங்கள்",
   "dashaRunningNow": "இப்போது நடப்பில்",
   "dashaSubPeriods": "அந்தர் தசை",
   "dashaEnds": "{date} இல் முடிகிறது",
   "dashaBalanceNote": "நீங்கள் பிறக்கும்போதே உங்கள் முதல் தசை தொடங்கிவிட்டிருந்தது, எனவே அது அதன் முழு நீளத்தை விடக் குறைவாகக் காட்டப்படுகிறது.",
   "dashaUnreliableTime": "உங்கள் பிறந்த நேரம் தெரியாததால் சூரிய உதயம் கருதப்பட்டது. சந்திரன் மணிக்கு அரை பாகை அளவு நகர்கிறது, இது இந்தத் தேதிகளை பல ஆண்டுகள் மாற்றக்கூடும், முதல் தசையின் அதிபதி கிரகத்தையே கூட மாற்றக்கூடும். உங்கள் பிறந்த நேரம் தெரியும் வரை இதை ஒரு தோராயமான வழிகாட்டியாகக் கருதுங்கள்.",
-
   "detailHouse": "{n} ஆம் பாவம்",
   "detailRetrograde": "வக்ரம்",
   "detailNoGraha": "இந்தப் பாவத்தில் கிரகம் எதுவும் இல்லை.",
@@ -86,11 +77,9 @@
   "dignityExalted": "உச்சம்",
   "dignityDebilitated": "நீசம்",
   "dignityNodeNote": "ராகுவும் கேதுவும் எந்த ராசிக்கும் அதிபதி அல்ல, அவை உச்சம் பெறும் ராசி குறித்து மரபுகள் ஒத்துப்போவதில்லை — எனவே இங்கு எந்த பலமும் கூறப்படவில்லை.",
-
   "chartShare": "ஜாதகத்தைப் பகிர்",
   "chartShareFailed": "படத்தை உருவாக்க முடியவில்லை.",
   "chartShareCaption": "{name} · {date} · {place}",
-
   "compatTitle": "பொருத்தம்",
   "compatIntro": "திருமணப் பொருத்தம் பிறக்கும்போதைய சந்திரனிலிருந்து படிக்கப்படுகிறது, எனவே இருவரின் பிறப்பு விவரங்களும் தேவை.",
   "compatYourDetails": "நீங்கள்",
@@ -120,7 +109,6 @@
   "verdictGood": "பொருந்தும்",
   "verdictPartial": "ஓரளவு பொருந்தும்",
   "verdictPoor": "பொருந்தாது",
-
   "factorVarna": "வர்ணம்",
   "factorVarnaAbout": "இரு சந்திர ராசிகளின் பூதங்களை ஒப்பிடுகிறது.",
   "factorVashya": "வசியம்",
@@ -151,7 +139,6 @@
   "factorRajjuAbout": "ஒரே அங்கத்தில் விழுவதே ஆட்சேபம், வேறுபடுவது அல்ல.",
   "factorVedha": "வேதை",
   "factorVedhaAbout": "சில நட்சத்திர ஜோடிகள் ஒன்றையொன்று துளைப்பதாகக் கருதப்படுகிறது.",
-
   "settingsTitle": "அமைப்புகள்",
   "settingsSectionProfile": "உங்கள் விவரங்கள்",
   "settingsEditProfile": "பிறப்பு விவரங்களை மாற்று",
@@ -177,7 +164,6 @@
   "settingsTerms": "விதிமுறைகள்",
   "settingsVersion": "பதிப்பு {version}",
   "settingsLinkFailed": "அந்த இணைப்பைத் திறக்க முடியவில்லை.",
-
   "calendarTitle": "நேரக் காட்டி",
   "calendarPoya": "பௌர்ணமி",
   "calendarFestival": "பண்டிகை",
@@ -205,10 +191,8 @@
   "reasonVaraUnfavourable": "இதற்கு இந்த வாரம் சிறந்ததல்ல",
   "reasonVaraFavourable": "பொருத்தமான வாரம்",
   "reasonShortenedByChange": "நாளுக்குள் பஞ்சாங்கம் மாறுவதால் சுருக்கப்பட்டுள்ளது",
-
   "authErrorRequiresRecentLogin": "உங்கள் பாதுகாப்பிற்காக, கணக்கை அழிக்கும் முன் மீண்டும் உள்நுழையவும்.",
   "settingsDeleteFailed": "உங்கள் விவரங்கள் இந்தத் தொலைபேசியிலிருந்து நீக்கப்பட்டன, ஆனால் காப்புப் பிரதியை அணுக முடியவில்லை. இணையத்தில் இணைந்ததும் மீண்டும் முயற்சிக்கவும்.",
-
   "accountTitle": "கணக்கு",
   "accountSavedToEmail": "{email} இல் சேமிக்கப்பட்டது",
   "accountSavedToEmailHelp": "புதிய தொலைபேசியில் இந்த மின்னஞ்சலைக் கொண்டு உள்நுழைந்தால் உங்கள் பிறப்பு விவரங்கள் திரும்பக் கிடைக்கும்.",
@@ -243,7 +227,6 @@
   "accountConflictUnnamed": "பெயரிடப்படாத ஒரு விவரம்",
   "accountConflictKeepPhone": "தொலைபேசியில் உள்ளதை வை",
   "accountConflictKeepAccount": "கணக்கில் உள்ளதை வை",
-
   "authErrorEmailTaken": "அந்த மின்னஞ்சலுக்கு ஏற்கனவே கணக்கு உள்ளது. அதற்குப் பதிலாக உள்நுழையவும்.",
   "authErrorInvalidEmail": "அது மின்னஞ்சல் முகவரி போல் தெரியவில்லை.",
   "authErrorWeakPassword": "குறைந்தது 6 எழுத்துகளைப் பயன்படுத்தவும்.",
@@ -263,12 +246,9 @@
   "authErrorSignOutFailed": "வெளியேற முடியவில்லை.",
   "authErrorGoogleFailed": "Google உடன் உள்நுழைய முடியவில்லை.",
   "authErrorGoogleNoToken": "Google இடமிருந்து பயன்படுத்தக்கூடிய உள்நுழைவு கிடைக்கவில்லை.",
-
   "language": "மொழி",
-
   "routeNotFound": "பக்கம் கிடைக்கவில்லை",
   "routeGoHome": "முகப்புக்குச் செல்",
-
   "unlockWatch": "குறும் காணொளியைப் பாருங்கள்",
   "unlockLoading": "காணொளி ஏற்றப்படுகிறது…",
   "unlockFailed": "காணொளி கிடைக்கவில்லை. சிறிது நேரத்தில் மீண்டும் முயலவும்.",
@@ -277,5 +257,27 @@
   "unlockCompatBody": "ஒவ்வொரு காரணியும் தனித்தனியாக மதிப்பிடப்பட்ட விதத்தைப் பாருங்கள்.",
   "unlockFutureTitle": "மற்ற நாட்களின் நேரம்",
   "unlockFutureBody": "வரும் எந்த நாளையும் திறக்கலாம் — நல்ல நேரங்கள், ராகு காலம் மற்றும் முழு பஞ்சாங்கம்.",
-  "authErrorGoogleRepeated": "Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்."
+  "authErrorGoogleRepeated": "Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்.",
+  "horoscopeTitle": "தினசரி ராசி பலன்",
+  "horoscopeForSign": "{sign} ராசிக்கு",
+  "horoscopeUnavailable": "ராசி பலனுக்கு உங்கள் பிறப்பு விவரங்கள் தேவை. ஜாதகத்தை அமைத்து முடிக்கவும்.",
+  "horoscopeGeneral": "இன்றைய நாள்",
+  "horoscopeCareer": "வேலை",
+  "horoscopeMoney": "பணம்",
+  "horoscopeLove": "உறவுகள்",
+  "horoscopeHealth": "உடல்நலம்",
+  "horoscopeAdvice": "அறிவுரை",
+  "horoscopeLuckyNumber": "அதிர்ஷ்ட எண்",
+  "horoscopeLuckyColour": "அதிர்ஷ்ட நிறம்",
+  "homeHoroscopeSubtitle": "இன்றைய கோள் நிலைகள் உங்கள் ஜாதகத்துடன் பார்க்கப்பட்டது.",
+  "colourWhite": "வெள்ளை",
+  "colourRed": "சிவப்பு",
+  "colourYellow": "மஞ்சள்",
+  "colourGreen": "பச்சை",
+  "colourBlue": "நீலம்",
+  "colourOrange": "ஆரஞ்சு",
+  "colourBrown": "பழுப்பு",
+  "colourGold": "தங்கம்",
+  "colourSilver": "வெள்ளி",
+  "colourPurple": "ஊதா"
 }

@@ -109,6 +109,8 @@ class HomeScreen extends ConsumerWidget {
             const _CalendarCard(),
             const SizedBox(height: 8),
             const _CompatibilityCard(),
+            const SizedBox(height: 8),
+            const _HoroscopeCard(),
             const SizedBox(height: 24),
             const _ComingSoon(),
             const SizedBox(height: 24),
@@ -198,6 +200,36 @@ class _CompatibilityCard extends ConsumerWidget {
 /// backup dies with the phone, and a quiet marker is the right weight for it —
 /// the app works perfectly without an account, so nagging would be dishonest,
 /// but saying nothing until the phone is lost would be worse.
+/// The daily reading (KAN-31).
+class _HoroscopeCard extends ConsumerWidget {
+  const _HoroscopeCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.dividerColor),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.auto_awesome_outlined, color: AppColors.accent),
+        title: Text(L10n.of(context).horoscopeTitle),
+        subtitle: Text(
+          L10n.of(context).homeHoroscopeSubtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodySmall,
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push(Routes.horoscope),
+      ),
+    );
+  }
+}
+
 class _AccountAction extends ConsumerWidget {
   const _AccountAction();
 
@@ -774,8 +806,7 @@ class _ComingSoon extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${L10n.of(context).homeComingSoon}\n\n'
-            '${L10n.of(context).homeFestivalsExcluded}',
+            L10n.of(context).homeFestivalsExcluded,
             style: theme.textTheme.bodySmall,
           ),
         ],

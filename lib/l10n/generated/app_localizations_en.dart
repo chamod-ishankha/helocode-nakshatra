@@ -149,9 +149,6 @@ class L10nEn extends L10n {
   String get homeAccount => 'Account';
 
   @override
-  String get homeComingSoon => 'Daily horoscope, personalised to your chart.';
-
-  @override
   String get homeFestivalsExcluded =>
       'Deepavali and Eid are not listed: their dates follow regional convention and moon sighting rather than calculation, and a confidently wrong religious date would be worse than none.';
 
@@ -876,4 +873,74 @@ class L10nEn extends L10n {
   @override
   String get authErrorGoogleRepeated =>
       'Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.';
+
+  @override
+  String get horoscopeTitle => 'Daily horoscope';
+
+  @override
+  String horoscopeForSign(String sign) {
+    return 'For $sign';
+  }
+
+  @override
+  String get horoscopeUnavailable =>
+      'Your horoscope needs your birth details. Finish setting up your chart to see it.';
+
+  @override
+  String get horoscopeGeneral => 'The day';
+
+  @override
+  String get horoscopeCareer => 'Work';
+
+  @override
+  String get horoscopeMoney => 'Money';
+
+  @override
+  String get horoscopeLove => 'Relationships';
+
+  @override
+  String get horoscopeHealth => 'Health';
+
+  @override
+  String get horoscopeAdvice => 'Advice';
+
+  @override
+  String get horoscopeLuckyNumber => 'Lucky number';
+
+  @override
+  String get horoscopeLuckyColour => 'Lucky colour';
+
+  @override
+  String get homeHoroscopeSubtitle =>
+      'Read from today\'s transits against your chart.';
+
+  @override
+  String get colourWhite => 'White';
+
+  @override
+  String get colourRed => 'Red';
+
+  @override
+  String get colourYellow => 'Yellow';
+
+  @override
+  String get colourGreen => 'Green';
+
+  @override
+  String get colourBlue => 'Blue';
+
+  @override
+  String get colourOrange => 'Orange';
+
+  @override
+  String get colourBrown => 'Brown';
+
+  @override
+  String get colourGold => 'Gold';
+
+  @override
+  String get colourSilver => 'Silver';
+
+  @override
+  String get colourPurple => 'Purple';
 }

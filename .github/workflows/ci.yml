@@ -81,10 +81,28 @@ jobs:
       # Building through `flutter build` handles that; never call ./gradlew here.
       # A flavor and target are mandatory now that productFlavors are declared:
       # a bare `flutter build apk` fails once flavorDimensions exist.
+      # Gitignored, so it has to come from a secret. Fork pull requests do not
+      # receive secrets, so the build is skipped rather than failed there -
+      # a red X on every outside contribution would be noise, not signal.
+      - name: Restore google-services.json
+        id: firebase
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::notice::google-services.json unavailable (fork PR, or the secret is unset). Skipping the Android build."
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > android/app/google-services.json
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build debug APK (dev flavor)
+        if: steps.firebase.outputs.available == 'true'
         run: flutter build apk --debug --flavor dev --target lib/main_dev.dart
 
       - name: Upload APK
+        if: steps.firebase.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: nakshatra-dev-debug-apk

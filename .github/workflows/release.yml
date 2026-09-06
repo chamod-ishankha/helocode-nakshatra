@@ -61,17 +61,63 @@ jobs:
       # APK — but they are kept in secrets so dev and prod can differ and so
       # they can be rotated without a commit.
       - name: Write env/prod.json
+        env:
+          ADMOB_APP_ID: ${{ vars.ADMOB_APP_ID }}
+          ADMOB_BANNER_UNIT_ID: ${{ vars.ADMOB_BANNER_UNIT_ID }}
+          ADMOB_INTERSTITIAL_UNIT_ID: ${{ vars.ADMOB_INTERSTITIAL_UNIT_ID }}
+          ADMOB_REWARDED_UNIT_ID: ${{ vars.ADMOB_REWARDED_UNIT_ID }}
+          ADMOB_TEST_DEVICE_IDS: ${{ vars.ADMOB_TEST_DEVICE_IDS }}
+          REVENUECAT_PUBLIC_SDK_KEY: ${{ vars.REVENUECAT_PUBLIC_SDK_KEY }}
         run: |
+          # An unset repository variable expands to an empty string, and empty
+          # unit ids mean AdUnits.isConfigured is false - the app builds and
+          # runs with ads silently switched off entirely. Defaulting to
+          # Google's public test ids means an unconfigured release shows test
+          # ads and earns nothing, which is visible, rather than showing
+          # nothing at all, which looks like the integration is broken.
+          : "${ADMOB_APP_ID:=ca-app-pub-3940256099942544~3347511713}"
+          : "${ADMOB_BANNER_UNIT_ID:=ca-app-pub-3940256099942544/6300978111}"
+          : "${ADMOB_INTERSTITIAL_UNIT_ID:=ca-app-pub-3940256099942544/1033173712}"
+          : "${ADMOB_REWARDED_UNIT_ID:=ca-app-pub-3940256099942544/5224354917}"
+
+          case "$ADMOB_APP_ID" in
+            ca-app-pub-3940256099942544*)
+              echo "::warning::Building with Google's TEST AdMob ids - this release will earn nothing. See KAN-56." ;;
+          esac
+
+          # Unquoted heredoc so the shell expands the defaults above. These
+          # values are ad unit ids and a public SDK key - no quotes or
+          # backslashes needing escapes.
           mkdir -p env
-          cat > env/prod.json <<'JSON'
+          cat > env/prod.json <<JSON
           {
-            "ADMOB_APP_ID": "${{ vars.ADMOB_APP_ID }}",
-            "ADMOB_BANNER_UNIT_ID": "${{ vars.ADMOB_BANNER_UNIT_ID }}",
-            "ADMOB_INTERSTITIAL_UNIT_ID": "${{ vars.ADMOB_INTERSTITIAL_UNIT_ID }}",
-            "ADMOB_REWARDED_UNIT_ID": "${{ vars.ADMOB_REWARDED_UNIT_ID }}",
-            "REVENUECAT_PUBLIC_SDK_KEY": "${{ vars.REVENUECAT_PUBLIC_SDK_KEY }}"
+            "ADMOB_APP_ID": "$ADMOB_APP_ID",
+            "ADMOB_BANNER_UNIT_ID": "$ADMOB_BANNER_UNIT_ID",
+            "ADMOB_INTERSTITIAL_UNIT_ID": "$ADMOB_INTERSTITIAL_UNIT_ID",
+            "ADMOB_REWARDED_UNIT_ID": "$ADMOB_REWARDED_UNIT_ID",
+            "ADMOB_TEST_DEVICE_IDS": "$ADMOB_TEST_DEVICE_IDS",
+            "REVENUECAT_PUBLIC_SDK_KEY": "$REVENUECAT_PUBLIC_SDK_KEY"
           }
           JSON
+
+      # Not tracked: it is gitignored so the public repo carries no Firebase
+      # project config. The google-services Gradle plugin hard-fails without
+      # it, which is what broke the first release run - "File
+      # google-services.json is missing", exit 1, at the build step.
+      - name: Restore google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::error::GOOGLE_SERVICES_JSON_BASE64 is not set. Produce it with: base64 -w0 android/app/google-services.json"
+            exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > android/app/google-services.json
+          # Fail loudly here rather than letting Gradle fail obscurely later.
+          if ! grep -q '"project_id"' android/app/google-services.json; then
+            echo "::error::Decoded google-services.json does not look right. Re-encode with: base64 -w0 android/app/google-services.json"
+            exit 1
+          fi
 
       # The upload keystore IS secret. Losing it is unrecoverable and leaking it
       # lets someone sign builds as us, so it is stored base64-encoded and the
@@ -157,7 +203,9 @@ jobs:
       # Secrets are scrubbed even if an earlier step fails.
       - name: Remove signing material
         if: always()
-        run: rm -f android/upload-keystore.jks android/key.properties
+        run: |
+          rm -f android/upload-keystore.jks android/key.properties
+          rm -f android/app/google-services.json
 
       - name: Summary
         if: always()

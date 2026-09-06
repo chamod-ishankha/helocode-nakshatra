@@ -567,6 +567,94 @@ class L10nTa extends L10n {
   String get settingsLinkFailed => 'அந்த இணைப்பைத் திறக்க முடியவில்லை.';
 
   @override
+  String get calendarTitle => 'நேரக் காட்டி';
+
+  @override
+  String get calendarPoya => 'பௌர்ணமி';
+
+  @override
+  String get calendarFestival => 'பண்டிகை';
+
+  @override
+  String get calendarBestDays => 'இந்த மாதத்தின் சிறந்த நாட்கள்';
+
+  @override
+  String get calendarPickActivity => 'நீங்கள் என்ன திட்டமிடுகிறீர்கள்?';
+
+  @override
+  String get calendarScan => 'நல்ல நாட்களைத் தேடு';
+
+  @override
+  String get calendarScanning =>
+      'இந்த மாதத்தின் ஒவ்வொரு நாளையும் பரிசோதிக்கிறது...';
+
+  @override
+  String get calendarNoGoodDays =>
+      'அதற்கு இந்த மாதத்தில் நல்ல நாள் இல்லை. அடுத்த மாதத்தையோ வேறு செயலையோ முயற்சிக்கவும்.';
+
+  @override
+  String get calendarDayDetail => 'பஞ்சாங்கம்';
+
+  @override
+  String get calendarClearWindows => 'தெளிவான நேரங்கள்';
+
+  @override
+  String calendarScoreLabel(int score) {
+    return 'மதிப்பெண் $score';
+  }
+
+  @override
+  String get activityTravel => 'பயணம்';
+
+  @override
+  String get activityWorkOrStudy => 'வேலை அல்லது படிப்பைத் தொடங்குதல்';
+
+  @override
+  String get activityBusiness => 'வணிகம் அல்லது ஒப்பந்தம்';
+
+  @override
+  String get activityMarriage => 'திருமணம்';
+
+  @override
+  String get activityHouseEntry => 'புது வீட்டில் குடியேறுதல்';
+
+  @override
+  String get activityVehicle => 'வாகனம் வாங்குதல்';
+
+  @override
+  String get reasonNakshatraFavours => 'அன்றைய நட்சத்திரம் இதற்கு உகந்தது';
+
+  @override
+  String get reasonNakshatraNeutral => 'அன்றைய நட்சத்திரம் இதற்கு நடுநிலையானது';
+
+  @override
+  String get reasonNakshatraWarnsAgainst =>
+      'அன்றைய நட்சத்திரம் இதற்கு உகந்ததல்ல';
+
+  @override
+  String get reasonTithiRikta =>
+      'ரிக்த திதி — தொடக்கங்களுக்கு மரபுப்படி தவிர்க்கப்படுகிறது';
+
+  @override
+  String get reasonTithiFavourable => 'சுப திதி';
+
+  @override
+  String get reasonYogaInauspicious => 'அசுப யோகம்';
+
+  @override
+  String get reasonKaranaVishti => 'விஷ்டி கரணம், தவிர்க்கப்படுகிறது';
+
+  @override
+  String get reasonVaraUnfavourable => 'இதற்கு இந்த வாரம் சிறந்ததல்ல';
+
+  @override
+  String get reasonVaraFavourable => 'பொருத்தமான வாரம்';
+
+  @override
+  String get reasonShortenedByChange =>
+      'நாளுக்குள் பஞ்சாங்கம் மாறுவதால் சுருக்கப்பட்டுள்ளது';
+
+  @override
   String get accountTitle => 'கணக்கு';
 
   @override

@@ -564,6 +564,94 @@ class L10nEn extends L10n {
   String get settingsLinkFailed => 'Could not open that link.';
 
   @override
+  String get calendarTitle => 'Nekath calendar';
+
+  @override
+  String get calendarPoya => 'Poya';
+
+  @override
+  String get calendarFestival => 'Festival';
+
+  @override
+  String get calendarBestDays => 'Best days this month';
+
+  @override
+  String get calendarPickActivity => 'What are you planning?';
+
+  @override
+  String get calendarScan => 'Find good days';
+
+  @override
+  String get calendarScanning => 'Checking every day this month...';
+
+  @override
+  String get calendarNoGoodDays =>
+      'Nothing this month scores well for that. Try the next month, or a different activity.';
+
+  @override
+  String get calendarDayDetail => 'Panchanga';
+
+  @override
+  String get calendarClearWindows => 'Clear windows';
+
+  @override
+  String calendarScoreLabel(int score) {
+    return 'Score $score';
+  }
+
+  @override
+  String get activityTravel => 'Travel';
+
+  @override
+  String get activityWorkOrStudy => 'Starting work or study';
+
+  @override
+  String get activityBusiness => 'Business or signing';
+
+  @override
+  String get activityMarriage => 'Marriage';
+
+  @override
+  String get activityHouseEntry => 'Moving into a house';
+
+  @override
+  String get activityVehicle => 'Buying a vehicle';
+
+  @override
+  String get reasonNakshatraFavours => 'The star of the day suits this';
+
+  @override
+  String get reasonNakshatraNeutral =>
+      'The star of the day is neutral for this';
+
+  @override
+  String get reasonNakshatraWarnsAgainst =>
+      'The star of the day is warned against for this';
+
+  @override
+  String get reasonTithiRikta =>
+      'A rikta tithi — traditionally avoided for beginnings';
+
+  @override
+  String get reasonTithiFavourable => 'A favourable tithi';
+
+  @override
+  String get reasonYogaInauspicious => 'An inauspicious yoga';
+
+  @override
+  String get reasonKaranaVishti => 'Vishti karana, which is avoided';
+
+  @override
+  String get reasonVaraUnfavourable => 'The weekday is not the best for this';
+
+  @override
+  String get reasonVaraFavourable => 'A suitable weekday';
+
+  @override
+  String get reasonShortenedByChange =>
+      'Shortened because the almanac changes during the day';
+
+  @override
   String get accountTitle => 'Account';
 
   @override

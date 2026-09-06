@@ -81,6 +81,8 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             const _NextPoyaCard(),
             const SizedBox(height: 16),
+            const _CalendarCard(),
+            const SizedBox(height: 8),
             const _CompatibilityCard(),
             const SizedBox(height: 24),
             const _ComingSoon(),
@@ -94,6 +96,34 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// The month view, and the activity lookup that sits under it.
+class _CalendarCard extends ConsumerWidget {
+  const _CalendarCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.dividerColor),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.calendar_month, color: AppColors.accent),
+        title: Text(L10n.of(context).calendarTitle),
+        subtitle: Text(
+          L10n.of(context).calendarPickActivity,
+          style: theme.textTheme.bodySmall,
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push(Routes.calendar),
       ),
     );
   }

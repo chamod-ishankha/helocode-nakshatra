@@ -1089,6 +1089,168 @@ abstract class L10n {
   /// **'Could not open that link.'**
   String get settingsLinkFailed;
 
+  /// No description provided for @calendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nekath calendar'**
+  String get calendarTitle;
+
+  /// No description provided for @calendarPoya.
+  ///
+  /// In en, this message translates to:
+  /// **'Poya'**
+  String get calendarPoya;
+
+  /// No description provided for @calendarFestival.
+  ///
+  /// In en, this message translates to:
+  /// **'Festival'**
+  String get calendarFestival;
+
+  /// No description provided for @calendarBestDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Best days this month'**
+  String get calendarBestDays;
+
+  /// No description provided for @calendarPickActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you planning?'**
+  String get calendarPickActivity;
+
+  /// No description provided for @calendarScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Find good days'**
+  String get calendarScan;
+
+  /// No description provided for @calendarScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking every day this month...'**
+  String get calendarScanning;
+
+  /// No description provided for @calendarNoGoodDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing this month scores well for that. Try the next month, or a different activity.'**
+  String get calendarNoGoodDays;
+
+  /// No description provided for @calendarDayDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Panchanga'**
+  String get calendarDayDetail;
+
+  /// No description provided for @calendarClearWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear windows'**
+  String get calendarClearWindows;
+
+  /// No description provided for @calendarScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Score {score}'**
+  String calendarScoreLabel(int score);
+
+  /// No description provided for @activityTravel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get activityTravel;
+
+  /// No description provided for @activityWorkOrStudy.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting work or study'**
+  String get activityWorkOrStudy;
+
+  /// No description provided for @activityBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business or signing'**
+  String get activityBusiness;
+
+  /// No description provided for @activityMarriage.
+  ///
+  /// In en, this message translates to:
+  /// **'Marriage'**
+  String get activityMarriage;
+
+  /// No description provided for @activityHouseEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Moving into a house'**
+  String get activityHouseEntry;
+
+  /// No description provided for @activityVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Buying a vehicle'**
+  String get activityVehicle;
+
+  /// No description provided for @reasonNakshatraFavours.
+  ///
+  /// In en, this message translates to:
+  /// **'The star of the day suits this'**
+  String get reasonNakshatraFavours;
+
+  /// No description provided for @reasonNakshatraNeutral.
+  ///
+  /// In en, this message translates to:
+  /// **'The star of the day is neutral for this'**
+  String get reasonNakshatraNeutral;
+
+  /// No description provided for @reasonNakshatraWarnsAgainst.
+  ///
+  /// In en, this message translates to:
+  /// **'The star of the day is warned against for this'**
+  String get reasonNakshatraWarnsAgainst;
+
+  /// No description provided for @reasonTithiRikta.
+  ///
+  /// In en, this message translates to:
+  /// **'A rikta tithi — traditionally avoided for beginnings'**
+  String get reasonTithiRikta;
+
+  /// No description provided for @reasonTithiFavourable.
+  ///
+  /// In en, this message translates to:
+  /// **'A favourable tithi'**
+  String get reasonTithiFavourable;
+
+  /// No description provided for @reasonYogaInauspicious.
+  ///
+  /// In en, this message translates to:
+  /// **'An inauspicious yoga'**
+  String get reasonYogaInauspicious;
+
+  /// No description provided for @reasonKaranaVishti.
+  ///
+  /// In en, this message translates to:
+  /// **'Vishti karana, which is avoided'**
+  String get reasonKaranaVishti;
+
+  /// No description provided for @reasonVaraUnfavourable.
+  ///
+  /// In en, this message translates to:
+  /// **'The weekday is not the best for this'**
+  String get reasonVaraUnfavourable;
+
+  /// No description provided for @reasonVaraFavourable.
+  ///
+  /// In en, this message translates to:
+  /// **'A suitable weekday'**
+  String get reasonVaraFavourable;
+
+  /// No description provided for @reasonShortenedByChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortened because the almanac changes during the day'**
+  String get reasonShortenedByChange;
+
   /// No description provided for @accountTitle.
   ///
   /// In en, this message translates to:

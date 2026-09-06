@@ -561,6 +561,92 @@ class L10nSi extends L10n {
   String get settingsLinkFailed => 'එම සබැඳිය විවෘත කළ නොහැකි විය.';
 
   @override
+  String get calendarTitle => 'නැකත් දින දර්ශනය';
+
+  @override
+  String get calendarPoya => 'පොහොය';
+
+  @override
+  String get calendarFestival => 'උත්සවය';
+
+  @override
+  String get calendarBestDays => 'මෙම මාසයේ හොඳම දින';
+
+  @override
+  String get calendarPickActivity => 'ඔබ සැලසුම් කරන්නේ කුමක්ද?';
+
+  @override
+  String get calendarScan => 'හොඳ දින සොයන්න';
+
+  @override
+  String get calendarScanning => 'මෙම මාසයේ සෑම දිනයක්ම පරීක්ෂා කරමින්...';
+
+  @override
+  String get calendarNoGoodDays =>
+      'ඒ සඳහා මෙම මාසයේ හොඳ දිනයක් නැත. ඊළඟ මාසය හෝ වෙනත් කාර්යයක් උත්සාහ කරන්න.';
+
+  @override
+  String get calendarDayDetail => 'පංචාංගය';
+
+  @override
+  String get calendarClearWindows => 'නිදහස් වේලාවන්';
+
+  @override
+  String calendarScoreLabel(int score) {
+    return 'ලකුණු $score';
+  }
+
+  @override
+  String get activityTravel => 'ගමන් යාම';
+
+  @override
+  String get activityWorkOrStudy => 'රැකියාව හෝ අධ්‍යාපනය ඇරඹීම';
+
+  @override
+  String get activityBusiness => 'ව්‍යාපාර හෝ ගිවිසුම්';
+
+  @override
+  String get activityMarriage => 'විවාහය';
+
+  @override
+  String get activityHouseEntry => 'නව නිවසකට පිවිසීම';
+
+  @override
+  String get activityVehicle => 'වාහනයක් ගැනීම';
+
+  @override
+  String get reasonNakshatraFavours => 'දිනයේ නැකත මෙයට උචිතයි';
+
+  @override
+  String get reasonNakshatraNeutral => 'දිනයේ නැකත මෙයට මධ්‍යස්ථයි';
+
+  @override
+  String get reasonNakshatraWarnsAgainst => 'දිනයේ නැකත මෙයට අහිතකරයි';
+
+  @override
+  String get reasonTithiRikta =>
+      'රික්ත තිථියකි — ආරම්භ සඳහා සම්ප්‍රදායිකව වළක්වනු ලැබේ';
+
+  @override
+  String get reasonTithiFavourable => 'සුබ තිථියකි';
+
+  @override
+  String get reasonYogaInauspicious => 'අසුබ යෝගයකි';
+
+  @override
+  String get reasonKaranaVishti => 'විෂ්ටි කරණය, එය වළක්වනු ලැබේ';
+
+  @override
+  String get reasonVaraUnfavourable => 'මෙයට වාරය එතරම් සුදුසු නැත';
+
+  @override
+  String get reasonVaraFavourable => 'සුදුසු වාරයකි';
+
+  @override
+  String get reasonShortenedByChange =>
+      'දිනය තුළ ලිත වෙනස් වන බැවින් කෙටි කර ඇත';
+
+  @override
   String get accountTitle => 'ගිණුම';
 
   @override

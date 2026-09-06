@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 import '../../features/account/presentation/account_screen.dart';
+import '../../features/calendar/presentation/calendar_screen.dart';
 import '../../features/chart/presentation/chart_screen.dart';
 import '../../features/compatibility/presentation/compatibility_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -78,6 +79,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.settings,
         name: 'settings',
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: Routes.calendar,
+        name: 'calendar',
+        builder: (context, state) => const CalendarScreen(),
       ),
     ],
     errorBuilder: (context, state) => _RouteErrorScreen(error: state.error),

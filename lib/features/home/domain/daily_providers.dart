@@ -18,6 +18,12 @@ class SelectedDateNotifier extends Notifier<DateTime> {
     return DateTime(now.year, now.month, now.day);
   }
 
+  /// Jumps to a specific day. Used by the calendar, which hands a date back
+  /// to the home screen rather than rendering its own day view.
+  void set(DateTime date) {
+    state = DateTime(date.year, date.month, date.day);
+  }
+
   void shift(int days) {
     final next = state.add(Duration(days: days));
     state = DateTime(next.year, next.month, next.day);

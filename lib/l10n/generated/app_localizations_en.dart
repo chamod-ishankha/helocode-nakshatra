@@ -483,6 +483,87 @@ class L10nEn extends L10n {
       'Certain star pairs are held to pierce one another.';
 
   @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsSectionProfile => 'Your details';
+
+  @override
+  String get settingsEditProfile => 'Edit birth details';
+
+  @override
+  String get settingsEditProfileHint =>
+      'Changing these recalculates every chart and reading.';
+
+  @override
+  String get settingsSectionAppearance => 'Appearance';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get themeSystem => 'Follow the phone';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get settingsThemeHint =>
+      'Light is easier to read outdoors, whatever the phone is set to.';
+
+  @override
+  String get settingsChartStyle => 'Chart style';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsSectionData => 'Your data';
+
+  @override
+  String get settingsDeleteData => 'Delete my details';
+
+  @override
+  String get settingsDeleteHint =>
+      'Removes your birth details from this phone and from our backup.';
+
+  @override
+  String get settingsDeleteTitle => 'Delete your details?';
+
+  @override
+  String get settingsDeleteBody =>
+      'Your birth details will be removed from this phone and from our backup. Your charts and readings go with them, and this cannot be undone.';
+
+  @override
+  String get settingsDeleteConfirm => 'Delete';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get settingsDeleted => 'Your details have been deleted.';
+
+  @override
+  String get settingsSectionAbout => 'About';
+
+  @override
+  String get settingsPrivacy => 'Privacy policy';
+
+  @override
+  String get settingsTerms => 'Terms';
+
+  @override
+  String settingsVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get settingsLinkFailed => 'Could not open that link.';
+
+  @override
   String get accountTitle => 'Account';
 
   @override

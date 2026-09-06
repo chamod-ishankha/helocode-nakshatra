@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
+import '../../../core/config/theme_preference.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/sync/profile_sync.dart';
 import '../domain/birth_profile.dart';
@@ -32,6 +33,7 @@ class ProfileRepository {
   static const _profileKey = 'birth_profile_v1';
   static const _localeKey = 'app_locale_v1';
   static const _chartStyleKey = 'chart_style_v1';
+  static const _themeKey = 'theme_preference_v1';
 
   BirthProfile? load() {
     final raw = _prefs.getString(_profileKey);
@@ -74,6 +76,12 @@ class ProfileRepository {
 
   Future<void> saveChartStyle(ChartStyle style) =>
       _prefs.setString(_chartStyleKey, style.name);
+
+  ThemePreference loadTheme() =>
+      ThemePreference.fromName(_prefs.getString(_themeKey));
+
+  Future<void> saveTheme(ThemePreference p) =>
+      _prefs.setString(_themeKey, p.name);
 }
 
 /// Overridden at startup with the real instance, once SharedPreferences has
@@ -211,3 +219,18 @@ class ChartStyleNotifier extends Notifier<ChartStyle> {
 final chartStyleProvider = NotifierProvider<ChartStyleNotifier, ChartStyle>(
   ChartStyleNotifier.new,
 );
+
+/// Light, dark or system. Persisted so a choice made outdoors survives a
+/// restart.
+class ThemeNotifier extends Notifier<ThemePreference> {
+  @override
+  ThemePreference build() => ref.watch(profileRepositoryProvider).loadTheme();
+
+  Future<void> set(ThemePreference p) async {
+    await ref.read(profileRepositoryProvider).saveTheme(p);
+    state = p;
+  }
+}
+
+final themePreferenceProvider =
+    NotifierProvider<ThemeNotifier, ThemePreference>(ThemeNotifier.new);

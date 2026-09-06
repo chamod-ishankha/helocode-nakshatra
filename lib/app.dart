@@ -14,6 +14,7 @@ class NakshatraApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
+    final themePreference = ref.watch(themePreferenceProvider);
 
     return MaterialApp.router(
       // Not localised: the brand reads the same in all three languages.
@@ -21,7 +22,7 @@ class NakshatraApp extends ConsumerWidget {
       debugShowCheckedModeBanner: !FlavorConfig.current.flavor.isProd,
       theme: AppTheme.light(locale),
       darkTheme: AppTheme.dark(locale),
-      themeMode: ThemeMode.system,
+      themeMode: themePreference.mode,
 
       // Driven by the user's choice rather than the device, because a Sinhala
       // speaker on an English phone is the common case here, not the exception.

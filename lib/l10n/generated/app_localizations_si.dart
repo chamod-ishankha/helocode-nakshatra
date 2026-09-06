@@ -480,6 +480,87 @@ class L10nSi extends L10n {
   String get factorVedhaAbout => 'සමහර නැකත් යුගල එකිනෙක විදින බව සැලකේ.';
 
   @override
+  String get settingsTitle => 'සැකසුම්';
+
+  @override
+  String get settingsSectionProfile => 'ඔබේ තොරතුරු';
+
+  @override
+  String get settingsEditProfile => 'උපන් තොරතුරු වෙනස් කරන්න';
+
+  @override
+  String get settingsEditProfileHint =>
+      'මේවා වෙනස් කිරීමෙන් සෑම කේන්දරයක්ම හා පලාපලයක්ම නැවත ගණනය වේ.';
+
+  @override
+  String get settingsSectionAppearance => 'පෙනුම';
+
+  @override
+  String get settingsTheme => 'වර්ණ රටාව';
+
+  @override
+  String get themeSystem => 'දුරකථනයට අනුව';
+
+  @override
+  String get themeLight => 'ලා පැහැ';
+
+  @override
+  String get themeDark => 'අඳුරු';
+
+  @override
+  String get settingsThemeHint =>
+      'දුරකථනයේ සැකසුම කුමක් වුවත්, එළිමහනේ කියවීමට ලා පැහැය පහසුය.';
+
+  @override
+  String get settingsChartStyle => 'කේන්දර ශෛලිය';
+
+  @override
+  String get settingsLanguage => 'භාෂාව';
+
+  @override
+  String get settingsSectionData => 'ඔබේ දත්ත';
+
+  @override
+  String get settingsDeleteData => 'මගේ තොරතුරු මකන්න';
+
+  @override
+  String get settingsDeleteHint =>
+      'ඔබේ උපන් තොරතුරු මෙම දුරකථනයෙන් සහ අපගේ උපස්ථයෙන් ඉවත් කරයි.';
+
+  @override
+  String get settingsDeleteTitle => 'ඔබේ තොරතුරු මකන්නද?';
+
+  @override
+  String get settingsDeleteBody =>
+      'ඔබේ උපන් තොරතුරු මෙම දුරකථනයෙන් සහ අපගේ උපස්ථයෙන් ඉවත් වේ. ඔබේ කේන්දර සහ පලාපල ද ඒ සමඟම යයි. මෙය නැවත හැරවිය නොහැක.';
+
+  @override
+  String get settingsDeleteConfirm => 'මකන්න';
+
+  @override
+  String get commonCancel => 'අවලංගු කරන්න';
+
+  @override
+  String get settingsDeleted => 'ඔබේ තොරතුරු මකා දමන ලදී.';
+
+  @override
+  String get settingsSectionAbout => 'යෙදුම ගැන';
+
+  @override
+  String get settingsPrivacy => 'රහස්‍යතා ප්‍රතිපත්තිය';
+
+  @override
+  String get settingsTerms => 'නියම';
+
+  @override
+  String settingsVersion(String version) {
+    return 'අනුවාදය $version';
+  }
+
+  @override
+  String get settingsLinkFailed => 'එම සබැඳිය විවෘත කළ නොහැකි විය.';
+
+  @override
   String get accountTitle => 'ගිණුම';
 
   @override

@@ -939,6 +939,156 @@ abstract class L10n {
   /// **'Certain star pairs are held to pierce one another.'**
   String get factorVedhaAbout;
 
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsSectionProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details'**
+  String get settingsSectionProfile;
+
+  /// No description provided for @settingsEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit birth details'**
+  String get settingsEditProfile;
+
+  /// No description provided for @settingsEditProfileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing these recalculates every chart and reading.'**
+  String get settingsEditProfileHint;
+
+  /// No description provided for @settingsSectionAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsSectionAppearance;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the phone'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @settingsThemeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Light is easier to read outdoors, whatever the phone is set to.'**
+  String get settingsThemeHint;
+
+  /// No description provided for @settingsChartStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chart style'**
+  String get settingsChartStyle;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsSectionData.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data'**
+  String get settingsSectionData;
+
+  /// No description provided for @settingsDeleteData.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my details'**
+  String get settingsDeleteData;
+
+  /// No description provided for @settingsDeleteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes your birth details from this phone and from our backup.'**
+  String get settingsDeleteHint;
+
+  /// No description provided for @settingsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your details?'**
+  String get settingsDeleteTitle;
+
+  /// No description provided for @settingsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your birth details will be removed from this phone and from our backup. Your charts and readings go with them, and this cannot be undone.'**
+  String get settingsDeleteBody;
+
+  /// No description provided for @settingsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get settingsDeleteConfirm;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// No description provided for @settingsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details have been deleted.'**
+  String get settingsDeleted;
+
+  /// No description provided for @settingsSectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsSectionAbout;
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms'**
+  String get settingsTerms;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String settingsVersion(String version);
+
+  /// No description provided for @settingsLinkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open that link.'**
+  String get settingsLinkFailed;
+
   /// No description provided for @accountTitle.
   ///
   /// In en, this message translates to:

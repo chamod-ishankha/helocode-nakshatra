@@ -42,7 +42,17 @@ class HomeScreen extends ConsumerWidget {
             onPressed: () => context.push(Routes.chart),
           ),
           const _AccountAction(),
+          // The language switcher stays in the bar even though settings now
+          // carries one too. Someone stuck in a language they cannot read
+          // would have to find a settings screen labelled in that same
+          // language — the header button is the escape hatch, and burying it
+          // would defeat the point of having it.
           const LanguageButton(),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: L10n.of(context).settingsTitle,
+            onPressed: () => context.push(Routes.settings),
+          ),
         ],
       ),
       body: RefreshIndicator(

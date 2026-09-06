@@ -486,6 +486,87 @@ class L10nTa extends L10n {
       'சில நட்சத்திர ஜோடிகள் ஒன்றையொன்று துளைப்பதாகக் கருதப்படுகிறது.';
 
   @override
+  String get settingsTitle => 'அமைப்புகள்';
+
+  @override
+  String get settingsSectionProfile => 'உங்கள் விவரங்கள்';
+
+  @override
+  String get settingsEditProfile => 'பிறப்பு விவரங்களை மாற்று';
+
+  @override
+  String get settingsEditProfileHint =>
+      'இவற்றை மாற்றினால் ஒவ்வொரு ஜாதகமும் பலனும் மீண்டும் கணக்கிடப்படும்.';
+
+  @override
+  String get settingsSectionAppearance => 'தோற்றம்';
+
+  @override
+  String get settingsTheme => 'நிறத் தோற்றம்';
+
+  @override
+  String get themeSystem => 'தொலைபேசியைப் பின்பற்று';
+
+  @override
+  String get themeLight => 'வெளிர்';
+
+  @override
+  String get themeDark => 'இருள்';
+
+  @override
+  String get settingsThemeHint =>
+      'தொலைபேசி அமைப்பு எதுவாக இருந்தாலும், வெளியில் படிக்க வெளிர் நிறம் எளிது.';
+
+  @override
+  String get settingsChartStyle => 'ஜாதக பாணி';
+
+  @override
+  String get settingsLanguage => 'மொழி';
+
+  @override
+  String get settingsSectionData => 'உங்கள் தரவு';
+
+  @override
+  String get settingsDeleteData => 'என் விவரங்களை அழி';
+
+  @override
+  String get settingsDeleteHint =>
+      'உங்கள் பிறப்பு விவரங்களை இந்தத் தொலைபேசியிலிருந்தும் எங்கள் காப்புப் பிரதியிலிருந்தும் நீக்கும்.';
+
+  @override
+  String get settingsDeleteTitle => 'உங்கள் விவரங்களை அழிக்கவா?';
+
+  @override
+  String get settingsDeleteBody =>
+      'உங்கள் பிறப்பு விவரங்கள் இந்தத் தொலைபேசியிலிருந்தும் எங்கள் காப்புப் பிரதியிலிருந்தும் நீக்கப்படும். உங்கள் ஜாதகங்களும் பலன்களும் அவற்றுடன் போகும். இதை மீட்டெடுக்க முடியாது.';
+
+  @override
+  String get settingsDeleteConfirm => 'அழி';
+
+  @override
+  String get commonCancel => 'ரத்து செய்';
+
+  @override
+  String get settingsDeleted => 'உங்கள் விவரங்கள் அழிக்கப்பட்டன.';
+
+  @override
+  String get settingsSectionAbout => 'செயலி பற்றி';
+
+  @override
+  String get settingsPrivacy => 'தனியுரிமைக் கொள்கை';
+
+  @override
+  String get settingsTerms => 'விதிமுறைகள்';
+
+  @override
+  String settingsVersion(String version) {
+    return 'பதிப்பு $version';
+  }
+
+  @override
+  String get settingsLinkFailed => 'அந்த இணைப்பைத் திறக்க முடியவில்லை.';
+
+  @override
   String get accountTitle => 'கணக்கு';
 
   @override

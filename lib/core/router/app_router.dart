@@ -10,6 +10,7 @@ import '../../features/compatibility/presentation/compatibility_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/settings/presentation/settings_screen.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
@@ -72,6 +73,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.compatibility,
         name: 'compatibility',
         builder: (context, state) => const CompatibilityScreen(),
+      ),
+      GoRoute(
+        path: Routes.settings,
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
     errorBuilder: (context, state) => _RouteErrorScreen(error: state.error),

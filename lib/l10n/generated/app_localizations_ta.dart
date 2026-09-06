@@ -881,12 +881,7 @@ class L10nTa extends L10n {
       'Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்.';
 
   @override
-  String get horoscopeTitle => 'தினசரி ராசி பலன்';
-
-  @override
-  String horoscopeForSign(String sign) {
-    return '$sign ராசிக்கு';
-  }
+  String get horoscopeTitle => 'தினசரி பலன்';
 
   @override
   String get horoscopeUnavailable =>
@@ -949,4 +944,17 @@ class L10nTa extends L10n {
 
   @override
   String get colourPurple => 'ஊதா';
+
+  @override
+  String get horoscopeByLagna => 'லக்னம்';
+
+  @override
+  String get horoscopeByRasi => 'ராசி';
+
+  @override
+  String get horoscopeSameSign => 'உங்கள் லக்னமும் ராசியும் ஒன்றே.';
+
+  @override
+  String get horoscopeLagnaApproximate =>
+      'பிறந்த நேரம் தெரியாததால் இந்த லக்னம் தோராயமானது.';
 }

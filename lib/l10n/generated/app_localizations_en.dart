@@ -878,11 +878,6 @@ class L10nEn extends L10n {
   String get horoscopeTitle => 'Daily horoscope';
 
   @override
-  String horoscopeForSign(String sign) {
-    return 'For $sign';
-  }
-
-  @override
   String get horoscopeUnavailable =>
       'Your horoscope needs your birth details. Finish setting up your chart to see it.';
 
@@ -943,4 +938,17 @@ class L10nEn extends L10n {
 
   @override
   String get colourPurple => 'Purple';
+
+  @override
+  String get horoscopeByLagna => 'Lagna';
+
+  @override
+  String get horoscopeByRasi => 'Moon sign';
+
+  @override
+  String get horoscopeSameSign => 'Your lagna and moon sign are the same.';
+
+  @override
+  String get horoscopeLagnaApproximate =>
+      'Your birth time is unknown, so this lagna is approximate.';
 }

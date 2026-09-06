@@ -13,6 +13,8 @@ import 'package:nakshatra/features/horoscope/domain/horoscope_signals.dart';
 /// not repeat itself within a month, which is the difference between an app
 /// people open daily and one they stop trusting in a fortnight.
 void main() {
+  _axisTests();
+
   /// A sky. Defaults put nothing remarkable anywhere.
   Map<Graha, Rasi> sky({
     Rasi moon = Rasi.mesha,
@@ -394,6 +396,92 @@ void main() {
     test('the date is reduced to a calendar day', () {
       final s = signalsFor(DateTime(2026, 9, 7, 18, 42, 11));
       expect(s.date, DateTime(2026, 9, 7));
+    });
+  });
+}
+
+/// Reading from the lagna as well as the Moon sign.
+///
+/// Sri Lanka reads both: people identify by their lagna, while the classical
+/// gochara tables are stated from the janma rasi. Offering both is only
+/// honest if the two actually differ - a toggle between identical readings
+/// would be worse than picking one.
+void _axisTests() {
+  Map<Graha, Rasi> sky() => {
+    Graha.sun: Rasi.simha,
+    Graha.moon: Rasi.tula,
+    Graha.mars: Rasi.kanya,
+    Graha.mercury: Rasi.simha,
+    Graha.jupiter: Rasi.karka,
+    Graha.venus: Rasi.kanya,
+    Graha.saturn: Rasi.meena,
+    Graha.rahu: Rasi.kumbha,
+    Graha.ketu: Rasi.simha,
+  };
+
+  List<Fragment> pool(HoroscopeCategory c, int n) => [
+    for (var i = 0; i < n; i++)
+      Fragment(id: '${c.name}-$i', category: c, text: 'Sentence $i.'),
+  ];
+
+  List<Fragment> fullSet() => [
+    for (final c in HoroscopeCategory.values) ...pool(c, 40),
+  ];
+
+  Horoscope reading(Rasi from) => HoroscopeEngine.build(
+    signals: HoroscopeSignals.from(
+      rasi: from,
+      date: DateTime(2026, 9, 7),
+      transiting: sky(),
+    ),
+    fragments: fullSet(),
+  );
+
+  group('lagna and rasi', () {
+    test('two different signs give two different readings', () {
+      // The reported case: lagna Virgo, Moon in Pisces. Opposite signs, so
+      // every transit sits in the opposite house and the readings must not
+      // come out the same.
+      final byLagna = reading(Rasi.kanya);
+      final byRasi = reading(Rasi.meena);
+
+      expect(byLagna.fragmentIds, isNot(byRasi.fragmentIds));
+    });
+
+    test('the houses are genuinely counted from a different sign', () {
+      final lagna = HoroscopeSignals.from(
+        rasi: Rasi.kanya,
+        date: DateTime(2026, 9, 7),
+        transiting: sky(),
+      );
+      final rasi = HoroscopeSignals.from(
+        rasi: Rasi.meena,
+        date: DateTime(2026, 9, 7),
+        transiting: sky(),
+      );
+
+      // Saturn is in Pisces. From Virgo that is the 7th; from Pisces it is
+      // the 1st, which is sade sati.
+      expect(lagna.tags, contains('saturn.house.7'));
+      expect(rasi.tags, contains('saturn.house.1'));
+      expect(rasi.tags, contains('saturn.sadeSati'));
+      expect(lagna.tags, isNot(contains('saturn.sadeSati')));
+    });
+
+    test('the same sign on both axes gives the same reading', () {
+      // Which is why the screen collapses to one reading rather than showing
+      // a toggle between two identical ones.
+      expect(reading(Rasi.kanya).fragmentIds, reading(Rasi.kanya).fragmentIds);
+    });
+
+    test('every sign produces a full reading on either axis', () {
+      for (final r in Rasi.values) {
+        expect(
+          reading(r).sections.length,
+          HoroscopeCategory.values.length,
+          reason: r.en,
+        );
+      }
     });
   });
 }

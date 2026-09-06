@@ -77,44 +77,92 @@ final transitingPositionsProvider = Provider<Map<Graha, Rasi>?>((ref) {
   };
 });
 
+/// Which sign a reading is counted from.
+///
+/// Sri Lanka reads both. People identify by their lagna — "මගේ ලග්නය" — and
+/// newspaper columns are ලග්න පලාපල, while the classical gochara tables are
+/// stated from the janma rāśi. Rather than pick one and be wrong for half the
+/// readers, both are offered and each is labelled for what it is.
+enum HoroscopeAxis { lagna, rasi }
+
+class HoroscopeAxisNotifier extends Notifier<HoroscopeAxis> {
+  // Lagna first: it is the one a Sri Lankan reader recognises as "their" sign.
+  @override
+  HoroscopeAxis build() => HoroscopeAxis.lagna;
+
+  void set(HoroscopeAxis axis) => state = axis;
+}
+
+final horoscopeAxisProvider =
+    NotifierProvider<HoroscopeAxisNotifier, HoroscopeAxis>(
+      HoroscopeAxisNotifier.new,
+    );
+
 /// The reader's janma rāśi — the sign their natal Moon occupied.
 final janmaRasiProvider = Provider<Rasi?>((ref) {
   final chart = ref.watch(chartProvider)?.valueOrNull;
   return chart?[Graha.moon].rasi;
 });
 
-/// Today's signals for the reader's sign.
-final horoscopeSignalsProvider = Provider<HoroscopeSignals?>((ref) {
-  final rasi = ref.watch(janmaRasiProvider);
-  final transiting = ref.watch(transitingPositionsProvider);
-  if (rasi == null || transiting == null) return null;
-
+/// The reader's lagna — the sign rising at birth.
+///
+/// Approximate when the birth time is unknown, because the lagna moves a sign
+/// every two hours. The screen says so; see [lagnaIsApproximate].
+final lagnaRasiProvider = Provider<Rasi?>((ref) {
   final chart = ref.watch(chartProvider)?.valueOrNull;
-  final natal = chart == null
-      ? null
-      : <Graha, Rasi>{
-          for (final e in chart.positions.entries) e.key: e.value.rasi,
-        };
-
-  final date = ref.watch(selectedDateProvider);
-
-  DashaSnapshot? dasha;
-  if (chart != null) {
-    dasha = Vimshottari.at(Vimshottari.forChart(chart), date);
-  }
-
-  return HoroscopeSignals.from(
-    rasi: rasi,
-    date: date,
-    transiting: transiting,
-    natal: natal,
-    dasha: dasha,
-  );
+  return chart?.lagnaRasi;
 });
 
-/// The finished reading, or null before onboarding.
-final horoscopeProvider = Provider<Horoscope?>((ref) {
-  final signals = ref.watch(horoscopeSignalsProvider);
+/// Whether the lagna was guessed from an assumed sunrise birth.
+final lagnaIsApproximateProvider = Provider<bool>((ref) {
+  final profile = ref.watch(profileProvider);
+  return profile != null && !profile.birthTimeKnown;
+});
+
+/// The sign a reading on [axis] is counted from.
+final horoscopeSignProvider = Provider.family<Rasi?, HoroscopeAxis>(
+  (ref, axis) => switch (axis) {
+    HoroscopeAxis.lagna => ref.watch(lagnaRasiProvider),
+    HoroscopeAxis.rasi => ref.watch(janmaRasiProvider),
+  },
+);
+
+/// Today's signals counted from [axis].
+final horoscopeSignalsProvider =
+    Provider.family<HoroscopeSignals?, HoroscopeAxis>((ref, axis) {
+      final rasi = ref.watch(horoscopeSignProvider(axis));
+      final transiting = ref.watch(transitingPositionsProvider);
+      if (rasi == null || transiting == null) return null;
+
+      final chart = ref.watch(chartProvider)?.valueOrNull;
+      final natal = chart == null
+          ? null
+          : <Graha, Rasi>{
+              for (final e in chart.positions.entries) e.key: e.value.rasi,
+            };
+
+      final date = ref.watch(selectedDateProvider);
+
+      DashaSnapshot? dasha;
+      if (chart != null) {
+        dasha = Vimshottari.at(Vimshottari.forChart(chart), date);
+      }
+
+      return HoroscopeSignals.from(
+        rasi: rasi,
+        date: date,
+        transiting: transiting,
+        natal: natal,
+        dasha: dasha,
+      );
+    });
+
+/// The finished reading for [axis], or null before onboarding.
+final horoscopeProvider = Provider.family<Horoscope?, HoroscopeAxis>((
+  ref,
+  axis,
+) {
+  final signals = ref.watch(horoscopeSignalsProvider(axis));
   if (signals == null) return null;
 
   final fragments = ref.watch(horoscopeFragmentsProvider).value;

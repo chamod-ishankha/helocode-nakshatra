@@ -1653,12 +1653,6 @@ abstract class L10n {
   /// **'Daily horoscope'**
   String get horoscopeTitle;
 
-  /// Heading naming the reader's moon sign.
-  ///
-  /// In en, this message translates to:
-  /// **'For {sign}'**
-  String horoscopeForSign(String sign);
-
   /// No description provided for @horoscopeUnavailable.
   ///
   /// In en, this message translates to:
@@ -1778,6 +1772,30 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Purple'**
   String get colourPurple;
+
+  /// No description provided for @horoscopeByLagna.
+  ///
+  /// In en, this message translates to:
+  /// **'Lagna'**
+  String get horoscopeByLagna;
+
+  /// No description provided for @horoscopeByRasi.
+  ///
+  /// In en, this message translates to:
+  /// **'Moon sign'**
+  String get horoscopeByRasi;
+
+  /// No description provided for @horoscopeSameSign.
+  ///
+  /// In en, this message translates to:
+  /// **'Your lagna and moon sign are the same.'**
+  String get horoscopeSameSign;
+
+  /// No description provided for @horoscopeLagnaApproximate.
+  ///
+  /// In en, this message translates to:
+  /// **'Your birth time is unknown, so this lagna is approximate.'**
+  String get horoscopeLagnaApproximate;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

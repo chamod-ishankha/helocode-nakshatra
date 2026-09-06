@@ -35,8 +35,15 @@ class HoroscopeScreen extends ConsumerWidget {
         ahead &&
         !ref.watch(unlockStoreProvider).isOpen(RewardedUnlock.futureDay);
 
-    final horoscope = locked ? null : ref.watch(horoscopeProvider);
-    final rasi = ref.watch(janmaRasiProvider);
+    final axis = ref.watch(horoscopeAxisProvider);
+    final horoscope = locked ? null : ref.watch(horoscopeProvider(axis));
+
+    final lagna = ref.watch(lagnaRasiProvider);
+    final moon = ref.watch(janmaRasiProvider);
+    // When the two coincide there is only one reading to give, and a toggle
+    // between two identical readings would look broken.
+    final bothSame = lagna != null && lagna == moon;
+    final sign = ref.watch(horoscopeSignProvider(axis));
 
     return Scaffold(
       appBar: AppBar(
@@ -46,12 +53,44 @@ class HoroscopeScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          if (rasi != null)
+          if (!bothSame && lagna != null && moon != null) ...[
+            _AxisToggle(axis: axis),
+            const SizedBox(height: 12),
+          ],
+
+          if (sign != null)
             Text(
-              l.horoscopeForSign(rasi.label(locale)),
-              style: Theme.of(context).textTheme.titleMedium,
+              sign.label(locale),
+              style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
+          if (bothSame)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                l.horoscopeSameSign,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+
+          // The lagna moves a sign every two hours, so without a birth time it
+          // is a guess. Saying nothing would present a coin flip as a reading.
+          if (axis == HoroscopeAxis.lagna &&
+              ref.watch(lagnaIsApproximateProvider))
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                l.horoscopeLagnaApproximate,
+                textAlign: TextAlign.center,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.inauspicious),
+              ),
+            ),
+
           const SizedBox(height: 16),
 
           if (locked)
@@ -91,6 +130,35 @@ class HoroscopeScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Lagna or rāśi. Same shape as the compatibility screen's system toggle, so
+/// the two "which system are you reading" choices in the app look alike.
+class _AxisToggle extends ConsumerWidget {
+  const _AxisToggle({required this.axis});
+
+  final HoroscopeAxis axis;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+
+    return SegmentedButton<HoroscopeAxis>(
+      segments: [
+        ButtonSegment(
+          value: HoroscopeAxis.lagna,
+          label: Text(l.horoscopeByLagna),
+        ),
+        ButtonSegment(
+          value: HoroscopeAxis.rasi,
+          label: Text(l.horoscopeByRasi),
+        ),
+      ],
+      selected: {axis},
+      onSelectionChanged: (s) =>
+          ref.read(horoscopeAxisProvider.notifier).set(s.first),
     );
   }
 }

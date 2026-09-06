@@ -258,8 +258,7 @@
   "unlockFutureTitle": "වෙනත් දිනවල නැකත්",
   "unlockFutureBody": "ඉදිරි ඕනෑම දිනක් බලන්න — සුබ මුහූර්ත, රාහු කාලය සහ සම්පූර්ණ පංචාංගය.",
   "authErrorGoogleRepeated": "Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.",
-  "horoscopeTitle": "දෛනික ලග්න පලාපල",
-  "horoscopeForSign": "{sign} ලග්නය සඳහා",
+  "horoscopeTitle": "දෛනික පලාපල",
   "horoscopeUnavailable": "ලග්න පලාපල සඳහා ඔබේ උපන් තොරතුරු අවශ්‍යයි. කේන්දරය සකසා අවසන් කරන්න.",
   "horoscopeGeneral": "අද දිනය",
   "horoscopeCareer": "රැකියාව",
@@ -279,5 +278,9 @@
   "colourBrown": "දුඹුරු",
   "colourGold": "රන්",
   "colourSilver": "රිදී",
-  "colourPurple": "දම්"
+  "colourPurple": "දම්",
+  "horoscopeByLagna": "ලග්නය",
+  "horoscopeByRasi": "රාශිය",
+  "horoscopeSameSign": "ඔබේ ලග්නය සහ රාශිය එකමයි.",
+  "horoscopeLagnaApproximate": "උපන් වේලාව නොදන්නා බැවින් මෙම ලග්නය ආසන්න අගයකි."
 }

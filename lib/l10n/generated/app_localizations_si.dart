@@ -869,12 +869,7 @@ class L10nSi extends L10n {
       'Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.';
 
   @override
-  String get horoscopeTitle => 'දෛනික ලග්න පලාපල';
-
-  @override
-  String horoscopeForSign(String sign) {
-    return '$sign ලග්නය සඳහා';
-  }
+  String get horoscopeTitle => 'දෛනික පලාපල';
 
   @override
   String get horoscopeUnavailable =>
@@ -937,4 +932,17 @@ class L10nSi extends L10n {
 
   @override
   String get colourPurple => 'දම්';
+
+  @override
+  String get horoscopeByLagna => 'ලග්නය';
+
+  @override
+  String get horoscopeByRasi => 'රාශිය';
+
+  @override
+  String get horoscopeSameSign => 'ඔබේ ලග්නය සහ රාශිය එකමයි.';
+
+  @override
+  String get horoscopeLagnaApproximate =>
+      'උපන් වේලාව නොදන්නා බැවින් මෙම ලග්නය ආසන්න අගයකි.';
 }

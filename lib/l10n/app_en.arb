@@ -388,15 +388,6 @@
   "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga.",
   "authErrorGoogleRepeated": "Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.",
   "horoscopeTitle": "Daily horoscope",
-  "horoscopeForSign": "For {sign}",
-  "@horoscopeForSign": {
-    "description": "Heading naming the reader's moon sign.",
-    "placeholders": {
-      "sign": {
-        "type": "String"
-      }
-    }
-  },
   "horoscopeUnavailable": "Your horoscope needs your birth details. Finish setting up your chart to see it.",
   "horoscopeGeneral": "The day",
   "horoscopeCareer": "Work",
@@ -416,5 +407,9 @@
   "colourBrown": "Brown",
   "colourGold": "Gold",
   "colourSilver": "Silver",
-  "colourPurple": "Purple"
+  "colourPurple": "Purple",
+  "horoscopeByLagna": "Lagna",
+  "horoscopeByRasi": "Moon sign",
+  "horoscopeSameSign": "Your lagna and moon sign are the same.",
+  "horoscopeLagnaApproximate": "Your birth time is unknown, so this lagna is approximate."
 }

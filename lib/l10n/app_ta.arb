@@ -258,8 +258,7 @@
   "unlockFutureTitle": "மற்ற நாட்களின் நேரம்",
   "unlockFutureBody": "வரும் எந்த நாளையும் திறக்கலாம் — நல்ல நேரங்கள், ராகு காலம் மற்றும் முழு பஞ்சாங்கம்.",
   "authErrorGoogleRepeated": "Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்.",
-  "horoscopeTitle": "தினசரி ராசி பலன்",
-  "horoscopeForSign": "{sign} ராசிக்கு",
+  "horoscopeTitle": "தினசரி பலன்",
   "horoscopeUnavailable": "ராசி பலனுக்கு உங்கள் பிறப்பு விவரங்கள் தேவை. ஜாதகத்தை அமைத்து முடிக்கவும்.",
   "horoscopeGeneral": "இன்றைய நாள்",
   "horoscopeCareer": "வேலை",
@@ -279,5 +278,9 @@
   "colourBrown": "பழுப்பு",
   "colourGold": "தங்கம்",
   "colourSilver": "வெள்ளி",
-  "colourPurple": "ஊதா"
+  "colourPurple": "ஊதா",
+  "horoscopeByLagna": "லக்னம்",
+  "horoscopeByRasi": "ராசி",
+  "horoscopeSameSign": "உங்கள் லக்னமும் ராசியும் ஒன்றே.",
+  "horoscopeLagnaApproximate": "பிறந்த நேரம் தெரியாததால் இந்த லக்னம் தோராயமானது."
 }

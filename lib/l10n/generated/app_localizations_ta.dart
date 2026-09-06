@@ -151,7 +151,7 @@ class L10nTa extends L10n {
   String get homeAccount => 'கணக்கு';
 
   @override
-  String get homeComingSoon => 'தினசரி ராசிபலனும் உங்கள் தற்போதைய தசா காலமும்.';
+  String get homeComingSoon => 'உங்கள் ஜாதகத்திற்கேற்ற தினசரி ராசிபலன்.';
 
   @override
   String get homeFestivalsExcluded =>
@@ -219,6 +219,28 @@ class L10nTa extends L10n {
   @override
   String get chartApproximate =>
       'பிறந்த நேரம் தெரியவில்லை — சூரிய உதயம் கருதப்பட்டது. கிரக நிலைகள் சரியானவை; லக்னமும் பாவங்களும் தோராயமானவை.';
+
+  @override
+  String get dashaTitle => 'தசா காலங்கள்';
+
+  @override
+  String get dashaRunningNow => 'இப்போது நடப்பில்';
+
+  @override
+  String get dashaSubPeriods => 'அந்தர் தசை';
+
+  @override
+  String dashaEnds(String date) {
+    return '$date இல் முடிகிறது';
+  }
+
+  @override
+  String get dashaBalanceNote =>
+      'நீங்கள் பிறக்கும்போதே உங்கள் முதல் தசை தொடங்கிவிட்டிருந்தது, எனவே அது அதன் முழு நீளத்தை விடக் குறைவாகக் காட்டப்படுகிறது.';
+
+  @override
+  String get dashaUnreliableTime =>
+      'உங்கள் பிறந்த நேரம் தெரியாததால் சூரிய உதயம் கருதப்பட்டது. சந்திரன் மணிக்கு அரை பாகை அளவு நகர்கிறது, இது இந்தத் தேதிகளை பல ஆண்டுகள் மாற்றக்கூடும், முதல் தசையின் அதிபதி கிரகத்தையே கூட மாற்றக்கூடும். உங்கள் பிறந்த நேரம் தெரியும் வரை இதை ஒரு தோராயமான வழிகாட்டியாகக் கருதுங்கள்.';
 
   @override
   String get accountTitle => 'கணக்கு';

@@ -148,7 +148,7 @@ class L10nSi extends L10n {
   String get homeAccount => 'ගිණුම';
 
   @override
-  String get homeComingSoon => 'දෛනික ලග්න පලාපල සහ ඔබේ වත්මන් දශා කාලය.';
+  String get homeComingSoon => 'ඔබේ කේන්දරයට අනුව දෛනික ලග්න පලාපල.';
 
   @override
   String get homeFestivalsExcluded =>
@@ -216,6 +216,28 @@ class L10nSi extends L10n {
   @override
   String get chartApproximate =>
       'උපන් වේලාව නොදනී — හිරු උදාව උපකල්පනය කරන ලදී. ග්‍රහ පිහිටීම් නිවැරදිය; ලග්නය සහ භාව දළ වේ.';
+
+  @override
+  String get dashaTitle => 'දශා කාල';
+
+  @override
+  String get dashaRunningNow => 'දැන් ක්‍රියාත්මකයි';
+
+  @override
+  String get dashaSubPeriods => 'අන්තර් දශා';
+
+  @override
+  String dashaEnds(String date) {
+    return '$date දින අවසන් වේ';
+  }
+
+  @override
+  String get dashaBalanceNote =>
+      'ඔබ උපදින විට ඔබේ පළමු දශාව දැනටමත් ආරම්භ වී තිබූ බැවින්, එය එහි සම්පූර්ණ දිගට වඩා කෙටියෙන් දැක්වේ.';
+
+  @override
+  String get dashaUnreliableTime =>
+      'ඔබේ උපන් වේලාව නොදන්නා බැවින් හිරු උදාව උපකල්පනය කරන ලදී. චන්ද්‍රයා පැයකට අංශක භාගයක් පමණ ගමන් කරන අතර, එය මෙම දිනයන් වසර ගණනකින් වෙනස් කළ හැකි අතර පළමු දශාවේ අධිපති ග්‍රහයා පවා වෙනස් විය හැක. ඔබේ උපන් වේලාව දැනගන්නා තෙක් මෙය දළ මාර්ගෝපදේශයක් ලෙස සලකන්න.';
 
   @override
   String get accountTitle => 'ගිණුම';

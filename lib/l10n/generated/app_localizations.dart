@@ -354,7 +354,7 @@ abstract class L10n {
   /// No description provided for @homeComingSoon.
   ///
   /// In en, this message translates to:
-  /// **'Daily horoscope and your current daśā period.'**
+  /// **'Daily horoscope, personalised to your chart.'**
   String get homeComingSoon;
 
   /// No description provided for @homeFestivalsExcluded.
@@ -482,6 +482,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.'**
   String get chartApproximate;
+
+  /// No description provided for @dashaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daśā periods'**
+  String get dashaTitle;
+
+  /// No description provided for @dashaRunningNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Running now'**
+  String get dashaRunningNow;
+
+  /// No description provided for @dashaSubPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-periods'**
+  String get dashaSubPeriods;
+
+  /// No description provided for @dashaEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'ends {date}'**
+  String dashaEnds(String date);
+
+  /// No description provided for @dashaBalanceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first period had already begun when you were born, so it is shown shorter than its full length.'**
+  String get dashaBalanceNote;
+
+  /// No description provided for @dashaUnreliableTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.'**
+  String get dashaUnreliableTime;
 
   /// No description provided for @accountTitle.
   ///

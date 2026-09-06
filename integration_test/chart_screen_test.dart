@@ -89,18 +89,24 @@ void main() {
     }
 
     // Everything below the chart is off-screen on a phone, and a ListView does
-    // not build children it has not reached — so scroll rather than asserting
-    // against a tree that was never created.
-    await tester.scrollUntilVisible(
-      find.textContaining('entertainment purposes'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
+    // not build children it has not reached — so scroll to each in turn.
+    //
+    // Deliberately one scroll per item rather than scrolling to the bottom and
+    // asserting three things at once: the daśā timeline (KAN-53) now sits
+    // between the table and the footer, so they are no longer on screen
+    // together and never will be again as the page grows.
+    final scrollable = find.byType(Scrollable).first;
 
-    expect(find.text('Planetary positions'), findsOneWidget);
-    expect(find.textContaining('Ayanāṃśa'), findsOneWidget);
-    expect(find.textContaining('entertainment purposes'), findsOneWidget);
+    for (final target in [
+      find.text('Planetary positions'),
+      find.textContaining('Ayanāṃśa'),
+      find.text('Daśā periods'),
+      find.textContaining('entertainment purposes'),
+    ]) {
+      await tester.scrollUntilVisible(target, 300, scrollable: scrollable);
+      await tester.pumpAndSettle();
+      expect(target, findsWidgets);
+    }
   });
 
   testWidgets('every graha appears in the positions table', (tester) async {

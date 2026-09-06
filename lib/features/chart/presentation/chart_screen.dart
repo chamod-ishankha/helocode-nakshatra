@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
+import 'dasha_timeline.dart';
 
 import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
@@ -93,6 +94,8 @@ class ChartScreen extends ConsumerWidget {
             Text(L10n.of(context).chartPositions, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             _PositionsTable(chart: chart),
+            const SizedBox(height: 24),
+            DashaTimeline(birthTimeKnown: profile.birthTimeKnown),
             const SizedBox(height: 24),
             Text(
               L10n.of(context).chartAyanamsa(chart.ayanamsa.toStringAsFixed(4)),

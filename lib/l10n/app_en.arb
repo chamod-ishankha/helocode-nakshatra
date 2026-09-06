@@ -52,7 +52,7 @@
   "@homeFullMoonAt": { "placeholders": { "time": { "type": "String" } } },
   "homeBirthChart": "Birth chart",
   "homeAccount": "Account",
-  "homeComingSoon": "Daily horoscope and your current daśā period.",
+  "homeComingSoon": "Daily horoscope, personalised to your chart.",
   "homeFestivalsExcluded": "Deepavali and Eid are not listed: their dates follow regional convention and moon sighting rather than calculation, and a confidently wrong religious date would be worse than none.",
 
   "panchangaTithi": "Tithi",
@@ -77,6 +77,14 @@
   "chartColumnPada": "Pada",
   "chartColumnHouse": "House",
   "chartApproximate": "Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.",
+
+  "dashaTitle": "Daśā periods",
+  "dashaRunningNow": "Running now",
+  "dashaSubPeriods": "Sub-periods",
+  "dashaEnds": "ends {date}",
+  "@dashaEnds": { "placeholders": { "date": { "type": "String" } } },
+  "dashaBalanceNote": "Your first period had already begun when you were born, so it is shown shorter than its full length.",
+  "dashaUnreliableTime": "Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.",
 
   "accountTitle": "Account",
   "accountSavedToEmail": "Saved to {email}",

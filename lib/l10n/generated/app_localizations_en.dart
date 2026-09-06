@@ -149,7 +149,7 @@ class L10nEn extends L10n {
   String get homeAccount => 'Account';
 
   @override
-  String get homeComingSoon => 'Daily horoscope and your current daśā period.';
+  String get homeComingSoon => 'Daily horoscope, personalised to your chart.';
 
   @override
   String get homeFestivalsExcluded =>
@@ -217,6 +217,28 @@ class L10nEn extends L10n {
   @override
   String get chartApproximate =>
       'Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.';
+
+  @override
+  String get dashaTitle => 'Daśā periods';
+
+  @override
+  String get dashaRunningNow => 'Running now';
+
+  @override
+  String get dashaSubPeriods => 'Sub-periods';
+
+  @override
+  String dashaEnds(String date) {
+    return 'ends $date';
+  }
+
+  @override
+  String get dashaBalanceNote =>
+      'Your first period had already begun when you were born, so it is shown shorter than its full length.';
+
+  @override
+  String get dashaUnreliableTime =>
+      'Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.';
 
   @override
   String get accountTitle => 'Account';

@@ -1,5 +1,7 @@
 import 'package:sweph/sweph.dart';
 
+import '../config/app_locale.dart';
+
 /// The nine grahas of Vedic astrology.
 ///
 /// Rahu and Ketu are the lunar nodes, not physical bodies: they sit exactly
@@ -20,6 +22,14 @@ enum Graha {
   final String en;
   final String si;
   final String ta;
+
+  /// The name in [locale]. Matches `Place.label`, so callers do not have to
+  /// write the same switch at every use site.
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 
   /// The Swiss Ephemeris body for this graha, or null for Ketu, which is
   /// derived from Rahu rather than computed.

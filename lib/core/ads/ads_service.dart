@@ -58,6 +58,17 @@ abstract final class AdsService {
     }
 
     try {
+      // Set before initialise so the very first request already carries it.
+      // A live unit that serves a real ad to a tester once is enough to put
+      // the account at risk.
+      final testDevices = AdUnits.testDeviceIds;
+      if (testDevices.isNotEmpty) {
+        await MobileAds.instance.updateRequestConfiguration(
+          RequestConfiguration(testDeviceIds: testDevices),
+        );
+        AppLogger.info('Ads: ${testDevices.length} test device(s) registered');
+      }
+
       await MobileAds.instance.initialize();
       _finish(true);
       AppLogger.info('Mobile Ads initialised');

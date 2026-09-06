@@ -189,6 +189,14 @@ void main() {
       }
     });
 
+    test('an unset test-device list is empty, not a single blank id', () {
+      // ''.split(',') is [''], not [], so a naive parse would register one
+      // test device whose id is the empty string. Harmless-looking, but it
+      // means nobody notices the list is not actually wired up.
+      expect(AdUnits.testDeviceIds, isEmpty);
+      expect(AdUnits.testDeviceIds, everyElement(isNotEmpty));
+    });
+
     test('every slot is mapped', () {
       // A new slot with no id would silently fall through to null and never
       // show, which looks like a serving problem rather than a missing case.

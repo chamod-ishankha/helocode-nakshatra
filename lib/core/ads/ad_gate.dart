@@ -167,6 +167,33 @@ abstract final class AdUnits {
     'ADMOB_REWARDED_UNIT_ID',
   );
 
+  /// Devices that must always be served test creatives, comma separated.
+  ///
+  /// ## Why this exists
+  ///
+  /// A release build put on Play's internal test track is the only place some
+  /// faults show up: R8 stripping the SDK, the real application id in the
+  /// manifest, the release signing config, adaptive sizing on a real screen.
+  /// All of that needs the *live* unit ids to be exercised honestly.
+  ///
+  /// But an internal tester tapping a live ad is invalid traffic, and the
+  /// AdMob ban for it is account-level and not appealable in practice. Listing
+  /// the testers' device ids here means Google returns test creatives through
+  /// the live units: the whole path is real, the impressions are not.
+  ///
+  /// Find an id by running the app and reading logcat for the line the SDK
+  /// prints — "Use RequestConfiguration.Builder().setTestDeviceIds(...)".
+  /// The id is per device *and* per app install.
+  static const String _testDeviceIds = String.fromEnvironment(
+    'ADMOB_TEST_DEVICE_IDS',
+  );
+
+  static List<String> get testDeviceIds => _testDeviceIds
+      .split(',')
+      .map((e) => e.trim())
+      .where((e) => e.isNotEmpty)
+      .toList(growable: false);
+
   static bool get isConfigured => banner.isNotEmpty && rewarded.isNotEmpty;
 
   static String? forSlot(AdSlot slot) => switch (slot) {

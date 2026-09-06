@@ -1,0 +1,178 @@
+{
+  "_comment": "Seed fragments for KAN-31. The full trilingual library is KAN-32; ids are stable across languages so switching language translates a reading rather than changing the prediction. Tags come from HoroscopeSignals.",
+  "fragments": [
+    {
+      "id": "gen-moon-fav-1",
+      "category": "general",
+      "requires": ["moon.favourable"],
+      "text": "The Moon sits well for you today, and the day moves with less friction than it has lately."
+    },
+    {
+      "id": "gen-moon-hard-1",
+      "category": "general",
+      "requires": ["moon.difficult"],
+      "text": "The Moon is awkwardly placed, so expect the day to ask for more patience than usual."
+    },
+    {
+      "id": "gen-bright-1",
+      "category": "general",
+      "requires": ["mood.bright"],
+      "text": "Several placements agree with you at once, which is not common — use the room they give you."
+    },
+    {
+      "id": "gen-hard-1",
+      "category": "general",
+      "requires": ["mood.hard"],
+      "text": "This is a day to hold your ground rather than to start something new."
+    },
+    {
+      "id": "gen-sade-1",
+      "category": "general",
+      "requires": ["saturn.sadeSati"],
+      "text": "Saturn is still moving through the heavy stretch around your Moon; steadiness matters more than speed."
+    },
+    {
+      "id": "gen-plain-1",
+      "category": "general",
+      "text": "An ordinary day, and there is something to be said for one of those."
+    },
+    {
+      "id": "gen-plain-2",
+      "category": "general",
+      "text": "Nothing in the sky is pulling hard in either direction, so the day is largely yours to shape."
+    },
+    {
+      "id": "gen-plain-3",
+      "category": "general",
+      "text": "Small things attended to early will keep the afternoon clear."
+    },
+
+    {
+      "id": "car-jup-fav-1",
+      "category": "career",
+      "requires": ["jupiter.favourable"],
+      "text": "Guru favours your work sector — a good day to ask for what you have earned."
+    },
+    {
+      "id": "car-sat-fav-1",
+      "category": "career",
+      "requires": ["saturn.favourable"],
+      "text": "Saturn rewards the unglamorous work today; finish what is half done."
+    },
+    {
+      "id": "car-sade-1",
+      "category": "career",
+      "requires": ["saturn.sadeSati"],
+      "text": "Avoid making a large commitment at work this week if it can reasonably wait."
+    },
+    {
+      "id": "car-plain-1",
+      "category": "career",
+      "text": "Steady progress at work, with nothing demanding a decision from you."
+    },
+    {
+      "id": "car-plain-2",
+      "category": "career",
+      "text": "A colleague may need more from you than they say outright."
+    },
+
+    {
+      "id": "mon-fav-1",
+      "category": "money",
+      "requires": ["venus.favourable"],
+      "excludes": ["saturn.sadeSati"],
+      "text": "Shukra is kind to your finances today; a purchase you have delayed is reasonable now."
+    },
+    {
+      "id": "mon-hard-1",
+      "category": "money",
+      "requires": ["mood.hard"],
+      "text": "Keep spending small today and let the larger decision wait a few days."
+    },
+    {
+      "id": "mon-plain-1",
+      "category": "money",
+      "text": "Money matters stay quiet — a good day to look at what is going out rather than what is coming in."
+    },
+    {
+      "id": "mon-plain-2",
+      "category": "money",
+      "text": "Nothing pressing financially, though a small debt may be worth settling."
+    },
+
+    {
+      "id": "lov-ven-fav-1",
+      "category": "love",
+      "requires": ["venus.favourable"],
+      "text": "Venus is well placed, and warmth offered today is likely to be returned."
+    },
+    {
+      "id": "lov-mar-hard-1",
+      "category": "love",
+      "requires": ["mars.difficult"],
+      "text": "Kuja is restless; a sharp word will travel further than you intend."
+    },
+    {
+      "id": "lov-plain-1",
+      "category": "love",
+      "text": "An easy day with the people close to you, if you make the time for them."
+    },
+    {
+      "id": "lov-plain-2",
+      "category": "love",
+      "text": "Someone is waiting for you to speak first."
+    },
+
+    {
+      "id": "hea-moon-hard-1",
+      "category": "health",
+      "requires": ["moon.difficult"],
+      "text": "Rest is worth more than effort today; sleep early if the day allows it."
+    },
+    {
+      "id": "hea-sat-hard-1",
+      "category": "health",
+      "requires": ["saturn.difficult"],
+      "text": "Old aches may speak up. Move gently rather than not at all."
+    },
+    {
+      "id": "hea-plain-1",
+      "category": "health",
+      "text": "Health holds steady; water and a short walk will carry you further than anything else."
+    },
+    {
+      "id": "hea-plain-2",
+      "category": "health",
+      "text": "Nothing troubling, though eating at regular hours will help more than usual."
+    },
+
+    {
+      "id": "adv-sade-1",
+      "category": "advice",
+      "requires": ["saturn.sadeSati"],
+      "text": "Saturn asks for discipline rather than luck. Keep your promises small and keep them."
+    },
+    {
+      "id": "adv-bright-1",
+      "category": "advice",
+      "requires": ["mood.bright"],
+      "text": "Begin the thing you have been circling."
+    },
+    {
+      "id": "adv-hard-1",
+      "category": "advice",
+      "requires": ["mood.hard"],
+      "text": "Postpone what can be postponed, and be kind to yourself about the rest."
+    },
+    {
+      "id": "adv-plain-1",
+      "category": "advice",
+      "text": "Do the difficult thing before noon."
+    },
+    {
+      "id": "adv-plain-2",
+      "category": "advice",
+      "text": "Say less than you are tempted to say."
+    }
+  ]
+}

@@ -8,32 +8,15 @@ import 'chart_sharing.dart';
 import 'dasha_timeline.dart';
 import 'detail_sheets.dart';
 
-import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../domain/chart_providers.dart';
 import 'north_indian_chart.dart';
 import 'rasi_chart.dart';
-
-/// The computed chart for the saved profile.
-///
-/// Recomputes whenever the profile changes. Cheap enough to do synchronously —
-/// a full chart is a handful of ephemeris calls — so there is no cache yet;
-/// KAN-19 adds persistence when multiple profiles arrive.
-final chartProvider = Provider<Result<BirthChart>?>((ref) {
-  final profile = ref.watch(profileProvider);
-  if (profile == null) return null;
-
-  return Ephemeris.computeChart(
-    localWallClock: profile.localWallClock,
-    zoneName: profile.place.timezone,
-    latitude: profile.place.latitude,
-    longitude: profile.place.longitude,
-  );
-});
 
 class ChartScreen extends ConsumerStatefulWidget {
   const ChartScreen({super.key});

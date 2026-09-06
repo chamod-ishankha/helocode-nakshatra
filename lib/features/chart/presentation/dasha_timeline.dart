@@ -6,7 +6,7 @@ import '../../../core/astro/dasha.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import 'chart_screen.dart';
+import '../domain/chart_providers.dart';
 
 /// The daśā tree for the current profile, two levels deep.
 ///

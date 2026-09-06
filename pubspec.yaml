@@ -88,6 +88,10 @@ flutter:
     # network, so place search cannot depend on a geocoding API.
     - assets/data/sl_places.json
 
+    # Authored horoscope copy (KAN-31). Data rather than code so KAN-32 can
+    # add hundreds of lines in three languages without touching Dart.
+    - assets/content/horoscope_en.json
+
   # Bundled, not fetched at runtime: the app must work offline, and Roboto
   # renders Sinhala as empty boxes on many Sri Lankan devices. Variable
   # fonts, so one file covers every weight. OFL-1.1, licence in

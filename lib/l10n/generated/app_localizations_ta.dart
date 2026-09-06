@@ -243,6 +243,35 @@ class L10nTa extends L10n {
       'உங்கள் பிறந்த நேரம் தெரியாததால் சூரிய உதயம் கருதப்பட்டது. சந்திரன் மணிக்கு அரை பாகை அளவு நகர்கிறது, இது இந்தத் தேதிகளை பல ஆண்டுகள் மாற்றக்கூடும், முதல் தசையின் அதிபதி கிரகத்தையே கூட மாற்றக்கூடும். உங்கள் பிறந்த நேரம் தெரியும் வரை இதை ஒரு தோராயமான வழிகாட்டியாகக் கருதுங்கள்.';
 
   @override
+  String detailHouse(int n) {
+    return '$n ஆம் பாவம்';
+  }
+
+  @override
+  String get detailRetrograde => 'வக்ரம்';
+
+  @override
+  String get detailNoGraha => 'இந்தப் பாவத்தில் கிரகம் எதுவும் இல்லை.';
+
+  @override
+  String detailExaltedIn(String rasi, int degree) {
+    return '$rasi ராசியில் $degree° இல் உச்சம்';
+  }
+
+  @override
+  String get dignityOwn => 'சொந்த வீடு';
+
+  @override
+  String get dignityExalted => 'உச்சம்';
+
+  @override
+  String get dignityDebilitated => 'நீசம்';
+
+  @override
+  String get dignityNodeNote =>
+      'ராகுவும் கேதுவும் எந்த ராசிக்கும் அதிபதி அல்ல, அவை உச்சம் பெறும் ராசி குறித்து மரபுகள் ஒத்துப்போவதில்லை — எனவே இங்கு எந்த பலமும் கூறப்படவில்லை.';
+
+  @override
   String get accountTitle => 'கணக்கு';
 
   @override

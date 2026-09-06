@@ -240,6 +240,35 @@ class L10nSi extends L10n {
       'ඔබේ උපන් වේලාව නොදන්නා බැවින් හිරු උදාව උපකල්පනය කරන ලදී. චන්ද්‍රයා පැයකට අංශක භාගයක් පමණ ගමන් කරන අතර, එය මෙම දිනයන් වසර ගණනකින් වෙනස් කළ හැකි අතර පළමු දශාවේ අධිපති ග්‍රහයා පවා වෙනස් විය හැක. ඔබේ උපන් වේලාව දැනගන්නා තෙක් මෙය දළ මාර්ගෝපදේශයක් ලෙස සලකන්න.';
 
   @override
+  String detailHouse(int n) {
+    return '$n වන භාවය';
+  }
+
+  @override
+  String get detailRetrograde => 'වක්‍ර';
+
+  @override
+  String get detailNoGraha => 'මෙම භාවයේ ග්‍රහයෙක් නැත.';
+
+  @override
+  String detailExaltedIn(String rasi, int degree) {
+    return '$rasi රාශියේ අංශක $degree දී උච්ච';
+  }
+
+  @override
+  String get dignityOwn => 'ස්වක්ෂේත්‍ර';
+
+  @override
+  String get dignityExalted => 'උච්ච';
+
+  @override
+  String get dignityDebilitated => 'නීච';
+
+  @override
+  String get dignityNodeNote =>
+      'රාහු සහ කේතු කිසිදු රාශියක් අධිපති නොවන අතර ඔවුන් උච්ච වන්නේ කොහිද යන්න පිළිබඳ සම්ප්‍රදායන් අතර එකඟතාවක් නැත — එබැවින් මෙහි කිසිදු බලයක් දක්වා නැත.';
+
+  @override
   String get accountTitle => 'ගිණුම';
 
   @override

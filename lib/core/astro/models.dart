@@ -68,6 +68,13 @@ enum Rasi {
   final String si;
   final String ta;
 
+  /// The name in [locale]. Matches [Graha.label] and `Place.label`.
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
+
   /// The rāśi containing [longitude] (sidereal degrees, 0-360).
   static Rasi fromLongitude(double longitude) =>
       Rasi.values[(_norm(longitude) ~/ 30) % 12];

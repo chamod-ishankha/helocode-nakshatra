@@ -216,6 +216,93 @@ void main() {
     expect(prefs.getString('chart_style_v1'), ChartStyle.southIndian.name);
   });
 
+  testWidgets('tapping a house opens its detail sheet', (tester) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    // The cell is the target rather than the two-letter graha label, so a
+    // house with nothing in it can still be opened.
+    await tester.tap(find.text('Aquarius').first);
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('House'), findsWidgets);
+  });
+
+  testWidgets('a table row opens the graha detail', (tester) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    // Scoped to the table: since the daśā timeline landed, "Sun" also names a
+    // mahādaśā and an antardaśā, so a bare text finder is ambiguous. Scrolled
+    // to the row itself rather than the heading, which can be on screen while
+    // the row is still below the fold.
+    final sunRow = find.descendant(
+      of: find.byType(DataTable),
+      matching: find.text('Sun'),
+    );
+    await tester.scrollUntilVisible(
+      sunRow,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(sunRow);
+    await tester.pumpAndSettle();
+
+    // The sheet carries what the abbreviation in the chart leaves out.
+    expect(find.textContaining('Exalted in'), findsOneWidget);
+    expect(find.textContaining('House'), findsWidgets);
+  });
+
+  testWidgets('the nodes are shown without a dignity claim', (tester) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    final rahuRow = find.descendant(
+      of: find.byType(DataTable),
+      matching: find.text('Rahu'),
+    );
+    await tester.scrollUntilVisible(
+      rahuRow,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(rahuRow);
+    await tester.pumpAndSettle();
+
+    // Traditions disagree on where the nodes are exalted, so the sheet says
+    // so rather than picking a school.
+    expect(find.textContaining('traditions disagree'), findsOneWidget);
+    expect(find.textContaining('Exalted in'), findsNothing);
+  });
+
   testWidgets('North Indian places the lagna sign in house 1', (tester) async {
     await pumpChart(
       tester,

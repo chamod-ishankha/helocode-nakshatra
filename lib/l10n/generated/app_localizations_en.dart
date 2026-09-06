@@ -241,6 +241,35 @@ class L10nEn extends L10n {
       'Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.';
 
   @override
+  String detailHouse(int n) {
+    return 'House $n';
+  }
+
+  @override
+  String get detailRetrograde => 'Retrograde';
+
+  @override
+  String get detailNoGraha => 'No graha sits in this house.';
+
+  @override
+  String detailExaltedIn(String rasi, int degree) {
+    return 'Exalted in $rasi at $degree°';
+  }
+
+  @override
+  String get dignityOwn => 'Own sign';
+
+  @override
+  String get dignityExalted => 'Exalted';
+
+  @override
+  String get dignityDebilitated => 'Debilitated';
+
+  @override
+  String get dignityNodeNote =>
+      'Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.';
+
+  @override
   String get accountTitle => 'Account';
 
   @override

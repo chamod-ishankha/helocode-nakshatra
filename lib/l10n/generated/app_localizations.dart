@@ -519,6 +519,54 @@ abstract class L10n {
   /// **'Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.'**
   String get dashaUnreliableTime;
 
+  /// No description provided for @detailHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'House {n}'**
+  String detailHouse(int n);
+
+  /// No description provided for @detailRetrograde.
+  ///
+  /// In en, this message translates to:
+  /// **'Retrograde'**
+  String get detailRetrograde;
+
+  /// No description provided for @detailNoGraha.
+  ///
+  /// In en, this message translates to:
+  /// **'No graha sits in this house.'**
+  String get detailNoGraha;
+
+  /// No description provided for @detailExaltedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Exalted in {rasi} at {degree}°'**
+  String detailExaltedIn(String rasi, int degree);
+
+  /// No description provided for @dignityOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Own sign'**
+  String get dignityOwn;
+
+  /// No description provided for @dignityExalted.
+  ///
+  /// In en, this message translates to:
+  /// **'Exalted'**
+  String get dignityExalted;
+
+  /// No description provided for @dignityDebilitated.
+  ///
+  /// In en, this message translates to:
+  /// **'Debilitated'**
+  String get dignityDebilitated;
+
+  /// No description provided for @dignityNodeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.'**
+  String get dignityNodeNote;
+
   /// No description provided for @accountTitle.
   ///
   /// In en, this message translates to:

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
 import 'dasha_timeline.dart';
+import 'detail_sheets.dart';
 
 import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
@@ -238,6 +239,11 @@ class _PositionsTable extends StatelessWidget {
             for (final g in Graha.values)
               if (chart.positions[g] case final p?)
                 DataRow(
+                  // The same detail as tapping the chart. Someone reading the
+                  // table is already looking at the row they want, and
+                  // sending them back to a 70 px cell to open it would be
+                  // perverse.
+                  onSelectChanged: (_) => showGrahaDetail(context, p),
                   cells: [
                     DataCell(
                       Row(

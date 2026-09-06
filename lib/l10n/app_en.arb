@@ -86,6 +86,17 @@
   "dashaBalanceNote": "Your first period had already begun when you were born, so it is shown shorter than its full length.",
   "dashaUnreliableTime": "Your birth time is unknown, so sunrise was assumed. The Moon moves about half a degree an hour, which can shift these dates by years — and can even change which planet rules the first period. Treat this as a rough guide until you know your time of birth.",
 
+  "detailHouse": "House {n}",
+  "@detailHouse": { "placeholders": { "n": { "type": "int" } } },
+  "detailRetrograde": "Retrograde",
+  "detailNoGraha": "No graha sits in this house.",
+  "detailExaltedIn": "Exalted in {rasi} at {degree}°",
+  "@detailExaltedIn": { "placeholders": { "rasi": { "type": "String" }, "degree": { "type": "int" } } },
+  "dignityOwn": "Own sign",
+  "dignityExalted": "Exalted",
+  "dignityDebilitated": "Debilitated",
+  "dignityNodeNote": "Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.",
+
   "accountTitle": "Account",
   "accountSavedToEmail": "Saved to {email}",
   "@accountSavedToEmail": { "placeholders": { "email": { "type": "String" } } },

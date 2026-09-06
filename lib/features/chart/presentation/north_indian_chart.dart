@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
+import 'detail_sheets.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// North Indian rāśi chart.
@@ -111,7 +112,18 @@ class NorthIndianChart extends StatelessWidget {
       top: (c.dy - boxH / 2) * size,
       width: boxW * size,
       height: boxH * size,
-      child: Column(
+      child: GestureDetector(
+        // The label box rather than the region outline: the regions are
+        // triangles and quadrilaterals of very different areas, and hit-testing
+        // those shapes would give some houses a far smaller target than others.
+        onTap: () => showHouseDetail(
+          context,
+          rasi: Rasi.values[(lagnaSign + house - 1) % 12],
+          house: house,
+          grahas: grahas,
+        ),
+        behavior: HitTestBehavior.opaque,
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
@@ -142,6 +154,7 @@ class NorthIndianChart extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

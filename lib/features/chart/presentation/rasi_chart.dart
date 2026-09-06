@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
+import 'detail_sheets.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// South Indian rāśi chart.
@@ -57,6 +58,8 @@ class RasiChart extends StatelessWidget {
                     child: _Cell(
                       rasi: Rasi.values[_layout[i]],
                       grahas: byRasi[_layout[i]] ?? const [],
+                      // Whole-sign houses: counted forward from the lagna.
+                      house: ((_layout[i] - lagnaIndex) % 12) + 1,
                       isLagna: _layout[i] == lagnaIndex,
                     ),
                   ),
@@ -105,17 +108,29 @@ class _Cell extends StatelessWidget {
   const _Cell({
     required this.rasi,
     required this.grahas,
+    required this.house,
     required this.isLagna,
   });
 
   final Rasi rasi;
   final List<GrahaPosition> grahas;
+  final int house;
   final bool isLagna;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
+    return GestureDetector(
+      // The cell, not the two-letter graha label: that label is a few pixels
+      // wide on a 360 dp screen, and an empty house would have no tap target
+      // at all.
+      onTap: () => showHouseDetail(
+        context,
+        rasi: rasi,
+        house: house,
+        grahas: grahas,
+      ),
+      child: Container(
       decoration: BoxDecoration(
         border: Border.all(color: theme.dividerColor),
         color: isLagna
@@ -171,6 +186,7 @@ class _Cell extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

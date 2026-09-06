@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/ads/banner_ad_slot.dart';
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
@@ -94,6 +95,10 @@ class HomeScreen extends ConsumerWidget {
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
+            // Last thing on the page, well below the rāhu kālaya card and
+            // every other control. Nothing here reveals a reading, so there
+            // is no button an accidental tap could be mistaken for.
+            const BannerAdSlot(),
           ],
         ),
       ),

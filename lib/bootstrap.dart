@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'core/ads/ad_gate.dart';
+import 'core/ads/ads_service.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/flavor.dart';
 import 'core/logging/app_logger.dart';
@@ -17,6 +21,10 @@ import 'features/onboarding/data/profile_repository.dart';
 /// means flavors cannot drift apart in initialisation order.
 Future<void> bootstrap(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Taken once, here, so the ad session grace period is measured from
+  // the real launch rather than restarting on every widget rebuild.
+  final launchedAt = DateTime.now();
 
   FlavorConfig.initialize(flavor);
   AppLogger.initialize();
@@ -39,8 +47,15 @@ Future<void> bootstrap(Flavor flavor) async {
   // normal state, not an error.
   await AuthService.initializeGoogle();
 
+  // Not awaited. The SDK takes a second or two and the daily screen is what
+  // the user opened the app for; ads can arrive after it.
+  unawaited(AdsService.initialize());
+
   final container = ProviderContainer(
-    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      appLaunchedAtProvider.overrideWithValue(launchedAt),
+    ],
   );
 
   // If this install has no profile but the account has a backup, recover it so

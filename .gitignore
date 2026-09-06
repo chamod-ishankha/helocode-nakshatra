@@ -70,3 +70,4 @@ env/*.json
 
 # Build output
 /build/
+admob.properties

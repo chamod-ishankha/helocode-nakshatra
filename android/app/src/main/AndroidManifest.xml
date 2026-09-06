@@ -37,6 +37,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Required by the Mobile Ads SDK; the app crashes on start without
+             it. Supplied per flavor from build.gradle.kts, so dev and staging
+             can never point at live inventory. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

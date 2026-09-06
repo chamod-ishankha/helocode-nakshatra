@@ -16,9 +16,6 @@ enum ThemePreference {
     ThemePreference.dark => ThemeMode.dark,
   };
 
-  static ThemePreference fromName(String? name) =>
-      ThemePreference.values.firstWhere(
-        (p) => p.name == name,
-        orElse: () => ThemePreference.system,
-      );
+  static ThemePreference fromName(String? name) => ThemePreference.values
+      .firstWhere((p) => p.name == name, orElse: () => ThemePreference.system);
 }

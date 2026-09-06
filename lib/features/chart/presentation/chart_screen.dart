@@ -122,22 +122,25 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                 profile.place.en,
               ),
               child: switch (style) {
-              ChartStyle.southIndian => RasiChart(
-                key: const ValueKey('south'),
-                chart: chart,
-                approximateHouses: !profile.birthTimeKnown,
-              ),
-              ChartStyle.northIndian => NorthIndianChart(
-                key: const ValueKey('north'),
-                chart: chart,
-                approximateHouses: !profile.birthTimeKnown,
-              ),
+                ChartStyle.southIndian => RasiChart(
+                  key: const ValueKey('south'),
+                  chart: chart,
+                  approximateHouses: !profile.birthTimeKnown,
+                ),
+                ChartStyle.northIndian => NorthIndianChart(
+                  key: const ValueKey('north'),
+                  chart: chart,
+                  approximateHouses: !profile.birthTimeKnown,
+                ),
               },
             ),
             const SizedBox(height: 24),
             _SummaryCard(chart: chart),
             const SizedBox(height: 16),
-            Text(L10n.of(context).chartPositions, style: theme.textTheme.titleMedium),
+            Text(
+              L10n.of(context).chartPositions,
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             _PositionsTable(chart: chart),
             const SizedBox(height: 24),

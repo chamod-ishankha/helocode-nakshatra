@@ -101,20 +101,14 @@ void main() {
     test('a Moon at the very start of a nakṣatra owes the full period', () {
       // 0° is the first instant of Aśvinī, so no part of Ketu is spent.
       final balance = Vimshottari.balanceAtBirth(chartWithMoonAt(0));
-      expect(
-        balance.inDays,
-        closeTo(7 * Vimshottari.daysPerYear, 1),
-      );
+      expect(balance.inDays, closeTo(7 * Vimshottari.daysPerYear, 1));
     });
 
     test('a Moon halfway through a nakṣatra owes half the period', () {
       // Half of Bharaṇī: Venus rules 20 years, so 10 remain.
       final half = Nakshatra.span * 1.5;
       final balance = Vimshottari.balanceAtBirth(chartWithMoonAt(half));
-      expect(
-        balance.inDays,
-        closeTo(10 * Vimshottari.daysPerYear, 1),
-      );
+      expect(balance.inDays, closeTo(10 * Vimshottari.daysPerYear, 1));
     });
 
     test('a Moon at the very end of a nakṣatra owes almost nothing', () {
@@ -127,7 +121,9 @@ void main() {
 
   group('the mahādaśā sequence', () {
     test('starts with the lord of the birth nakṣatra', () {
-      final timeline = Vimshottari.forChart(chartWithMoonAt(Nakshatra.span * 5.5));
+      final timeline = Vimshottari.forChart(
+        chartWithMoonAt(Nakshatra.span * 5.5),
+      );
       // Sixth nakṣatra is Ārdrā, ruled by Rahu.
       expect(timeline.first.lord, Graha.rahu);
       expect(timeline.first.level, DashaLevel.maha);
@@ -139,7 +135,9 @@ void main() {
     });
 
     test('periods tile with no gap and no overlap', () {
-      final timeline = Vimshottari.forChart(chartWithMoonAt(Nakshatra.span * 3.3));
+      final timeline = Vimshottari.forChart(
+        chartWithMoonAt(Nakshatra.span * 3.3),
+      );
 
       for (var i = 1; i < timeline.length; i++) {
         expect(
@@ -152,7 +150,9 @@ void main() {
 
     test('nothing is dated before birth', () {
       final birth = utcFromJulianDay(j2000);
-      final timeline = Vimshottari.forChart(chartWithMoonAt(Nakshatra.span * 2.7));
+      final timeline = Vimshottari.forChart(
+        chartWithMoonAt(Nakshatra.span * 2.7),
+      );
 
       for (final maha in timeline) {
         expect(maha.start.isBefore(birth), isFalse, reason: '$maha');
@@ -164,7 +164,9 @@ void main() {
     });
 
     test('the first period is shortened to the balance', () {
-      final timeline = Vimshottari.forChart(chartWithMoonAt(Nakshatra.span * 1.5));
+      final timeline = Vimshottari.forChart(
+        chartWithMoonAt(Nakshatra.span * 1.5),
+      );
       final first = timeline.first;
 
       expect(first.lord, Graha.venus);
@@ -173,7 +175,9 @@ void main() {
     });
 
     test('every later period gets its full allocation', () {
-      final timeline = Vimshottari.forChart(chartWithMoonAt(Nakshatra.span * 1.5));
+      final timeline = Vimshottari.forChart(
+        chartWithMoonAt(Nakshatra.span * 1.5),
+      );
 
       for (final maha in timeline.skip(1)) {
         expect(
@@ -219,33 +223,40 @@ void main() {
       final ketu = timeline.first;
 
       // Ketu mahādaśā is 7 years; Venus takes 20/120 of it, so 1.1667 years.
-      final venusInKetu =
-          ketu.children.firstWhere((c) => c.lord == Graha.venus);
+      final venusInKetu = ketu.children.firstWhere(
+        (c) => c.lord == Graha.venus,
+      );
       expect(
         venusInKetu.duration.inHours / 24,
         closeTo(7 * 20 / 120 * Vimshottari.daysPerYear, 1),
       );
     });
 
-    test('the first mahādaśā\'s sub-periods are measured from its true start',
-        () {
-      // The mistake this guards: dividing the *balance* into nine
-      // sub-periods. It looks right — the numbers still fill the visible
-      // span — but every boundary in the first period lands in the wrong
-      // place, and the first period is the one a new user actually reads.
-      final timeline =
-          Vimshottari.forChart(chartWithMoonAt(Nakshatra.span * 1.5));
-      final first = timeline.first;
+    test(
+      'the first mahādaśā\'s sub-periods are measured from its true start',
+      () {
+        // The mistake this guards: dividing the *balance* into nine
+        // sub-periods. It looks right — the numbers still fill the visible
+        // span — but every boundary in the first period lands in the wrong
+        // place, and the first period is the one a new user actually reads.
+        final timeline = Vimshottari.forChart(
+          chartWithMoonAt(Nakshatra.span * 1.5),
+        );
+        final first = timeline.first;
 
-      // Half of Venus's 20 years is spent, so the sub-periods covering the
-      // first ten years are gone. Venus/Venus (20/120 of 20 years = 3.33y)
-      // and Venus/Sun and Venus/Moon all ended before birth.
-      expect(first.children.first.lord, isNot(Graha.venus),
-          reason: 'sub-periods were divided from the balance, not the whole');
+        // Half of Venus's 20 years is spent, so the sub-periods covering the
+        // first ten years are gone. Venus/Venus (20/120 of 20 years = 3.33y)
+        // and Venus/Sun and Venus/Moon all ended before birth.
+        expect(
+          first.children.first.lord,
+          isNot(Graha.venus),
+          reason: 'sub-periods were divided from the balance, not the whole',
+        );
 
-      // Whichever sub-period contains birth is truncated to start at it.
-      expect(first.children.first.start, first.start);
-    });
+        // Whichever sub-period contains birth is truncated to start at it.
+        expect(first.children.first.start, first.start);
+      },
+    );
   });
 
   group('pratyantardaśā', () {
@@ -309,10 +320,7 @@ void main() {
         isNull,
       );
       expect(
-        Vimshottari.at(
-          timeline,
-          birth.add(const Duration(days: 121 * 366)),
-        ),
+        Vimshottari.at(timeline, birth.add(const Duration(days: 121 * 366))),
         isNull,
       );
     });

@@ -63,9 +63,7 @@ class ProfileRepository {
   AppLocale loadLocale() {
     final saved = _prefs.getString(_localeKey);
     if (saved != null) return AppLocale.fromCode(saved);
-    return AppLocale.fromCode(
-      PlatformDispatcher.instance.locale.languageCode,
-    );
+    return AppLocale.fromCode(PlatformDispatcher.instance.locale.languageCode);
   }
 
   Future<void> saveLocale(AppLocale locale) =>

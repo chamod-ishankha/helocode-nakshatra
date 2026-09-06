@@ -68,18 +68,20 @@ void main() {
     expect(find.text('Create account'), findsOneWidget);
   });
 
-  testWidgets('the missing-verification trade-off is stated before signing up',
-      (tester) async {
-    // A user cannot discover this until the day they need to recover, so it
-    // has to be on screen at the moment they choose an address.
-    await pumpWith(tester, const AccountStatus(kind: AccountKind.anonymous));
+  testWidgets(
+    'the missing-verification trade-off is stated before signing up',
+    (tester) async {
+      // A user cannot discover this until the day they need to recover, so it
+      // has to be on screen at the moment they choose an address.
+      await pumpWith(tester, const AccountStatus(kind: AccountKind.anonymous));
 
-    expect(
-      find.textContaining('cannot be recovered'),
-      findsOneWidget,
-      reason: 'the no-verification consequence must be visible up front',
-    );
-  });
+      expect(
+        find.textContaining('cannot be recovered'),
+        findsOneWidget,
+        reason: 'the no-verification consequence must be visible up front',
+      );
+    },
+  );
 
   testWidgets('a signed-in account shows the email and offers sign out', (
     tester,

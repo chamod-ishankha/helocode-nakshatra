@@ -41,8 +41,7 @@ void main() {
 
   // Unique per run. @example.com is never deliverable, which is exactly right
   // here: nothing is sent, and the product deliberately does not verify.
-  final email =
-      'kan48-${DateTime.now().microsecondsSinceEpoch}@example.com';
+  final email = 'kan48-${DateTime.now().microsecondsSinceEpoch}@example.com';
   const password = 'test-password-123';
 
   late String anonymousUid;
@@ -100,7 +99,8 @@ void main() {
     expect(
       result.isSuccess,
       isTrue,
-      reason: 'link failed: ${result.failureOrNull?.message} '
+      reason:
+          'link failed: ${result.failureOrNull?.message} '
           '(enable Email/Password in the Firebase console if this says it is '
           'not enabled)',
     );
@@ -123,16 +123,17 @@ void main() {
     final user = FirebaseAuth.instance.currentUser!;
     expect(user.isAnonymous, isFalse);
     expect(user.email, email);
-    expect(
-      user.providerData.map((p) => p.providerId),
-      contains('password'),
-    );
+    expect(user.providerData.map((p) => p.providerId), contains('password'));
   });
 
   test('signing out returns to a working anonymous account', () async {
     final result = await service.signOut();
 
-    expect(result.isSuccess, isTrue, reason: '${result.failureOrNull?.message}');
+    expect(
+      result.isSuccess,
+      isTrue,
+      reason: '${result.failureOrNull?.message}',
+    );
     expect(FirebaseService.uid, isNotNull);
     expect(FirebaseAuth.instance.currentUser!.isAnonymous, isTrue);
     // A fresh anonymous account, not the one we just left.
@@ -142,7 +143,11 @@ void main() {
   test('signing back in returns the original account and its backup', () async {
     final result = await service.signInEmail(email, password);
 
-    expect(result.isSuccess, isTrue, reason: '${result.failureOrNull?.message}');
+    expect(
+      result.isSuccess,
+      isTrue,
+      reason: '${result.failureOrNull?.message}',
+    );
     expect(
       FirebaseService.uid,
       anonymousUid,
@@ -153,15 +158,17 @@ void main() {
     expect(restored?.name, 'LinkTest');
   });
 
-  test('the wrong password is rejected with wording a user can act on',
-      () async {
-    final result = await service.signInEmail(email, 'not-the-password');
+  test(
+    'the wrong password is rejected with wording a user can act on',
+    () async {
+      final result = await service.signInEmail(email, 'not-the-password');
 
-    expect(result.isSuccess, isFalse);
-    final failure = result.failureOrNull;
-    expect(failure, isA<AuthFailure>());
-    expect((failure! as AuthFailure).message, isNot(contains('credential')));
-  });
+      expect(result.isSuccess, isFalse);
+      final failure = result.failureOrNull;
+      expect(failure, isA<AuthFailure>());
+      expect((failure! as AuthFailure).message, isNot(contains('credential')));
+    },
+  );
 
   test('the address cannot be taken twice', () async {
     // Prove the collision path the account screen depends on is real, rather

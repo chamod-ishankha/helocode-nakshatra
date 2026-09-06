@@ -22,21 +22,17 @@ void main() {
     Yoga yoga = Yoga.siddhi,
     Karana karana = Karana.bava,
     DateTime? nakshatraEnds,
-  }) =>
-      Panchanga(
-        date: DateTime(2026, 3, 10),
-        vara: vara,
-        tithi: PanchangaElement(value: tithi, endsAt: null),
-        paksha: Paksha.shukla,
-        nakshatra: PanchangaElement(
-          value: nakshatra,
-          endsAt: nakshatraEnds,
-        ),
-        yoga: PanchangaElement(value: yoga, endsAt: null),
-        karana: PanchangaElement(value: karana, endsAt: null),
-        sunrise: sunrise,
-        sunset: sunset,
-      );
+  }) => Panchanga(
+    date: DateTime(2026, 3, 10),
+    vara: vara,
+    tithi: PanchangaElement(value: tithi, endsAt: null),
+    paksha: Paksha.shukla,
+    nakshatra: PanchangaElement(value: nakshatra, endsAt: nakshatraEnds),
+    yoga: PanchangaElement(value: yoga, endsAt: null),
+    karana: PanchangaElement(value: karana, endsAt: null),
+    sunrise: sunrise,
+    sunset: sunset,
+  );
 
   group('the nakṣatra classes', () {
     test('all twenty-seven are classified', () {
@@ -158,14 +154,8 @@ void main() {
         contains(NakshatraClass.chara),
       );
       // Travel and vehicles want exactly the opposite.
-      expect(
-        Muhurta.favours[Activity.travel],
-        contains(NakshatraClass.chara),
-      );
-      expect(
-        Muhurta.favours[Activity.vehicle],
-        contains(NakshatraClass.chara),
-      );
+      expect(Muhurta.favours[Activity.travel], contains(NakshatraClass.chara));
+      expect(Muhurta.favours[Activity.vehicle], contains(NakshatraClass.chara));
     });
 
     test('nine yogas are held to spoil a beginning', () {
@@ -183,19 +173,27 @@ void main() {
 
     test('a favourable star lifts the score above a neutral one', () {
       // Rohiṇī is fixed — house entry wants exactly that.
-      final good = scoreOf(day(nakshatra: Nakshatra.rohini),
-          Activity.houseEntry);
+      final good = scoreOf(
+        day(nakshatra: Nakshatra.rohini),
+        Activity.houseEntry,
+      );
       // Kṛttikā is mixed: neither favoured nor warned against.
-      final neutral = scoreOf(day(nakshatra: Nakshatra.krittika),
-          Activity.houseEntry);
+      final neutral = scoreOf(
+        day(nakshatra: Nakshatra.krittika),
+        Activity.houseEntry,
+      );
       expect(good, greaterThan(neutral));
     });
 
     test('a warned-against star drops it below neutral', () {
-      final bad = scoreOf(day(nakshatra: Nakshatra.magha), // ugra
-          Activity.marriage);
-      final neutral = scoreOf(day(nakshatra: Nakshatra.krittika),
-          Activity.marriage);
+      final bad = scoreOf(
+        day(nakshatra: Nakshatra.magha), // ugra
+        Activity.marriage,
+      );
+      final neutral = scoreOf(
+        day(nakshatra: Nakshatra.krittika),
+        Activity.marriage,
+      );
       expect(bad, lessThan(neutral));
     });
 
@@ -232,8 +230,10 @@ void main() {
 
     test('Tuesday and Saturday cost a little', () {
       final wed = scoreOf(day(vara: Vara.budha), Activity.business);
-      expect(scoreOf(day(vara: Vara.mangala), Activity.business),
-          lessThan(wed));
+      expect(
+        scoreOf(day(vara: Vara.mangala), Activity.business),
+        lessThan(wed),
+      );
       expect(scoreOf(day(vara: Vara.shani), Activity.business), lessThan(wed));
     });
 
@@ -282,7 +282,11 @@ void main() {
       for (final w in Muhurta.forActivity(p, Activity.business)) {
         for (final b in bad) {
           final overlaps = w.start.isBefore(b.end) && b.start.isBefore(w.end);
-          expect(overlaps, isFalse, reason: '${w.start} clashes with ${b.name}');
+          expect(
+            overlaps,
+            isFalse,
+            reason: '${w.start} clashes with ${b.name}',
+          );
         }
       }
     });

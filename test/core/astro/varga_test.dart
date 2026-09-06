@@ -16,8 +16,8 @@ void main() {
     final start = movable.contains(sign.index)
         ? sign.index
         : fixed.contains(sign.index)
-            ? (sign.index + 8) % 12
-            : (sign.index + 4) % 12;
+        ? (sign.index + 8) % 12
+        : (sign.index + 4) % 12;
 
     return Rasi.values[(start + navamsaNumber) % 12];
   }
@@ -107,8 +107,7 @@ void main() {
       );
 
       for (final p in d9.positions.values) {
-        final expected =
-            ((p.rasi.index - d9.lagnaRasi.index) % 12) + 1;
+        final expected = ((p.rasi.index - d9.lagnaRasi.index) % 12) + 1;
         expect(p.house, expected, reason: p.graha.en);
         expect(p.house, inInclusiveRange(1, 12));
       }
@@ -116,18 +115,15 @@ void main() {
 
     test('retrograde motion carries over unchanged', () {
       // Retrogression belongs to the body, not to the division.
-      final d9 = Varga.navamsa(
-        chartWith(0, {Graha.rahu: 200, Graha.sun: 10}),
-      );
+      final d9 = Varga.navamsa(chartWith(0, {Graha.rahu: 200, Graha.sun: 10}));
       expect(d9[Graha.rahu].isRetrograde, isTrue);
       expect(d9[Graha.sun].isRetrograde, isFalse);
     });
 
     test('every graha survives the projection', () {
-      final source = chartWith(
-        45,
-        {for (final g in Graha.values) g: g.index * 29.0},
-      );
+      final source = chartWith(45, {
+        for (final g in Graha.values) g: g.index * 29.0,
+      });
       final d9 = Varga.navamsa(source);
 
       expect(d9.positions.keys.toSet(), source.positions.keys.toSet());
@@ -136,9 +132,7 @@ void main() {
     test('the result is a chart the existing renderers can take', () {
       // The point of returning a BirthChart: a D9 is a chart, not a special
       // case, so the rāśi widgets and the detail sheet work on it unchanged.
-      final d9 = Varga.navamsa(
-        chartWith(15, {Graha.sun: 15, Graha.moon: 47}),
-      );
+      final d9 = Varga.navamsa(chartWith(15, {Graha.sun: 15, Graha.moon: 47}));
 
       expect(d9.lagnaRasi, isA<Rasi>());
       expect(d9.birthNakshatra, isA<Nakshatra>());

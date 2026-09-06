@@ -75,8 +75,7 @@ abstract final class KujaDosha {
     final mars = chart[Graha.mars];
     final marsSign = mars.rasi.index;
 
-    int houseFrom(Rasi reference) =>
-        ((marsSign - reference.index) % 12) + 1;
+    int houseFrom(Rasi reference) => ((marsSign - reference.index) % 12) + 1;
 
     final afflicted = <DoshaReference>{};
 
@@ -101,9 +100,8 @@ abstract final class KujaDosha {
     BirthChart bride,
     BirthChart groom, {
     bool fromVenus = true,
-  }) =>
-      KujaDoshaMatch(
-        bride: check(bride, fromVenus: fromVenus),
-        groom: check(groom, fromVenus: fromVenus),
-      );
+  }) => KujaDoshaMatch(
+    bride: check(bride, fromVenus: fromVenus),
+    groom: check(groom, fromVenus: fromVenus),
+  );
 }

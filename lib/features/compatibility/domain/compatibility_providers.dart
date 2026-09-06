@@ -31,8 +31,9 @@ class PartnerNotifier extends Notifier<BirthProfile?> {
   void clear() => state = null;
 }
 
-final partnerProvider =
-    NotifierProvider<PartnerNotifier, BirthProfile?>(PartnerNotifier.new);
+final partnerProvider = NotifierProvider<PartnerNotifier, BirthProfile?>(
+  PartnerNotifier.new,
+);
 
 class MatchSystemNotifier extends Notifier<MatchSystem> {
   // Porondam first: this app's first audience reads porondam, not guṇa milan.
@@ -42,8 +43,9 @@ class MatchSystemNotifier extends Notifier<MatchSystem> {
   void set(MatchSystem s) => state = s;
 }
 
-final matchSystemProvider =
-    NotifierProvider<MatchSystemNotifier, MatchSystem>(MatchSystemNotifier.new);
+final matchSystemProvider = NotifierProvider<MatchSystemNotifier, MatchSystem>(
+  MatchSystemNotifier.new,
+);
 
 class BrideRoleNotifier extends Notifier<BrideRole> {
   @override
@@ -52,8 +54,9 @@ class BrideRoleNotifier extends Notifier<BrideRole> {
   void set(BrideRole r) => state = r;
 }
 
-final brideRoleProvider =
-    NotifierProvider<BrideRoleNotifier, BrideRole>(BrideRoleNotifier.new);
+final brideRoleProvider = NotifierProvider<BrideRoleNotifier, BrideRole>(
+  BrideRoleNotifier.new,
+);
 
 /// Everything a compatibility screen needs, computed together.
 class MatchResult {
@@ -96,8 +99,9 @@ final matchProvider = Provider<MatchResult?>((ref) {
 
   if (mine == null || partner == null) return null;
 
-  final (bride, groom) =
-      role == BrideRole.me ? (mine, partner) : (partner, mine);
+  final (bride, groom) = role == BrideRole.me
+      ? (mine, partner)
+      : (partner, mine);
 
   BirthChart? chartFor(BirthProfile p) => Ephemeris.computeChart(
     localWallClock: p.localWallClock,

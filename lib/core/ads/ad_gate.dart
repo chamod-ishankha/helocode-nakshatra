@@ -54,9 +54,9 @@ class AdGate {
     required this.isConfigured,
     required DateTime launchedAt,
     DateTime Function()? clock,
-  })  : _prefs = prefs,
-        _launchedAt = launchedAt,
-        _clock = clock ?? DateTime.now;
+  }) : _prefs = prefs,
+       _launchedAt = launchedAt,
+       _clock = clock ?? DateTime.now;
 
   final SharedPreferences _prefs;
   final DateTime _launchedAt;
@@ -115,10 +115,7 @@ class AdGate {
   /// nothing to the user it is meant to protect.
   Future<void> recordShown(AdSlot slot) async {
     if (slot != AdSlot.interstitial) return;
-    await _prefs.setInt(
-      _lastInterstitialKey,
-      _clock().millisecondsSinceEpoch,
-    );
+    await _prefs.setInt(_lastInterstitialKey, _clock().millisecondsSinceEpoch);
   }
 
   /// Clears the cooldown. Only for tests and for a purchase, where the
@@ -157,9 +154,7 @@ final adGateProvider = Provider<AdGate>((ref) {
 /// env file gets empty strings and [isConfigured] turns every placement off
 /// rather than crashing the SDK with a blank id.
 abstract final class AdUnits {
-  static const String banner = String.fromEnvironment(
-    'ADMOB_BANNER_UNIT_ID',
-  );
+  static const String banner = String.fromEnvironment('ADMOB_BANNER_UNIT_ID');
   static const String interstitial = String.fromEnvironment(
     'ADMOB_INTERSTITIAL_UNIT_ID',
   );

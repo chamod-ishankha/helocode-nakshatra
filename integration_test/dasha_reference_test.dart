@@ -26,26 +26,27 @@ void main() {
     tzdata.initializeTimeZones();
   });
 
-  final charts = <String, ({DateTime local, DateTime utc, double lat, double lon})>{
-    'Kandy 1999-03-15 14:20': (
-      local: DateTime(1999, 3, 15, 14, 20),
-      utc: DateTime.utc(1999, 3, 15, 8, 20),
-      lat: 7.30,
-      lon: 80.6333,
-    ),
-    'Jaffna 2015-11-08 06:45': (
-      local: DateTime(2015, 11, 8, 6, 45),
-      utc: DateTime.utc(2015, 11, 8, 1, 15),
-      lat: 9.6667,
-      lon: 80.0,
-    ),
-    'Galle 1985-01-22 23:10': (
-      local: DateTime(1985, 1, 22, 23, 10),
-      utc: DateTime.utc(1985, 1, 22, 17, 40),
-      lat: 6.0333,
-      lon: 80.2167,
-    ),
-  };
+  final charts =
+      <String, ({DateTime local, DateTime utc, double lat, double lon})>{
+        'Kandy 1999-03-15 14:20': (
+          local: DateTime(1999, 3, 15, 14, 20),
+          utc: DateTime.utc(1999, 3, 15, 8, 20),
+          lat: 7.30,
+          lon: 80.6333,
+        ),
+        'Jaffna 2015-11-08 06:45': (
+          local: DateTime(2015, 11, 8, 6, 45),
+          utc: DateTime.utc(2015, 11, 8, 1, 15),
+          lat: 9.6667,
+          lon: 80.0,
+        ),
+        'Galle 1985-01-22 23:10': (
+          local: DateTime(1985, 1, 22, 23, 10),
+          utc: DateTime.utc(1985, 1, 22, 17, 40),
+          lat: 6.0333,
+          lon: 80.2167,
+        ),
+      };
 
   charts.forEach((label, ref) {
     group(label, () {
@@ -152,13 +153,17 @@ void main() {
         // what the answer should be.
         final birth = utcFromJulianDay(chart.julianDayUt);
         debugPrint('=== $label (birth $birth UTC) ===');
-        debugPrint('Moon ${chart[Graha.moon].longitude.toStringAsFixed(4)}° '
-            'in ${chart.birthNakshatra.en}');
+        debugPrint(
+          'Moon ${chart[Graha.moon].longitude.toStringAsFixed(4)}° '
+          'in ${chart.birthNakshatra.en}',
+        );
         debugPrint('balance ${Vimshottari.balanceAtBirth(chart).inDays} days');
         for (final maha in timeline) {
-          debugPrint('${maha.lord.en.padRight(8)} '
-              '${maha.start.toIso8601String().substring(0, 10)} → '
-              '${maha.end.toIso8601String().substring(0, 10)}');
+          debugPrint(
+            '${maha.lord.en.padRight(8)} '
+            '${maha.start.toIso8601String().substring(0, 10)} → '
+            '${maha.end.toIso8601String().substring(0, 10)}',
+          );
         }
       });
     });

@@ -25,15 +25,14 @@ void main() {
     bool hasProfile = true,
     bool configured = true,
     Duration since = const Duration(minutes: 5),
-  }) =>
-      AdGate(
-        prefs: prefs,
-        hasEntitlement: entitled,
-        hasProfile: hasProfile,
-        isConfigured: configured,
-        launchedAt: launch,
-        clock: () => launch.add(since),
-      );
+  }) => AdGate(
+    prefs: prefs,
+    hasEntitlement: entitled,
+    hasProfile: hasProfile,
+    isConfigured: configured,
+    launchedAt: launch,
+    clock: () => launch.add(since),
+  );
 
   group('who never sees an ad', () {
     test('a purchaser sees none of any kind', () {
@@ -97,19 +96,13 @@ void main() {
     test('the banner is not held back by it', () {
       // It sits in the layout rather than interrupting, so there is nothing
       // to protect the first minute from.
-      expect(
-        gate(since: Duration.zero).allows(AdSlot.banner),
-        isTrue,
-      );
+      expect(gate(since: Duration.zero).allows(AdSlot.banner), isTrue);
     });
 
     test('a rewarded ad is never held back', () {
       // The user asked to watch it in exchange for something. Refusing would
       // withhold what they came for.
-      expect(
-        gate(since: Duration.zero).allows(AdSlot.rewarded),
-        isTrue,
-      );
+      expect(gate(since: Duration.zero).allows(AdSlot.rewarded), isTrue);
     });
   });
 
@@ -150,10 +143,7 @@ void main() {
         launchedAt: launch.add(const Duration(minutes: 5)),
         clock: () => launch.add(const Duration(minutes: 7)),
       );
-      expect(
-        relaunched.refuse(AdSlot.interstitial),
-        AdRefusal.withinCooldown,
-      );
+      expect(relaunched.refuse(AdSlot.interstitial), AdRefusal.withinCooldown);
     });
 
     test('only interstitials are recorded', () async {
@@ -163,8 +153,10 @@ void main() {
       await g.recordShown(AdSlot.banner);
       await g.recordShown(AdSlot.rewarded);
 
-      expect(gate(since: const Duration(minutes: 5)).allows(AdSlot.interstitial),
-          isTrue);
+      expect(
+        gate(since: const Duration(minutes: 5)).allows(AdSlot.interstitial),
+        isTrue,
+      );
     });
 
     test('reset clears it', () async {

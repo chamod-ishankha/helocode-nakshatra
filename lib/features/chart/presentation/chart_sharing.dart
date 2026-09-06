@@ -48,9 +48,7 @@ abstract final class ChartSharing {
       return const Result.success(null);
     } on Object catch (e, s) {
       AppLogger.warn('Chart share failed', e, s);
-      return Result.failure(
-        UnexpectedFailure('chart share failed', cause: e),
-      );
+      return Result.failure(UnexpectedFailure('chart share failed', cause: e));
     }
   }
 
@@ -138,8 +136,9 @@ class ShareableChart extends StatelessWidget {
                 'Nakshatra · HeloCode Labs',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant
-                      .withValues(alpha: 0.7),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(
+                    alpha: 0.7,
+                  ),
                 ),
               ),
             ],

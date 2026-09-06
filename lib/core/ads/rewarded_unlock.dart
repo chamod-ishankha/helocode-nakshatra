@@ -48,10 +48,10 @@ class UnlockStore {
     required bool hasEntitlement,
     required bool adsConfigured,
     DateTime Function()? clock,
-  })  : _prefs = prefs,
-        _hasEntitlement = hasEntitlement,
-        _adsConfigured = adsConfigured,
-        _clock = clock ?? DateTime.now;
+  }) : _prefs = prefs,
+       _hasEntitlement = hasEntitlement,
+       _adsConfigured = adsConfigured,
+       _clock = clock ?? DateTime.now;
 
   final SharedPreferences _prefs;
   final bool _hasEntitlement;
@@ -106,8 +106,7 @@ class UnlockStore {
     SharedPreferences prefs,
     RewardedUnlock unlock, {
     DateTime Function()? clock,
-  }) =>
-      prefs.setString(_key(unlock), stampFor((clock ?? DateTime.now)()));
+  }) => prefs.setString(_key(unlock), stampFor((clock ?? DateTime.now)()));
 
   Future<void> revokeAll() async {
     for (final u in RewardedUnlock.values) {
@@ -134,15 +133,17 @@ class UnlockNotifier extends Notifier<int> {
   }
 }
 
-final unlockRevisionProvider =
-    NotifierProvider<UnlockNotifier, int>(UnlockNotifier.new);
+final unlockRevisionProvider = NotifierProvider<UnlockNotifier, int>(
+  UnlockNotifier.new,
+);
 
 /// Shows a rewarded ad, resolving true only if the reward was earned.
 ///
 /// Indirected through a provider so the unlock logic can be tested without
 /// the SDK: the real one is wired in [bootstrap].
 final rewardedPresenterProvider = Provider<Future<bool> Function()>(
-  (ref) => () async => false,
+  (ref) =>
+      () async => false,
 );
 
 final unlockStoreProvider = Provider<UnlockStore>((ref) {

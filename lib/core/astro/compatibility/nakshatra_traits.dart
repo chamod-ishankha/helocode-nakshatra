@@ -144,8 +144,7 @@ abstract final class NakshatraTraits {
   ];
 
   static bool areEnemies(YoniAnimal a, YoniAnimal b) => _enemies.any(
-    (pair) =>
-        (pair.$1 == a && pair.$2 == b) || (pair.$1 == b && pair.$2 == a),
+    (pair) => (pair.$1 == a && pair.$2 == b) || (pair.$1 == b && pair.$2 == a),
   );
 }
 
@@ -190,8 +189,10 @@ abstract final class RasiTraits {
   /// refinement is noted here so its absence is a decision rather than an
   /// oversight.
   static Vashya vashya(Rasi r) => switch (r) {
-    Rasi.mesha || Rasi.vrishabha || Rasi.dhanu || Rasi.makara =>
-      Vashya.chatushpada,
+    Rasi.mesha ||
+    Rasi.vrishabha ||
+    Rasi.dhanu ||
+    Rasi.makara => Vashya.chatushpada,
     Rasi.mithuna || Rasi.kanya || Rasi.tula || Rasi.kumbha => Vashya.manava,
     Rasi.karka || Rasi.meena => Vashya.jalachara,
     Rasi.simha => Vashya.vanachara,

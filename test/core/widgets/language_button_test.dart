@@ -83,8 +83,9 @@ void main() {
     expect(find.byIcon(Icons.check), findsOneWidget);
   });
 
-  testWidgets('picking a language switches the app immediately',
-      (tester) async {
+  testWidgets('picking a language switches the app immediately', (
+    tester,
+  ) async {
     await pump(tester, start: AppLocale.en);
     expect(container.read(localeProvider), AppLocale.en);
 
@@ -95,8 +96,9 @@ void main() {
     expect(container.read(localeProvider), AppLocale.si);
   });
 
-  testWidgets('the choice is written to storage, not just held in memory',
-      (tester) async {
+  testWidgets('the choice is written to storage, not just held in memory', (
+    tester,
+  ) async {
     // Losing it on restart would put the user straight back where they were.
     await pump(tester, start: AppLocale.en);
 
@@ -107,8 +109,9 @@ void main() {
     expect(prefs.getString('app_locale_v1'), 'ta');
   });
 
-  testWidgets('a user stuck in Tamil can still find their way out',
-      (tester) async {
+  testWidgets('a user stuck in Tamil can still find their way out', (
+    tester,
+  ) async {
     // The whole point. The interface is in a script they cannot read, so the
     // icon carries no words and every option is in its own script.
     await pump(tester, start: AppLocale.ta);
@@ -123,7 +126,9 @@ void main() {
     expect(prefs.getString('app_locale_v1'), 'en');
   });
 
-  testWidgets('re-picking the current language changes nothing', (tester) async {
+  testWidgets('re-picking the current language changes nothing', (
+    tester,
+  ) async {
     await pump(tester, start: AppLocale.si);
 
     await openMenu(tester);

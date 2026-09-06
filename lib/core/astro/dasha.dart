@@ -125,8 +125,7 @@ abstract final class Vimshottari {
   static List<Graha> get lords => [for (final (g, _) in cycle) g];
 
   /// Years allotted to [lord] in a full cycle.
-  static int yearsOf(Graha lord) =>
-      cycle.firstWhere((e) => e.$1 == lord).$2;
+  static int yearsOf(Graha lord) => cycle.firstWhere((e) => e.$1 == lord).$2;
 
   /// The graha ruling [nakshatra].
   ///
@@ -150,10 +149,7 @@ abstract final class Vimshottari {
   /// its *full* span and only then clipped, because computing them over the
   /// remaining balance instead is a real and easy mistake — it would put every
   /// sub-period boundary in the wrong place for the whole first period.
-  static List<DashaPeriod> forChart(
-    BirthChart chart, {
-    int depth = 3,
-  }) {
+  static List<DashaPeriod> forChart(BirthChart chart, {int depth = 3}) {
     assert(depth >= 1 && depth <= 3, 'depth must be 1..3');
 
     final birth = utcFromJulianDay(chart.julianDayUt);
@@ -181,8 +177,8 @@ abstract final class Vimshottari {
     final lord = lordOf(Nakshatra.fromLongitude(moon));
     final remaining = yearsOf(lord) * (1 - elapsedFraction(moon));
     return Duration(
-      microseconds:
-          (remaining * daysPerYear * Duration.microsecondsPerDay).round(),
+      microseconds: (remaining * daysPerYear * Duration.microsecondsPerDay)
+          .round(),
     );
   }
 
@@ -273,8 +269,7 @@ abstract final class Vimshottari {
 
   static DateTime _shift(DateTime from, double years) => from.add(
     Duration(
-      microseconds:
-          (years * daysPerYear * Duration.microsecondsPerDay).round(),
+      microseconds: (years * daysPerYear * Duration.microsecondsPerDay).round(),
     ),
   );
 }

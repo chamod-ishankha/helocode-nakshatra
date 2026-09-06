@@ -7,14 +7,7 @@ import 'panchanga_models.dart';
 /// The list is deliberately short and concrete. A muhūrta table can be
 /// subdivided almost without limit, and offering fifty activities would imply
 /// a precision the underlying rules do not have.
-enum Activity {
-  travel,
-  workOrStudy,
-  business,
-  marriage,
-  houseEntry,
-  vehicle,
-}
+enum Activity { travel, workOrStudy, business, marriage, houseEntry, vehicle }
 
 /// The sevenfold classification of the nakṣatras by character.
 ///
@@ -163,16 +156,28 @@ abstract final class Muhurta {
 
   /// Classes each activity is helped by.
   static const Map<Activity, Set<NakshatraClass>> favours = {
-    Activity.travel: {NakshatraClass.chara, NakshatraClass.kshipra,
-        NakshatraClass.mridu},
-    Activity.workOrStudy: {NakshatraClass.kshipra, NakshatraClass.dhruva,
-        NakshatraClass.mridu},
-    Activity.business: {NakshatraClass.kshipra, NakshatraClass.chara,
-        NakshatraClass.dhruva},
+    Activity.travel: {
+      NakshatraClass.chara,
+      NakshatraClass.kshipra,
+      NakshatraClass.mridu,
+    },
+    Activity.workOrStudy: {
+      NakshatraClass.kshipra,
+      NakshatraClass.dhruva,
+      NakshatraClass.mridu,
+    },
+    Activity.business: {
+      NakshatraClass.kshipra,
+      NakshatraClass.chara,
+      NakshatraClass.dhruva,
+    },
     Activity.marriage: {NakshatraClass.mridu, NakshatraClass.dhruva},
     Activity.houseEntry: {NakshatraClass.dhruva, NakshatraClass.mridu},
-    Activity.vehicle: {NakshatraClass.chara, NakshatraClass.kshipra,
-        NakshatraClass.mridu},
+    Activity.vehicle: {
+      NakshatraClass.chara,
+      NakshatraClass.kshipra,
+      NakshatraClass.mridu,
+    },
   };
 
   /// Classes each activity is warned against.
@@ -184,10 +189,16 @@ abstract final class Muhurta {
     Activity.travel: {NakshatraClass.ugra, NakshatraClass.tikshna},
     Activity.workOrStudy: {NakshatraClass.ugra, NakshatraClass.tikshna},
     Activity.business: {NakshatraClass.ugra, NakshatraClass.tikshna},
-    Activity.marriage: {NakshatraClass.ugra, NakshatraClass.tikshna,
-        NakshatraClass.chara},
-    Activity.houseEntry: {NakshatraClass.ugra, NakshatraClass.tikshna,
-        NakshatraClass.chara},
+    Activity.marriage: {
+      NakshatraClass.ugra,
+      NakshatraClass.tikshna,
+      NakshatraClass.chara,
+    },
+    Activity.houseEntry: {
+      NakshatraClass.ugra,
+      NakshatraClass.tikshna,
+      NakshatraClass.chara,
+    },
     Activity.vehicle: {NakshatraClass.ugra, NakshatraClass.tikshna},
   };
 

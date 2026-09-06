@@ -52,8 +52,9 @@ void main() {
       for (final (a, b) in Porondams.vedhaPairs) {
         covered.addAll([a, b]);
       }
-      final unpaired =
-          Nakshatra.values.where((n) => !covered.contains(n)).toList();
+      final unpaired = Nakshatra.values
+          .where((n) => !covered.contains(n))
+          .toList();
       // Twenty-seven is odd, so exactly one must be unpaired. Which one is a
       // fact about the table, and worth pinning.
       expect(unpaired, [Nakshatra.mrigashira]);
@@ -90,10 +91,13 @@ void main() {
       // The only porondam failed by sameness rather than difference.
       for (final a in Nakshatra.values) {
         for (final b in Nakshatra.values) {
-          final same =
-              NakshatraTraits.rajju(a) == NakshatraTraits.rajju(b);
-          final verdict =
-              match(a, Rasi.mesha, b, Rasi.mesha)[Porondam.rajju].verdict;
+          final same = NakshatraTraits.rajju(a) == NakshatraTraits.rajju(b);
+          final verdict = match(
+            a,
+            Rasi.mesha,
+            b,
+            Rasi.mesha,
+          )[Porondam.rajju].verdict;
           expect(
             verdict,
             same ? PorondamVerdict.poor : PorondamVerdict.good,
@@ -163,8 +167,8 @@ void main() {
           count >= 7
               ? PorondamVerdict.good
               : count == 1
-                  ? PorondamVerdict.partial
-                  : PorondamVerdict.poor,
+              ? PorondamVerdict.partial
+              : PorondamVerdict.poor,
           reason: 'count $count',
         );
       }
@@ -215,12 +219,7 @@ void main() {
     test('a self-match fails nāḍī and rajju but passes vedha', () {
       // Same nakṣatra means same nāḍī and same rajju; a nakṣatra never
       // pierces itself.
-      final r = match(
-        Nakshatra.hasta,
-        Rasi.kanya,
-        Nakshatra.hasta,
-        Rasi.kanya,
-      );
+      final r = match(Nakshatra.hasta, Rasi.kanya, Nakshatra.hasta, Rasi.kanya);
       expect(r[Porondam.nadi].verdict, PorondamVerdict.poor);
       expect(r[Porondam.rajju].verdict, PorondamVerdict.poor);
       expect(r[Porondam.vedha].verdict, PorondamVerdict.good);

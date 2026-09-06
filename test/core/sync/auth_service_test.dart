@@ -104,8 +104,10 @@ void main() {
         'network-request-failed',
         'operation-not-allowed',
       ]) {
-        expect(AuthService.describe(FirebaseAuthException(code: code)).code,
-            code);
+        expect(
+          AuthService.describe(FirebaseAuthException(code: code)).code,
+          code,
+        );
       }
     });
 
@@ -151,23 +153,27 @@ void main() {
         final failure = result.failureOrNull! as AuthFailure;
         // Not a generic error: the code is what the UI keys off to hide the
         // button rather than show a dead end.
-        expect(failure.code, anyOf('google-unavailable', 'no-current-user',
-            'no-firebase'));
+        expect(
+          failure.code,
+          anyOf('google-unavailable', 'no-current-user', 'no-firebase'),
+        );
         expect(failure.message, isNotEmpty);
       }
     });
 
-    test('signing in does not abandon the backup when Google cannot run',
-        () async {
-      final sync = _FakeSync();
-      const service = AuthService();
+    test(
+      'signing in does not abandon the backup when Google cannot run',
+      () async {
+        final sync = _FakeSync();
+        const service = AuthService();
 
-      await service.signInGoogle(onAbandon: sync.clear);
+        await service.signInGoogle(onAbandon: sync.clear);
 
-      // The chooser never opened, so there is nothing to abandon. Deleting
-      // here would destroy a backup for an action that never happened.
-      expect(sync.clears, 0);
-    });
+        // The chooser never opened, so there is nothing to abandon. Deleting
+        // here would destroy a backup for an action that never happened.
+        expect(sync.clears, 0);
+      },
+    );
   });
 
   group('reconciling after signing in to another account', () {
@@ -215,18 +221,20 @@ void main() {
       expect(container.read(profileProvider)!.name, 'OnThisPhone');
     });
 
-    test('a differing birth time counts as a conflict, not just the name',
-        () async {
-      final sync = _FakeSync(
-        remote: local.copyWith(birthTime: const Duration(hours: 9)),
-      );
-      final container = makeContainer(sync: sync);
-      final profiles = container.read(profileProvider.notifier);
-      await profiles.save(local);
+    test(
+      'a differing birth time counts as a conflict, not just the name',
+      () async {
+        final sync = _FakeSync(
+          remote: local.copyWith(birthTime: const Duration(hours: 9)),
+        );
+        final container = makeContainer(sync: sync);
+        final profiles = container.read(profileProvider.notifier);
+        await profiles.save(local);
 
-      // Two people can share a name; the chart is what actually differs.
-      expect(await profiles.reconcileAfterSignIn(), isNotNull);
-    });
+        // Two people can share a name; the chart is what actually differs.
+        expect(await profiles.reconcileAfterSignIn(), isNotNull);
+      },
+    );
   });
 
   group('applying the conflict decision', () {

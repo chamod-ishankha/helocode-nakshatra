@@ -31,12 +31,11 @@ Future<void> showHouseDetail(
   required Rasi rasi,
   required int house,
   required List<GrahaPosition> grahas,
-}) =>
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (_) => _HouseDetail(rasi: rasi, house: house, grahas: grahas),
-    );
+}) => showModalBottomSheet<void>(
+  context: context,
+  showDragHandle: true,
+  builder: (_) => _HouseDetail(rasi: rasi, house: house, grahas: grahas),
+);
 
 class _GrahaDetail extends ConsumerWidget {
   const _GrahaDetail({required this.position});
@@ -241,9 +240,7 @@ class _Chip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(
-          context,
-        ).textTheme.labelSmall?.copyWith(color: colour),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: colour),
       ),
     );
   }

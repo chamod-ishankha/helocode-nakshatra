@@ -76,10 +76,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
                 const Icon(Icons.lock_outline, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    widget.title,
-                    style: theme.textTheme.titleSmall,
-                  ),
+                  child: Text(widget.title, style: theme.textTheme.titleSmall),
                 ),
               ],
             ),

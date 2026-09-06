@@ -124,36 +124,36 @@ class NorthIndianChart extends StatelessWidget {
         ),
         behavior: HitTestBehavior.opaque,
         child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '$rasiNumber',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: house == 1
-                  ? AppColors.accent
-                  : theme.colorScheme.onSurfaceVariant,
-              fontWeight: house == 1 ? FontWeight.bold : FontWeight.normal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$rasiNumber',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: house == 1
+                    ? AppColors.accent
+                    : theme.colorScheme.onSurfaceVariant,
+                fontWeight: house == 1 ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
-          ),
-          Flexible(
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 3,
-              children: [
-                for (final g in grahas)
-                  Text(
-                    '${g.graha.en.substring(0, 2)}${g.isRetrograde ? '℞' : ''}',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: g.isRetrograde
-                          ? AppColors.inauspicious
-                          : theme.colorScheme.onSurface,
+            Flexible(
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 3,
+                children: [
+                  for (final g in grahas)
+                    Text(
+                      '${g.graha.en.substring(0, 2)}${g.isRetrograde ? '℞' : ''}',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: g.isRetrograde
+                            ? AppColors.inauspicious
+                            : theme.colorScheme.onSurface,
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );

@@ -60,8 +60,8 @@ abstract final class Varga {
               latitude: entry.value.latitude,
               speed: entry.value.speed,
               // Whole-sign houses again, counted from the navāṃśa lagna.
-              house: ((Rasi.fromLongitude(projected).index - lagnaSign) % 12) +
-                  1,
+              house:
+                  ((Rasi.fromLongitude(projected).index - lagnaSign) % 12) + 1,
             );
           }(),
       },

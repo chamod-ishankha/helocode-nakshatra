@@ -124,8 +124,9 @@ void main() {
     }
   });
 
-  testWidgets('the current period is opened and the rest are collapsed',
-      (tester) async {
+  testWidgets('the current period is opened and the rest are collapsed', (
+    tester,
+  ) async {
     await pump(tester, birthTimeKnown: true);
 
     // Only the running mahādaśā expands, so the screen does not arrive as
@@ -163,8 +164,9 @@ void main() {
     expect(find.byType(ExpansionTile), findsNothing);
   });
 
-  testWidgets('no third level is shown while it is a Pro feature',
-      (tester) async {
+  testWidgets('no third level is shown while it is a Pro feature', (
+    tester,
+  ) async {
     await pump(tester, birthTimeKnown: true);
 
     // The engine can generate pratyantardaśā, but showing it behind a lock

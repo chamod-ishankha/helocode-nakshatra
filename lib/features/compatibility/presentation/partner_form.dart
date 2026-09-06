@@ -61,18 +61,20 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
 
   void _save() {
     if (!_complete) return;
-    ref.read(partnerProvider.notifier).set(
-      BirthProfile(
-        name: _name.text.trim(),
-        birthDate: _date!,
-        // Sunrise, matching what onboarding assumes when the time is unknown.
-        birthTime: _timeKnown
-            ? (_time ?? const Duration(hours: 6))
-            : const Duration(hours: 6),
-        place: _place!,
-        birthTimeKnown: _timeKnown && _time != null,
-      ),
-    );
+    ref
+        .read(partnerProvider.notifier)
+        .set(
+          BirthProfile(
+            name: _name.text.trim(),
+            birthDate: _date!,
+            // Sunrise, matching what onboarding assumes when the time is unknown.
+            birthTime: _timeKnown
+                ? (_time ?? const Duration(hours: 6))
+                : const Duration(hours: 6),
+            place: _place!,
+            birthTimeKnown: _timeKnown && _time != null,
+          ),
+        );
     Navigator.of(context).pop();
   }
 
@@ -154,7 +156,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                 !_timeKnown || _time == null
                     ? l.onboardingTimePickerTitle
                     : '${_time!.inHours.toString().padLeft(2, '0')}:'
-                        '${(_time!.inMinutes % 60).toString().padLeft(2, '0')}',
+                          '${(_time!.inMinutes % 60).toString().padLeft(2, '0')}',
               ),
             ),
             SwitchListTile(

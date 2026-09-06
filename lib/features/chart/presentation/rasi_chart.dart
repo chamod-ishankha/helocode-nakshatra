@@ -124,68 +124,64 @@ class _Cell extends StatelessWidget {
       // The cell, not the two-letter graha label: that label is a few pixels
       // wide on a 360 dp screen, and an empty house would have no tap target
       // at all.
-      onTap: () => showHouseDetail(
-        context,
-        rasi: rasi,
-        house: house,
-        grahas: grahas,
-      ),
+      onTap: () =>
+          showHouseDetail(context, rasi: rasi, house: house, grahas: grahas),
       child: Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.dividerColor),
-        color: isLagna
-            ? AppColors.accent.withValues(alpha: 0.10)
-            : Colors.transparent,
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (isLagna)
-                Padding(
-                  padding: const EdgeInsets.only(right: 3),
-                  child: Text(
-                    'La',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              Expanded(
-                child: Text(
-                  rasi.en,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: Wrap(
-              spacing: 4,
-              runSpacing: 2,
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.dividerColor),
+          color: isLagna
+              ? AppColors.accent.withValues(alpha: 0.10)
+              : Colors.transparent,
+        ),
+        padding: const EdgeInsets.all(4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                for (final g in grahas)
-                  Text(
-                    // Two-letter abbreviations keep nine grahas legible in a
-                    // cell that is roughly 70px wide on a small phone.
-                    '${g.graha.en.substring(0, 2)}${g.isRetrograde ? '℞' : ''}',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: g.isRetrograde
-                          ? AppColors.inauspicious
-                          : theme.colorScheme.onSurface,
+                if (isLagna)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 3),
+                    child: Text(
+                      'La',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: AppColors.accent,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                Expanded(
+                  child: Text(
+                    rasi.en,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 2,
+                children: [
+                  for (final g in grahas)
+                    Text(
+                      // Two-letter abbreviations keep nine grahas legible in a
+                      // cell that is roughly 70px wide on a small phone.
+                      '${g.graha.en.substring(0, 2)}${g.isRetrograde ? '℞' : ''}',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: g.isRetrograde
+                            ? AppColors.inauspicious
+                            : theme.colorScheme.onSurface,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

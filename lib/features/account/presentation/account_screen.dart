@@ -72,9 +72,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         if (!mounted) return;
         setState(() => _busy = false);
         final l = L10n.of(context);
-        _confirm(
-          _signingIn ? l.accountSignedInToast : l.accountCreatedToast,
-        );
+        _confirm(_signingIn ? l.accountSignedInToast : l.accountCreatedToast);
       case FailureResult(:final failure):
         final taken =
             failure is AuthFailure && AuthService.isEmailTaken(failure.code);
@@ -256,27 +254,31 @@ class _StatusCard extends StatelessWidget {
 
     final l = L10n.of(context);
 
-    final (IconData icon, String title, String body, Color colour) =
-        switch (kind) {
-          AccountKind.permanent => (
-            Icons.verified_user_outlined,
-            l.accountSavedToEmail(email ?? ''),
-            l.accountSavedToEmailHelp,
-            theme.colorScheme.primary,
-          ),
-          AccountKind.anonymous => (
-            Icons.phonelink_lock_outlined,
-            l.accountPhoneOnly,
-            l.accountPhoneOnlyHelp,
-            theme.colorScheme.error,
-          ),
-          AccountKind.none => (
-            Icons.cloud_off_outlined,
-            l.accountUnavailable,
-            l.accountUnavailableHelp,
-            theme.colorScheme.onSurfaceVariant,
-          ),
-        };
+    final (
+      IconData icon,
+      String title,
+      String body,
+      Color colour,
+    ) = switch (kind) {
+      AccountKind.permanent => (
+        Icons.verified_user_outlined,
+        l.accountSavedToEmail(email ?? ''),
+        l.accountSavedToEmailHelp,
+        theme.colorScheme.primary,
+      ),
+      AccountKind.anonymous => (
+        Icons.phonelink_lock_outlined,
+        l.accountPhoneOnly,
+        l.accountPhoneOnlyHelp,
+        theme.colorScheme.error,
+      ),
+      AccountKind.none => (
+        Icons.cloud_off_outlined,
+        l.accountUnavailable,
+        l.accountUnavailableHelp,
+        theme.colorScheme.onSurfaceVariant,
+      ),
+    };
 
     return Container(
       padding: const EdgeInsets.all(16),

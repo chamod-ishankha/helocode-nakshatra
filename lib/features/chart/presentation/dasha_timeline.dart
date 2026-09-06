@@ -311,10 +311,10 @@ class _AntaraRow extends ConsumerWidget {
 }
 
 /// Boundaries are UTC instants; a user reads them as dates where they live.
-String _shortDate(BuildContext context, DateTime utc) =>
-    DateFormat.yMMM(Localizations.localeOf(context).languageCode)
-        .format(utc.toLocal());
+String _shortDate(BuildContext context, DateTime utc) => DateFormat.yMMM(
+  Localizations.localeOf(context).languageCode,
+).format(utc.toLocal());
 
-String _longDate(BuildContext context, DateTime utc) =>
-    DateFormat.yMMMd(Localizations.localeOf(context).languageCode)
-        .format(utc.toLocal());
+String _longDate(BuildContext context, DateTime utc) => DateFormat.yMMMd(
+  Localizations.localeOf(context).languageCode,
+).format(utc.toLocal());

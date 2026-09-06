@@ -425,14 +425,10 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
             child: results.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(
-                child: Text(
-                  L10n.of(context).onboardingPlaceLoadFailed('$e'),
-                ),
+                child: Text(L10n.of(context).onboardingPlaceLoadFailed('$e')),
               ),
               data: (places) => places.isEmpty
-                  ? Center(
-                      child: Text(L10n.of(context).onboardingPlaceNoMatch),
-                    )
+                  ? Center(child: Text(L10n.of(context).onboardingPlaceNoMatch))
                   : ListView.builder(
                       itemCount: places.length,
                       itemBuilder: (context, i) {

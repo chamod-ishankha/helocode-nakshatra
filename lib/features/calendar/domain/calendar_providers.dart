@@ -24,8 +24,9 @@ class VisibleMonthNotifier extends Notifier<DateTime> {
   }
 }
 
-final visibleMonthProvider =
-    NotifierProvider<VisibleMonthNotifier, DateTime>(VisibleMonthNotifier.new);
+final visibleMonthProvider = NotifierProvider<VisibleMonthNotifier, DateTime>(
+  VisibleMonthNotifier.new,
+);
 
 /// Poya days and festivals falling in the visible month.
 ///
@@ -50,10 +51,7 @@ final monthMarkersProvider = Provider<Map<int, List<Festival>>>((ref) {
 
 /// One day's best window for an activity.
 class DayScore {
-  const DayScore({
-    required this.date,
-    required this.best,
-  });
+  const DayScore({required this.date, required this.best});
 
   final DateTime date;
   final MuhurtaWindow best;
@@ -83,8 +81,10 @@ class ScanRequest {
 /// row on the UI thread would drop frames. Yielding between days keeps the
 /// screen responsive and lets the caller show progress — this is a query the
 /// user asks for, not something computed on the way in.
-final monthScanProvider =
-    FutureProvider.family<List<DayScore>, ScanRequest>((ref, request) async {
+final monthScanProvider = FutureProvider.family<List<DayScore>, ScanRequest>((
+  ref,
+  request,
+) async {
   final profile = ref.watch(profileProvider);
   if (profile == null) return const [];
 
@@ -132,5 +132,5 @@ class ChosenActivityNotifier extends Notifier<Activity?> {
 
 final chosenActivityProvider =
     NotifierProvider<ChosenActivityNotifier, Activity?>(
-  ChosenActivityNotifier.new,
-);
+      ChosenActivityNotifier.new,
+    );

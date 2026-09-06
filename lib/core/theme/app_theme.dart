@@ -54,11 +54,7 @@ abstract final class AppTheme {
   static ThemeData dark(AppLocale locale) =>
       _base(Brightness.dark, AppColors.primaryDark, locale);
 
-  static ThemeData _base(
-    Brightness brightness,
-    Color seed,
-    AppLocale locale,
-  ) {
+  static ThemeData _base(Brightness brightness, Color seed, AppLocale locale) {
     final scheme = ColorScheme.fromSeed(
       seedColor: seed,
       brightness: brightness,

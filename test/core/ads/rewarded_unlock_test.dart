@@ -25,13 +25,12 @@ void main() {
     bool entitled = false,
     bool configured = true,
     required DateTime now,
-  }) =>
-      UnlockStore(
-        prefs: prefs,
-        hasEntitlement: entitled,
-        adsConfigured: configured,
-        clock: () => now,
-      );
+  }) => UnlockStore(
+    prefs: prefs,
+    hasEntitlement: entitled,
+    adsConfigured: configured,
+    clock: () => now,
+  );
 
   group('who never has to watch', () {
     test('a purchaser has everything open', () {
@@ -74,7 +73,9 @@ void main() {
       await store(now: DateTime(2026, 9, 6, 9)).grant(RewardedUnlock.futureDay);
 
       expect(
-        store(now: DateTime(2026, 9, 6, 23, 59)).state(RewardedUnlock.futureDay),
+        store(
+          now: DateTime(2026, 9, 6, 23, 59),
+        ).state(RewardedUnlock.futureDay),
         UnlockState.earned,
       );
     });
@@ -88,19 +89,24 @@ void main() {
       );
     });
 
-    test('a late-night grant expires at midnight, not 24 hours later',
-        () async {
-      // The case that separates a day pass from a 24-hour timer. Earned at
-      // 23:50, a timer would still be running at 23:00 the following night
-      // and would have given this user nearly two days from one video.
-      await store(now: DateTime(2026, 9, 6, 23, 50))
-          .grant(RewardedUnlock.futureDay);
+    test(
+      'a late-night grant expires at midnight, not 24 hours later',
+      () async {
+        // The case that separates a day pass from a 24-hour timer. Earned at
+        // 23:50, a timer would still be running at 23:00 the following night
+        // and would have given this user nearly two days from one video.
+        await store(
+          now: DateTime(2026, 9, 6, 23, 50),
+        ).grant(RewardedUnlock.futureDay);
 
-      expect(
-        store(now: DateTime(2026, 9, 7, 0, 1)).state(RewardedUnlock.futureDay),
-        UnlockState.locked,
-      );
-    });
+        expect(
+          store(
+            now: DateTime(2026, 9, 7, 0, 1),
+          ).state(RewardedUnlock.futureDay),
+          UnlockState.locked,
+        );
+      },
+    );
 
     test('unlocks do not open each other', () async {
       // Sharing one key would mean watching a video for tomorrow's nekath
@@ -178,23 +184,25 @@ void main() {
       return c;
     }
 
-    test('a watched video persists the unlock and bumps the revision',
-        () async {
-      final c = containerWith(rewardEarned: true);
-      final before = c.read(unlockRevisionProvider);
+    test(
+      'a watched video persists the unlock and bumps the revision',
+      () async {
+        final c = containerWith(rewardEarned: true);
+        final before = c.read(unlockRevisionProvider);
 
-      final ok = await c
-          .read(unlockRevisionProvider.notifier)
-          .earn(RewardedUnlock.futureDay);
+        final ok = await c
+            .read(unlockRevisionProvider.notifier)
+            .earn(RewardedUnlock.futureDay);
 
-      expect(ok, isTrue);
-      expect(c.read(unlockRevisionProvider), greaterThan(before));
-      // Persisted under today's stamp, so a rebuild reads it back as earned.
-      expect(
-        prefs.getString('unlock.futureDay'),
-        UnlockStore.stampFor(DateTime.now()),
-      );
-    });
+        expect(ok, isTrue);
+        expect(c.read(unlockRevisionProvider), greaterThan(before));
+        // Persisted under today's stamp, so a rebuild reads it back as earned.
+        expect(
+          prefs.getString('unlock.futureDay'),
+          UnlockStore.stampFor(DateTime.now()),
+        );
+      },
+    );
 
     test('a dismissed video grants nothing', () async {
       final c = containerWith(rewardEarned: false);

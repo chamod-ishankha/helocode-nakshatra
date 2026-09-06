@@ -79,8 +79,11 @@ abstract final class AdsService {
     } on Object catch (e, s) {
       _lastError = '$e';
       _finish(false);
-      AppLogger.warn('Mobile Ads failed to start, continuing without ads',
-          e, s);
+      AppLogger.warn(
+        'Mobile Ads failed to start, continuing without ads',
+        e,
+        s,
+      );
     }
   }
 

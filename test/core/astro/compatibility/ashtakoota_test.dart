@@ -122,12 +122,7 @@ void main() {
   });
 
   group('scoring', () {
-    AshtakootaResult match(
-      Nakshatra bn,
-      Rasi br,
-      Nakshatra gn,
-      Rasi gr,
-    ) =>
+    AshtakootaResult match(Nakshatra bn, Rasi br, Nakshatra gn, Rasi gr) =>
         Ashtakoota.match(
           brideNakshatra: bn,
           brideRasi: br,

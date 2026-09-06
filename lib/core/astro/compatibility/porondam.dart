@@ -70,8 +70,8 @@ class PorondamResult {
 
   /// Rajju failing is read as the gravest of these in Sri Lankan practice,
   /// so it is surfaced rather than left to be one row among twelve.
-  bool get hasRajjuDosha => this[Porondam.rajju].verdict ==
-      PorondamVerdict.poor;
+  bool get hasRajjuDosha =>
+      this[Porondam.rajju].verdict == PorondamVerdict.poor;
 }
 
 /// Porondam — the Sri Lankan matching system (KAN-29).
@@ -172,8 +172,8 @@ abstract final class Porondams {
       verdict: count > 13
           ? PorondamVerdict.good
           : count > 9
-              ? PorondamVerdict.partial
-              : PorondamVerdict.poor,
+          ? PorondamVerdict.partial
+          : PorondamVerdict.poor,
     );
   }
 
@@ -186,8 +186,8 @@ abstract final class Porondams {
       verdict: b == g
           ? PorondamVerdict.good
           : NakshatraTraits.areEnemies(b, g)
-              ? PorondamVerdict.poor
-              : PorondamVerdict.partial,
+          ? PorondamVerdict.poor
+          : PorondamVerdict.partial,
     );
   }
 
@@ -202,8 +202,8 @@ abstract final class Porondams {
           // Being in the same sign is accepted where the count is otherwise
           // short; the objection is to the near-but-not-same placements.
           : count == 1
-              ? PorondamVerdict.partial
-              : PorondamVerdict.poor,
+          ? PorondamVerdict.partial
+          : PorondamVerdict.poor,
     );
   }
 
@@ -224,8 +224,8 @@ abstract final class Porondams {
       verdict: sum >= 1
           ? PorondamVerdict.good
           : sum == 0
-              ? PorondamVerdict.partial
-              : PorondamVerdict.poor,
+          ? PorondamVerdict.partial
+          : PorondamVerdict.poor,
     );
   }
 
@@ -238,8 +238,8 @@ abstract final class Porondams {
       verdict: b == g
           ? PorondamVerdict.good
           : (b == Vashya.vanachara || g == Vashya.vanachara)
-              ? PorondamVerdict.poor
-              : PorondamVerdict.partial,
+          ? PorondamVerdict.poor
+          : PorondamVerdict.partial,
     );
   }
 

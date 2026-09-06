@@ -160,15 +160,12 @@ abstract final class Ashtakoota {
     final (double points, KootaDetail detail) = switch ((b, g)) {
       _ when b == g => (2.0, KootaDetail.vashyaSameGroup),
       (Vashya.chatushpada, Vashya.vanachara) ||
-      (Vashya.vanachara, Vashya.chatushpada) => (
-        0.0,
-        KootaDetail.vashyaIncompatibleGroup,
-      ),
+      (
+        Vashya.vanachara,
+        Vashya.chatushpada,
+      ) => (0.0, KootaDetail.vashyaIncompatibleGroup),
       (Vashya.manava, Vashya.jalachara) ||
-      (Vashya.jalachara, Vashya.manava) => (
-        0.5,
-        KootaDetail.vashyaWeakGroup,
-      ),
+      (Vashya.jalachara, Vashya.manava) => (0.5, KootaDetail.vashyaWeakGroup),
       _ => (1.0, KootaDetail.vashyaCompatibleGroup),
     };
 
@@ -211,8 +208,8 @@ abstract final class Ashtakoota {
     final (double points, KootaDetail detail) = b == g
         ? (4.0, KootaDetail.yoniSameAnimal)
         : NakshatraTraits.areEnemies(b, g)
-            ? (0.0, KootaDetail.yoniEnemyAnimals)
-            : (2.0, KootaDetail.yoniNeutralAnimals);
+        ? (0.0, KootaDetail.yoniEnemyAnimals)
+        : (2.0, KootaDetail.yoniNeutralAnimals);
 
     return KootaScore(koota: Koota.yoni, points: points, detail: detail);
   }
@@ -239,11 +236,7 @@ abstract final class Ashtakoota {
       _ => (0.0, KootaDetail.grahaMaitriMutualEnemies),
     };
 
-    return KootaScore(
-      koota: Koota.grahaMaitri,
-      points: points,
-      detail: detail,
-    );
+    return KootaScore(koota: Koota.grahaMaitri, points: points, detail: detail);
   }
 
   /// 6 points.
@@ -272,7 +265,8 @@ abstract final class Ashtakoota {
     final backward = ((bride.index - groom.index) % 12) + 1;
     final pair = {forward, backward};
 
-    final afflicted = pair.containsAll({2, 12}) ||
+    final afflicted =
+        pair.containsAll({2, 12}) ||
         pair.containsAll({5, 9}) ||
         pair.containsAll({6, 8});
 

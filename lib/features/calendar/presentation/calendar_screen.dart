@@ -154,7 +154,8 @@ class _MonthGrid extends ConsumerWidget {
                     return _DayCell(
                       date: date,
                       events: markers[day] ?? const [],
-                      isToday: date.year == today.year &&
+                      isToday:
+                          date.year == today.year &&
                           date.month == today.month &&
                           date.day == today.day,
                     );
@@ -199,9 +200,7 @@ class _DayCell extends ConsumerWidget {
           color: isToday
               ? theme.colorScheme.primary.withValues(alpha: 0.15)
               : null,
-          border: isToday
-              ? Border.all(color: theme.colorScheme.primary)
-              : null,
+          border: isToday ? Border.all(color: theme.colorScheme.primary) : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -303,8 +302,9 @@ class _BestDays extends ConsumerWidget {
                 selected: activity == a,
                 // Tapping the selected chip clears it, so the scan can be
                 // dismissed without leaving the screen.
-                onSelected: (on) =>
-                    ref.read(chosenActivityProvider.notifier).set(on ? a : null),
+                onSelected: (on) => ref
+                    .read(chosenActivityProvider.notifier)
+                    .set(on ? a : null),
               ),
           ],
         ),

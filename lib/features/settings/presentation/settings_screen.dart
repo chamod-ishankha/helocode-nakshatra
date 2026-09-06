@@ -108,7 +108,10 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   /// Deleting is irreversible and takes the backup with it, so it asks first.
-  static Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+  static Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final l = L10n.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
@@ -250,10 +253,7 @@ class _LanguageTile extends ConsumerWidget {
           for (final locale in AppLocale.values)
             // Native names, for the same reason as the header switcher: a
             // Tamil speaker looks for தமிழ், not for "Tamil".
-            DropdownMenuItem(
-              value: locale,
-              child: Text(locale.nativeName),
-            ),
+            DropdownMenuItem(value: locale, child: Text(locale.nativeName)),
         ],
       ),
     );
@@ -301,9 +301,9 @@ class _VersionTile extends StatelessWidget {
           title: Text(
             info == null
                 ? '—'
-                : L10n.of(context).settingsVersion(
-                    '${info.version} (${info.buildNumber})',
-                  ),
+                : L10n.of(
+                    context,
+                  ).settingsVersion('${info.version} (${info.buildNumber})'),
           ),
         );
       },

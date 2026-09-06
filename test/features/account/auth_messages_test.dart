@@ -91,18 +91,16 @@ void main() {
           messages['wrong-password'],
           isNot(messages['email-already-in-use']),
         );
-        expect(
-          messages['user-not-found'],
-          isNot(messages['wrong-password']),
-        );
+        expect(messages['user-not-found'], isNot(messages['wrong-password']));
         expect(
           messages['network-request-failed'],
           isNot(messages['operation-not-allowed']),
         );
       });
 
-      testWidgets('an unknown code falls back rather than blanking',
-          (tester) async {
+      testWidgets('an unknown code falls back rather than blanking', (
+        tester,
+      ) async {
         late String text;
         await tester.pumpWidget(
           MaterialApp(

@@ -41,7 +41,8 @@ class HomeScreen extends ConsumerWidget {
     final selected = ref.watch(selectedDateProvider);
     final now = DateTime.now();
     final isAhead = selected.isAfter(DateTime(now.year, now.month, now.day));
-    final dayLocked = isAhead &&
+    final dayLocked =
+        isAhead &&
         !ref.watch(unlockStoreProvider).isOpen(RewardedUnlock.futureDay);
 
     if (profile == null || panchanga == null) {
@@ -347,8 +348,10 @@ class _RahuKalayaCard extends ConsumerWidget {
               ),
             ),
             if (L10n.of(context).homeRahuKalaya != _rahuInSinhala)
-              Text(L10n.of(context).homeRahuKalaya,
-                  style: theme.textTheme.bodySmall),
+              Text(
+                L10n.of(context).homeRahuKalaya,
+                style: theme.textTheme.bodySmall,
+              ),
             const SizedBox(height: 12),
             Text(
               '${fmt.format(rahu.start)}  —  ${fmt.format(rahu.end)}',
@@ -654,9 +657,9 @@ class _PoyaTodayBanner extends ConsumerWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            L10n.of(context).homeFullMoonAt(
-              DateFormat('h:mm a').format(poya.fullMoon),
-            ),
+            L10n.of(
+              context,
+            ).homeFullMoonAt(DateFormat('h:mm a').format(poya.fullMoon)),
             style: theme.textTheme.labelSmall,
           ),
         ],
@@ -688,8 +691,10 @@ class _NextPoyaCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(L10n.of(context).homeComingUp,
-                style: theme.textTheme.titleSmall),
+            Text(
+              L10n.of(context).homeComingUp,
+              style: theme.textTheme.titleSmall,
+            ),
             const SizedBox(height: 8),
             for (final f in entries)
               Padding(
@@ -763,8 +768,10 @@ class _ComingSoon extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(L10n.of(context).homeStillToCome,
-              style: theme.textTheme.titleSmall),
+          Text(
+            L10n.of(context).homeStillToCome,
+            style: theme.textTheme.titleSmall,
+          ),
           const SizedBox(height: 6),
           Text(
             '${L10n.of(context).homeComingSoon}\n\n'

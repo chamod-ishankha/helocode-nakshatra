@@ -50,7 +50,8 @@ class CompatibilityScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          if (mine != null) _PersonCard(label: l.compatYourDetails, profile: mine),
+          if (mine != null)
+            _PersonCard(label: l.compatYourDetails, profile: mine),
           const SizedBox(height: 8),
           _PartnerCard(partner: partner),
 
@@ -292,8 +293,7 @@ class _Results extends ConsumerWidget {
             ),
             fraction: match.porondam.matched / match.porondam.judged,
           ),
-          if (match.porondam.hasRajjuDosha)
-            _Warning(text: l.factorRajjuAbout),
+          if (match.porondam.hasRajjuDosha) _Warning(text: l.factorRajjuAbout),
           const SizedBox(height: 12),
           if (detail)
             for (final s in match.porondam.scores) _PorondamRow(score: s)
@@ -334,8 +334,8 @@ class _ScoreHeadline extends StatelessWidget {
     final colour = fraction >= 0.7
         ? AppColors.auspicious
         : fraction >= 0.5
-            ? AppColors.accent
-            : AppColors.inauspicious;
+        ? AppColors.accent
+        : AppColors.inauspicious;
 
     return Column(
       children: [
@@ -374,8 +374,8 @@ class _KootaRow extends StatelessWidget {
       colour: score.isZero
           ? AppColors.inauspicious
           : score.isFull
-              ? AppColors.auspicious
-              : null,
+          ? AppColors.auspicious
+          : null,
     );
   }
 
@@ -474,8 +474,8 @@ class _KujaSection extends StatelessWidget {
     final text = kuja.cancelsOut
         ? l.compatKujaBoth
         : kuja.isUnmatched
-            ? l.compatKujaUnmatched
-            : l.compatKujaNeither;
+        ? l.compatKujaUnmatched
+        : l.compatKujaNeither;
 
     final severe = kuja.bride.isSevere || kuja.groom.isSevere;
 
@@ -573,10 +573,7 @@ class _Caveat extends StatelessWidget {
   Porondam.streeDeergha => (l.factorStreeDeergha, l.factorStreeDeerghaAbout),
   Porondam.yoni => (l.factorYoni, l.factorYoniAbout),
   Porondam.rasi => (l.factorRasi, l.factorRasiAbout),
-  Porondam.rasiadhipathi => (
-    l.factorRasiadhipathi,
-    l.factorRasiadhipathiAbout,
-  ),
+  Porondam.rasiadhipathi => (l.factorRasiadhipathi, l.factorRasiadhipathiAbout),
   Porondam.vashya => (l.factorVashya, l.factorVashyaAbout),
   Porondam.rajju => (l.factorRajju, l.factorRajjuAbout),
   Porondam.vedha => (l.factorVedha, l.factorVedhaAbout),

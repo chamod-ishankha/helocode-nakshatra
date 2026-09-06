@@ -78,11 +78,7 @@ void main() {
     final handled = await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
-    expect(
-      handled,
-      isTrue,
-      reason: 'back was unhandled, which closes the app',
-    );
+    expect(handled, isTrue, reason: 'back was unhandled, which closes the app');
     expect(find.text('Home'), findsOneWidget);
   });
 

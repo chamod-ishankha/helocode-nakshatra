@@ -93,7 +93,8 @@ void main() {
     expect(
       result.isSuccess,
       isTrue,
-      reason: 'even a stale session should end on a usable account: '
+      reason:
+          'even a stale session should end on a usable account: '
           '${result.failureOrNull?.message}',
     );
 

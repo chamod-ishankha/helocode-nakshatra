@@ -70,6 +70,8 @@ class HomeScreen extends ConsumerWidget {
             const _AuspiciousCard(),
             const SizedBox(height: 16),
             const _NextPoyaCard(),
+            const SizedBox(height: 16),
+            const _CompatibilityCard(),
             const SizedBox(height: 24),
             const _ComingSoon(),
             const SizedBox(height: 24),
@@ -82,6 +84,40 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Marriage matching, reached from the daily screen.
+///
+/// A card rather than a fourth app-bar icon: three actions is already the
+/// most a 360 dp bar carries comfortably, and this is a thing people come to
+/// the app for deliberately rather than glance at each morning.
+class _CompatibilityCard extends ConsumerWidget {
+  const _CompatibilityCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.dividerColor),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.favorite_outline, color: AppColors.accent),
+        title: Text(L10n.of(context).compatTitle),
+        subtitle: Text(
+          L10n.of(context).compatIntro,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodySmall,
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push(Routes.compatibility),
       ),
     );
   }

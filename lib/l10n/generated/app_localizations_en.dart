@@ -281,6 +281,208 @@ class L10nEn extends L10n {
   }
 
   @override
+  String get compatTitle => 'Compatibility';
+
+  @override
+  String get compatIntro =>
+      'Marriage matching is read from the Moon at birth, so both sets of birth details are needed.';
+
+  @override
+  String get compatYourDetails => 'You';
+
+  @override
+  String get compatPartnerDetails => 'Partner';
+
+  @override
+  String get compatPartnerName => 'Partner\'s name';
+
+  @override
+  String get compatRoleQuestion => 'Who is the bride?';
+
+  @override
+  String get compatRoleYou => 'Me';
+
+  @override
+  String get compatRolePartner => 'My partner';
+
+  @override
+  String get compatRoleHelp =>
+      'Several factors are counted from the bride to the groom and give a different answer if swapped. This is how the tradition states them.';
+
+  @override
+  String get compatSystemPorondam => 'Porondam';
+
+  @override
+  String get compatSystemAshtakoota => 'Ashtakoota';
+
+  @override
+  String get compatCalculate => 'Check compatibility';
+
+  @override
+  String get compatChangePartner => 'Change partner';
+
+  @override
+  String get compatNeedPartner =>
+      'Enter your partner\'s birth details to see a match.';
+
+  @override
+  String compatScoreOutOf(String score, int max) {
+    return '$score of $max';
+  }
+
+  @override
+  String compatMatchedOutOf(int matched, int judged) {
+    return '$matched of $judged matched';
+  }
+
+  @override
+  String get compatPorondamIncomplete =>
+      'Twelve porondam are judged here. Sri Lankan almanacs count twenty, but the remaining eight are stated differently from one almanac to the next, so they are left out rather than guessed at.';
+
+  @override
+  String get compatCaveat =>
+      'This is guidance, not a ruling. A chart has never decided whether two people are good to each other - talk to a trusted astrologer, and to each other, before it decides anything for you.';
+
+  @override
+  String get compatTimeUnknown =>
+      'A birth time is missing, so sunrise was assumed. The Moon crosses about one star a day, which can put it in the neighbouring one and change several factors at once. Treat this as indicative until both times are known.';
+
+  @override
+  String get compatKujaTitle => 'Kuja dosha';
+
+  @override
+  String get compatKujaNeither => 'Neither chart carries it.';
+
+  @override
+  String get compatKujaBoth => 'Both charts carry it, which is held to cancel.';
+
+  @override
+  String get compatKujaUnmatched =>
+      'One chart carries it and the other does not. This is the case the tradition warns about.';
+
+  @override
+  String get compatKujaSevere => 'Repeated from more than one reference point.';
+
+  @override
+  String get compatNadiDosha =>
+      'Nadi dosha - the heaviest single objection in this system.';
+
+  @override
+  String get compatBhakootDosha =>
+      'Bhakoot dosha - the Moon signs fall at an afflicted distance.';
+
+  @override
+  String get verdictGood => 'Met';
+
+  @override
+  String get verdictPartial => 'Partly met';
+
+  @override
+  String get verdictPoor => 'Not met';
+
+  @override
+  String get factorVarna => 'Varna';
+
+  @override
+  String get factorVarnaAbout => 'Compares the elements of the two Moon signs.';
+
+  @override
+  String get factorVashya => 'Vashya';
+
+  @override
+  String get factorVashyaAbout =>
+      'Whether the two signs are held to sit easily together.';
+
+  @override
+  String get factorTara => 'Tara';
+
+  @override
+  String get factorTaraAbout =>
+      'Counts between the two birth stars, each way round.';
+
+  @override
+  String get factorYoni => 'Yoni';
+
+  @override
+  String get factorYoniAbout =>
+      'Physical and temperamental fit, read through paired animals.';
+
+  @override
+  String get factorGrahaMaitri => 'Graha maitri';
+
+  @override
+  String get factorGrahaMaitriAbout =>
+      'Friendship between the planets ruling the two Moon signs.';
+
+  @override
+  String get factorGana => 'Gana';
+
+  @override
+  String get factorGanaAbout => 'Temperament - deva, manushya or rakshasa.';
+
+  @override
+  String get factorBhakoot => 'Bhakoot';
+
+  @override
+  String get factorBhakootAbout =>
+      'The distance between the two Moon signs. All or nothing.';
+
+  @override
+  String get factorNadi => 'Nadi';
+
+  @override
+  String get factorNadiAbout =>
+      'Constitution. Sharing one is the strongest objection.';
+
+  @override
+  String get factorDina => 'Dina';
+
+  @override
+  String get factorDinaAbout =>
+      'Counted from the bride\'s star to the groom\'s.';
+
+  @override
+  String get factorMahendra => 'Mahendra';
+
+  @override
+  String get factorMahendraAbout =>
+      'Held to bear on children and the couple\'s welfare.';
+
+  @override
+  String get factorStreeDeergha => 'Stree deergha';
+
+  @override
+  String get factorStreeDeerghaAbout =>
+      'Asks that the groom\'s star lie well ahead of the bride\'s.';
+
+  @override
+  String get factorRasi => 'Rasi';
+
+  @override
+  String get factorRasiAbout =>
+      'Asks that the groom\'s Moon sign be seventh or beyond.';
+
+  @override
+  String get factorRasiadhipathi => 'Rasiadhipathi';
+
+  @override
+  String get factorRasiadhipathiAbout => 'The lords of the two Moon signs.';
+
+  @override
+  String get factorRajju => 'Rajju';
+
+  @override
+  String get factorRajjuAbout =>
+      'Falling in the same limb is the objection here, not differing.';
+
+  @override
+  String get factorVedha => 'Vedha';
+
+  @override
+  String get factorVedhaAbout =>
+      'Certain star pairs are held to pierce one another.';
+
+  @override
   String get accountTitle => 'Account';
 
   @override

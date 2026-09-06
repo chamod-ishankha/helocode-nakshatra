@@ -6,6 +6,7 @@ import '../../l10n/generated/app_localizations.dart';
 
 import '../../features/account/presentation/account_screen.dart';
 import '../../features/chart/presentation/chart_screen.dart';
+import '../../features/compatibility/presentation/compatibility_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
@@ -66,6 +67,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.account,
         name: 'account',
         builder: (context, state) => const AccountScreen(),
+      ),
+      GoRoute(
+        path: Routes.compatibility,
+        name: 'compatibility',
+        builder: (context, state) => const CompatibilityScreen(),
       ),
     ],
     errorBuilder: (context, state) => _RouteErrorScreen(error: state.error),

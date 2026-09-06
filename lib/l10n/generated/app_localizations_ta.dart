@@ -283,6 +283,209 @@ class L10nTa extends L10n {
   }
 
   @override
+  String get compatTitle => 'பொருத்தம்';
+
+  @override
+  String get compatIntro =>
+      'திருமணப் பொருத்தம் பிறக்கும்போதைய சந்திரனிலிருந்து படிக்கப்படுகிறது, எனவே இருவரின் பிறப்பு விவரங்களும் தேவை.';
+
+  @override
+  String get compatYourDetails => 'நீங்கள்';
+
+  @override
+  String get compatPartnerDetails => 'துணைவர்';
+
+  @override
+  String get compatPartnerName => 'துணைவரின் பெயர்';
+
+  @override
+  String get compatRoleQuestion => 'மணமகள் யார்?';
+
+  @override
+  String get compatRoleYou => 'நான்';
+
+  @override
+  String get compatRolePartner => 'என் துணைவர்';
+
+  @override
+  String get compatRoleHelp =>
+      'சில பொருத்தங்கள் மணமகளிலிருந்து மணமகன் வரை எண்ணப்படுகின்றன, இடம் மாறினால் வேறு விடை வரும். மரபு அவற்றை அவ்வாறே கூறுகிறது.';
+
+  @override
+  String get compatSystemPorondam => 'பொருத்தம்';
+
+  @override
+  String get compatSystemAshtakoota => 'அஷ்டகூடம்';
+
+  @override
+  String get compatCalculate => 'பொருத்தம் பார்க்க';
+
+  @override
+  String get compatChangePartner => 'துணைவரை மாற்று';
+
+  @override
+  String get compatNeedPartner =>
+      'பொருத்தம் பார்க்க உங்கள் துணைவரின் பிறப்பு விவரங்களை உள்ளிடவும்.';
+
+  @override
+  String compatScoreOutOf(String score, int max) {
+    return '$max இல் $score';
+  }
+
+  @override
+  String compatMatchedOutOf(int matched, int judged) {
+    return '$judged இல் $matched பொருந்துகிறது';
+  }
+
+  @override
+  String get compatPorondamIncomplete =>
+      'இங்கு பன்னிரண்டு பொருத்தங்கள் மதிப்பிடப்படுகின்றன. இலங்கை பஞ்சாங்கங்கள் இருபது எண்ணினாலும், மீதமுள்ள எட்டு ஒவ்வொரு பஞ்சாங்கத்திலும் வேறுபடுவதால், ஊகிப்பதை விட அவை விடப்பட்டுள்ளன.';
+
+  @override
+  String get compatCaveat =>
+      'இது வழிகாட்டுதலே தவிர தீர்ப்பு அல்ல. இருவர் ஒருவருக்கொருவர் நல்லவர்களா என்பதை ஒரு ஜாதகம் ஒருபோதும் தீர்மானித்ததில்லை - நம்பகமான ஜோதிடரிடமும், ஒருவருடன் ஒருவரும் பேசுங்கள்.';
+
+  @override
+  String get compatTimeUnknown =>
+      'பிறந்த நேரம் ஒன்று இல்லாததால் சூரிய உதயம் கருதப்பட்டது. சந்திரன் ஒரு நாளைக்கு ஏறத்தாழ ஒரு நட்சத்திரம் கடக்கிறது, எனவே அது அடுத்த நட்சத்திரத்தில் விழுந்து பல பொருத்தங்களை ஒரே நேரத்தில் மாற்றக்கூடும். இரு நேரங்களும் தெரியும் வரை இதை தோராயமாகக் கருதுங்கள்.';
+
+  @override
+  String get compatKujaTitle => 'செவ்வாய் தோஷம்';
+
+  @override
+  String get compatKujaNeither => 'இரு ஜாதகத்திலும் இல்லை.';
+
+  @override
+  String get compatKujaBoth =>
+      'இரு ஜாதகத்திலும் உள்ளது, இது ரத்தாகும் என்று கருதப்படுகிறது.';
+
+  @override
+  String get compatKujaUnmatched =>
+      'ஒரு ஜாதகத்தில் உள்ளது, மற்றொன்றில் இல்லை. மரபு எச்சரிப்பது இதைத்தான்.';
+
+  @override
+  String get compatKujaSevere =>
+      'ஒன்றுக்கு மேற்பட்ட இடங்களிலிருந்து மீண்டும் வருகிறது.';
+
+  @override
+  String get compatNadiDosha =>
+      'நாடி தோஷம் - இந்த முறையின் மிகக் கடுமையான ஆட்சேபம்.';
+
+  @override
+  String get compatBhakootDosha =>
+      'பகூட தோஷம் - இரு சந்திர ராசிகளும் தீய தூரத்தில் உள்ளன.';
+
+  @override
+  String get verdictGood => 'பொருந்தும்';
+
+  @override
+  String get verdictPartial => 'ஓரளவு பொருந்தும்';
+
+  @override
+  String get verdictPoor => 'பொருந்தாது';
+
+  @override
+  String get factorVarna => 'வர்ணம்';
+
+  @override
+  String get factorVarnaAbout => 'இரு சந்திர ராசிகளின் பூதங்களை ஒப்பிடுகிறது.';
+
+  @override
+  String get factorVashya => 'வசியம்';
+
+  @override
+  String get factorVashyaAbout => 'இரு ராசிகளும் இணக்கமாக இருக்குமா என்பது.';
+
+  @override
+  String get factorTara => 'தாரை';
+
+  @override
+  String get factorTaraAbout =>
+      'இரு ஜென்ம நட்சத்திரங்களுக்கு இடையே இருபுறம் எண்ணுகிறது.';
+
+  @override
+  String get factorYoni => 'யோனி';
+
+  @override
+  String get factorYoniAbout =>
+      'விலங்கு ஜோடிகள் வழியாகப் படிக்கப்படும் உடல் மற்றும் குண இணக்கம்.';
+
+  @override
+  String get factorGrahaMaitri => 'கிரக மைத்ரி';
+
+  @override
+  String get factorGrahaMaitriAbout =>
+      'இரு சந்திர ராசிகளின் அதிபதிகளுக்கிடையிலான நட்பு.';
+
+  @override
+  String get factorGana => 'கணம்';
+
+  @override
+  String get factorGanaAbout => 'குணம் - தேவ, மனுஷ்ய அல்லது ராட்சஸ.';
+
+  @override
+  String get factorBhakoot => 'பகூடம்';
+
+  @override
+  String get factorBhakootAbout =>
+      'இரு சந்திர ராசிகளுக்கு இடையிலான தூரம். முழுவதும் அல்லது ஒன்றுமில்லை.';
+
+  @override
+  String get factorNadi => 'நாடி';
+
+  @override
+  String get factorNadiAbout =>
+      'உடல் இயல்பு. ஒரே நாடி இருப்பது வலிமையான ஆட்சேபம்.';
+
+  @override
+  String get factorDina => 'தினம்';
+
+  @override
+  String get factorDinaAbout =>
+      'மணமகளின் நட்சத்திரத்திலிருந்து மணமகனுடையது வரை எண்ணப்படுகிறது.';
+
+  @override
+  String get factorMahendra => 'மகேந்திரம்';
+
+  @override
+  String get factorMahendraAbout =>
+      'குழந்தைப்பேறு மற்றும் தம்பதியரின் நலனுடன் தொடர்புடையது.';
+
+  @override
+  String get factorStreeDeergha => 'ஸ்திரீ தீர்க்கம்';
+
+  @override
+  String get factorStreeDeerghaAbout =>
+      'மணமகனின் நட்சத்திரம் மணமகளுடையதை விட நன்கு முன்னால் இருக்க வேண்டும்.';
+
+  @override
+  String get factorRasi => 'ராசி';
+
+  @override
+  String get factorRasiAbout =>
+      'மணமகனின் சந்திர ராசி ஏழாவது அல்லது அதற்கு அப்பால் இருக்க வேண்டும்.';
+
+  @override
+  String get factorRasiadhipathi => 'ராசியாதிபதி';
+
+  @override
+  String get factorRasiadhipathiAbout => 'இரு சந்திர ராசிகளின் அதிபதிகள்.';
+
+  @override
+  String get factorRajju => 'ரஜ்ஜு';
+
+  @override
+  String get factorRajjuAbout =>
+      'ஒரே அங்கத்தில் விழுவதே ஆட்சேபம், வேறுபடுவது அல்ல.';
+
+  @override
+  String get factorVedha => 'வேதை';
+
+  @override
+  String get factorVedhaAbout =>
+      'சில நட்சத்திர ஜோடிகள் ஒன்றையொன்று துளைப்பதாகக் கருதப்படுகிறது.';
+
+  @override
   String get accountTitle => 'கணக்கு';
 
   @override

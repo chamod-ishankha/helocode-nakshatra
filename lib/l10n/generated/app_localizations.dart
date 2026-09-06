@@ -585,6 +585,360 @@ abstract class L10n {
   /// **'{name} · {date} · {place}'**
   String chartShareCaption(String name, String date, String place);
 
+  /// No description provided for @compatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compatibility'**
+  String get compatTitle;
+
+  /// No description provided for @compatIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Marriage matching is read from the Moon at birth, so both sets of birth details are needed.'**
+  String get compatIntro;
+
+  /// No description provided for @compatYourDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get compatYourDetails;
+
+  /// No description provided for @compatPartnerDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner'**
+  String get compatPartnerDetails;
+
+  /// No description provided for @compatPartnerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner\'s name'**
+  String get compatPartnerName;
+
+  /// No description provided for @compatRoleQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is the bride?'**
+  String get compatRoleQuestion;
+
+  /// No description provided for @compatRoleYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get compatRoleYou;
+
+  /// No description provided for @compatRolePartner.
+  ///
+  /// In en, this message translates to:
+  /// **'My partner'**
+  String get compatRolePartner;
+
+  /// No description provided for @compatRoleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Several factors are counted from the bride to the groom and give a different answer if swapped. This is how the tradition states them.'**
+  String get compatRoleHelp;
+
+  /// No description provided for @compatSystemPorondam.
+  ///
+  /// In en, this message translates to:
+  /// **'Porondam'**
+  String get compatSystemPorondam;
+
+  /// No description provided for @compatSystemAshtakoota.
+  ///
+  /// In en, this message translates to:
+  /// **'Ashtakoota'**
+  String get compatSystemAshtakoota;
+
+  /// No description provided for @compatCalculate.
+  ///
+  /// In en, this message translates to:
+  /// **'Check compatibility'**
+  String get compatCalculate;
+
+  /// No description provided for @compatChangePartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Change partner'**
+  String get compatChangePartner;
+
+  /// No description provided for @compatNeedPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your partner\'s birth details to see a match.'**
+  String get compatNeedPartner;
+
+  /// No description provided for @compatScoreOutOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} of {max}'**
+  String compatScoreOutOf(String score, int max);
+
+  /// No description provided for @compatMatchedOutOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{matched} of {judged} matched'**
+  String compatMatchedOutOf(int matched, int judged);
+
+  /// No description provided for @compatPorondamIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Twelve porondam are judged here. Sri Lankan almanacs count twenty, but the remaining eight are stated differently from one almanac to the next, so they are left out rather than guessed at.'**
+  String get compatPorondamIncomplete;
+
+  /// No description provided for @compatCaveat.
+  ///
+  /// In en, this message translates to:
+  /// **'This is guidance, not a ruling. A chart has never decided whether two people are good to each other - talk to a trusted astrologer, and to each other, before it decides anything for you.'**
+  String get compatCaveat;
+
+  /// No description provided for @compatTimeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'A birth time is missing, so sunrise was assumed. The Moon crosses about one star a day, which can put it in the neighbouring one and change several factors at once. Treat this as indicative until both times are known.'**
+  String get compatTimeUnknown;
+
+  /// No description provided for @compatKujaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kuja dosha'**
+  String get compatKujaTitle;
+
+  /// No description provided for @compatKujaNeither.
+  ///
+  /// In en, this message translates to:
+  /// **'Neither chart carries it.'**
+  String get compatKujaNeither;
+
+  /// No description provided for @compatKujaBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Both charts carry it, which is held to cancel.'**
+  String get compatKujaBoth;
+
+  /// No description provided for @compatKujaUnmatched.
+  ///
+  /// In en, this message translates to:
+  /// **'One chart carries it and the other does not. This is the case the tradition warns about.'**
+  String get compatKujaUnmatched;
+
+  /// No description provided for @compatKujaSevere.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated from more than one reference point.'**
+  String get compatKujaSevere;
+
+  /// No description provided for @compatNadiDosha.
+  ///
+  /// In en, this message translates to:
+  /// **'Nadi dosha - the heaviest single objection in this system.'**
+  String get compatNadiDosha;
+
+  /// No description provided for @compatBhakootDosha.
+  ///
+  /// In en, this message translates to:
+  /// **'Bhakoot dosha - the Moon signs fall at an afflicted distance.'**
+  String get compatBhakootDosha;
+
+  /// No description provided for @verdictGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Met'**
+  String get verdictGood;
+
+  /// No description provided for @verdictPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Partly met'**
+  String get verdictPartial;
+
+  /// No description provided for @verdictPoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Not met'**
+  String get verdictPoor;
+
+  /// No description provided for @factorVarna.
+  ///
+  /// In en, this message translates to:
+  /// **'Varna'**
+  String get factorVarna;
+
+  /// No description provided for @factorVarnaAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Compares the elements of the two Moon signs.'**
+  String get factorVarnaAbout;
+
+  /// No description provided for @factorVashya.
+  ///
+  /// In en, this message translates to:
+  /// **'Vashya'**
+  String get factorVashya;
+
+  /// No description provided for @factorVashyaAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Whether the two signs are held to sit easily together.'**
+  String get factorVashyaAbout;
+
+  /// No description provided for @factorTara.
+  ///
+  /// In en, this message translates to:
+  /// **'Tara'**
+  String get factorTara;
+
+  /// No description provided for @factorTaraAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Counts between the two birth stars, each way round.'**
+  String get factorTaraAbout;
+
+  /// No description provided for @factorYoni.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoni'**
+  String get factorYoni;
+
+  /// No description provided for @factorYoniAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical and temperamental fit, read through paired animals.'**
+  String get factorYoniAbout;
+
+  /// No description provided for @factorGrahaMaitri.
+  ///
+  /// In en, this message translates to:
+  /// **'Graha maitri'**
+  String get factorGrahaMaitri;
+
+  /// No description provided for @factorGrahaMaitriAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Friendship between the planets ruling the two Moon signs.'**
+  String get factorGrahaMaitriAbout;
+
+  /// No description provided for @factorGana.
+  ///
+  /// In en, this message translates to:
+  /// **'Gana'**
+  String get factorGana;
+
+  /// No description provided for @factorGanaAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperament - deva, manushya or rakshasa.'**
+  String get factorGanaAbout;
+
+  /// No description provided for @factorBhakoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Bhakoot'**
+  String get factorBhakoot;
+
+  /// No description provided for @factorBhakootAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'The distance between the two Moon signs. All or nothing.'**
+  String get factorBhakootAbout;
+
+  /// No description provided for @factorNadi.
+  ///
+  /// In en, this message translates to:
+  /// **'Nadi'**
+  String get factorNadi;
+
+  /// No description provided for @factorNadiAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Constitution. Sharing one is the strongest objection.'**
+  String get factorNadiAbout;
+
+  /// No description provided for @factorDina.
+  ///
+  /// In en, this message translates to:
+  /// **'Dina'**
+  String get factorDina;
+
+  /// No description provided for @factorDinaAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted from the bride\'s star to the groom\'s.'**
+  String get factorDinaAbout;
+
+  /// No description provided for @factorMahendra.
+  ///
+  /// In en, this message translates to:
+  /// **'Mahendra'**
+  String get factorMahendra;
+
+  /// No description provided for @factorMahendraAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Held to bear on children and the couple\'s welfare.'**
+  String get factorMahendraAbout;
+
+  /// No description provided for @factorStreeDeergha.
+  ///
+  /// In en, this message translates to:
+  /// **'Stree deergha'**
+  String get factorStreeDeergha;
+
+  /// No description provided for @factorStreeDeerghaAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks that the groom\'s star lie well ahead of the bride\'s.'**
+  String get factorStreeDeerghaAbout;
+
+  /// No description provided for @factorRasi.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasi'**
+  String get factorRasi;
+
+  /// No description provided for @factorRasiAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks that the groom\'s Moon sign be seventh or beyond.'**
+  String get factorRasiAbout;
+
+  /// No description provided for @factorRasiadhipathi.
+  ///
+  /// In en, this message translates to:
+  /// **'Rasiadhipathi'**
+  String get factorRasiadhipathi;
+
+  /// No description provided for @factorRasiadhipathiAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'The lords of the two Moon signs.'**
+  String get factorRasiadhipathiAbout;
+
+  /// No description provided for @factorRajju.
+  ///
+  /// In en, this message translates to:
+  /// **'Rajju'**
+  String get factorRajju;
+
+  /// No description provided for @factorRajjuAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Falling in the same limb is the objection here, not differing.'**
+  String get factorRajjuAbout;
+
+  /// No description provided for @factorVedha.
+  ///
+  /// In en, this message translates to:
+  /// **'Vedha'**
+  String get factorVedha;
+
+  /// No description provided for @factorVedhaAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Certain star pairs are held to pierce one another.'**
+  String get factorVedhaAbout;
+
   /// No description provided for @accountTitle.
   ///
   /// In en, this message translates to:

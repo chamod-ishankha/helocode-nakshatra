@@ -280,6 +280,206 @@ class L10nSi extends L10n {
   }
 
   @override
+  String get compatTitle => 'ගැළපීම';
+
+  @override
+  String get compatIntro =>
+      'විවාහ ගැළපීම උපතේදී චන්ද්‍රයාගේ පිහිටීම අනුව කියවේ, එබැවින් දෙදෙනාගේම උපන් තොරතුරු අවශ්‍යයි.';
+
+  @override
+  String get compatYourDetails => 'ඔබ';
+
+  @override
+  String get compatPartnerDetails => 'සහකරු';
+
+  @override
+  String get compatPartnerName => 'සහකරුගේ නම';
+
+  @override
+  String get compatRoleQuestion => 'මනාලිය කවුද?';
+
+  @override
+  String get compatRoleYou => 'මම';
+
+  @override
+  String get compatRolePartner => 'මගේ සහකරු';
+
+  @override
+  String get compatRoleHelp =>
+      'සමහර පොරොන්දම් මනාලියගෙන් මනාලයා දක්වා ගණන් කරන අතර, මාරු කළ විට වෙනස් පිළිතුරක් ලැබේ.';
+
+  @override
+  String get compatSystemPorondam => 'පොරොන්දම්';
+
+  @override
+  String get compatSystemAshtakoota => 'අෂ්ටකූට';
+
+  @override
+  String get compatCalculate => 'ගැළපීම බලන්න';
+
+  @override
+  String get compatChangePartner => 'සහකරු වෙනස් කරන්න';
+
+  @override
+  String get compatNeedPartner =>
+      'ගැළපීම බැලීමට ඔබේ සහකරුගේ උපන් තොරතුරු ඇතුළත් කරන්න.';
+
+  @override
+  String compatScoreOutOf(String score, int max) {
+    return '$max න් $score';
+  }
+
+  @override
+  String compatMatchedOutOf(int matched, int judged) {
+    return '$judged න් $matched ක් ගැළපේ';
+  }
+
+  @override
+  String get compatPorondamIncomplete =>
+      'මෙහි පොරොන්දම් දොළහක් විනිශ්චය කෙරේ. ලංකාවේ ලිත් විස්සක් ගණන් කළත්, ඉතිරි අට එක් ලිතකින් තවත් ලිතකට වෙනස්ව දැක්වෙන බැවින්, අනුමාන කිරීමට වඩා ඒවා ඉවත් කර ඇත.';
+
+  @override
+  String get compatCaveat =>
+      'මෙය මඟ පෙන්වීමක් මිස තීන්දුවක් නොවේ. මිනිසුන් දෙදෙනෙක් එකිනෙකාට යහපත්ද යන්න කේන්දරයක් කිසිදා තීරණය කර නැත - විශ්වාසවන්ත ජ්‍යෝතිෂ්‍යවේදියෙකු සමඟද, එකිනෙකා සමඟද කතා කරන්න.';
+
+  @override
+  String get compatTimeUnknown =>
+      'උපන් වේලාවක් නොමැති බැවින් හිරු උදාව උපකල්පනය කරන ලදී. චන්ද්‍රයා දිනකට නැකතක් පමණ ගමන් කරන බැවින්, එය යාබද නැකතට වැටී එකවර පොරොන්දම් කිහිපයක් වෙනස් කළ හැක. දෙදෙනාගේම වේලාවන් දැනගන්නා තෙක් මෙය දළ අදහසක් ලෙස සලකන්න.';
+
+  @override
+  String get compatKujaTitle => 'කුජ දෝෂය';
+
+  @override
+  String get compatKujaNeither => 'කිසිදු කේන්දරයක එය නැත.';
+
+  @override
+  String get compatKujaBoth =>
+      'කේන්දර දෙකෙහිම එය ඇත, එය අහෝසි වන බව සලකනු ලැබේ.';
+
+  @override
+  String get compatKujaUnmatched =>
+      'එක් කේන්දරයක එය ඇති අතර අනෙකෙහි නැත. සම්ප්‍රදාය අනතුරු අඟවන්නේ මෙයයි.';
+
+  @override
+  String get compatKujaSevere =>
+      'එක් ස්ථානයකට වඩා වැඩි ගණනකින් නැවත නැවත දක්නට ලැබේ.';
+
+  @override
+  String get compatNadiDosha => 'නාඩි දෝෂය - මෙම ක්‍රමයේ බරපතළම විරෝධය.';
+
+  @override
+  String get compatBhakootDosha =>
+      'භකූට දෝෂය - චන්ද්‍ර රාශි දෙක අසුබ දුරකින් පිහිටා ඇත.';
+
+  @override
+  String get verdictGood => 'ගැළපේ';
+
+  @override
+  String get verdictPartial => 'අඩක් ගැළපේ';
+
+  @override
+  String get verdictPoor => 'නොගැළපේ';
+
+  @override
+  String get factorVarna => 'වර්ණ';
+
+  @override
+  String get factorVarnaAbout => 'චන්ද්‍ර රාශි දෙකේ මූලද්‍රව්‍ය සංසන්දනය කරයි.';
+
+  @override
+  String get factorVashya => 'වශ්‍ය';
+
+  @override
+  String get factorVashyaAbout => 'රාශි දෙක පහසුවෙන් එකට පවතීද යන්න.';
+
+  @override
+  String get factorTara => 'තාරා';
+
+  @override
+  String get factorTaraAbout => 'උපන් නැකත් දෙක අතර දෙපැත්තටම ගණන් කරයි.';
+
+  @override
+  String get factorYoni => 'යෝනි';
+
+  @override
+  String get factorYoniAbout =>
+      'සත්ත්ව යුගල හරහා කියවෙන ශාරීරික හා ස්වභාව ගැළපීම.';
+
+  @override
+  String get factorGrahaMaitri => 'ග්‍රහ මෙත්‍රී';
+
+  @override
+  String get factorGrahaMaitriAbout =>
+      'චන්ද්‍ර රාශි දෙකේ අධිපති ග්‍රහයන් අතර මිත්‍රත්වය.';
+
+  @override
+  String get factorGana => 'ගණ';
+
+  @override
+  String get factorGanaAbout => 'ස්වභාවය - දේව, මනුෂ්‍ය හෝ රාක්ෂස.';
+
+  @override
+  String get factorBhakoot => 'භකූට';
+
+  @override
+  String get factorBhakootAbout =>
+      'චන්ද්‍ර රාශි දෙක අතර දුර. සියල්ල හෝ කිසිවක් නැත.';
+
+  @override
+  String get factorNadi => 'නාඩි';
+
+  @override
+  String get factorNadiAbout =>
+      'ශරීර ස්වභාවය. එකම නාඩිය බෙදාගැනීම බලවත්ම විරෝධයයි.';
+
+  @override
+  String get factorDina => 'දින';
+
+  @override
+  String get factorDinaAbout =>
+      'මනාලියගේ නැකතේ සිට මනාලයාගේ නැකත දක්වා ගණන් කරයි.';
+
+  @override
+  String get factorMahendra => 'මහේන්ද්‍ර';
+
+  @override
+  String get factorMahendraAbout =>
+      'දරුඵල හා යුවළගේ සුබසාධනය සම්බන්ධ බව සැලකේ.';
+
+  @override
+  String get factorStreeDeergha => 'ස්ත්‍රී දීර්ඝ';
+
+  @override
+  String get factorStreeDeerghaAbout =>
+      'මනාලයාගේ නැකත මනාලියගේ නැකතට වඩා බෙහෙවින් ඉදිරියෙන් තිබිය යුතුය.';
+
+  @override
+  String get factorRasi => 'රාශි';
+
+  @override
+  String get factorRasiAbout =>
+      'මනාලයාගේ චන්ද්‍ර රාශිය හත්වැන්න හෝ ඉන් ඔබ්බෙන් තිබිය යුතුය.';
+
+  @override
+  String get factorRasiadhipathi => 'රාශ්‍යාධිපති';
+
+  @override
+  String get factorRasiadhipathiAbout => 'චන්ද්‍ර රාශි දෙකේ අධිපතියෝ.';
+
+  @override
+  String get factorRajju => 'රජ්ජු';
+
+  @override
+  String get factorRajjuAbout =>
+      'එකම අංගයට වැටීම මෙහි විරෝධයයි, වෙනස් වීම නොවේ.';
+
+  @override
+  String get factorVedha => 'වේධ';
+
+  @override
+  String get factorVedhaAbout => 'සමහර නැකත් යුගල එකිනෙක විදින බව සැලකේ.';
+
+  @override
   String get accountTitle => 'ගිණුම';
 
   @override

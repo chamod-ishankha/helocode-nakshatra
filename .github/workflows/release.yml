@@ -25,14 +25,13 @@ env:
   FLUTTER_VERSION: "3.41.7"
   JAVA_VERSION: "21"
 
-  # versionCode is derived from the workflow run number, which only ever
-  # increases. Play permanently rejects a duplicate versionCode, so it must
-  # never be hand-maintained.
+  # versionCode is minutes since 2024-01-01: monotonic, stateless, unique to
+  # the minute, and far below Play's ceiling of 2100000000 for centuries.
   #
-  # The offset clears codes already used by manual uploads: run 1 becomes 101,
-  # safely above anything uploaded by hand. Never lower this — going backwards
-  # produces codes Play has already seen and will refuse.
-  VERSION_CODE_OFFSET: 100
+  # Deliberately the same formula as tool/release.sh. The run number was fine
+  # while CI was the only thing producing bundles, but a locally built one
+  # would then always outrank it, and every later CI release would be refused
+  # for going backwards. Both paths now sit on the same clock.
 
 jobs:
   bundle:
@@ -142,7 +141,7 @@ jobs:
         id: version
         run: |
           NAME=$(grep '^version:' pubspec.yaml | sed -E 's/version:[[:space:]]*([^+]+)\+.*/\1/' | tr -d ' ')
-          CODE=$(( ${{ github.run_number }} + VERSION_CODE_OFFSET ))
+          CODE=$(( ( $(date +%s) - 1704067200 ) / 60 ))
           echo "name=$NAME"  >> "$GITHUB_OUTPUT"
           echo "code=$CODE"  >> "$GITHUB_OUTPUT"
           echo "Building $NAME ($CODE)"

@@ -6,6 +6,10 @@
 # a runner: no secrets are restored (yours are already on disk) and nothing is
 # uploaded. Run it from Git Bash:
 #
+# From PowerShell or cmd use tool/release.ps1 instead - `bash` on Windows
+# usually resolves to WSL, not Git Bash, which would build inside Linux where
+# Flutter and the Android SDK are not set up.
+#
 #     ./tool/release.sh                 # signed AAB for Play
 #     ./tool/release.sh --apk           # ...and an installable APK
 #     ./tool/release.sh --build-number 12345

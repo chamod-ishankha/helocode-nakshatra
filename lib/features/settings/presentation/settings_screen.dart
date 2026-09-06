@@ -8,9 +8,12 @@ import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/config/theme_preference.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../account/presentation/auth_messages.dart';
 import '../../onboarding/data/profile_repository.dart';
 
 /// Settings (KAN-30).
@@ -132,16 +135,30 @@ class SettingsScreen extends ConsumerWidget {
 
     if (confirmed != true) return;
 
-    // Clears local storage and the Firestore copy together — the privacy
-    // policy promises both.
+    // Data first, then the identity. The Firestore document is filed under
+    // the uid and the rules only let its owner touch it, so deleting the
+    // account first would strand the document permanently out of reach.
     await ref.read(profileProvider.notifier).clear();
-    messenger.showSnackBar(SnackBar(content: Text(l.settingsDeleted)));
+    final account = await ref.read(authServiceProvider).deleteAccount();
 
-    // Leave for onboarding immediately rather than relying on the redirect to
-    // catch up. Every screen behind this one reads a profile that no longer
-    // exists, and sitting on a settings page for data that has just been
-    // erased makes no sense either.
-    if (context.mounted) context.go(Routes.onboarding);
+    if (!context.mounted) return;
+
+    // Report what actually happened. Claiming success when the backup was
+    // unreachable is the failure this whole change exists to stop.
+    final failure = account.failureOrNull;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          failure is AuthFailure
+              ? authMessage(context, failure)
+              : l.settingsDeleted,
+        ),
+      ),
+    );
+
+    // Leave for onboarding regardless. The local profile is gone either way,
+    // so every screen behind this one is reading data that no longer exists.
+    context.go(Routes.onboarding);
   }
 
   static Future<void> _open(BuildContext context, String url) async {

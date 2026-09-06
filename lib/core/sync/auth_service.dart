@@ -327,6 +327,79 @@ class AuthService {
     }
   }
 
+  /// Deletes the Firebase account itself.
+  ///
+  /// The Firestore document is the caller's job — this only removes the
+  /// identity. Order matters: the document is filed under this uid and the
+  /// security rules only let the owner touch it, so deleting the account first
+  /// would strand the data permanently out of reach.
+  ///
+  /// A fresh anonymous account is created afterwards. Without one the app has
+  /// no user at all, sync is dead, and nothing re-establishes it until the
+  /// next launch — the user would silently lose backup for the rest of the
+  /// session.
+  ///
+  /// Firebase refuses to delete an account whose sign-in is old, which is a
+  /// real case for someone who linked Google months ago. That comes back as
+  /// `requires-recent-login` rather than being swallowed, so the UI can ask
+  /// them to sign in again instead of claiming a deletion that did not happen.
+  Future<Result<void>> deleteAccount() async {
+    final auth = _auth;
+    final user = auth?.currentUser;
+    if (auth == null || user == null) {
+      return const Result.failure(
+        AuthFailure('no current user', code: 'no-current-user'),
+      );
+    }
+
+    try {
+      if (googleAvailable) {
+        try {
+          await GoogleSignIn.instance.signOut();
+        } on Object catch (e) {
+          AppLogger.warn('Google sign-out failed, continuing: $e');
+        }
+      }
+
+      try {
+        await user.delete();
+        AppLogger.info('Firebase account deleted');
+        await auth.signInAnonymously();
+        return const Result.success(null);
+      } on FirebaseAuthException catch (e) {
+        if (e.code != 'requires-recent-login') rethrow;
+
+        // Firebase refuses to delete an account whose sign-in is old, and for
+        // a returning user it always is: startup only signs in when there is
+        // no user, so auth_time dates from installation.
+        //
+        // A permanent account can fix this by signing in again, so say so. An
+        // anonymous one cannot — there is no credential to re-authenticate
+        // with, and no client-side way to remove it. The birth details are
+        // already gone by this point; what survives is an empty record
+        // holding a uid and two timestamps. Signing out and starting a fresh
+        // account at least leaves the old identity unused.
+        if (!user.isAnonymous) {
+          return Result.failure(describe(e));
+        }
+
+        AppLogger.warn(
+          'Anonymous account too old to delete; abandoning it instead',
+        );
+        await auth.signOut();
+        await auth.signInAnonymously();
+        return const Result.success(null);
+      }
+    } on FirebaseAuthException catch (e) {
+      return Result.failure(describe(e));
+    } on Object catch (e, s) {
+      AppLogger.warn('Account deletion failed', e, s);
+      return Result.failure(
+        AuthFailure('delete failed', cause: e, code: 'unknown'),
+      );
+    }
+  }
+
   /// Returns to a fresh anonymous account.
   ///
   /// Signing out does not stop the backup: an anonymous account is this app's

@@ -181,7 +181,7 @@
   "settingsDeleteData": "Delete my details",
   "settingsDeleteHint": "Removes your birth details from this phone and from our backup.",
   "settingsDeleteTitle": "Delete your details?",
-  "settingsDeleteBody": "Your birth details will be removed from this phone and from our backup. Your charts and readings go with them, and this cannot be undone.",
+  "settingsDeleteBody": "Your birth details will be removed from this phone and from our backup, and your account will be deleted. Your charts and readings go with them, and this cannot be undone.",
   "settingsDeleteConfirm": "Delete",
   "commonCancel": "Cancel",
   "settingsDeleted": "Your details have been deleted.",
@@ -220,6 +220,9 @@
   "reasonVaraUnfavourable": "The weekday is not the best for this",
   "reasonVaraFavourable": "A suitable weekday",
   "reasonShortenedByChange": "Shortened because the almanac changes during the day",
+
+  "authErrorRequiresRecentLogin": "For your security, please sign in again before deleting your account.",
+  "settingsDeleteFailed": "Your details were removed from this phone, but the backup could not be reached. Try again once you are online.",
 
   "accountTitle": "Account",
   "accountSavedToEmail": "Saved to {email}",

@@ -1038,7 +1038,7 @@ abstract class L10n {
   /// No description provided for @settingsDeleteBody.
   ///
   /// In en, this message translates to:
-  /// **'Your birth details will be removed from this phone and from our backup. Your charts and readings go with them, and this cannot be undone.'**
+  /// **'Your birth details will be removed from this phone and from our backup, and your account will be deleted. Your charts and readings go with them, and this cannot be undone.'**
   String get settingsDeleteBody;
 
   /// No description provided for @settingsDeleteConfirm.
@@ -1250,6 +1250,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Shortened because the almanac changes during the day'**
   String get reasonShortenedByChange;
+
+  /// No description provided for @authErrorRequiresRecentLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'For your security, please sign in again before deleting your account.'**
+  String get authErrorRequiresRecentLogin;
+
+  /// No description provided for @settingsDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details were removed from this phone, but the backup could not be reached. Try again once you are online.'**
+  String get settingsDeleteFailed;
 
   /// No description provided for @accountTitle.
   ///

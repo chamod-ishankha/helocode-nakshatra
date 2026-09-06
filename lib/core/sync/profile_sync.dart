@@ -76,14 +76,25 @@ class ProfileSync {
     }
   }
 
-  /// Removes the stored copy. Used when a user starts over.
-  Future<void> clear() async {
+  /// Removes the stored copy.
+  ///
+  /// Deletes the whole document rather than just the profile field. Clearing
+  /// the field left a record behind — keyed to the user's uid, carrying
+  /// `updatedAt` and `schemaVersion` — which is not what "your details have
+  /// been deleted" means to anyone reading it.
+  ///
+  /// Returns whether anything was actually removed, so a user-initiated
+  /// deletion can be reported honestly instead of always claiming success.
+  Future<bool> clear() async {
     final doc = _doc;
-    if (doc == null) return;
+    if (doc == null) return false;
     try {
-      await doc.update({_profileField: FieldValue.delete()});
+      await doc.delete();
+      AppLogger.info('Profile document deleted');
+      return true;
     } on Object catch (e, s) {
       AppLogger.warn('Profile clear failed', e, s);
+      return false;
     }
   }
 }

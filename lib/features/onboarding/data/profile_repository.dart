@@ -107,10 +107,16 @@ class ProfileNotifier extends Notifier<BirthProfile?> {
     unawaited(ref.read(profileSyncProvider).push(profile));
   }
 
+  /// Erases the profile locally and in the backup.
+  ///
+  /// The backup delete is awaited, unlike the push in [save]. A push happens
+  /// on the way to somewhere else and must not hold up navigation; a deletion
+  /// is the thing the user is waiting for, and reporting success before it
+  /// lands would be a lie.
   Future<void> clear() async {
     await ref.read(profileRepositoryProvider).clear();
+    await ref.read(profileSyncProvider).clear();
     state = null;
-    unawaited(ref.read(profileSyncProvider).clear());
   }
 
   /// Restores a backed-up profile when this device has none.

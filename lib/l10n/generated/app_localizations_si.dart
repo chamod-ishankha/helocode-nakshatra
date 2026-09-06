@@ -532,7 +532,7 @@ class L10nSi extends L10n {
 
   @override
   String get settingsDeleteBody =>
-      'ඔබේ උපන් තොරතුරු මෙම දුරකථනයෙන් සහ අපගේ උපස්ථයෙන් ඉවත් වේ. ඔබේ කේන්දර සහ පලාපල ද ඒ සමඟම යයි. මෙය නැවත හැරවිය නොහැක.';
+      'ඔබේ උපන් තොරතුරු මෙම දුරකථනයෙන් සහ අපගේ උපස්ථයෙන් ඉවත් වන අතර, ඔබේ ගිණුමද මකා දැමේ. ඔබේ කේන්දර සහ පලාපල ද ඒ සමඟම යයි. මෙය නැවත හැරවිය නොහැක.';
 
   @override
   String get settingsDeleteConfirm => 'මකන්න';
@@ -645,6 +645,14 @@ class L10nSi extends L10n {
   @override
   String get reasonShortenedByChange =>
       'දිනය තුළ ලිත වෙනස් වන බැවින් කෙටි කර ඇත';
+
+  @override
+  String get authErrorRequiresRecentLogin =>
+      'ඔබේ ආරක්ෂාව සඳහා, ගිණුම මකා දැමීමට පෙර නැවත පිවිසෙන්න.';
+
+  @override
+  String get settingsDeleteFailed =>
+      'ඔබේ තොරතුරු මෙම දුරකථනයෙන් ඉවත් කරන ලදී, නමුත් උපස්ථයට සම්බන්ධ විය නොහැකි විය. ඔබ සබැඳි වූ පසු නැවත උත්සාහ කරන්න.';
 
   @override
   String get accountTitle => 'ගිණුම';

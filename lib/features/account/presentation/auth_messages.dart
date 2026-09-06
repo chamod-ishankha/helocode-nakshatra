@@ -22,6 +22,7 @@ String authMessage(BuildContext context, AuthFailure failure) {
     'wrong-password' || 'invalid-credential' => l.authErrorWrongPassword,
     'user-not-found' => l.authErrorUserNotFound,
     'user-disabled' => l.authErrorUserDisabled,
+    'requires-recent-login' => l.authErrorRequiresRecentLogin,
     'too-many-requests' => l.authErrorTooManyRequests,
     'network-request-failed' => l.authErrorNoConnection,
     'operation-not-allowed' => l.authErrorNotEnabled,

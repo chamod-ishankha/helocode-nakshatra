@@ -29,7 +29,10 @@ class _FakeSync implements ProfileSync {
   Future<void> push(BirthProfile profile) async => pushed = profile;
 
   @override
-  Future<void> clear() async => clears++;
+  Future<bool> clear() async {
+    clears++;
+    return true;
+  }
 }
 
 void main() {

@@ -535,7 +535,7 @@ class L10nEn extends L10n {
 
   @override
   String get settingsDeleteBody =>
-      'Your birth details will be removed from this phone and from our backup. Your charts and readings go with them, and this cannot be undone.';
+      'Your birth details will be removed from this phone and from our backup, and your account will be deleted. Your charts and readings go with them, and this cannot be undone.';
 
   @override
   String get settingsDeleteConfirm => 'Delete';
@@ -650,6 +650,14 @@ class L10nEn extends L10n {
   @override
   String get reasonShortenedByChange =>
       'Shortened because the almanac changes during the day';
+
+  @override
+  String get authErrorRequiresRecentLogin =>
+      'For your security, please sign in again before deleting your account.';
+
+  @override
+  String get settingsDeleteFailed =>
+      'Your details were removed from this phone, but the backup could not be reached. Try again once you are online.';
 
   @override
   String get accountTitle => 'Account';

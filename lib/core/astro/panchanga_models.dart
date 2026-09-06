@@ -1,3 +1,5 @@
+import 'models.dart';
+
 /// The thirty tithi (lunar days) of a lunar month.
 ///
 /// A tithi is the time the Moon takes to gain 12° on the Sun, so its length
@@ -170,7 +172,7 @@ class Panchanga {
   final Vara vara;
   final PanchangaElement<Tithi> tithi;
   final Paksha paksha;
-  final PanchangaElement<String> nakshatra;
+  final PanchangaElement<Nakshatra> nakshatra;
   final PanchangaElement<Yoga> yoga;
   final PanchangaElement<Karana> karana;
 

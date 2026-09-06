@@ -340,7 +340,7 @@ class _PanchangaStrip extends StatelessWidget {
             _row(
               context,
               L10n.of(context).panchangaNakshatra,
-              panchanga.nakshatra.value,
+              panchanga.nakshatra.value.en,
               until(panchanga.nakshatra.endsAt),
             ),
             _row(

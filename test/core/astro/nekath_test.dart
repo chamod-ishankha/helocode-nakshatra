@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nakshatra/core/astro/nekath.dart';
+import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/core/astro/panchanga_models.dart';
 
 /// Segment arithmetic for the inauspicious periods.
@@ -17,7 +18,7 @@ void main() {
     vara: vara,
     tithi: const PanchangaElement(value: Tithi.pratipada, endsAt: null),
     paksha: Paksha.shukla,
-    nakshatra: const PanchangaElement(value: 'Ashwini', endsAt: null),
+    nakshatra: const PanchangaElement(value: Nakshatra.ashwini, endsAt: null),
     yoga: const PanchangaElement(value: Yoga.vishkambha, endsAt: null),
     karana: const PanchangaElement(value: Karana.bava, endsAt: null),
     sunrise: sunrise,

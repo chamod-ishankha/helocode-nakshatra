@@ -120,7 +120,7 @@ abstract final class Panchangam {
         endsAt: _nextBoundary(sunriseJd, 360 / 27, _yogaSum, location),
       ),
       nakshatra: PanchangaElement(
-        value: Nakshatra.fromLongitude(_moonSidereal(sunriseJd)).en,
+        value: Nakshatra.fromLongitude(_moonSidereal(sunriseJd)),
         endsAt: _nextBoundary(
           sunriseJd,
           Nakshatra.span,

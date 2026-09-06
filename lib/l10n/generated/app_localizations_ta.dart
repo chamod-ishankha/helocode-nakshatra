@@ -878,4 +878,8 @@ class L10nTa extends L10n {
   @override
   String get unlockFutureBody =>
       'வரும் எந்த நாளையும் திறக்கலாம் — நல்ல நேரங்கள், ராகு காலம் மற்றும் முழு பஞ்சாங்கம்.';
+
+  @override
+  String get authErrorGoogleRepeated =>
+      'Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்.';
 }

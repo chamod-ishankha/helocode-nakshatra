@@ -872,4 +872,8 @@ class L10nEn extends L10n {
   @override
   String get unlockFutureBody =>
       'Open any day ahead — auspicious times, rahu kalaya and the full panchanga.';
+
+  @override
+  String get authErrorGoogleRepeated =>
+      'Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.';
 }

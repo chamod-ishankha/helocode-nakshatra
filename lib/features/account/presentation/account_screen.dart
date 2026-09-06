@@ -120,6 +120,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final f = result.failureOrNull;
     // Backing out of the Google sheet is not an error. Showing one would
     // accuse the user of a mistake they did not make.
+    // Only a first cancellation is silent. A repeat is reported, because on
+    // Android a rejected signing certificate arrives as a cancellation too.
     final text = (f is! AuthFailure || f.code == 'google-canceled')
         ? null
         : authMessage(context, f);

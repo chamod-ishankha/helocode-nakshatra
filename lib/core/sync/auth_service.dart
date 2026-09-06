@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -275,7 +276,7 @@ class AuthService {
 
       return Result.success(GoogleAuthProvider.credential(idToken: idToken));
     } on GoogleSignInException catch (e) {
-      return Result.failure(_describeGoogle(e));
+      return Result.failure(describeGoogle(e));
     } on Object catch (e, s) {
       AppLogger.warn('Google sign-in failed', e, s);
       return Result.failure(
@@ -284,10 +285,37 @@ class AuthService {
     }
   }
 
-  static AuthFailure _describeGoogle(GoogleSignInException e) {
-    AppLogger.warn('Google sign-in error ${e.code}: ${e.description}');
+  /// Consecutive cancellations, reset by any success.
+  ///
+  /// Android's Credential Manager reports a rejected signing certificate as a
+  /// cancellation: the account sheet opens, the user picks an account, the
+  /// request fails, and the plugin says "canceled". That is the same code a
+  /// user gets for backing out deliberately, so a completely broken build was
+  /// indistinguishable from someone changing their mind — and it stayed
+  /// silent, because accusing a user of a mistake they did not make is worse.
+  ///
+  /// Nobody cancels twice in a row by accident. The second one earns a
+  /// message.
+  static int _googleCancels = 0;
 
-    final code = switch (e.code) {
+  /// The last Google error, kept for diagnosis.
+  ///
+  /// AppLogger writes nothing in release builds, so without this a failure on
+  /// a Play build leaves no trace anywhere. Surfaced in settings.
+  static String? lastGoogleError;
+
+  @visibleForTesting
+  static void resetGoogleDiagnostics() {
+    _googleCancels = 0;
+    lastGoogleError = null;
+  }
+
+  @visibleForTesting
+  static AuthFailure describeGoogle(GoogleSignInException e) {
+    AppLogger.warn('Google sign-in error ${e.code}: ${e.description}');
+    lastGoogleError = '${e.code.name}: ${e.description ?? 'no detail'}';
+
+    var code = switch (e.code) {
       GoogleSignInExceptionCode.canceled => 'google-canceled',
       // The only definitive answer available: this build has no OAuth client.
       GoogleSignInExceptionCode.clientConfigurationError ||
@@ -305,6 +333,14 @@ class AuthService {
       _googleError = e.description;
     }
 
+    if (code == 'google-canceled') {
+      _googleCancels++;
+      // Not on the first: that really is usually a user backing out.
+      if (_googleCancels >= 2) code = 'google-canceled-repeated';
+    } else {
+      _googleCancels = 0;
+    }
+
     return AuthFailure(e.description ?? code, cause: e, code: code);
   }
 
@@ -316,6 +352,7 @@ class AuthService {
     try {
       final status = await action();
       AppLogger.info(log);
+      _googleCancels = 0;
       return Result.success(status);
     } on FirebaseAuthException catch (e) {
       return Result.failure(describe(e));

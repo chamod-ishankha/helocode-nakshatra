@@ -866,4 +866,8 @@ class L10nSi extends L10n {
   @override
   String get unlockFutureBody =>
       'ඉදිරි ඕනෑම දිනක් බලන්න — සුබ මුහූර්ත, රාහු කාලය සහ සම්පූර්ණ පංචාංගය.';
+
+  @override
+  String get authErrorGoogleRepeated =>
+      'Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.';
 }

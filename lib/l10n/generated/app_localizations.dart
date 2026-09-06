@@ -1646,6 +1646,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Open any day ahead — auspicious times, rahu kalaya and the full panchanga.'**
   String get unlockFutureBody;
+
+  /// No description provided for @authErrorGoogleRepeated.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.'**
+  String get authErrorGoogleRepeated;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

@@ -294,5 +294,6 @@
   "unlockCompatTitle": "Full compatibility breakdown",
   "unlockCompatBody": "See every factor scored one by one, and what each one judges.",
   "unlockFutureTitle": "Nekath for other days",
-  "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga."
+  "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga.",
+  "authErrorGoogleRepeated": "Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app."
 }

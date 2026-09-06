@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/core/error/result.dart';
 import 'package:nakshatra/core/sync/auth_service.dart';
@@ -36,6 +37,7 @@ class _FakeSync implements ProfileSync {
 }
 
 void main() {
+  _googleCancelTests();
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const colombo = Place(
@@ -260,6 +262,61 @@ void main() {
 
       expect(sync.pushed?.name, 'OnThisPhone');
       expect(container.read(profileProvider)!.name, 'OnThisPhone');
+    });
+  });
+}
+
+/// Google sign-in cancellations (production Google sign-in bug).
+///
+/// Android's Credential Manager reports a rejected signing certificate as a
+/// cancellation. The account sheet opens, an account is picked, the request
+/// fails, and the plugin says "canceled" — the same code a user gets for
+/// deliberately backing out, which the UI deliberately shows no message for.
+///
+/// The result was a Play build where Google sign-in did nothing at all, said
+/// nothing at all, and left no trace: AppLogger writes nothing in release.
+void _googleCancelTests() {
+  group('repeated Google cancellations', () {
+    setUp(AuthService.resetGoogleDiagnostics);
+
+    GoogleSignInException cancel() => const GoogleSignInException(
+      code: GoogleSignInExceptionCode.canceled,
+      description: 'user canceled',
+    );
+
+    test('the first one stays silent', () {
+      // Someone backing out of the sheet has made no mistake.
+      expect(AuthService.describeGoogle(cancel()).code, 'google-canceled');
+    });
+
+    test('the second one is reported', () {
+      // Nobody cancels twice in a row by accident, so the second is far more
+      // likely to be a build whose signing certificate is not registered.
+      AuthService.describeGoogle(cancel());
+      expect(
+        AuthService.describeGoogle(cancel()).code,
+        'google-canceled-repeated',
+      );
+    });
+
+    test('a different failure breaks the streak', () {
+      AuthService.describeGoogle(cancel());
+      AuthService.describeGoogle(
+        const GoogleSignInException(
+          code: GoogleSignInExceptionCode.interrupted,
+          description: 'interrupted',
+        ),
+      );
+      // Back to silent: the streak is about consecutive cancellations.
+      expect(AuthService.describeGoogle(cancel()).code, 'google-canceled');
+    });
+
+    test('the detail is kept for diagnosis even in release', () {
+      // The only trace of a Play-build failure, since AppLogger is silent
+      // there. Surfaced rather than lost.
+      AuthService.describeGoogle(cancel());
+      expect(AuthService.lastGoogleError, contains('canceled'));
+      expect(AuthService.lastGoogleError, contains('user canceled'));
     });
   });
 }

@@ -27,6 +27,7 @@ String authMessage(BuildContext context, AuthFailure failure) {
     'network-request-failed' => l.authErrorNoConnection,
     'operation-not-allowed' => l.authErrorNotEnabled,
 
+    'google-canceled-repeated' => l.authErrorGoogleRepeated,
     'google-unavailable' => l.authErrorGoogleUnavailable,
     'google-interrupted' => l.authErrorGoogleInterrupted,
     'google-no-id-token' => l.authErrorGoogleNoToken,

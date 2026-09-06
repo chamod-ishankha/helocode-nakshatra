@@ -11,6 +11,7 @@ import 'package:nakshatra/l10n/generated/app_localizations.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
 import 'package:nakshatra/features/chart/presentation/north_indian_chart.dart';
 import 'package:nakshatra/features/chart/presentation/rasi_chart.dart';
+import 'package:nakshatra/features/chart/presentation/chart_sharing.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -301,6 +302,59 @@ void main() {
     // so rather than picking a school.
     expect(find.textContaining('traditions disagree'), findsOneWidget);
     expect(find.textContaining('Exalted in'), findsNothing);
+  });
+
+  testWidgets('the chart renders to a real PNG for sharing', (tester) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    // The share sheet itself is system UI a test cannot assert against, so
+    // this exercises the half that can actually be wrong: finding the
+    // boundary, rasterising it and encoding it.
+    final boundary = find.byType(ShareableChart);
+    expect(boundary, findsOneWidget);
+
+    final key =
+        tester.widget<ShareableChart>(boundary).boundaryKey;
+    final result = await ChartSharing.captureBoundary(key);
+
+    expect(result.isSuccess, isTrue, reason: '${result.failureOrNull}');
+    final bytes = result.valueOrNull!;
+    expect(bytes, isNotEmpty);
+
+    // PNG magic number, so this is an image rather than an empty buffer that
+    // happened not to throw.
+    expect(bytes.sublist(0, 4), [0x89, 0x50, 0x4E, 0x47]);
+  });
+
+  testWidgets('the shared image carries its own attribution', (tester) async {
+    await pumpChart(
+      tester,
+      BirthProfile(
+        name: 'Test',
+        birthDate: DateTime(1990, 6, 15),
+        birthTime: const Duration(hours: 14, minutes: 30),
+        place: colombo,
+        birthTimeKnown: true,
+      ),
+    );
+
+    // A shared chart travels without the app around it, so the caption and
+    // attribution have to be inside the captured region rather than added at
+    // capture time.
+    final inside = find.descendant(
+      of: find.byType(ShareableChart),
+      matching: find.textContaining('HeloCode Labs'),
+    );
+    expect(inside, findsOneWidget);
   });
 
   testWidgets('North Indian places the lagna sign in house 1', (tester) async {

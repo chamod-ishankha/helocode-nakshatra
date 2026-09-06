@@ -269,6 +269,17 @@ class L10nSi extends L10n {
       'රාහු සහ කේතු කිසිදු රාශියක් අධිපති නොවන අතර ඔවුන් උච්ච වන්නේ කොහිද යන්න පිළිබඳ සම්ප්‍රදායන් අතර එකඟතාවක් නැත — එබැවින් මෙහි කිසිදු බලයක් දක්වා නැත.';
 
   @override
+  String get chartShare => 'කේන්දරය බෙදාගන්න';
+
+  @override
+  String get chartShareFailed => 'රූපය සෑදිය නොහැකි විය.';
+
+  @override
+  String chartShareCaption(String name, String date, String place) {
+    return '$name · $date · $place';
+  }
+
+  @override
   String get accountTitle => 'ගිණුම';
 
   @override

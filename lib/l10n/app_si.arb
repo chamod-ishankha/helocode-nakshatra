@@ -87,6 +87,10 @@
   "dignityDebilitated": "නීච",
   "dignityNodeNote": "රාහු සහ කේතු කිසිදු රාශියක් අධිපති නොවන අතර ඔවුන් උච්ච වන්නේ කොහිද යන්න පිළිබඳ සම්ප්‍රදායන් අතර එකඟතාවක් නැත — එබැවින් මෙහි කිසිදු බලයක් දක්වා නැත.",
 
+  "chartShare": "කේන්දරය බෙදාගන්න",
+  "chartShareFailed": "රූපය සෑදිය නොහැකි විය.",
+  "chartShareCaption": "{name} · {date} · {place}",
+
   "accountTitle": "ගිණුම",
   "accountSavedToEmail": "{email} වෙත සුරකින ලදී",
   "accountSavedToEmailHelp": "නව දුරකථනයක මෙම ඊමේල් ලිපිනයෙන් පිවිසුණු විට ඔබේ උපන් තොරතුරු නැවත ලැබේ.",

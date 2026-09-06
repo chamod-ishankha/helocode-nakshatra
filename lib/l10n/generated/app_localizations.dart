@@ -567,6 +567,24 @@ abstract class L10n {
   /// **'Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.'**
   String get dignityNodeNote;
 
+  /// No description provided for @chartShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share chart'**
+  String get chartShare;
+
+  /// No description provided for @chartShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create the image.'**
+  String get chartShareFailed;
+
+  /// No description provided for @chartShareCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {date} · {place}'**
+  String chartShareCaption(String name, String date, String place);
+
   /// No description provided for @accountTitle.
   ///
   /// In en, this message translates to:

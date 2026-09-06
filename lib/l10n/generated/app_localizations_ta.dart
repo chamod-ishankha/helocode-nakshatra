@@ -272,6 +272,17 @@ class L10nTa extends L10n {
       'ராகுவும் கேதுவும் எந்த ராசிக்கும் அதிபதி அல்ல, அவை உச்சம் பெறும் ராசி குறித்து மரபுகள் ஒத்துப்போவதில்லை — எனவே இங்கு எந்த பலமும் கூறப்படவில்லை.';
 
   @override
+  String get chartShare => 'ஜாதகத்தைப் பகிர்';
+
+  @override
+  String get chartShareFailed => 'படத்தை உருவாக்க முடியவில்லை.';
+
+  @override
+  String chartShareCaption(String name, String date, String place) {
+    return '$name · $date · $place';
+  }
+
+  @override
   String get accountTitle => 'கணக்கு';
 
   @override

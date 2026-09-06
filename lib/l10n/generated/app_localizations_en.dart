@@ -270,6 +270,17 @@ class L10nEn extends L10n {
       'Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.';
 
   @override
+  String get chartShare => 'Share chart';
+
+  @override
+  String get chartShareFailed => 'Could not create the image.';
+
+  @override
+  String chartShareCaption(String name, String date, String place) {
+    return '$name · $date · $place';
+  }
+
+  @override
   String get accountTitle => 'Account';
 
   @override

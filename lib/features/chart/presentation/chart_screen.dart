@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
+import 'chart_sharing.dart';
 import 'dasha_timeline.dart';
 import 'detail_sheets.dart';
 
@@ -33,11 +35,35 @@ final chartProvider = Provider<Result<BirthChart>?>((ref) {
   );
 });
 
-class ChartScreen extends ConsumerWidget {
+class ChartScreen extends ConsumerStatefulWidget {
   const ChartScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChartScreen> createState() => _ChartScreenState();
+}
+
+class _ChartScreenState extends ConsumerState<ChartScreen> {
+  /// Marks the region that gets rendered to PNG when the user shares.
+  final _shareBoundary = GlobalKey();
+
+  Future<void> _share(String caption) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final failedMessage = L10n.of(context).chartShareFailed;
+
+    final result = await ChartSharing.shareBoundary(
+      _shareBoundary,
+      fileStem: 'nakshatra-chart',
+      text: caption,
+    );
+
+    if (!mounted) return;
+    if (!result.isSuccess) {
+      messenger.showSnackBar(SnackBar(content: Text(failedMessage)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final profile = ref.watch(profileProvider);
     final result = ref.watch(chartProvider);
     final style = ref.watch(chartStyleProvider);
@@ -58,6 +84,17 @@ class ChartScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.ios_share),
+            tooltip: L10n.of(context).chartShare,
+            onPressed: () => _share(
+              L10n.of(context).chartShareCaption(
+                profile.name,
+                DateFormat.yMMMd().format(profile.birthDate),
+                profile.place.en,
+              ),
+            ),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: L10n.of(context).chartStartOver,
             onPressed: () async {
@@ -77,7 +114,14 @@ class ChartScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             // Keyed by style so Flutter rebuilds rather than trying to reuse
             // the previous layout's element tree, which shares no structure.
-            switch (style) {
+            ShareableChart(
+              boundaryKey: _shareBoundary,
+              caption: L10n.of(context).chartShareCaption(
+                profile.name,
+                DateFormat.yMMMd().format(profile.birthDate),
+                profile.place.en,
+              ),
+              child: switch (style) {
               ChartStyle.southIndian => RasiChart(
                 key: const ValueKey('south'),
                 chart: chart,
@@ -88,7 +132,8 @@ class ChartScreen extends ConsumerWidget {
                 chart: chart,
                 approximateHouses: !profile.birthTimeKnown,
               ),
-            },
+              },
+            ),
             const SizedBox(height: 24),
             _SummaryCard(chart: chart),
             const SizedBox(height: 16),

@@ -56,6 +56,8 @@ void main() {
       'accountContinueWithGoogle',
       'accountSavedToEmail',
       'chartAyanamsa',
+      // Placeholders and a separator, with no words of its own.
+      'chartShareCaption',
     };
 
     final untranslated = <String>[];

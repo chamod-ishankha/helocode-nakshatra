@@ -97,6 +97,11 @@
   "dignityDebilitated": "Debilitated",
   "dignityNodeNote": "Rāhu and Ketu rule no sign, and traditions disagree on where they are exalted — so no dignity is claimed here.",
 
+  "chartShare": "Share chart",
+  "chartShareFailed": "Could not create the image.",
+  "chartShareCaption": "{name} · {date} · {place}",
+  "@chartShareCaption": { "placeholders": { "name": { "type": "String" }, "date": { "type": "String" }, "place": { "type": "String" } } },
+
   "accountTitle": "Account",
   "accountSavedToEmail": "Saved to {email}",
   "@accountSavedToEmail": { "placeholders": { "email": { "type": "String" } } },

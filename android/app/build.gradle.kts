@@ -99,10 +99,13 @@ android {
             // ads and earns nothing, which is the safe direction to fail.
             val realId = admobProperties.getProperty("admobAppId")
             if (realId == null) {
-                logger.warn(
+                // Written to stderr, not logger.warn: `flutter build` filters
+                // Gradle's log output, so a warn() here is invisible during a
+                // normal release build - which is exactly when it matters.
+                System.err.println(
                     "WARNING: android/admob.properties not found - the prod " +
                         "build will use Google's TEST AdMob app id and earn " +
-                        "nothing. See KAN-34."
+                        "nothing. See KAN-56."
                 )
             }
             manifestPlaceholders["admobAppId"] = realId ?: admobTestAppId

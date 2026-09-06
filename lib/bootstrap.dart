@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/ads/ad_gate.dart';
 import 'core/ads/ads_service.dart';
+import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/flavor.dart';
 import 'core/logging/app_logger.dart';
@@ -55,6 +56,9 @@ Future<void> bootstrap(Flavor flavor) async {
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
       appLaunchedAtProvider.overrideWithValue(launchedAt),
+      // The real rewarded ad. Defaults to "not earned" so tests and any
+      // build without the SDK never hand out an unlock for free.
+      rewardedPresenterProvider.overrideWithValue(AdsService.showRewarded),
     ],
   );
 

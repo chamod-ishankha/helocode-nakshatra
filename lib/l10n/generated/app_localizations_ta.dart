@@ -851,4 +851,31 @@ class L10nTa extends L10n {
 
   @override
   String get routeGoHome => 'முகப்புக்குச் செல்';
+
+  @override
+  String get unlockWatch => 'குறும் காணொளியைப் பாருங்கள்';
+
+  @override
+  String get unlockLoading => 'காணொளி ஏற்றப்படுகிறது…';
+
+  @override
+  String get unlockFailed =>
+      'காணொளி கிடைக்கவில்லை. சிறிது நேரத்தில் மீண்டும் முயலவும்.';
+
+  @override
+  String get unlockLastsToday => 'இன்று முழுவதும் திறந்தே இருக்கும்.';
+
+  @override
+  String get unlockCompatTitle => 'முழுமையான பொருத்த விவரம்';
+
+  @override
+  String get unlockCompatBody =>
+      'ஒவ்வொரு காரணியும் தனித்தனியாக மதிப்பிடப்பட்ட விதத்தைப் பாருங்கள்.';
+
+  @override
+  String get unlockFutureTitle => 'மற்ற நாட்களின் நேரம்';
+
+  @override
+  String get unlockFutureBody =>
+      'வரும் எந்த நாளையும் திறக்கலாம் — நல்ல நேரங்கள், ராகு காலம் மற்றும் முழு பஞ்சாங்கம்.';
 }

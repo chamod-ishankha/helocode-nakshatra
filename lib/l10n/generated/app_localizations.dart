@@ -1598,6 +1598,54 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Go home'**
   String get routeGoHome;
+
+  /// No description provided for @unlockWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short video'**
+  String get unlockWatch;
+
+  /// No description provided for @unlockLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the video…'**
+  String get unlockLoading;
+
+  /// No description provided for @unlockFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'No video was available. Please try again in a moment.'**
+  String get unlockFailed;
+
+  /// No description provided for @unlockLastsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays unlocked for the rest of today.'**
+  String get unlockLastsToday;
+
+  /// No description provided for @unlockCompatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full compatibility breakdown'**
+  String get unlockCompatTitle;
+
+  /// No description provided for @unlockCompatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See every factor scored one by one, and what each one judges.'**
+  String get unlockCompatBody;
+
+  /// No description provided for @unlockFutureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nekath for other days'**
+  String get unlockFutureTitle;
+
+  /// No description provided for @unlockFutureBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open any day ahead — auspicious times, rahu kalaya and the full panchanga.'**
+  String get unlockFutureBody;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

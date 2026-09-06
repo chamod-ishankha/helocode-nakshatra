@@ -845,4 +845,31 @@ class L10nEn extends L10n {
 
   @override
   String get routeGoHome => 'Go home';
+
+  @override
+  String get unlockWatch => 'Watch a short video';
+
+  @override
+  String get unlockLoading => 'Loading the video…';
+
+  @override
+  String get unlockFailed =>
+      'No video was available. Please try again in a moment.';
+
+  @override
+  String get unlockLastsToday => 'Stays unlocked for the rest of today.';
+
+  @override
+  String get unlockCompatTitle => 'Full compatibility breakdown';
+
+  @override
+  String get unlockCompatBody =>
+      'See every factor scored one by one, and what each one judges.';
+
+  @override
+  String get unlockFutureTitle => 'Nekath for other days';
+
+  @override
+  String get unlockFutureBody =>
+      'Open any day ahead — auspicious times, rahu kalaya and the full panchanga.';
 }

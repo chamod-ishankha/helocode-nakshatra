@@ -840,4 +840,30 @@ class L10nSi extends L10n {
 
   @override
   String get routeGoHome => 'මුල් පිටුවට';
+
+  @override
+  String get unlockWatch => 'කෙටි වීඩියෝවක් බලන්න';
+
+  @override
+  String get unlockLoading => 'වීඩියෝව පූරණය වෙමින්…';
+
+  @override
+  String get unlockFailed => 'වීඩියෝවක් නොලැබුණි. මොහොතකින් නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get unlockLastsToday => 'අද දිනය අවසන් වන තුරු විවෘතව පවතී.';
+
+  @override
+  String get unlockCompatTitle => 'සම්පූර්ණ පොරොන්දම් විස්තරය';
+
+  @override
+  String get unlockCompatBody =>
+      'සෑම සාධකයක්ම වෙන් වෙන් වශයෙන් ලකුණු කර ඇති ආකාරය බලන්න.';
+
+  @override
+  String get unlockFutureTitle => 'වෙනත් දිනවල නැකත්';
+
+  @override
+  String get unlockFutureBody =>
+      'ඉදිරි ඕනෑම දිනක් බලන්න — සුබ මුහූර්ත, රාහු කාලය සහ සම්පූර්ණ පංචාංගය.';
 }

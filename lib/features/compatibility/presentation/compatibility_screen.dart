@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../../core/astro/compatibility/ashtakoota.dart';
 import '../../../core/astro/compatibility/porondam.dart';
+import '../../../core/ads/rewarded_unlock.dart';
+import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -247,6 +249,12 @@ class _Results extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
     final system = ref.watch(matchSystemProvider);
+    // The score and the doshas stay free. Locking the number would leave a
+    // screen with nothing on it, and a warning nobody can read is worse than
+    // no warning at all — only the per-factor working is the reward.
+    final detail = ref
+        .watch(unlockStoreProvider)
+        .isOpen(RewardedUnlock.compatibilityDetail);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -268,7 +276,14 @@ class _Results extends ConsumerWidget {
           if (match.ashtakoota.hasBhakootDosha)
             _Warning(text: l.compatBhakootDosha),
           const SizedBox(height: 12),
-          for (final s in match.ashtakoota.scores) _KootaRow(score: s),
+          if (detail)
+            for (final s in match.ashtakoota.scores) _KootaRow(score: s)
+          else
+            RewardedUnlockCard(
+              unlock: RewardedUnlock.compatibilityDetail,
+              title: l.unlockCompatTitle,
+              body: l.unlockCompatBody,
+            ),
         ] else ...[
           _ScoreHeadline(
             value: l.compatMatchedOutOf(
@@ -280,7 +295,14 @@ class _Results extends ConsumerWidget {
           if (match.porondam.hasRajjuDosha)
             _Warning(text: l.factorRajjuAbout),
           const SizedBox(height: 12),
-          for (final s in match.porondam.scores) _PorondamRow(score: s),
+          if (detail)
+            for (final s in match.porondam.scores) _PorondamRow(score: s)
+          else
+            RewardedUnlockCard(
+              unlock: RewardedUnlock.compatibilityDetail,
+              title: l.unlockCompatTitle,
+              body: l.unlockCompatBody,
+            ),
           const SizedBox(height: 12),
           // The gap to twenty is stated on screen, not only in the code.
           Text(

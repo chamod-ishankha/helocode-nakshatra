@@ -285,5 +285,14 @@
   "@language": { "description": "Tooltip and menu label for the language switcher." },
 
   "routeNotFound": "Page not found",
-  "routeGoHome": "Go home"
+  "routeGoHome": "Go home",
+
+  "unlockWatch": "Watch a short video",
+  "unlockLoading": "Loading the video…",
+  "unlockFailed": "No video was available. Please try again in a moment.",
+  "unlockLastsToday": "Stays unlocked for the rest of today.",
+  "unlockCompatTitle": "Full compatibility breakdown",
+  "unlockCompatBody": "See every factor scored one by one, and what each one judges.",
+  "unlockFutureTitle": "Nekath for other days",
+  "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga."
 }

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/ads/banner_ad_slot.dart';
+import '../../../core/ads/rewarded_unlock.dart';
+import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
@@ -28,6 +30,19 @@ class HomeScreen extends ConsumerWidget {
     final profile = ref.watch(profileProvider);
     final panchanga = ref.watch(panchangaProvider);
     final locale = ref.watch(localeProvider);
+
+    // Today and every day behind it are free; days ahead are the reward.
+    // Looking back has little value to sell, and someone checking what the
+    // nekath was last Tuesday should not be made to watch anything.
+    //
+    // The gate is on the day being *shown*, not on the arrows that move it.
+    // The calendar hands a date straight to this screen, so a gate on the
+    // switcher alone would be bypassed with one tap.
+    final selected = ref.watch(selectedDateProvider);
+    final now = DateTime.now();
+    final isAhead = selected.isAfter(DateTime(now.year, now.month, now.day));
+    final dayLocked = isAhead &&
+        !ref.watch(unlockStoreProvider).isOpen(RewardedUnlock.futureDay);
 
     if (profile == null || panchanga == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -68,17 +83,25 @@ class HomeScreen extends ConsumerWidget {
           children: [
             const _DateSwitcher(),
             const SizedBox(height: 16),
-            const _PoyaTodayBanner(),
-            const _NowBanner(),
-            _RahuKalayaCard(panchanga: panchanga),
-            const SizedBox(height: 16),
-            _PanchangaStrip(panchanga: panchanga, locale: locale),
-            const SizedBox(height: 16),
-            _SunMoonCard(panchanga: panchanga),
-            const SizedBox(height: 16),
-            const _OtherPeriods(),
-            const SizedBox(height: 16),
-            const _AuspiciousCard(),
+            if (dayLocked)
+              RewardedUnlockCard(
+                unlock: RewardedUnlock.futureDay,
+                title: L10n.of(context).unlockFutureTitle,
+                body: L10n.of(context).unlockFutureBody,
+              )
+            else ...[
+              const _PoyaTodayBanner(),
+              const _NowBanner(),
+              _RahuKalayaCard(panchanga: panchanga),
+              const SizedBox(height: 16),
+              _PanchangaStrip(panchanga: panchanga, locale: locale),
+              const SizedBox(height: 16),
+              _SunMoonCard(panchanga: panchanga),
+              const SizedBox(height: 16),
+              const _OtherPeriods(),
+              const SizedBox(height: 16),
+              const _AuspiciousCard(),
+            ],
             const SizedBox(height: 16),
             const _NextPoyaCard(),
             const SizedBox(height: 16),

@@ -136,6 +136,12 @@ class SettingsScreen extends ConsumerWidget {
     // policy promises both.
     await ref.read(profileProvider.notifier).clear();
     messenger.showSnackBar(SnackBar(content: Text(l.settingsDeleted)));
+
+    // Leave for onboarding immediately rather than relying on the redirect to
+    // catch up. Every screen behind this one reads a profile that no longer
+    // exists, and sitting on a settings page for data that has just been
+    // erased makes no sense either.
+    if (context.mounted) context.go(Routes.onboarding);
   }
 
   static Future<void> _open(BuildContext context, String url) async {

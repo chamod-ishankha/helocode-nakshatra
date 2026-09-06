@@ -35,12 +35,21 @@ void popOrHome(BuildContext context) =>
     context.canPop() ? context.pop() : context.go(Routes.home);
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // Redirects are only re-evaluated when the router is told something
+  // changed. Without this, deleting the profile left the app on a screen it
+  // should no longer be on: the redirect below had already run, and nothing
+  // asked it to run again. The home screen then rendered its "no data yet"
+  // spinner forever, because a deleted profile never arrives.
+  final profileChanged = ValueNotifier<int>(0);
+  ref.listen(profileProvider, (_, _) => profileChanged.value++);
+  ref.onDispose(profileChanged.dispose);
+
   return GoRouter(
     initialLocation: Routes.home,
     debugLogDiagnostics: true,
+    refreshListenable: profileChanged,
     // A user with no saved profile has nothing to show, so every route
-    // redirects into onboarding until one exists. Reading the profile through
-    // the provider means completing onboarding re-evaluates this immediately.
+    // redirects into onboarding until one exists.
     redirect: (context, state) {
       final hasProfile = ref.read(profileProvider) != null;
       final onOnboarding = state.matchedLocation == Routes.onboarding;

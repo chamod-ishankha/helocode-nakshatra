@@ -12,20 +12,23 @@
 #
 #     ./tool/release.sh                 # signed AAB for Play
 #     ./tool/release.sh --apk           # ...and an installable APK
-#     ./tool/release.sh --build-number 12345
+#     ./tool/release.sh --set-version 1.1.0   # start a new minor at +1
+#     ./tool/release.sh --no-bump             # rebuild what pubspec says
 #     ./tool/release.sh --clean         # after changing Gradle or flavors
 #
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-BUILD_NUMBER=""
+SET_VERSION=""
+NO_BUMP=0
 WANT_APK=0
 CLEAN=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --build-number) BUILD_NUMBER="${2:?--build-number needs a value}"; shift 2 ;;
+    --set-version)  SET_VERSION="${2:?--set-version needs a value}"; shift 2 ;;
+    --no-bump)      NO_BUMP=1; shift ;;
     --apk)          WANT_APK=1; shift ;;
     --clean)        CLEAN=1; shift ;;
     -h|--help)      awk 'NR>1 && /^#/ {sub(/^# ?/,""); print; next} NR>1 {exit}' "$0"; exit 0 ;;
@@ -71,24 +74,73 @@ echo "  key.properties, keystore, google-services.json, env/prod.json all presen
 
 # ------------------------------------------------------------------ version
 #
-# versionName comes from pubspec. versionCode does NOT: Play permanently
-# rejects a duplicate, and the +1 in pubspec never changes, so a hand-built
-# bundle would be refused on the second upload.
+# The version lives in pubspec.yaml and this script advances it, so the number
+# on a bundle is never invented at build time and never depends on the clock.
 #
-# The default is minutes since 2024-01-01 - monotonic, needs no state file,
-# unique to the minute, and small enough to stay far below Play's ceiling of
-# 2100000000 for centuries.
+# The build number runs 1..9 and then rolls into the patch: 1.0.1+9 is
+# followed by 1.0.2+1.
+#
+# ## Why versionCode is not simply the build number
+#
+# Play requires a strictly increasing integer and permanently refuses anything
+# it has already seen. Earlier builds went out with codes derived from the
+# clock - the last was 1410854 - so a bundle offering versionCode 1 would be
+# rejected outright.
+#
+# The code is therefore derived from the whole version:
+#
+#   major * 10000000 + minor * 100000 + patch * 1000 + build
+#
+# 1.0.1+1 becomes 10001001, which clears the old codes with room to spare,
+# rises in step with the version, and stays far below Play's ceiling of
+# 2100000000 until major version 99.
 
-NAME=$(grep '^version:' pubspec.yaml | sed -E 's/version:[[:space:]]*([^+]+)\+.*/\1/' | tr -d ' ')
+version_code() { # major minor patch build
+  echo $(( $1 * 10000000 + $2 * 100000 + $3 * 1000 + $4 ))
+}
 
-if [ -z "$BUILD_NUMBER" ]; then
-  BUILD_NUMBER=$(( ( $(date +%s) - 1704067200 ) / 60 ))
+CURRENT=$(grep '^version:' pubspec.yaml | sed -E 's/^version:[[:space:]]*//' | tr -d ' \r')
+if ! echo "$CURRENT" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$'; then
+  die "pubspec version '$CURRENT' is not major.minor.patch+build."
 fi
 
-[ "$BUILD_NUMBER" -gt 0 ] 2>/dev/null || die "Build number must be a positive integer, got '$BUILD_NUMBER'."
-[ "$BUILD_NUMBER" -lt 2100000000 ] || die "Build number $BUILD_NUMBER is above Play's ceiling of 2100000000."
+MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+MINOR=$(echo "$CURRENT" | cut -d. -f2)
+PATCH=$(echo "$CURRENT" | cut -d. -f3 | cut -d+ -f1)
+BUILD=$(echo "$CURRENT" | cut -d+ -f2)
 
-say "Building $NAME ($BUILD_NUMBER)"
+if [ -n "$SET_VERSION" ]; then
+  if ! echo "$SET_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+    die "--set-version wants major.minor.patch, got '$SET_VERSION'."
+  fi
+  MAJOR=$(echo "$SET_VERSION" | cut -d. -f1)
+  MINOR=$(echo "$SET_VERSION" | cut -d. -f2)
+  PATCH=$(echo "$SET_VERSION" | cut -d. -f3)
+  BUILD=1
+elif [ "$NO_BUMP" = "1" ]; then
+  : # rebuild whatever pubspec already says
+else
+  BUILD=$(( BUILD + 1 ))
+  if [ "$BUILD" -gt 9 ]; then
+    PATCH=$(( PATCH + 1 ))
+    BUILD=1
+  fi
+fi
+
+NAME="$MAJOR.$MINOR.$PATCH"
+NEW_VERSION="$NAME+$BUILD"
+CODE=$(version_code "$MAJOR" "$MINOR" "$PATCH" "$BUILD")
+
+[ "$CODE" -lt 2100000000 ] || die "versionCode $CODE is above Play's ceiling."
+
+# Written back before the build, so the file and the bundle always agree even
+# if the build then fails.
+if [ "$NEW_VERSION" != "$CURRENT" ]; then
+  sed -i -E "s/^version:.*/version: $NEW_VERSION/" pubspec.yaml
+  echo "  pubspec $CURRENT -> $NEW_VERSION"
+fi
+
+say "Building $NEW_VERSION (versionCode $CODE)"
 
 # -------------------------------------------------------------------- build
 
@@ -105,7 +157,7 @@ BUILD_ARGS=(
   --target lib/main_prod.dart
   --dart-define-from-file=env/prod.json
   --build-name="$NAME"
-  --build-number="$BUILD_NUMBER"
+  --build-number="$CODE"
 )
 
 say "Building the app bundle"
@@ -140,8 +192,8 @@ if [ "$WANT_APK" = "1" ]; then
 fi
 
 say "Done"
-printf '  versionName  %s\n' "$NAME"
-printf '  versionCode  %s\n' "$BUILD_NUMBER"
+printf '  version      %s\n' "$NEW_VERSION"
+printf '  versionCode  %s\n' "$CODE"
 printf '  bundle       %s (%s)\n' "$AAB" "$(du -h "$AAB" | cut -f1)"
 [ "$WANT_APK" = "1" ] && printf '  apk          %s\n' "${APK:-}"
 printf '\nUpload the .aab at Play Console > Test and release > Internal testing.\n'

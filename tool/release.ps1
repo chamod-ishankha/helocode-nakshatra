@@ -17,13 +17,14 @@ Android SDK are not set up. Use this script instead.
 .EXAMPLE
 .\tool\release.ps1 -Apk
 .EXAMPLE
-.\tool\release.ps1 -BuildNumber 1500000
+.\tool\release.ps1 -SetVersion 1.1.0
 .EXAMPLE
 .\tool\release.ps1 -Clean
 #>
 [CmdletBinding()]
 param(
-    [int]$BuildNumber = 0,
+    [string]$SetVersion = '',
+    [switch]$NoBump,
     [switch]$Apk,
     [switch]$Clean
 )
@@ -34,8 +35,23 @@ function Say  { param($m) Write-Host "`n==> $m" -ForegroundColor Cyan }
 function Warn { param($m) Write-Host "WARNING: $m" -ForegroundColor Yellow }
 function Die  { param($m) Write-Host "ERROR: $m" -ForegroundColor Red; exit 1 }
 
-# Native executables do not throw, so their exit codes must be checked.
-function Assert-LastExit { param($what) if ($LASTEXITCODE -ne 0) { Die "$what failed (exit $LASTEXITCODE)." } }
+# Native executables do not throw, so their exit codes are checked explicitly.
+#
+# They are also run with ErrorActionPreference relaxed. With it set to Stop,
+# PowerShell 5.1 turns any line a native command writes to stderr into a
+# terminating error as soon as the script's output is piped or redirected, so
+# piping this script died on Gradle's harmless "no admob.properties" warning
+# half way through a release build. The exit code says whether a build failed;
+# stderr does not.
+function Invoke-Native {
+    param([string]$What, [scriptblock]$Command)
+
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try { & $Command } finally { $ErrorActionPreference = $previous }
+
+    if ($LASTEXITCODE -ne 0) { Die "$What failed (exit $LASTEXITCODE)." }
+}
 
 Set-Location (Join-Path $PSScriptRoot '..')
 
@@ -79,36 +95,78 @@ Write-Host '  key.properties, keystore, google-services.json, env/prod.json all 
 
 # -------------------------------------------------------------------- version
 #
-# versionName comes from pubspec. versionCode does NOT: Play permanently
-# rejects a duplicate, and the +1 in pubspec never changes, so a hand-built
-# bundle would be refused on its second upload.
+# The version lives in pubspec.yaml and this script advances it, so the number
+# on a bundle is never invented at build time and never depends on the clock.
 #
-# The default is minutes since 2024-01-01 - monotonic, needs no state file,
-# unique to the minute, and far below Play's ceiling of 2100000000. The same
-# formula as tool/release.sh and the Release workflow, so the three never
-# produce codes that go backwards relative to each other.
+# The build number runs 1..9 and then rolls into the patch: 1.0.1+9 is
+# followed by 1.0.2+1.
+#
+# Play requires a strictly increasing integer for versionCode and permanently
+# refuses anything it has already seen. Earlier builds went out with codes
+# derived from the clock - the last was 1410854 - so a bundle offering
+# versionCode 1 would be rejected outright. The code is therefore derived from
+# the whole version:
+#
+#   major * 10000000 + minor * 100000 + patch * 1000 + build
+#
+# 1.0.1+1 becomes 10001001, which clears the old codes, rises in step with the
+# version, and stays far below Play's ceiling of 2100000000 until major 99.
 
-$versionLine = Select-String -Path 'pubspec.yaml' -Pattern '^version:' | Select-Object -First 1
-if ($versionLine.Line -notmatch '^version:\s*([^+\s]+)') { Die 'Could not read version from pubspec.yaml.' }
-$name = $Matches[1]
+$pubspecPath = Join-Path (Get-Location) 'pubspec.yaml'
+$pubspec = [IO.File]::ReadAllText($pubspecPath)
 
-if ($BuildNumber -le 0) {
-    $BuildNumber = [int64](([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - 1704067200) / 60)
+if ($pubspec -notmatch '(?m)^version:\s*(\d+)\.(\d+)\.(\d+)\+(\d+)\s*$') {
+    Die 'pubspec version is not major.minor.patch+build.'
 }
-if ($BuildNumber -ge 2100000000) { Die "Build number $BuildNumber is above Play's ceiling of 2100000000." }
+$major = [int]$Matches[1]
+$minor = [int]$Matches[2]
+$patch = [int]$Matches[3]
+$build = [int]$Matches[4]
+$current = "$major.$minor.$patch+$build"
 
-Say "Building $name ($BuildNumber)"
+if ($SetVersion) {
+    if ($SetVersion -notmatch '^(\d+)\.(\d+)\.(\d+)$') {
+        Die "-SetVersion wants major.minor.patch, got '$SetVersion'."
+    }
+    $major = [int]$Matches[1]
+    $minor = [int]$Matches[2]
+    $patch = [int]$Matches[3]
+    $build = 1
+}
+elseif (-not $NoBump) {
+    $build++
+    if ($build -gt 9) {
+        $patch++
+        $build = 1
+    }
+}
+
+$name = "$major.$minor.$patch"
+$newVersion = "$name+$build"
+$code = $major * 10000000 + $minor * 100000 + $patch * 1000 + $build
+
+if ($code -ge 2100000000) { Die "versionCode $code is above Play's ceiling." }
+
+# Written back before the build, so the file and the bundle always agree even
+# if the build then fails.
+if ($newVersion -ne $current) {
+    $updated = [Regex]::Replace(
+        $pubspec, '(?m)^version:.*$', "version: $newVersion")
+    [IO.File]::WriteAllText(
+        $pubspecPath, $updated, (New-Object Text.UTF8Encoding $false))
+    Write-Host "  pubspec $current -> $newVersion"
+}
+
+Say "Building $newVersion (versionCode $code)"
 
 # ---------------------------------------------------------------------- build
 
 if ($Clean) {
     Say 'flutter clean'
-    flutter clean
-    Assert-LastExit 'flutter clean'
+    Invoke-Native 'flutter clean' { flutter clean }
 }
 
-flutter pub get
-Assert-LastExit 'flutter pub get'
+Invoke-Native 'flutter pub get' { flutter pub get }
 
 $buildArgs = @(
     '--release',
@@ -116,12 +174,11 @@ $buildArgs = @(
     '--target', 'lib/main_prod.dart',
     '--dart-define-from-file=env/prod.json',
     "--build-name=$name",
-    "--build-number=$BuildNumber"
+    "--build-number=$code"
 )
 
 Say 'Building the app bundle'
-flutter build appbundle @buildArgs
-Assert-LastExit 'flutter build appbundle'
+Invoke-Native 'flutter build appbundle' { flutter build appbundle @buildArgs }
 
 $aab = 'build/app/outputs/bundle/prodRelease/app-prod-release.aab'
 if (-not (Test-Path $aab)) { Die "The build reported success but $aab does not exist." }
@@ -132,7 +189,10 @@ if (-not (Test-Path $aab)) { Die "The build reported success but $aab does not e
 # upload and the wait. Cheaper to catch here.
 
 Say 'Verifying the signature'
+$previousPreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 $certText = keytool -printcert -jarfile $aab | Out-String
+$ErrorActionPreference = $previousPreference
 $owner = ($certText -split "`r?`n" | Select-String -Pattern 'Owner:' | Select-Object -First 1)
 if (-not $owner) { Die 'No certificate found in the bundle - it is unsigned.' }
 Write-Host "  $($owner.ToString().Trim())"
@@ -141,8 +201,7 @@ if ($owner.ToString() -match 'Android Debug') { Die 'Signed with DEBUG keys. Pla
 $apkPath = $null
 if ($Apk) {
     Say 'Building an installable APK'
-    flutter build apk @buildArgs
-    Assert-LastExit 'flutter build apk'
+    Invoke-Native 'flutter build apk' { flutter build apk @buildArgs }
     $apkPath = 'build/app/outputs/flutter-apk/app-prod-release.apk'
     # Signed with the UPLOAD key, not Play's App Signing key. Anything that
     # validates the signing certificate - Google sign-in above all - behaves
@@ -151,8 +210,8 @@ if ($Apk) {
 }
 
 Say 'Done'
-Write-Host ("  versionName  {0}" -f $name)
-Write-Host ("  versionCode  {0}" -f $BuildNumber)
+Write-Host ("  version      {0}" -f $newVersion)
+Write-Host ("  versionCode  {0}" -f $code)
 Write-Host ("  bundle       {0} ({1:N1} MB)" -f $aab, ((Get-Item $aab).Length / 1MB))
 if ($apkPath) { Write-Host ("  apk          {0}" -f $apkPath) }
 Write-Host "`nUpload the .aab at Play Console > Test and release > Internal testing."

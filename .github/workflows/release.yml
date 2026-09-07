@@ -25,13 +25,10 @@ env:
   FLUTTER_VERSION: "3.41.7"
   JAVA_VERSION: "21"
 
-  # versionCode is minutes since 2024-01-01: monotonic, stateless, unique to
-  # the minute, and far below Play's ceiling of 2100000000 for centuries.
-  #
-  # Deliberately the same formula as tool/release.sh. The run number was fine
-  # while CI was the only thing producing bundles, but a locally built one
-  # would then always outrank it, and every later CI release would be refused
-  # for going backwards. Both paths now sit on the same clock.
+  # versionCode is derived from pubspec, not from the clock. The release
+  # scripts advance the version and this reads whatever they wrote, so a
+  # bundle built here and one built on a workstation carry the same number
+  # for the same commit. The formula is repeated in both release scripts.
 
 jobs:
   bundle:
@@ -140,8 +137,26 @@ jobs:
       - name: Resolve version
         id: version
         run: |
-          NAME=$(grep '^version:' pubspec.yaml | sed -E 's/version:[[:space:]]*([^+]+)\+.*/\1/' | tr -d ' ')
-          CODE=$(( ( $(date +%s) - 1704067200 ) / 60 ))
+          CURRENT=$(grep '^version:' pubspec.yaml | tr -d '[:space:]' | cut -d: -f2)
+          case "$CURRENT" in
+            *.*.*+*) ;;
+            *) echo "::error::pubspec version '$CURRENT' is not major.minor.patch+build."; exit 1 ;;
+          esac
+
+          MAJOR=${CURRENT%%.*}
+          REST=${CURRENT#*.}
+          MINOR=${REST%%.*}
+          REST=${REST#*.}
+          PATCH=${REST%%+*}
+          BUILD=${REST#*+}
+
+          NAME="$MAJOR.$MINOR.$PATCH"
+          # Play refuses a versionCode it has already seen, and earlier
+          # builds used clock-derived codes up to 1410854. This formula
+          # clears those and rises with the version. Nothing is bumped
+          # here: CI builds what the commit says, it does not choose the
+          # next version.
+          CODE=$(( MAJOR * 10000000 + MINOR * 100000 + PATCH * 1000 + BUILD ))
           echo "name=$NAME"  >> "$GITHUB_OUTPUT"
           echo "code=$CODE"  >> "$GITHUB_OUTPUT"
           echo "Building $NAME ($CODE)"

@@ -3,13 +3,17 @@
 The answers to enter in **Play Console → App content → Data safety**.
 
 This describes the build as it stands: `firebase_core`, `firebase_auth`,
-`cloud_firestore` and `google_sign_in`, and nothing else that touches the
-network. It is checked in
-so that a change to what the app collects and a change to what we declare land
-in the same commit. **If you add AdMob, Crashlytics or RevenueCat, this file is
-wrong until you update it** — see [When this changes](#when-this-changes).
+`cloud_firestore`, `google_sign_in` and `google_mobile_ads`, and nothing else
+that touches the network. It is checked in so that a change to what the app
+collects and a change to what we declare land in the same commit. **If you add
+Crashlytics or RevenueCat, this file is wrong until you update it** — see
+[When this changes](#when-this-changes).
 
-Last verified against the release manifest on 2026-09-06, after KAN-48:
+Play Console can import these answers: **App content → Data safety → export the
+CSV, fill the `Response value` column, re-import.** `tool/` has no generator for
+it; the mapping is small enough to redo from the tables below.
+
+Last verified against the release manifest on 2026-09-07, after KAN-34:
 
 ```
 uses-permission android.permission.INTERNET
@@ -103,6 +107,31 @@ Date of birth, time of birth and place of birth. Play has no dedicated type for
 these; "Other info" is the category its own help text points at for date of
 birth.
 
+### Device or other IDs
+
+| Field | Answer |
+| --- | --- |
+| Collected | **Yes** |
+| Shared | **Yes** |
+| Processed ephemerally | **No** |
+| Required or optional | **Required** |
+| Collection purpose | **Advertising or marketing**, **Fraud prevention, security and compliance** |
+| Sharing purpose | **Advertising or marketing**, **Fraud prevention, security and compliance** |
+
+The Advertising ID, read by the Google Mobile Ads SDK (KAN-34). This is the one
+entry that is genuinely **shared**: Google uses it for its own ad serving, which
+is not the service-provider relationship Firebase has.
+
+Required rather than optional, because a user cannot currently switch ads off.
+That changes when Remove Ads ships (KAN-35) and should be revisited then.
+
+> **Check Google's own list before submitting.** Google publishes the data
+> safety answers expected of AdMob publishers, and it has changed more than
+> once. Approximate location derived from IP, and app-interaction data, may
+> belong here too — this file declares only the Advertising ID, which is the
+> part that is certain. Confirm the rest against Google's current guidance
+> rather than against this file.
+
 ---
 
 ## 3. What to answer No to, and why
@@ -114,10 +143,6 @@ queries it.
   location and holds no location permission. Birth place is a city the user
   types on a form, and is declared above under Other info. Answering Yes here
   would put a Location badge on the listing for something the app cannot do.
-- **Device or other IDs** — No. Nothing reads the Advertising ID. Removing the
-  hand-added `firebase-analytics` dependency also removed
-  `ACCESS_ADSERVICES_AD_ID` and `ACCESS_ADSERVICES_ATTRIBUTION` from the
-  release manifest, so there is no ad-ID access left to declare.
 - **App activity / App info and performance** — No. No Analytics and no
   Crashlytics are wired up. Nothing reports screens viewed, crashes or
   diagnostics.
@@ -128,9 +153,10 @@ queries it.
 
 ### On "Shared"
 
-Every entry above is **not shared**. Play's definition excludes transfer to a
-service provider processing data on your behalf, which is what Firebase is
-here. Nothing is transferred to a third party for their own use.
+Every entry above except the Advertising ID is **not shared**. Play's definition
+excludes transfer to a service provider processing data on your behalf, which is
+what Firebase is here. The Advertising ID is different: Google receives it for
+its own ad serving, so it is declared as shared.
 
 ---
 
@@ -138,7 +164,8 @@ here. Nothing is transferred to a third party for their own use.
 
 | If you add | What changes |
 | --- | --- |
-| **AdMob** | Device or other IDs → Yes (Advertising ID), Shared → Yes, purpose Advertising. Location may become approximate-from-IP. This is the largest change and needs a consent flow for the EEA and UK. |
+| **~~AdMob (KAN-34)~~** | Done — Device or other IDs is declared above, shared, for advertising. UMP consent ships with it. |
+| **Remove Ads (KAN-35)** | Device or other IDs becomes **optional** rather than required, since a purchaser can switch ads off. Purchase history appears under Financial info. |
 | **Crashlytics** | App info and performance → Crash logs and Diagnostics → Yes, purpose Analytics. |
 | **RevenueCat** | Purchase history under Financial info, and a purchase identifier under User IDs. |
 | **~~Google / email sign-in (KAN-48)~~** | Done — Email address is declared above. |

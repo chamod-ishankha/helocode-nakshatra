@@ -52,30 +52,31 @@ final horoscopeFragmentsProvider = FutureProvider<List<Fragment>>((ref) async {
   }
 });
 
-/// Where each graha sits on the selected day.
+/// Where each graha sits on [date].
 ///
 /// Computed at local noon rather than at the moment the app is opened, so the
 /// reading does not change during the day. The Moon moves about half a degree
 /// an hour, which is enough to cross a sign boundary mid-morning and silently
 /// rewrite someone's horoscope while they are reading it.
-final transitingPositionsProvider = Provider<Map<Graha, Rasi>?>((ref) {
-  final profile = ref.watch(profileProvider);
-  if (profile == null) return null;
+final transitingPositionsOnProvider =
+    Provider.family<Map<Graha, Rasi>?, DateTime>((ref, date) {
+      final profile = ref.watch(profileProvider);
+      if (profile == null) return null;
 
-  final date = ref.watch(selectedDateProvider);
-  final result = Ephemeris.computeChart(
-    localWallClock: DateTime(date.year, date.month, date.day, 12),
-    zoneName: profile.place.timezone,
-    latitude: profile.place.latitude,
-    longitude: profile.place.longitude,
-  );
+      final result = Ephemeris.computeChart(
+        localWallClock: DateTime(date.year, date.month, date.day, 12),
+        zoneName: profile.place.timezone,
+        latitude: profile.place.latitude,
+        longitude: profile.place.longitude,
+      );
 
-  final chart = result.valueOrNull;
-  if (chart == null) return null;
-  return {
-    for (final entry in chart.positions.entries) entry.key: entry.value.rasi,
-  };
-});
+      final chart = result.valueOrNull;
+      if (chart == null) return null;
+      return {
+        for (final entry in chart.positions.entries)
+          entry.key: entry.value.rasi,
+      };
+    });
 
 /// Which sign a reading is counted from.
 ///
@@ -127,11 +128,13 @@ final horoscopeSignProvider = Provider.family<Rasi?, HoroscopeAxis>(
   },
 );
 
-/// Today's signals counted from [axis].
-final horoscopeSignalsProvider =
-    Provider.family<HoroscopeSignals?, HoroscopeAxis>((ref, axis) {
+/// Signals for [axis] on a given date.
+final horoscopeSignalsOnProvider =
+    Provider.family<HoroscopeSignals?, (HoroscopeAxis, DateTime)>((ref, key) {
+      final (axis, date) = key;
+
       final rasi = ref.watch(horoscopeSignProvider(axis));
-      final transiting = ref.watch(transitingPositionsProvider);
+      final transiting = ref.watch(transitingPositionsOnProvider(date));
       if (rasi == null || transiting == null) return null;
 
       final chart = ref.watch(chartProvider)?.valueOrNull;
@@ -140,8 +143,6 @@ final horoscopeSignalsProvider =
           : <Graha, Rasi>{
               for (final e in chart.positions.entries) e.key: e.value.rasi,
             };
-
-      final date = ref.watch(selectedDateProvider);
 
       DashaSnapshot? dasha;
       if (chart != null) {
@@ -157,16 +158,42 @@ final horoscopeSignalsProvider =
       );
     });
 
+/// Today's signals counted from [axis].
+final horoscopeSignalsProvider =
+    Provider.family<HoroscopeSignals?, HoroscopeAxis>(
+      (ref, axis) => ref.watch(
+        horoscopeSignalsOnProvider((axis, ref.watch(selectedDateProvider))),
+      ),
+    );
+
 /// The finished reading for [axis], or null before onboarding.
 final horoscopeProvider = Provider.family<Horoscope?, HoroscopeAxis>((
   ref,
   axis,
 ) {
-  final signals = ref.watch(horoscopeSignalsProvider(axis));
+  final date = ref.watch(selectedDateProvider);
+  final signals = ref.watch(horoscopeSignalsOnProvider((axis, date)));
   if (signals == null) return null;
 
   final fragments = ref.watch(horoscopeFragmentsProvider).value;
   if (fragments == null || fragments.isEmpty) return null;
 
-  return HoroscopeEngine.build(signals: signals, fragments: fragments);
+  // Yesterday's reading is built first so today's can exclude its lines.
+  // Rotation alone cannot guarantee two consecutive days differ, and the same
+  // sentence two mornings running is the repetition a reader notices first.
+  final yesterday = ref.watch(
+    horoscopeSignalsOnProvider((axis, date.subtract(const Duration(days: 1)))),
+  );
+  final avoid = yesterday == null
+      ? const <String>{}
+      : HoroscopeEngine.build(
+          signals: yesterday,
+          fragments: fragments,
+        ).fragmentIds.toSet();
+
+  return HoroscopeEngine.build(
+    signals: signals,
+    fragments: fragments,
+    avoid: avoid,
+  );
 });

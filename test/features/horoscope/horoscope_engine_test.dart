@@ -14,6 +14,7 @@ import 'package:nakshatra/features/horoscope/domain/horoscope_signals.dart';
 /// people open daily and one they stop trusting in a fortnight.
 void main() {
   _axisTests();
+  _strideTests();
 
   /// A sky. Defaults put nothing remarkable anywhere.
   Map<Graha, Rasi> sky({
@@ -216,12 +217,16 @@ void main() {
       expect(during.tags, contains('saturn.sadeSati'));
       expect(outside.tags, isNot(contains('saturn.sadeSati')));
 
+      // During sade sati either line may be chosen - the engine rotates
+      // rather than always preferring the more specific one, because
+      // preferring it would show the same sade sati sentence every day for
+      // seven and a half years.
       expect(
         HoroscopeEngine.build(
           signals: during,
           fragments: [sadeSatiOnly, always],
-        ).fragmentIds,
-        ['x'],
+        ).fragmentIds.single,
+        anyOf('x', 'y'),
       );
       expect(
         HoroscopeEngine.build(
@@ -482,6 +487,72 @@ void _axisTests() {
           reason: r.en,
         );
       }
+    });
+  });
+}
+
+/// Multi-sentence sections must not recycle yesterday's lines.
+void _strideTests() {
+  List<Fragment> pool(int n) => [
+    for (var i = 0; i < n; i++)
+      Fragment(
+        id: 'general-$i',
+        category: HoroscopeCategory.general,
+        text: 'Sentence $i.',
+      ),
+  ];
+
+  Horoscope on(int day, List<Fragment> fragments) => HoroscopeEngine.build(
+    signals: HoroscopeSignals.from(
+      rasi: Rasi.meena,
+      date: DateTime(2026, 3, day),
+      transiting: {
+        Graha.sun: Rasi.mesha,
+        Graha.moon: Rasi.mesha,
+        Graha.mars: Rasi.vrishabha,
+        Graha.mercury: Rasi.mesha,
+        Graha.jupiter: Rasi.mithuna,
+        Graha.venus: Rasi.meena,
+        Graha.saturn: Rasi.simha,
+        Graha.rahu: Rasi.tula,
+        Graha.ketu: Rasi.mesha,
+      },
+    ),
+    fragments: fragments,
+  );
+
+  group('the general section across consecutive days', () {
+    test('shares no sentence with yesterday', () {
+      // Picking adjacent slots would carry two of three sentences over to the
+      // next day, so a reader sees the same lines three days running while
+      // the selection still looks like it is advancing.
+      final fragments = pool(30);
+      for (var d = 1; d < 28; d++) {
+        final today = on(d, fragments).fragmentIds.toSet();
+        final tomorrow = on(d + 1, fragments).fragmentIds.toSet();
+        expect(
+          today.intersection(tomorrow),
+          isEmpty,
+          reason: 'days $d and ${d + 1} share a sentence',
+        );
+      }
+    });
+
+    test('never prints the same sentence twice in one paragraph', () {
+      // Including when the pool is barely larger than the number drawn.
+      for (final size in [2, 3, 4, 5, 12, 30]) {
+        final ids = on(9, pool(size)).fragmentIds;
+        expect(ids.toSet().length, ids.length, reason: 'pool of $size');
+      }
+    });
+
+    test('still spends the whole pool over a month', () {
+      final fragments = pool(30);
+      final seen = <String>{};
+      for (var d = 1; d <= 30; d++) {
+        seen.addAll(on(d, fragments).fragmentIds);
+      }
+      expect(seen.length, 30);
     });
   });
 }

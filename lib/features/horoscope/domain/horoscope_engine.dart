@@ -88,9 +88,17 @@ abstract final class HoroscopeEngine {
   ///
   /// Fragments for other languages are simply a different list with the same
   /// ids, so the choice of language cannot change which prediction is made.
+  ///
+  /// [avoid] is yesterday's line ids. Rotation alone cannot guarantee that two
+  /// consecutive days differ: when the slot a day lands on is not eligible the
+  /// search walks forward, and two different starting points can walk into the
+  /// same line. Excluding yesterday explicitly is the only exact fix, and
+  /// repeating a line the very next day is the repetition a reader notices
+  /// first.
   static Horoscope build({
     required HoroscopeSignals signals,
     required List<Fragment> fragments,
+    Set<String> avoid = const {},
   }) {
     final sections = <HoroscopeCategory, String>{};
     final used = <String>[];
@@ -105,6 +113,7 @@ abstract final class HoroscopeEngine {
         fragments: fragments,
         category: category,
         count: wanted,
+        avoid: avoid,
       );
       if (picked.isEmpty) continue;
 
@@ -124,45 +133,68 @@ abstract final class HoroscopeEngine {
   }
 
   /// Chooses [count] distinct fragments for one category.
+  ///
+  /// ## How the day picks a line
+  ///
+  /// Today's eligible lines are put in a fixed order and indexed by the day
+  /// number, so each day steps one place along. Two earlier attempts are worth
+  /// recording because both look right:
+  ///
+  /// Ordering by id groups every conditional line together — `car-sade` sorts
+  /// after `car-01`..`car-30` — so the ordering is mostly ordinary copy
+  /// followed by a block that is ineligible on most days. Ordering by a hash
+  /// of the id scatters them, which is what this does.
+  ///
+  /// Rotating over the *whole* category and stepping past ineligible lines is
+  /// worse still: one ineligible slot at position s sends today to s+1, and
+  /// tomorrow starts at s+1 and lands on the same line. Indexing into the
+  /// eligible lines instead means consecutive days move one eligible line
+  /// apart by construction.
   static List<Fragment> _pick({
     required HoroscopeSignals signals,
     required List<Fragment> fragments,
     required HoroscopeCategory category,
     required int count,
+    Set<String> avoid = const {},
   }) {
-    final eligible = [
-      for (final f in fragments)
-        if (f.category == category && f.matches(signals.tags)) f,
-    ];
+    final eligible =
+        [
+          for (final f in fragments)
+            if (f.category == category && f.matches(signals.tags)) f,
+        ]..sort((a, b) {
+          final byHash = _hash(a.id).compareTo(_hash(b.id));
+          return byHash != 0 ? byHash : a.id.compareTo(b.id);
+        });
     if (eligible.isEmpty) return const [];
 
-    // Specific copy first, then by id so the order never depends on the order
-    // the file happened to be written in. Without the id tiebreak, reordering
-    // the JSON would silently change everybody's horoscope.
-    eligible.sort((a, b) {
-      final bySpecificity = b.specificity.compareTo(a.specificity);
-      return bySpecificity != 0 ? bySpecificity : a.id.compareTo(b.id);
-    });
-
-    // The most specific tier is what was written for a day like today. Only
-    // fall back to generic copy when there is not enough of it.
-    final top = eligible.first.specificity;
-    final preferred = [
+    // Yesterday's lines are dropped where that still leaves enough to fill the
+    // section. Never at the cost of leaving a section short.
+    final fresh = [
       for (final f in eligible)
-        if (f.specificity == top) f,
+        if (!avoid.contains(f.id)) f,
     ];
-    final pool = preferred.length >= count ? preferred : eligible;
+    final pool = fresh.length >= count ? fresh : eligible;
 
     final seed = _hash(
       '${signals.rasi.name}|${category.name}|${signals.date.year}',
     );
     final day = _dayOfYear(signals.date);
 
+    // Sentences within one day come from far apart in the pool. Adjacent
+    // slots would make tomorrow's three overlap today's by two.
+    final stride = count <= 1
+        ? 1
+        : (pool.length ~/ count).clamp(1, pool.length);
+
     final out = <Fragment>[];
-    for (var i = 0; i < count && i < pool.length; i++) {
-      // Step one place per day, so consecutive days walk the pool rather than
-      // landing anywhere. i offsets the sentences within one day.
-      out.add(pool[(seed + day + i) % pool.length]);
+    final taken = <int>{};
+    for (var i = 0; i < count && taken.length < pool.length; i++) {
+      var index = (seed + day + i * stride) % pool.length;
+      while (taken.contains(index)) {
+        index = (index + 1) % pool.length;
+      }
+      taken.add(index);
+      out.add(pool[index]);
     }
     return out;
   }

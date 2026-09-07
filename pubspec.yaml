@@ -90,7 +90,7 @@ flutter:
 
     # Authored horoscope copy (KAN-31). Data rather than code so KAN-32 can
     # add hundreds of lines in three languages without touching Dart.
-    - assets/content/horoscope_en.json
+    - assets/content/
 
   # Bundled, not fetched at runtime: the app must work offline, and Roboto
   # renders Sinhala as empty boxes on many Sri Lankan devices. Variable

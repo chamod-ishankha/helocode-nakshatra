@@ -16,17 +16,33 @@ it; the mapping is small enough to redo from the tables below.
 Last verified against the release manifest on 2026-09-07, after KAN-34:
 
 ```
-uses-permission android.permission.INTERNET
-uses-permission android.permission.ACCESS_NETWORK_STATE
-uses-permission android.permission.USE_BIOMETRIC
-uses-permission android.permission.USE_FINGERPRINT
+android.permission.INTERNET                     us
+android.permission.ACCESS_NETWORK_STATE         Firebase, ads SDK
+android.permission.USE_BIOMETRIC                google_sign_in
+android.permission.USE_FINGERPRINT              google_sign_in
+com.google.android.gms.permission.AD_ID         Google Mobile Ads SDK
+android.permission.ACCESS_ADSERVICES_AD_ID      Google Mobile Ads SDK
+android.permission.ACCESS_ADSERVICES_ATTRIBUTION Google Mobile Ads SDK
+android.permission.ACCESS_ADSERVICES_TOPICS     Google Mobile Ads SDK
+android.permission.FOREGROUND_SERVICE           Play services
+android.permission.WAKE_LOCK                    Play services
+com.google.android.providers.gsf.permission.READ_GSERVICES  Play services
 ```
+
+Only `INTERNET` is ours. Everything else is merged in from an SDK's own library
+manifest, which is why the list grows without anything in `AndroidManifest.xml`
+changing — and why it has to be re-read rather than assumed.
 
 The two biometric permissions arrive with `google_sign_in`, which depends on
 Credential Manager — Android offers biometric unlock when picking a saved
 credential. **The app never requests, receives or stores biometric data**, and
-there is nothing to declare for them on the form. They are listed here because
-they are visible on the Play listing and will otherwise look unexplained.
+there is nothing to declare for them on the form.
+
+`AD_ID` and the three `ACCESS_ADSERVICES_*` permissions arrive with the ads SDK
+(KAN-34). They are why the **advertising ID declaration** under App content must
+be answered **Yes**: the app targets API 36, and from API 33 a target without
+that permission gets a zeroed identifier. Play blocks the release if the
+declaration and the manifest disagree.
 
 ---
 

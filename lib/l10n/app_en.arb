@@ -100,6 +100,17 @@
   "chartLagna": "Lagna (ascendant)",
   "chartMoonSign": "Moon sign (rāśi)",
   "chartBirthNakshatra": "Birth nakṣatra",
+  "chartNakshatraPada": "{nakshatra} — pada {pada}",
+  "@chartNakshatraPada": {
+    "placeholders": {
+      "nakshatra": {
+        "type": "String"
+      },
+      "pada": {
+        "type": "int"
+      }
+    }
+  },
   "chartAyanamsa": "Ayanāṃśa (Lahiri): {degrees}°",
   "@chartAyanamsa": {
     "placeholders": {

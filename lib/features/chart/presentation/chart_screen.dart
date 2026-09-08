@@ -226,7 +226,10 @@ class _SummaryCard extends StatelessWidget {
             _row(
               context,
               L10n.of(context).chartBirthNakshatra,
-              '${chart.birthNakshatra.en} — pada ${moon.pada}',
+              L10n.of(context).chartNakshatraPada(
+                chart.birthNakshatra.label(AppLocale.of(context)),
+                moon.pada,
+              ),
             ),
           ],
         ),
@@ -294,7 +297,7 @@ class _PositionsTable extends StatelessWidget {
                     DataCell(GrahaLabel(position: p, abbreviated: false)),
                     DataCell(Text(p.rasi.label(AppLocale.of(context)))),
                     DataCell(Text('${p.degreeInRasi.toStringAsFixed(2)}°')),
-                    DataCell(Text(p.nakshatra.en)),
+                    DataCell(Text(p.nakshatra.label(AppLocale.of(context)))),
                     DataCell(Text('${p.pada}')),
                     DataCell(Text('${p.house}')),
                   ],

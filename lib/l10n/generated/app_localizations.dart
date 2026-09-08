@@ -435,6 +435,12 @@ abstract class L10n {
   /// **'Birth nakṣatra'**
   String get chartBirthNakshatra;
 
+  /// No description provided for @chartNakshatraPada.
+  ///
+  /// In en, this message translates to:
+  /// **'{nakshatra} — pada {pada}'**
+  String chartNakshatraPada(String nakshatra, int pada);
+
   /// No description provided for @chartAyanamsa.
   ///
   /// In en, this message translates to:

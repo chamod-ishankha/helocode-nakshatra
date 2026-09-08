@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/astro/dignity.dart';
 import '../../../core/astro/models.dart';
+import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -92,7 +93,10 @@ class _GrahaDetail extends ConsumerWidget {
               l.chartColumnDegree,
               '${position.degreeInRasi.toStringAsFixed(2)}°',
             ),
-            _Row(l.chartColumnNakshatra, position.nakshatra.en),
+            _Row(
+              l.chartColumnNakshatra,
+              position.nakshatra.label(AppLocale.of(context)),
+            ),
             _Row(l.chartColumnPada, '${position.pada}'),
             _Row(l.chartColumnHouse, l.detailHouse(position.house)),
 
@@ -170,7 +174,7 @@ class _HouseDetail extends ConsumerWidget {
                   title: Text(g.graha.label(locale)),
                   subtitle: Text(
                     '${g.degreeInRasi.toStringAsFixed(2)}° · '
-                    '${g.nakshatra.en} ${g.pada}',
+                    '${g.nakshatra.label(AppLocale.of(context))} ${g.pada}',
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {

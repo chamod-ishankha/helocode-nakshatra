@@ -8,34 +8,69 @@ import 'models.dart';
 /// varies between roughly 19 and 26 hours. It is not a clock day, and a
 /// calendar date can contain two of them or none at all.
 enum Tithi {
-  pratipada('Pratipada'),
-  dwitiya('Dwitiya'),
-  tritiya('Tritiya'),
-  chaturthi('Chaturthi'),
-  panchami('Panchami'),
-  shashthi('Shashthi'),
-  saptami('Saptami'),
-  ashtami('Ashtami'),
-  navami('Navami'),
-  dashami('Dashami'),
-  ekadashi('Ekadashi'),
-  dwadashi('Dwadashi'),
-  trayodashi('Trayodashi'),
-  chaturdashi('Chaturdashi'),
-  purnimaAmavasya('Purnima/Amavasya');
+  pratipada('Pratipada', 'පෑලවිය', 'பிரதமை'),
+  dwitiya('Dwitiya', 'දියවක', 'துவிதியை'),
+  tritiya('Tritiya', 'තියවක', 'திரிதியை'),
+  chaturthi('Chaturthi', 'සිව්වක', 'சதுர்த்தி'),
+  panchami('Panchami', 'පස්වක', 'பஞ்சமி'),
+  shashthi('Shashthi', 'සයවක', 'சஷ்டி'),
+  saptami('Saptami', 'සත්වක', 'சப்தமி'),
+  ashtami('Ashtami', 'අටවක', 'அஷ்டமி'),
+  navami('Navami', 'නවවක', 'நவமி'),
+  dashami('Dashami', 'දසවක', 'தசமி'),
+  ekadashi('Ekadashi', 'එකොළොස්වක', 'ஏகாதசி'),
+  dwadashi('Dwadashi', 'දොළොස්වක', 'துவாதசி'),
+  trayodashi('Trayodashi', 'තෙළෙස්වක', 'திரயோதசி'),
+  chaturdashi('Chaturdashi', 'තුදුස්වක', 'சதுர்த்தசி'),
+  purnimaAmavasya('Purnima/Amavasya', 'පසළොස්වක/අමාවක', 'பௌர்ணமி/அமாவாசை');
 
-  const Tithi(this.en);
+  const Tithi(this.en, this.si, this.ta);
+
   final String en;
+  final String si;
+  final String ta;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 }
 
 /// Waxing or waning half of the lunar month.
 enum Paksha {
-  shukla('Shukla', 'waxing'),
-  krishna('Krishna', 'waning');
+  shukla('Shukla', 'පුර', 'வளர்பிறை', 'waxing', 'වැඩෙන', 'வளர்'),
+  krishna('Krishna', 'අව', 'தேய்பிறை', 'waning', 'අඩුවෙන', 'தேய்');
 
-  const Paksha(this.en, this.description);
+  const Paksha(
+    this.en,
+    this.si,
+    this.ta,
+    this.description,
+    this.descriptionSi,
+    this.descriptionTa,
+  );
+
   final String en;
+  final String si;
+  final String ta;
+
   final String description;
+  final String descriptionSi;
+  final String descriptionTa;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
+
+  /// "waxing" or "waning", for the parenthetical beside a tithi.
+  String describe(AppLocale locale) => switch (locale) {
+    AppLocale.si => descriptionSi,
+    AppLocale.ta => descriptionTa,
+    AppLocale.en => description,
+  };
 }
 
 /// Weekday, reckoned sunrise to sunrise rather than midnight to midnight.
@@ -52,61 +87,86 @@ enum Vara {
   shani('Saturday', 'සෙනසුරාදා', 'சனி');
 
   const Vara(this.en, this.si, this.ta);
+
   final String en;
   final String si;
   final String ta;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 }
 
 /// The 27 yoga, from the combined longitude of Sun and Moon.
 enum Yoga {
-  vishkambha('Vishkambha'),
-  priti('Priti'),
-  ayushman('Ayushman'),
-  saubhagya('Saubhagya'),
-  shobhana('Shobhana'),
-  atiganda('Atiganda'),
-  sukarma('Sukarma'),
-  dhriti('Dhriti'),
-  shula('Shula'),
-  ganda('Ganda'),
-  vriddhi('Vriddhi'),
-  dhruva('Dhruva'),
-  vyaghata('Vyaghata'),
-  harshana('Harshana'),
-  vajra('Vajra'),
-  siddhi('Siddhi'),
-  vyatipata('Vyatipata'),
-  variyan('Variyan'),
-  parigha('Parigha'),
-  shiva('Shiva'),
-  siddha('Siddha'),
-  sadhya('Sadhya'),
-  shubha('Shubha'),
-  shukla('Shukla'),
-  brahma('Brahma'),
-  indra('Indra'),
-  vaidhriti('Vaidhriti');
+  vishkambha('Vishkambha', 'විෂ්කම්භ', 'விஷ்கம்பம்'),
+  priti('Priti', 'ප්‍රීති', 'பிரீதி'),
+  ayushman('Ayushman', 'ආයුෂ්මාන්', 'ஆயுஷ்மான்'),
+  saubhagya('Saubhagya', 'සෞභාග්‍ය', 'சௌபாக்கியம்'),
+  shobhana('Shobhana', 'ශෝභන', 'சோபனம்'),
+  atiganda('Atiganda', 'අතිගණ්ඩ', 'அதிகண்டம்'),
+  sukarma('Sukarma', 'සුකර්ම', 'சுகர்மம்'),
+  dhriti('Dhriti', 'ධෘති', 'திருதி'),
+  shula('Shula', 'ශූල', 'சூலம்'),
+  ganda('Ganda', 'ගණ්ඩ', 'கண்டம்'),
+  vriddhi('Vriddhi', 'වෘද්ධි', 'விருத்தி'),
+  dhruva('Dhruva', 'ධ්‍රැව', 'துருவம்'),
+  vyaghata('Vyaghata', 'ව්‍යාඝාත', 'வியாகாதம்'),
+  harshana('Harshana', 'හර්ෂණ', 'அர்ஷணம்'),
+  vajra('Vajra', 'වජ්‍ර', 'வஜ்ரம்'),
+  siddhi('Siddhi', 'සිද්ධි', 'சித்தி'),
+  vyatipata('Vyatipata', 'ව්‍යතීපාත', 'வியதீபாதம்'),
+  variyan('Variyan', 'වරීයාන්', 'வரியான்'),
+  parigha('Parigha', 'පරිඝ', 'பரிகம்'),
+  shiva('Shiva', 'ශිව', 'சிவம்'),
+  siddha('Siddha', 'සිද්ධ', 'சித்தம்'),
+  sadhya('Sadhya', 'සාධ්‍ය', 'சாத்தியம்'),
+  shubha('Shubha', 'ශුභ', 'சுபம்'),
+  shukla('Shukla', 'ශුක්ල', 'சுக்லம்'),
+  brahma('Brahma', 'බ්‍රහ්ම', 'பிரம்மம்'),
+  indra('Indra', 'ඉන්ද්‍ර', 'ஐந்திரம்'),
+  vaidhriti('Vaidhriti', 'වෛධෘති', 'வைதிருதி');
 
-  const Yoga(this.en);
+  const Yoga(this.en, this.si, this.ta);
+
   final String en;
+  final String si;
+  final String ta;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 }
 
 /// Karana — half a tithi. Sixty per lunar month, drawn from eleven names.
 enum Karana {
-  bava('Bava'),
-  balava('Balava'),
-  kaulava('Kaulava'),
-  taitila('Taitila'),
-  gara('Gara'),
-  vanija('Vanija'),
-  vishti('Vishti'),
-  shakuni('Shakuni'),
-  chatushpada('Chatushpada'),
-  naga('Naga'),
-  kimstughna('Kimstughna');
+  bava('Bava', 'බව', 'பவம்'),
+  balava('Balava', 'බාලව', 'பாலவம்'),
+  kaulava('Kaulava', 'කෞලව', 'கௌலவம்'),
+  taitila('Taitila', 'තෛතිල', 'தைதுலம்'),
+  gara('Gara', 'ගර', 'கரசை'),
+  vanija('Vanija', 'වණිජ', 'வணிசை'),
+  vishti('Vishti', 'විෂ්ටි', 'விஷ்டி'),
+  shakuni('Shakuni', 'ශකුනි', 'சகுனி'),
+  chatushpada('Chatushpada', 'චතුෂ්පාද', 'சதுஷ்பாதம்'),
+  naga('Naga', 'නාග', 'நாகவம்'),
+  kimstughna('Kimstughna', 'කිංස්තුඝ්න', 'கிம்ஸ்துக்னம்');
 
-  const Karana(this.en);
+  const Karana(this.en, this.si, this.ta);
+
   final String en;
+  final String si;
+  final String ta;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 
   /// Vishti (also called Bhadra) is treated as inauspicious and is avoided for
   /// starting anything of consequence.

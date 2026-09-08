@@ -194,6 +194,11 @@ class L10nEn extends L10n {
   String get chartBirthNakshatra => 'Birth nakṣatra';
 
   @override
+  String chartNakshatraPada(String nakshatra, int pada) {
+    return '$nakshatra — pada $pada';
+  }
+
+  @override
   String chartAyanamsa(String degrees) {
     return 'Ayanāṃśa (Lahiri): $degrees°';
   }

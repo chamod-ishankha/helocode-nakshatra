@@ -44,6 +44,7 @@ void main() {
 
   setUpAll(loadAppFonts);
 
+  final latin = RegExp(r'[A-Za-z]');
   final sinhala = RegExp(r'[඀-෿]');
   final tamil = RegExp(r'[஀-௿]');
 
@@ -126,6 +127,14 @@ void main() {
     // too: at 720 the lower cards are never laid out at all, and the
     // inauspicious-periods card sat below the fold overflowing by 18px while
     // this test passed.
+    // The app drives MaterialApp.locale from this provider, so a test that
+    // sets one and not the other is testing a state the app can never be in.
+    // It showed: the panchanga strip read the locale from the provider and
+    // printed an English weekday under a Tamil label — which looked like a
+    // bug in the screen and was a bug in this fixture.
+    await prefs.setString('app_locale_v1', locale.code);
+    addTearDown(() => prefs.remove('app_locale_v1'));
+
     tester.view.physicalSize = const Size(360, 2600);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
@@ -255,6 +264,42 @@ void main() {
           reason: 'the running-now banner is still an English sentence',
         );
       }
+    });
+  }
+
+  for (final locale in [AppLocale.si, AppLocale.ta]) {
+    testWidgets('the home screen draws no English at all in '
+        '${locale.englishName}', (tester) async {
+      // This assertion could not be made until KAN-52. Tithi, nakṣatra, yoga
+      // and karaṇa were English on this screen, so a blanket check would have
+      // failed on them and had to be weakened to a list of strings someone
+      // remembered — which only ever proves the strings on the list.
+      //
+      // Now the whole screen is translatable, so it can be checked as a whole:
+      // no Latin letter anywhere. Digits are fine — times and counts are
+      // digits in all three languages.
+      final drawn = await pumpHome(tester, locale);
+
+      // Two things are allowed to be Latin, and they are named rather than
+      // filtered by a loose rule, so anything new that turns up in English
+      // fails here instead of slipping under the exception.
+      final allowed = <String>{
+        // The app's own name. A brand is not translated.
+        'Nakshatra',
+        // The poya's significance note — twelve sentences of Buddhist history
+        // that want a native writer, not a translation pass. KAN-62.
+        poya.month.significance,
+      };
+
+      final english = drawn
+          .where(latin.hasMatch)
+          .where((s) => !allowed.contains(s))
+          .toList();
+      expect(
+        english,
+        isEmpty,
+        reason: 'still English in ${locale.englishName}: $english',
+      );
     });
   }
 

@@ -29,7 +29,6 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
     final panchanga = ref.watch(panchangaProvider);
-    final locale = ref.watch(localeProvider);
 
     // Today and every day behind it are free; days ahead are the reward.
     // Looking back has little value to sell, and someone checking what the
@@ -95,7 +94,7 @@ class HomeScreen extends ConsumerWidget {
               const _NowBanner(),
               _RahuKalayaCard(panchanga: panchanga),
               const SizedBox(height: 16),
-              _PanchangaStrip(panchanga: panchanga, locale: locale),
+              _PanchangaStrip(panchanga: panchanga),
               const SizedBox(height: 16),
               _SunMoonCard(panchanga: panchanga),
               const SizedBox(height: 16),
@@ -413,10 +412,9 @@ class _RahuKalayaCard extends ConsumerWidget {
 }
 
 class _PanchangaStrip extends StatelessWidget {
-  const _PanchangaStrip({required this.panchanga, required this.locale});
+  const _PanchangaStrip({required this.panchanga});
 
   final Panchanga panchanga;
-  final AppLocale locale;
 
   @override
   Widget build(BuildContext context) {
@@ -430,33 +428,40 @@ class _PanchangaStrip extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _row(context, L10n.of(context).panchangaVara, switch (locale) {
-              AppLocale.si => panchanga.vara.si,
-              AppLocale.ta => panchanga.vara.ta,
-              AppLocale.en => panchanga.vara.en,
-            }, ''),
+            // AppLocale.of(context) rather than a locale handed down from
+            // the parent. Both say the same thing in the app — MaterialApp's
+            // locale is driven by the same provider — but two sources of
+            // truth is how a screen ends up half-translated, and this one
+            // was already the odd row out.
+            _row(
+              context,
+              L10n.of(context).panchangaVara,
+              panchanga.vara.label(AppLocale.of(context)),
+              '',
+            ),
             _row(
               context,
               L10n.of(context).panchangaTithi,
-              '${panchanga.tithi.value.en} (${panchanga.paksha.description})',
+              '${panchanga.tithi.value.label(AppLocale.of(context))} '
+              '(${panchanga.paksha.describe(AppLocale.of(context))})',
               until(panchanga.tithi.endsAt),
             ),
             _row(
               context,
               L10n.of(context).panchangaNakshatra,
-              panchanga.nakshatra.value.en,
+              panchanga.nakshatra.value.label(AppLocale.of(context)),
               until(panchanga.nakshatra.endsAt),
             ),
             _row(
               context,
               L10n.of(context).panchangaYoga,
-              panchanga.yoga.value.en,
+              panchanga.yoga.value.label(AppLocale.of(context)),
               until(panchanga.yoga.endsAt),
             ),
             _row(
               context,
               L10n.of(context).panchangaKarana,
-              panchanga.karana.value.en +
+              panchanga.karana.value.label(AppLocale.of(context)) +
                   (panchanga.karana.value.isInauspicious ? '  ⚠' : ''),
               until(panchanga.karana.endsAt),
             ),
@@ -714,11 +719,10 @@ class _PoyaTodayBanner extends ConsumerWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          // The English name underneath is a cross-reference, the way the
-          // place list keeps one — dropped when it would just repeat the
-          // line above it.
-          if (AppLocale.of(context) != AppLocale.en)
-            Text(poya.name, style: theme.textTheme.bodySmall),
+          // No English name underneath. The place list keeps one because a
+          // reader may know the town by its English name and not by its
+          // Sinhala one; a poya is the same word either way — பினர is Binara
+          // — so the second line was only repeating itself in Latin letters.
           const SizedBox(height: 6),
           Text(
             poya.note ?? '',

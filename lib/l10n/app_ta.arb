@@ -56,6 +56,7 @@
   "chartLagna": "லக்னம்",
   "chartMoonSign": "சந்திர ராசி",
   "chartBirthNakshatra": "ஜென்ம நட்சத்திரம்",
+  "chartNakshatraPada": "{nakshatra} — {pada} பாதம்",
   "chartAyanamsa": "அயனாம்சம் (லாஹிரி): {degrees}°",
   "chartPositions": "கிரக நிலைகள்",
   "chartColumnGraha": "கிரகம்",

@@ -70,6 +70,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     SharedPreferences.setMockInitialValues({
+      'app_locale_v1': locale.code,
       'birth_profile_v1': jsonEncode(profile.toJson()),
     });
     final prefs = await SharedPreferences.getInstance();

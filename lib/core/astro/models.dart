@@ -107,36 +107,45 @@ enum Rasi {
 
 /// The 27 nakṣatra. Each spans 13°20' of the sidereal zodiac.
 enum Nakshatra {
-  ashwini('Ashwini'),
-  bharani('Bharani'),
-  krittika('Krittika'),
-  rohini('Rohini'),
-  mrigashira('Mrigashira'),
-  ardra('Ardra'),
-  punarvasu('Punarvasu'),
-  pushya('Pushya'),
-  ashlesha('Ashlesha'),
-  magha('Magha'),
-  purvaPhalguni('Purva Phalguni'),
-  uttaraPhalguni('Uttara Phalguni'),
-  hasta('Hasta'),
-  chitra('Chitra'),
-  swati('Swati'),
-  vishakha('Vishakha'),
-  anuradha('Anuradha'),
-  jyeshtha('Jyeshtha'),
-  mula('Mula'),
-  purvaAshadha('Purva Ashadha'),
-  uttaraAshadha('Uttara Ashadha'),
-  shravana('Shravana'),
-  dhanishta('Dhanishta'),
-  shatabhisha('Shatabhisha'),
-  purvaBhadrapada('Purva Bhadrapada'),
-  uttaraBhadrapada('Uttara Bhadrapada'),
-  revati('Revati');
+  ashwini('Ashwini', 'අස්විද', 'அசுவினி'),
+  bharani('Bharani', 'බෙරණ', 'பரணி'),
+  krittika('Krittika', 'කැති', 'கார்த்திகை'),
+  rohini('Rohini', 'රෙහෙණ', 'ரோகிணி'),
+  mrigashira('Mrigashira', 'මුවසිරස', 'மிருகசீரிடம்'),
+  ardra('Ardra', 'අද', 'திருவாதிரை'),
+  punarvasu('Punarvasu', 'පුනාවස', 'புனர்பூசம்'),
+  pushya('Pushya', 'පුෂ', 'பூசம்'),
+  ashlesha('Ashlesha', 'අස්ලිස', 'ஆயில்யம்'),
+  magha('Magha', 'මා', 'மகம்'),
+  purvaPhalguni('Purva Phalguni', 'පුවපල්', 'பூரம்'),
+  uttaraPhalguni('Uttara Phalguni', 'උතුරුපල්', 'உத்திரம்'),
+  hasta('Hasta', 'හත', 'அஸ்தம்'),
+  chitra('Chitra', 'සිත', 'சித்திரை'),
+  swati('Swati', 'සා', 'சுவாதி'),
+  vishakha('Vishakha', 'විසා', 'விசாகம்'),
+  anuradha('Anuradha', 'අනුර', 'அனுஷம்'),
+  jyeshtha('Jyeshtha', 'දෙට', 'கேட்டை'),
+  mula('Mula', 'මුල', 'மூலம்'),
+  purvaAshadha('Purva Ashadha', 'පුවසල', 'பூராடம்'),
+  uttaraAshadha('Uttara Ashadha', 'උතුරසල', 'உத்திராடம்'),
+  shravana('Shravana', 'සුවණ', 'திருவோணம்'),
+  dhanishta('Dhanishta', 'දෙනට', 'அவிட்டம்'),
+  shatabhisha('Shatabhisha', 'සියාවස', 'சதயம்'),
+  purvaBhadrapada('Purva Bhadrapada', 'පුවපුටුප', 'பூரட்டாதி'),
+  uttaraBhadrapada('Uttara Bhadrapada', 'උතුරපුටුප', 'உத்திரட்டாதி'),
+  revati('Revati', 'රේවතී', 'ரேவதி');
 
-  const Nakshatra(this.en);
+  const Nakshatra(this.en, this.si, this.ta);
+
   final String en;
+  final String si;
+  final String ta;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 
   /// Span of one nakṣatra in degrees: 360 / 27.
   static const double span = 360 / 27;

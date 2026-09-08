@@ -10,7 +10,7 @@ enum PoyaMonth {
   medin('Medin', 'මැදින්', 'மெதின்', 3),
   bak('Bak', 'බක්', 'பக்', 4),
   vesak('Vesak', 'වෙසක්', 'வெசாக்', 5),
-  poson('Poson', 'පොසොන්', 'பொසொன்', 6),
+  poson('Poson', 'පොසොන්', 'பொசொன்', 6),
   esala('Esala', 'ඇසළ', 'எசல', 7),
   nikini('Nikini', 'නිකිණි', 'நிக்கிணி', 8),
   binara('Binara', 'බිනර', 'பினர', 9),

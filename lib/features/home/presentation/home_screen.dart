@@ -336,8 +336,6 @@ class _NowBanner extends ConsumerWidget {
   }
 }
 
-const String _rahuInSinhala = 'රාහු කාලය';
-
 /// The headline. This is what the app is opened for.
 class _RahuKalayaCard extends ConsumerWidget {
   const _RahuKalayaCard({required this.panchanga});
@@ -370,20 +368,18 @@ class _RahuKalayaCard extends ConsumerWidget {
         child: Column(
           children: [
             // The Sinhala spelling is the form people recognise on a
-            // printed litha, so it leads regardless of interface language.
-            // The translated name sits under it — unless it is the same
-            // string, which it is in Sinhala.
+            // This used to lead with the Sinhala රාහු කාලය in every language,
+            // on the reasoning that it is the form printed on every litha and
+            // is recognised on sight. That holds for a Sinhala reader. For a
+            // Tamil one it put a script they do not read at the top of the
+            // card the app is opened for, with ராகு காலம் — the form their
+            // own almanacs use — demoted to small grey type underneath.
             Text(
-              _rahuInSinhala,
+              L10n.of(context).homeRahuKalaya,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: AppColors.inauspicious,
               ),
             ),
-            if (L10n.of(context).homeRahuKalaya != _rahuInSinhala)
-              Text(
-                L10n.of(context).homeRahuKalaya,
-                style: theme.textTheme.bodySmall,
-              ),
             const SizedBox(height: 12),
             Text(
               '${fmt.format(rahu.start)}  —  ${fmt.format(rahu.end)}',
@@ -511,48 +507,69 @@ class _SunMoonCard extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _item(
-              context,
-              Icons.wb_twilight,
-              L10n.of(context).homeSunrise,
-              fmt.format(panchanga.sunrise),
-            ),
-            _item(
-              context,
-              Icons.wb_sunny_outlined,
-              L10n.of(context).homeSunset,
-              fmt.format(panchanga.sunset),
-            ),
-            _item(
-              context,
-              Icons.nightlight_outlined,
-              L10n.of(context).homeMoonrise,
-              panchanga.moonrise == null
-                  ? '—'
-                  : fmt.format(panchanga.moonrise!),
-            ),
-          ],
+        // IntrinsicHeight so the three columns share the tallest one's height
+        // and the times can sit on a common bottom edge. Without it a label
+        // that wraps to two lines — சூரிய அஸ்தமனம் does, its neighbours do
+        // not — drops its time a line below the other two.
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _item(
+                context,
+                Icons.wb_twilight,
+                L10n.of(context).homeSunrise,
+                fmt.format(panchanga.sunrise),
+              ),
+              _item(
+                context,
+                Icons.wb_sunny_outlined,
+                L10n.of(context).homeSunset,
+                fmt.format(panchanga.sunset),
+              ),
+              _item(
+                context,
+                Icons.nightlight_outlined,
+                L10n.of(context).homeMoonrise,
+                panchanga.moonrise == null
+                    ? '—'
+                    : fmt.format(panchanga.moonrise!),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  /// One of the three columns.
+  ///
+  /// [Expanded] rather than intrinsic width: three unconstrained columns fit
+  /// "Sunrise / Sunset / Moonrise" and overflowed the row by 7px on
+  /// சூரிய அஸ்தமனம், which is the same word in a longer script. Sharing
+  /// the width in thirds and letting the label wrap costs nothing in English
+  /// and cannot overflow in any language.
   Widget _item(BuildContext c, IconData icon, String label, String value) =>
-      Column(
-        children: [
-          Icon(icon, size: 22, color: AppColors.accent),
-          const SizedBox(height: 6),
-          Text(label, style: Theme.of(c).textTheme.bodySmall),
-          Text(
-            value,
-            style: Theme.of(
-              c,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ],
+      Expanded(
+        child: Column(
+          children: [
+            Icon(icon, size: 22, color: AppColors.accent),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: Theme.of(c).textTheme.bodySmall,
+            ),
+            const Spacer(),
+            Text(
+              value,
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                c,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       );
 }
 

@@ -214,21 +214,14 @@ class _ThemeTile extends ConsumerWidget {
       ThemePreference.dark => l.themeDark,
     };
 
-    return ListTile(
-      leading: const Icon(Icons.brightness_6_outlined),
-      title: Text(l.settingsTheme),
-      subtitle: Text(l.settingsThemeHint),
-      trailing: DropdownButton<ThemePreference>(
-        value: current,
-        underline: const SizedBox.shrink(),
-        onChanged: (p) {
-          if (p != null) ref.read(themePreferenceProvider.notifier).set(p);
-        },
-        items: [
-          for (final p in ThemePreference.values)
-            DropdownMenuItem(value: p, child: Text(label(p))),
-        ],
-      ),
+    return _ChoiceTile<ThemePreference>(
+      icon: Icons.brightness_6_outlined,
+      title: l.settingsTheme,
+      hint: l.settingsThemeHint,
+      value: current,
+      values: ThemePreference.values,
+      label: label,
+      onChanged: (p) => ref.read(themePreferenceProvider.notifier).set(p),
     );
   }
 }
@@ -240,22 +233,15 @@ class _LanguageTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(localeProvider);
 
-    return ListTile(
-      leading: const Icon(Icons.translate),
-      title: Text(L10n.of(context).settingsLanguage),
-      trailing: DropdownButton<AppLocale>(
-        value: current,
-        underline: const SizedBox.shrink(),
-        onChanged: (locale) {
-          if (locale != null) ref.read(localeProvider.notifier).set(locale);
-        },
-        items: [
-          for (final locale in AppLocale.values)
-            // Native names, for the same reason as the header switcher: a
-            // Tamil speaker looks for தமிழ், not for "Tamil".
-            DropdownMenuItem(value: locale, child: Text(locale.nativeName)),
-        ],
-      ),
+    return _ChoiceTile<AppLocale>(
+      icon: Icons.translate,
+      title: L10n.of(context).settingsLanguage,
+      value: current,
+      values: AppLocale.values,
+      // Native names, for the same reason as the header switcher: a Tamil
+      // speaker looks for தமிழ், not for "Tamil".
+      label: (locale) => locale.nativeName,
+      onChanged: (locale) => ref.read(localeProvider.notifier).set(locale),
     );
   }
 }
@@ -267,23 +253,116 @@ class _ChartStyleTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(chartStyleProvider);
 
+    return _ChoiceTile<ChartStyle>(
+      icon: Icons.grid_on,
+      title: L10n.of(context).settingsChartStyle,
+      value: current,
+      values: ChartStyle.values,
+      label: (style) => style.label(L10n.of(context)),
+      onChanged: (style) => ref.read(chartStyleProvider.notifier).set(style),
+    );
+  }
+}
+
+/// A settings row that picks one of a few values.
+///
+/// The obvious way to build this is a `DropdownButton` in `ListTile.trailing`,
+/// and that is what these rows used to be. It breaks (KAN-60): a dropdown
+/// sizes itself to its **widest item**, `ListTile` gives the trailing slot its
+/// width before the text gets any, and so the length of one translation
+/// decides how much room the title has. The Tamil for "Follow the phone" is
+/// `தொலைபேசியைப் பின்பற்று`, which left the theme row's text about one
+/// character wide and wrapped its hint into a vertical ribbon forty lines
+/// tall.
+///
+/// So the value goes in the text column, where it can use the whole row, and
+/// the choosing happens in a sheet where every option gets full width. Nothing
+/// here is sized by the longest translation.
+///
+/// Capping the dropdown's width instead would have kept the layout and lost
+/// the words: the Tamil option would ellipsize to something unreadable, which
+/// is not better than a broken row for the reader who needs it.
+class _ChoiceTile<T> extends StatelessWidget {
+  const _ChoiceTile({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.values,
+    required this.label,
+    required this.onChanged,
+    this.hint,
+  });
+
+  final IconData icon;
+  final String title;
+  final T value;
+  final List<T> values;
+  final String Function(T) label;
+  final ValueChanged<T> onChanged;
+
+  /// Optional explanation, shown under the current value.
+  final String? hint;
+
+  Future<void> _choose(BuildContext context) async {
+    final chosen = await showModalBottomSheet<T>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              // 16 to match ListTile's own content padding, so the title lines
+              // up with the options under it rather than sitting in from them.
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            for (final v in values)
+              ListTile(
+                title: Text(label(v)),
+                trailing: v == value
+                    ? Icon(Icons.check, color: AppColors.accent)
+                    : null,
+                onTap: () => Navigator.of(context).pop(v),
+              ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (chosen != null && chosen != value) onChanged(chosen);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ListTile(
-      leading: const Icon(Icons.grid_on),
-      title: Text(L10n.of(context).settingsChartStyle),
-      trailing: DropdownButton<ChartStyle>(
-        value: current,
-        underline: const SizedBox.shrink(),
-        onChanged: (style) {
-          if (style != null) ref.read(chartStyleProvider.notifier).set(style);
-        },
-        items: [
-          for (final style in ChartStyle.values)
-            DropdownMenuItem(
-              value: style,
-              child: Text(style.label(L10n.of(context))),
+      leading: Icon(icon),
+      title: Text(title),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label(value),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: AppColors.accent,
+            ),
+          ),
+          if (hint != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(hint!, style: theme.textTheme.bodySmall),
             ),
         ],
       ),
+      trailing: const Icon(Icons.expand_more),
+      onTap: () => _choose(context),
     );
   }
 }

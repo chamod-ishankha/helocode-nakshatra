@@ -63,6 +63,13 @@
   "chartColumnPada": "පාදය",
   "chartColumnHouse": "භාවය",
   "chartApproximate": "උපන් වේලාව නොදනී — හිරු උදාව උපකල්පනය කරන ලදී. ග්‍රහ පිහිටීම් නිවැරදිය; ලග්නය සහ භාව දළ වේ.",
+  "chartStyleSouthIndian": "දකුණු ඉන්දීය",
+  "chartStyleNorthIndian": "උතුරු ඉන්දීය",
+  "chartCentreCaption": "රාශි චක්‍රය",
+  "chartLagnaMark": "ලග්",
+  "chartRetrogradeMark": "ව",
+  "chartLagnaOf": "{rasi} ලග්නය",
+  "chartApproximateShort": "දළයි",
   "dashaTitle": "දශා කාල",
   "dashaRunningNow": "දැන් ක්‍රියාත්මකයි",
   "dashaSubPeriods": "අන්තර් දශා",
@@ -282,5 +289,6 @@
   "horoscopeByLagna": "ලග්නය",
   "horoscopeByRasi": "රාශිය",
   "horoscopeSameSign": "ඔබේ ලග්නය සහ රාශිය එකමයි.",
-  "horoscopeLagnaApproximate": "උපන් වේලාව නොදන්නා බැවින් මෙම ලග්නය ආසන්න අගයකි."
+  "horoscopeLagnaApproximate": "උපන් වේලාව නොදන්නා බැවින් මෙම ලග්නය ආසන්න අගයකි.",
+  "durationMinutes": "විනාඩි {minutes}"
 }

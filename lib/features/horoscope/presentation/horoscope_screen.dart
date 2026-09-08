@@ -241,12 +241,31 @@ class _LuckyRow extends StatelessWidget {
             _Lucky(
               label: l.horoscopeLuckyColour,
               value: _colourName(l, horoscope.luckyColour),
+              // Naming a colour in a different colour reads as a mistake: the
+              // card's green accent made "Red" look wrong. Show the swatch
+              // instead, so the word and the colour agree.
+              swatch: _swatch(horoscope.luckyColour),
             ),
           ],
         ),
       ),
     );
   }
+
+  /// The colour itself, for the swatch beside the name.
+  static Color? _swatch(String key) => switch (key) {
+    'white' => const Color(0xFFF5F5F5),
+    'red' => const Color(0xFFE05A4F),
+    'yellow' => const Color(0xFFE9C46A),
+    'green' => const Color(0xFF62B26B),
+    'blue' => const Color(0xFF5B8DEF),
+    'orange' => const Color(0xFFE8873B),
+    'brown' => const Color(0xFF9A6B4F),
+    'gold' => const Color(0xFFD4AF37),
+    'silver' => const Color(0xFFB8BCC2),
+    'purple' => const Color(0xFF8B6EE8),
+    _ => null,
+  };
 
   /// The engine names colours in English; the reader sees their own language.
   static String _colourName(L10n l, String key) => switch (key) {
@@ -264,10 +283,14 @@ class _LuckyRow extends StatelessWidget {
 }
 
 class _Lucky extends StatelessWidget {
-  const _Lucky({required this.label, required this.value});
+  const _Lucky({required this.label, required this.value, this.swatch});
 
   final String label;
   final String value;
+
+  /// Drawn as a dot beside the value. Null for the lucky number, which is not
+  /// a colour.
+  final Color? swatch;
 
   @override
   Widget build(BuildContext context) {
@@ -281,11 +304,28 @@ class _Lucky extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: AppColors.auspicious,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (swatch != null) ...[
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: swatch,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: theme.dividerColor),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Text(
+              value,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: AppColors.auspicious,
+              ),
+            ),
+          ],
         ),
       ],
     );

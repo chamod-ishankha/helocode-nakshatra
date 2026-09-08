@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/features/onboarding/data/place_repository.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
 
@@ -21,6 +22,71 @@ void main() {
         expect(p.ta, isNotEmpty, reason: '${p.en} has no Tamil name');
         expect(p.district, isNotEmpty, reason: p.en);
         expect(p.timezone, 'Asia/Colombo');
+      }
+    });
+
+    test('every district is translated, and not just copied', () async {
+      // The place names were in three scripts from the start but the district
+      // under them was English-only, so a Sinhala user picking a birth place
+      // read a Sinhala town over an English district (KAN-58). A missing
+      // translation falls back to English silently by design, which is right
+      // for an old saved profile and wrong for the bundled data — so the data
+      // has to be checked here rather than left to show up on a phone.
+      for (final p in await repo.all()) {
+        for (final locale in AppLocale.values) {
+          expect(
+            p.districtLabel(locale),
+            isNotEmpty,
+            reason: '${p.en}: no district in ${locale.englishName}',
+          );
+        }
+        expect(
+          p.districtLabel(AppLocale.si),
+          isNot(p.district),
+          reason: '${p.district} was left in English in Sinhala',
+        );
+        expect(
+          p.districtLabel(AppLocale.ta),
+          isNot(p.district),
+          reason: '${p.district} was left in English in Tamil',
+        );
+      }
+    });
+
+    test('a district translation is a name, not a transliteration', () async {
+      // Kandy is මහනුවර and Jaffna is யாழ்ப்பாணம் — different words, not the
+      // English sounds respelled. Spot-checking the two that a transliteration
+      // would most obviously mangle is enough to catch a bulk mistake.
+      final byDistrict = {for (final p in await repo.all()) p.district: p};
+      expect(byDistrict['Kandy']?.districtLabel(AppLocale.si), 'මහනුවර');
+      expect(byDistrict['Jaffna']?.districtLabel(AppLocale.ta), 'யாழ்ப்பாணம்');
+      expect(byDistrict['Colombo']?.districtLabel(AppLocale.si), 'කොළඹ');
+    });
+
+    test('a profile saved before the translations existed still opens', () {
+      // Shipped builds wrote a place with no districtSi/districtTa. Reading
+      // one back must not throw and must not leave the subtitle blank.
+      final old = Place.fromJson({
+        'en': 'Panadura',
+        'si': 'පානදුර',
+        'ta': 'பாணந்துறை',
+        'lat': 6.713,
+        'lon': 79.903,
+        'district': 'Kalutara',
+      });
+
+      expect(old.districtLabel(AppLocale.si), 'Kalutara');
+      expect(old.districtLabel(AppLocale.en), 'Kalutara');
+      expect(old.toJson().containsKey('districtSi'), isFalse);
+    });
+
+    test('a place round-trips through JSON with its districts', () async {
+      final original = (await repo.all()).first;
+      final copy = Place.fromJson(original.toJson());
+
+      for (final locale in AppLocale.values) {
+        expect(copy.label(locale), original.label(locale));
+        expect(copy.districtLabel(locale), original.districtLabel(locale));
       }
     });
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'core/config/flavor.dart';
 import 'core/router/app_router.dart';
@@ -14,6 +15,11 @@ class NakshatraApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
+
+    // Every DateFormat in the app is constructed without an explicit locale,
+    // so they all read this. Without it a Sinhala app still prints "Tuesday,
+    // 8 September 2026" - the labels translate and the dates do not.
+    Intl.defaultLocale = locale.code;
     final themePreference = ref.watch(themePreferenceProvider);
 
     return MaterialApp.router(

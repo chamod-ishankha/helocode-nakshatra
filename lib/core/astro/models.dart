@@ -7,21 +7,39 @@ import '../config/app_locale.dart';
 /// Rahu and Ketu are the lunar nodes, not physical bodies: they sit exactly
 /// opposite one another, so only Rahu is computed and Ketu is derived.
 enum Graha {
-  sun('Sun', 'සූර්ය', 'சூரியன்'),
-  moon('Moon', 'චන්ද්‍ර', 'சந்திரன்'),
-  mars('Mars', 'කුජ', 'செவ்வாய்'),
-  mercury('Mercury', 'බුධ', 'புதன்'),
-  jupiter('Jupiter', 'ගුරු', 'குரு'),
-  venus('Venus', 'ශුක්‍ර', 'சுக்கிரன்'),
-  saturn('Saturn', 'ශනි', 'சனி'),
-  rahu('Rahu', 'රාහු', 'ராகு'),
-  ketu('Ketu', 'කේතු', 'கேது');
+  sun('Sun', 'සූර්ය', 'சூரியன்', 'Su', 'රවි', 'சூ'),
+  moon('Moon', 'චන්ද්‍ර', 'சந்திரன்', 'Mo', 'චන්', 'சந்'),
+  mars('Mars', 'කුජ', 'செவ்வாய்', 'Ma', 'කුජ', 'செவ்'),
+  mercury('Mercury', 'බුධ', 'புதன்', 'Me', 'බුධ', 'புத'),
+  jupiter('Jupiter', 'ගුරු', 'குரு', 'Ju', 'ගුරු', 'குரு'),
+  venus('Venus', 'ශුක්‍ර', 'சுக்கிரன்', 'Ve', 'ශුක්', 'சுக்'),
+  saturn('Saturn', 'ශනි', 'சனி', 'Sa', 'ශනි', 'சனி'),
+  rahu('Rahu', 'රාහු', 'ராகு', 'Ra', 'රාහු', 'ராகு'),
+  ketu('Ketu', 'කේතු', 'கேது', 'Ke', 'කේතු', 'கேது');
 
-  const Graha(this.en, this.si, this.ta);
+  const Graha(
+    this.en,
+    this.si,
+    this.ta,
+    this.shortEn,
+    this.shortSi,
+    this.shortTa,
+  );
 
   final String en;
   final String si;
   final String ta;
+
+  /// Short forms for a chart cell, which is about 70px wide on a small phone.
+  ///
+  /// Written out rather than derived. Taking the first two letters of the
+  /// English name works only in English, and the obvious translation of that —
+  /// transliterating "Su" letter by letter — produces something no Sinhala or
+  /// Tamil reader recognises. These are the forms printed charts actually use:
+  /// රවි for the Sun, කුජ for Mars, and so on.
+  final String shortEn;
+  final String shortSi;
+  final String shortTa;
 
   /// The name in [locale]. Matches `Place.label`, so callers do not have to
   /// write the same switch at every use site.
@@ -29,6 +47,13 @@ enum Graha {
     AppLocale.si => si,
     AppLocale.ta => ta,
     AppLocale.en => en,
+  };
+
+  /// The chart-cell abbreviation in [locale].
+  String shortLabel(AppLocale locale) => switch (locale) {
+    AppLocale.si => shortSi,
+    AppLocale.ta => shortTa,
+    AppLocale.en => shortEn,
   };
 
   /// The Swiss Ephemeris body for this graha, or null for Ketu, which is

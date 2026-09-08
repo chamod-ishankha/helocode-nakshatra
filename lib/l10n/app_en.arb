@@ -104,6 +104,20 @@
   "chartColumnPada": "Pada",
   "chartColumnHouse": "House",
   "chartApproximate": "Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.",
+  "chartStyleSouthIndian": "South Indian",
+  "chartStyleNorthIndian": "North Indian",
+  "chartCentreCaption": "Rāśi chart",
+  "chartLagnaMark": "La",
+  "chartRetrogradeMark": "R",
+  "chartLagnaOf": "{rasi} lagna",
+  "@chartLagnaOf": {
+    "placeholders": {
+      "rasi": {
+        "type": "String"
+      }
+    }
+  },
+  "chartApproximateShort": "approximate",
   "dashaTitle": "Daśā periods",
   "dashaRunningNow": "Running now",
   "dashaSubPeriods": "Sub-periods",
@@ -411,5 +425,14 @@
   "horoscopeByLagna": "Lagna",
   "horoscopeByRasi": "Moon sign",
   "horoscopeSameSign": "Your lagna and moon sign are the same.",
-  "horoscopeLagnaApproximate": "Your birth time is unknown, so this lagna is approximate."
+  "horoscopeLagnaApproximate": "Your birth time is unknown, so this lagna is approximate.",
+  "durationMinutes": "{minutes} minutes",
+  "@durationMinutes": {
+    "description": "How long an inauspicious window lasts.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  }
 }

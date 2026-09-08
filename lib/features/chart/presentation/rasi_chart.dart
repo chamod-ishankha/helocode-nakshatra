@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
+import '../../../core/config/app_locale.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import 'detail_sheets.dart';
+import 'graha_label.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// South Indian rāśi chart.
@@ -35,6 +38,8 @@ class RasiChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context);
+    final locale = AppLocale.of(context);
     final byRasi = <int, List<GrahaPosition>>{};
     for (final p in chart.positions.values) {
       byRasi.putIfAbsent(p.rasi.index, () => []).add(p);
@@ -73,11 +78,19 @@ class RasiChart extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('රාශි', style: theme.textTheme.titleMedium),
-                      Text('Rāśi chart', style: theme.textTheme.bodySmall),
+                      // Was a hardcoded Sinhala word above an English one,
+                      // which was wrong in all three languages at once.
+                      Text(
+                        l10n.chartCentreCaption,
+                        style: theme.textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 8),
                       Text(
-                        'Lagna: ${chart.lagnaRasi.en}',
+                        // "Virgo lagna", not "Lagna: Virgo" — the sign
+                        // qualifies the lagna, and that is the order Sinhala
+                        // and Tamil put it in.
+                        l10n.chartLagnaOf(chart.lagnaRasi.label(locale)),
+                        textAlign: TextAlign.center,
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: AppColors.accent,
                         ),
@@ -86,7 +99,7 @@ class RasiChart extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Text(
-                            'approximate',
+                            l10n.chartApproximateShort,
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: AppColors.inauspicious,
                             ),
@@ -120,6 +133,8 @@ class _Cell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = AppLocale.of(context);
+    final l10n = L10n.of(context);
     return GestureDetector(
       // The cell, not the two-letter graha label: that label is a few pixels
       // wide on a 360 dp screen, and an empty house would have no tap target
@@ -143,7 +158,10 @@ class _Cell extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 3),
                     child: Text(
-                      'La',
+                      // Short for the word for "lagna" in each language, not a
+                      // transliteration of the English "La", which would spell
+                      // out a sound that means nothing (KAN-58).
+                      l10n.chartLagnaMark,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: AppColors.accent,
                         fontWeight: FontWeight.bold,
@@ -152,7 +170,7 @@ class _Cell extends StatelessWidget {
                   ),
                 Expanded(
                   child: Text(
-                    rasi.en,
+                    rasi.label(locale),
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
@@ -167,17 +185,7 @@ class _Cell extends StatelessWidget {
                 runSpacing: 2,
                 children: [
                   for (final g in grahas)
-                    Text(
-                      // Two-letter abbreviations keep nine grahas legible in a
-                      // cell that is roughly 70px wide on a small phone.
-                      '${g.graha.en.substring(0, 2)}${g.isRetrograde ? '℞' : ''}',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: g.isRetrograde
-                            ? AppColors.inauspicious
-                            : theme.colorScheme.onSurface,
-                      ),
-                    ),
+                    GrahaLabel(position: g, style: theme.textTheme.labelMedium),
                 ],
               ),
             ),

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/config/app_locale.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/place_repository.dart';
+import '../../onboarding/data/profile_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import '../domain/compatibility_providers.dart';
 
@@ -46,7 +48,9 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
       _time = existing.birthTime;
       _timeKnown = existing.birthTimeKnown;
       _place = existing.place;
-      _placeQuery.text = existing.place.en;
+      // initState cannot reach Localizations, and the provider is the
+      // same source MaterialApp.locale is driven from.
+      _placeQuery.text = existing.place.label(ref.read(localeProvider));
     }
   }
 
@@ -185,8 +189,8 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.place),
-                title: Text(_place!.en),
-                subtitle: Text(_place!.district),
+                title: Text(_place!.label(AppLocale.of(context))),
+                subtitle: Text(_place!.districtLabel(AppLocale.of(context))),
               )
             else
               SizedBox(
@@ -202,11 +206,15 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                           itemCount: places.length,
                           itemBuilder: (context, i) => ListTile(
                             dense: true,
-                            title: Text(places[i].en),
-                            subtitle: Text(places[i].district),
+                            title: Text(places[i].label(AppLocale.of(context))),
+                            subtitle: Text(
+                              places[i].districtLabel(AppLocale.of(context)),
+                            ),
                             onTap: () => setState(() {
                               _place = places[i];
-                              _placeQuery.text = places[i].en;
+                              _placeQuery.text = places[i].label(
+                                AppLocale.of(context),
+                              );
                             }),
                           ),
                         ),

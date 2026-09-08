@@ -443,9 +443,12 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
                           ),
                           title: Text(p.label(locale)),
                           subtitle: Text(
+                            // The English name stays alongside for a reader
+                            // who knows the town by it — the district beside
+                            // it should still be in their language.
                             locale == AppLocale.en
                                 ? p.district
-                                : '${p.en} · ${p.district}',
+                                : '${p.en} · ${p.districtLabel(locale)}',
                           ),
                           onTap: () => widget.onChanged(p),
                         );

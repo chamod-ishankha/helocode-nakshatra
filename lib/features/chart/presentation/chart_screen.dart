@@ -9,6 +9,7 @@ import 'dasha_timeline.dart';
 import 'detail_sheets.dart';
 
 import '../../../core/astro/models.dart';
+import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
@@ -73,7 +74,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
               L10n.of(context).chartShareCaption(
                 profile.name,
                 DateFormat.yMMMd().format(profile.birthDate),
-                profile.place.en,
+                profile.place.label(AppLocale.of(context)),
               ),
             ),
           ),
@@ -102,7 +103,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
               caption: L10n.of(context).chartShareCaption(
                 profile.name,
                 DateFormat.yMMMd().format(profile.birthDate),
-                profile.place.en,
+                profile.place.label(AppLocale.of(context)),
               ),
               child: switch (style) {
                 ChartStyle.southIndian => RasiChart(
@@ -160,7 +161,7 @@ class _StyleSwitcher extends ConsumerWidget {
     return SegmentedButton<ChartStyle>(
       segments: [
         for (final s in ChartStyle.values)
-          ButtonSegment(value: s, label: Text(s.label)),
+          ButtonSegment(value: s, label: Text(s.label(L10n.of(context)))),
       ],
       selected: {style},
       showSelectedIcon: false,
@@ -211,8 +212,16 @@ class _SummaryCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _row(context, L10n.of(context).chartLagna, chart.lagnaRasi.en),
-            _row(context, L10n.of(context).chartMoonSign, moon.rasi.en),
+            _row(
+              context,
+              L10n.of(context).chartLagna,
+              chart.lagnaRasi.label(AppLocale.of(context)),
+            ),
+            _row(
+              context,
+              L10n.of(context).chartMoonSign,
+              moon.rasi.label(AppLocale.of(context)),
+            ),
             _row(
               context,
               L10n.of(context).chartBirthNakshatra,
@@ -279,7 +288,7 @@ class _PositionsTable extends StatelessWidget {
                     DataCell(
                       Row(
                         children: [
-                          Text(p.graha.en),
+                          Text(p.graha.label(AppLocale.of(context))),
                           if (p.isRetrograde)
                             Text(
                               ' ℞',
@@ -288,7 +297,7 @@ class _PositionsTable extends StatelessWidget {
                         ],
                       ),
                     ),
-                    DataCell(Text(p.rasi.en)),
+                    DataCell(Text(p.rasi.label(AppLocale.of(context)))),
                     DataCell(Text('${p.degreeInRasi.toStringAsFixed(2)}°')),
                     DataCell(Text(p.nakshatra.en)),
                     DataCell(Text('${p.pada}')),

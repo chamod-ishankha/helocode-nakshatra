@@ -278,9 +278,10 @@ class _ChartStyleTile extends ConsumerWidget {
         },
         items: [
           for (final style in ChartStyle.values)
-            // Not localised: these name two drawing conventions, and a reader
-            // who wants one knows it by this name.
-            DropdownMenuItem(value: style, child: Text(style.label)),
+            DropdownMenuItem(
+              value: style,
+              child: Text(style.label(L10n.of(context))),
+            ),
         ],
       ),
     );

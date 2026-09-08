@@ -9,15 +9,25 @@ class Place {
     required this.latitude,
     required this.longitude,
     required this.district,
+    String? districtSi,
+    String? districtTa,
     this.timezone = 'Asia/Colombo',
-  });
+  }) : _districtSi = districtSi,
+       _districtTa = districtTa;
 
   final String en;
   final String si;
   final String ta;
   final double latitude;
   final double longitude;
+
+  /// The district in English, which is also its key in the data file.
   final String district;
+
+  /// Null only for a profile saved before the translations existed; a place
+  /// coming from `sl_places.json` always has both.
+  final String? _districtSi;
+  final String? _districtTa;
 
   /// IANA zone, which carries Sri Lanka's 1996-2006 offset changes. A fixed
   /// offset would silently corrupt every chart from that decade.
@@ -29,9 +39,22 @@ class Place {
     AppLocale.en => en,
   };
 
+  /// The district in the reader's language.
+  ///
+  /// Falls back to English rather than to nothing: a profile stored by an
+  /// older build has no translation, and an empty subtitle under a place is
+  /// worse than an English one.
+  String districtLabel(AppLocale locale) => switch (locale) {
+    AppLocale.si => _districtSi ?? district,
+    AppLocale.ta => _districtTa ?? district,
+    AppLocale.en => district,
+  };
+
   /// Text matched by place search. Includes all three scripts so a user typing
   /// Sinhala finds the same row as one typing English.
-  String get searchable => '$en $si $ta $district'.toLowerCase();
+  String get searchable =>
+      '$en $si $ta $district ${_districtSi ?? ''} ${_districtTa ?? ''}'
+          .toLowerCase();
 
   factory Place.fromJson(Map<String, dynamic> json) => Place(
     en: json['en'] as String,
@@ -40,6 +63,8 @@ class Place {
     latitude: (json['lat'] as num).toDouble(),
     longitude: (json['lon'] as num).toDouble(),
     district: json['district'] as String,
+    districtSi: json['districtSi'] as String?,
+    districtTa: json['districtTa'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -49,6 +74,8 @@ class Place {
     'lat': latitude,
     'lon': longitude,
     'district': district,
+    if (_districtSi != null) 'districtSi': _districtSi,
+    if (_districtTa != null) 'districtTa': _districtTa,
     'timezone': timezone,
   };
 }

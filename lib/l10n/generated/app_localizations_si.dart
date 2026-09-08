@@ -215,6 +215,29 @@ class L10nSi extends L10n {
       'උපන් වේලාව නොදනී — හිරු උදාව උපකල්පනය කරන ලදී. ග්‍රහ පිහිටීම් නිවැරදිය; ලග්නය සහ භාව දළ වේ.';
 
   @override
+  String get chartStyleSouthIndian => 'දකුණු ඉන්දීය';
+
+  @override
+  String get chartStyleNorthIndian => 'උතුරු ඉන්දීය';
+
+  @override
+  String get chartCentreCaption => 'රාශි චක්‍රය';
+
+  @override
+  String get chartLagnaMark => 'ලග්';
+
+  @override
+  String get chartRetrogradeMark => 'ව';
+
+  @override
+  String chartLagnaOf(String rasi) {
+    return '$rasi ලග්නය';
+  }
+
+  @override
+  String get chartApproximateShort => 'දළයි';
+
+  @override
   String get dashaTitle => 'දශා කාල';
 
   @override
@@ -945,4 +968,9 @@ class L10nSi extends L10n {
   @override
   String get horoscopeLagnaApproximate =>
       'උපන් වේලාව නොදන්නා බැවින් මෙම ලග්නය ආසන්න අගයකි.';
+
+  @override
+  String durationMinutes(int minutes) {
+    return 'විනාඩි $minutes';
+  }
 }

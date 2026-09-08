@@ -63,6 +63,13 @@
   "chartColumnPada": "பாதம்",
   "chartColumnHouse": "பாவம்",
   "chartApproximate": "பிறந்த நேரம் தெரியவில்லை — சூரிய உதயம் கருதப்பட்டது. கிரக நிலைகள் சரியானவை; லக்னமும் பாவங்களும் தோராயமானவை.",
+  "chartStyleSouthIndian": "தென் இந்திய",
+  "chartStyleNorthIndian": "வட இந்திய",
+  "chartCentreCaption": "ராசி சக்கரம்",
+  "chartLagnaMark": "லக்",
+  "chartRetrogradeMark": "வ",
+  "chartLagnaOf": "{rasi} லக்னம்",
+  "chartApproximateShort": "தோராயம்",
   "dashaTitle": "தசா காலங்கள்",
   "dashaRunningNow": "இப்போது நடப்பில்",
   "dashaSubPeriods": "அந்தர் தசை",
@@ -282,5 +289,6 @@
   "horoscopeByLagna": "லக்னம்",
   "horoscopeByRasi": "ராசி",
   "horoscopeSameSign": "உங்கள் லக்னமும் ராசியும் ஒன்றே.",
-  "horoscopeLagnaApproximate": "பிறந்த நேரம் தெரியாததால் இந்த லக்னம் தோராயமானது."
+  "horoscopeLagnaApproximate": "பிறந்த நேரம் தெரியாததால் இந்த லக்னம் தோராயமானது.",
+  "durationMinutes": "{minutes} நிமிடங்கள்"
 }

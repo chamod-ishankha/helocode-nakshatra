@@ -8,6 +8,7 @@ import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/config/app_locale.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
@@ -127,7 +128,7 @@ class _PersonCard extends StatelessWidget {
                 ),
                 Text(
                   '${DateFormat.yMMMd().format(profile.birthDate)} · '
-                  '${profile.place.en}',
+                  '${profile.place.label(AppLocale.of(context))}',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

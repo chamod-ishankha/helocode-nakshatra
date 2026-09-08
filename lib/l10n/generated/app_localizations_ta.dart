@@ -218,6 +218,29 @@ class L10nTa extends L10n {
       'பிறந்த நேரம் தெரியவில்லை — சூரிய உதயம் கருதப்பட்டது. கிரக நிலைகள் சரியானவை; லக்னமும் பாவங்களும் தோராயமானவை.';
 
   @override
+  String get chartStyleSouthIndian => 'தென் இந்திய';
+
+  @override
+  String get chartStyleNorthIndian => 'வட இந்திய';
+
+  @override
+  String get chartCentreCaption => 'ராசி சக்கரம்';
+
+  @override
+  String get chartLagnaMark => 'லக்';
+
+  @override
+  String get chartRetrogradeMark => 'வ';
+
+  @override
+  String chartLagnaOf(String rasi) {
+    return '$rasi லக்னம்';
+  }
+
+  @override
+  String get chartApproximateShort => 'தோராயம்';
+
+  @override
   String get dashaTitle => 'தசா காலங்கள்';
 
   @override
@@ -957,4 +980,9 @@ class L10nTa extends L10n {
   @override
   String get horoscopeLagnaApproximate =>
       'பிறந்த நேரம் தெரியாததால் இந்த லக்னம் தோராயமானது.';
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes நிமிடங்கள்';
+  }
 }

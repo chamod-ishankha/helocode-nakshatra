@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 /// The three languages the app ships in.
 ///
 /// Kept as a plain enum rather than relying on [Locale] so the rest of the app
@@ -21,4 +23,14 @@ enum AppLocale {
     (l) => l.code == code,
     orElse: () => AppLocale.en,
   );
+
+  /// The locale the app is currently rendering in.
+  ///
+  /// `MaterialApp.locale` is driven by `localeProvider`, so this and the
+  /// provider always agree. It exists so a deeply nested widget can localise a
+  /// value without every constructor between it and the screen growing an
+  /// `AppLocale` parameter — plumbing that gets forgotten, which is how the
+  /// chart ended up rendering English into a Sinhala app (KAN-58).
+  static AppLocale of(BuildContext context) =>
+      fromCode(Localizations.localeOf(context).languageCode);
 }

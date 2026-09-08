@@ -216,6 +216,29 @@ class L10nEn extends L10n {
       'Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.';
 
   @override
+  String get chartStyleSouthIndian => 'South Indian';
+
+  @override
+  String get chartStyleNorthIndian => 'North Indian';
+
+  @override
+  String get chartCentreCaption => 'Rāśi chart';
+
+  @override
+  String get chartLagnaMark => 'La';
+
+  @override
+  String get chartRetrogradeMark => 'R';
+
+  @override
+  String chartLagnaOf(String rasi) {
+    return '$rasi lagna';
+  }
+
+  @override
+  String get chartApproximateShort => 'approximate';
+
+  @override
   String get dashaTitle => 'Daśā periods';
 
   @override
@@ -951,4 +974,9 @@ class L10nEn extends L10n {
   @override
   String get horoscopeLagnaApproximate =>
       'Your birth time is unknown, so this lagna is approximate.';
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes minutes';
+  }
 }

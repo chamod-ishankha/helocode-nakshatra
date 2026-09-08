@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # Grapheme-cluster counting, for checking that a chart
+  # abbreviation still fits a cell in Sinhala and Tamil.
+  characters: ^1.4.0
   flutter_localizations:
     sdk: flutter
 

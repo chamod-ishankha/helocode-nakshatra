@@ -477,6 +477,48 @@ abstract class L10n {
   /// **'Birth time unknown — sunrise was assumed. Planetary positions are accurate; the lagna and houses are approximate.'**
   String get chartApproximate;
 
+  /// No description provided for @chartStyleSouthIndian.
+  ///
+  /// In en, this message translates to:
+  /// **'South Indian'**
+  String get chartStyleSouthIndian;
+
+  /// No description provided for @chartStyleNorthIndian.
+  ///
+  /// In en, this message translates to:
+  /// **'North Indian'**
+  String get chartStyleNorthIndian;
+
+  /// No description provided for @chartCentreCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāśi chart'**
+  String get chartCentreCaption;
+
+  /// No description provided for @chartLagnaMark.
+  ///
+  /// In en, this message translates to:
+  /// **'La'**
+  String get chartLagnaMark;
+
+  /// No description provided for @chartRetrogradeMark.
+  ///
+  /// In en, this message translates to:
+  /// **'R'**
+  String get chartRetrogradeMark;
+
+  /// No description provided for @chartLagnaOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{rasi} lagna'**
+  String chartLagnaOf(String rasi);
+
+  /// No description provided for @chartApproximateShort.
+  ///
+  /// In en, this message translates to:
+  /// **'approximate'**
+  String get chartApproximateShort;
+
   /// No description provided for @dashaTitle.
   ///
   /// In en, this message translates to:
@@ -1796,6 +1838,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Your birth time is unknown, so this lagna is approximate.'**
   String get horoscopeLagnaApproximate;
+
+  /// How long an inauspicious window lasts.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String durationMinutes(int minutes);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

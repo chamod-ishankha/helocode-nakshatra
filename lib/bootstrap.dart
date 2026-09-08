@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
@@ -34,6 +35,10 @@ Future<void> bootstrap(Flavor flavor) async {
   // Both are awaited before the first frame so no screen has to handle a
   // "not ready yet" state: the ephemeris is required to draw anything, and
   // the router needs the saved profile to decide where to land.
+  // Sinhala and Tamil month and day names are not compiled in by default.
+  // Without this, DateFormat falls back to English however the locale is set.
+  await initializeDateFormatting();
+
   final prefs = await SharedPreferences.getInstance();
   await Ephemeris.initialize();
 

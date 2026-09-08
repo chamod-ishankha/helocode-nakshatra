@@ -394,7 +394,7 @@ class _RahuKalayaCard extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '${rahu.duration.inMinutes} minutes',
+              L10n.of(context).durationMinutes(rahu.duration.inMinutes),
               style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: 2),

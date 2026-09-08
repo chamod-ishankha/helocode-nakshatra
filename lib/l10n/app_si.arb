@@ -19,6 +19,7 @@
   "onboardingTimeLabel": "උපන් වේලාව",
   "onboardingTimeHelp": "ලග්නය දළ වශයෙන් සෑම පැය දෙකකට වරක් වෙනස් වන බැවින්, භාව පිහිටීම සඳහා දිනයට වඩා මෙය වැදගත් වේ.",
   "onboardingTimePickerTitle": "උපන් වේලාව තෝරන්න",
+  "onboardingTimeUnknownLabel": "මගේ උපන් වේලාව මම නොදනිමි",
   "onboardingTimeUnknown": "අපි හිරු උදාව (පෙ.ව. 6:00) භාවිත කරමු",
   "onboardingTimeUnknownHelp": "ඔබේ රාශිය, නක්ෂත්‍රය සහ ග්‍රහ පිහිටීම් නිවැරදිව පවතී. ලග්නය සහ භාව පිහිටීම් දළ වන අතර, යෙදුම එය එසේ බව සලකුණු කරයි.",
   "onboardingPlaceQuestion": "ඔබ උපන්නේ කොහේද?",

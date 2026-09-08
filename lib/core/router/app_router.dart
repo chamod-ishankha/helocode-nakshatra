@@ -17,6 +17,13 @@ import '../../features/horoscope/presentation/horoscope_screen.dart';
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
   static const String onboarding = '/onboarding';
+
+  /// Onboarding opened deliberately, to change details that already exist.
+  ///
+  /// The flag is on the route rather than in a provider because the redirect
+  /// runs before any screen does, and it is the redirect that has to tell the
+  /// two cases apart.
+  static const String editProfile = '$onboarding?edit=1';
   static const String chart = '/chart';
   static const String account = '/account';
 
@@ -36,6 +43,32 @@ abstract final class Routes {
 void popOrHome(BuildContext context) =>
     context.canPop() ? context.pop() : context.go(Routes.home);
 
+/// Where a request for [location] should actually go.
+///
+/// A top-level function rather than a closure inside the router so it can be
+/// tested for what it is — three rules about who may see the onboarding
+/// wizard — without standing up a navigator and every screen behind it.
+///
+/// Returns null to allow the request through.
+String? redirectFor({required String location, required bool hasProfile}) {
+  final uri = Uri.parse(location);
+  final onOnboarding = uri.path == Routes.onboarding;
+
+  // Nothing to show until there is a profile, so everything funnels in.
+  if (!hasProfile && !onOnboarding) return Routes.onboarding;
+
+  // Sending a user who has a profile out of the wizard is right when they
+  // landed there by accident — a restored location after a restart, a stale
+  // redirect — and wrong when they asked for it. This used to be unable to
+  // tell the two apart and ate both, which left Settings > "Edit birth
+  // details" bouncing straight back to home and birth details uneditable,
+  // onboarding being the only editor there is (KAN-61).
+  final editing = uri.queryParameters['edit'] == '1';
+  if (hasProfile && onOnboarding && !editing) return Routes.home;
+
+  return null;
+}
+
 final routerProvider = Provider<GoRouter>((ref) {
   // Redirects are only re-evaluated when the router is told something
   // changed. Without this, deleting the profile left the app on a screen it
@@ -50,16 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: Routes.home,
     debugLogDiagnostics: true,
     refreshListenable: profileChanged,
-    // A user with no saved profile has nothing to show, so every route
-    // redirects into onboarding until one exists.
-    redirect: (context, state) {
-      final hasProfile = ref.read(profileProvider) != null;
-      final onOnboarding = state.matchedLocation == Routes.onboarding;
-
-      if (!hasProfile && !onOnboarding) return Routes.onboarding;
-      if (hasProfile && onOnboarding) return Routes.home;
-      return null;
-    },
+    redirect: (context, state) => redirectFor(
+      location: state.uri.toString(),
+      hasProfile: ref.read(profileProvider) != null,
+    ),
     routes: [
       GoRoute(
         path: Routes.onboarding,

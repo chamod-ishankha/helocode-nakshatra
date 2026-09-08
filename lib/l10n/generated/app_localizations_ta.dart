@@ -71,6 +71,10 @@ class L10nTa extends L10n {
   String get onboardingTimePickerTitle => 'பிறந்த நேரத்தைத் தேர்ந்தெடுக்கவும்';
 
   @override
+  String get onboardingTimeUnknownLabel =>
+      'எனது பிறந்த நேரம் எனக்குத் தெரியாது';
+
+  @override
   String get onboardingTimeUnknown =>
       'நாங்கள் சூரிய உதயத்தை (காலை 6:00) பயன்படுத்துவோம்';
 

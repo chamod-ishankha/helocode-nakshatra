@@ -71,6 +71,9 @@ class L10nSi extends L10n {
   String get onboardingTimePickerTitle => 'උපන් වේලාව තෝරන්න';
 
   @override
+  String get onboardingTimeUnknownLabel => 'මගේ උපන් වේලාව මම නොදනිමි';
+
+  @override
   String get onboardingTimeUnknown => 'අපි හිරු උදාව (පෙ.ව. 6:00) භාවිත කරමු';
 
   @override

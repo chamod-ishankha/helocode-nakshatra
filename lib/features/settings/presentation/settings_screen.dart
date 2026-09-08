@@ -57,8 +57,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             // Onboarding is the only editor there is, and it already handles
             // every field. Sending the user back through it beats a second
-            // form that could drift out of step with the first.
-            onTap: () => context.push(Routes.onboarding),
+            // form that could drift out of step with the first — as long as
+            // the route says it is an edit, or the redirect turns it away.
+            onTap: () => context.push(Routes.editProfile),
           ),
 
           _Section(l.settingsSectionAppearance),

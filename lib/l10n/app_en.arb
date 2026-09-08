@@ -32,6 +32,7 @@
   "onboardingTimeLabel": "Time of birth",
   "onboardingTimeHelp": "The ascendant changes roughly every two hours, so this matters more than the date for house placements.",
   "onboardingTimePickerTitle": "Select time of birth",
+  "onboardingTimeUnknownLabel": "I don't know my birth time",
   "onboardingTimeUnknown": "We will use sunrise (6:00 AM)",
   "onboardingTimeUnknownHelp": "Your rāśi, nakṣatra and planetary positions will still be accurate. The ascendant and house placements will be approximate, and the app will mark them as such.",
   "onboardingPlaceQuestion": "Where were you born?",

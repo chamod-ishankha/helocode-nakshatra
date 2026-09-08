@@ -25,7 +25,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  final _pageController = PageController();
+  late final PageController _pageController;
   final _nameController = TextEditingController();
 
   int _step = 0;
@@ -36,6 +36,35 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _birthTimeKnown = true;
   Place? _place;
   bool _saving = false;
+
+  /// True when the wizard was opened to change details that already exist,
+  /// rather than to collect them for the first time.
+  bool _editing = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // The wizard used to start empty whatever the state of the profile, so
+    // even once the route was reachable at all, "edit" meant retyping a name,
+    // a date, a time and a town from nothing (KAN-61).
+    final existing = ref.read(profileProvider);
+    if (existing != null) {
+      _editing = true;
+
+      // Straight to the name. The language step is behind them — they chose
+      // once, and the screen they came from has a language row of its own.
+      _step = 1;
+
+      _nameController.text = existing.name;
+      _birthDate = existing.birthDate;
+      _birthTime = existing.birthTime;
+      _birthTimeKnown = existing.birthTimeKnown;
+      _place = existing.place;
+    }
+
+    _pageController = PageController(initialPage: _step);
+  }
 
   @override
   void dispose() {
@@ -96,7 +125,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: _step > 0
+        leading: _step > (_editing ? 1 : 0)
             ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _back)
             : null,
         title: LinearProgressIndicator(
@@ -169,34 +198,51 @@ class _StepScaffold extends StatelessWidget {
     required this.title,
     this.subtitle,
     required this.child,
+    this.scrollable = true,
   });
 
   final String title;
   final String? subtitle;
   final Widget child;
 
+  /// False for a step that scrolls its own content.
+  ///
+  /// Every other step is a short fixed column, which fits until a keyboard
+  /// takes half the screen — then it overflows, and it overflows sooner in
+  /// Sinhala and Tamil, where the question and its explanation run to more
+  /// lines than the English they were laid out against.
+  final bool scrollable;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // The question and its explanation scroll with the step, not above it.
+    // Scrolling only the child was not enough: in a 380px-tall window — a
+    // phone with the keyboard up, which is exactly the state this step is
+    // reached in — the heading and subtitle alone can use the whole column
+    // and overflow before the child is given anything at all.
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: theme.textTheme.headlineSmall),
+        if (subtitle != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            subtitle!,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+        const SizedBox(height: 24),
+        if (scrollable) child else Expanded(child: child),
+      ],
+    );
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: theme.textTheme.headlineSmall),
-          if (subtitle != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              subtitle!,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-          const SizedBox(height: 24),
-          Expanded(child: child),
-        ],
-      ),
+      child: scrollable ? SingleChildScrollView(child: content) : content,
     );
   }
 }
@@ -209,6 +255,8 @@ class _LanguageStep extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(localeProvider);
     return _StepScaffold(
+      // Its own ListView scrolls the three languages.
+      scrollable: false,
       title: L10n.of(context).onboardingChooseLanguage,
       subtitle: 'භාෂාව තෝරන්න · மொழியைத் தேர்ந்தெடுக்கவும்',
       child: ListView(
@@ -357,7 +405,7 @@ class _TimeStep extends StatelessWidget {
           CheckboxListTile(
             value: !known,
             onChanged: (v) => onChanged(value, !(v ?? false)),
-            title: const Text("I don't know my birth time"),
+            title: Text(L10n.of(context).onboardingTimeUnknownLabel),
             subtitle: Text(L10n.of(context).onboardingTimeUnknown),
             contentPadding: EdgeInsets.zero,
           ),
@@ -381,13 +429,14 @@ class _TimeStep extends StatelessWidget {
     );
   }
 
-  String _format(Duration d) {
-    final h = d.inHours;
-    final m = d.inMinutes % 60;
-    final suffix = h < 12 ? 'AM' : 'PM';
-    final h12 = h % 12 == 0 ? 12 : h % 12;
-    return '$h12:${m.toString().padLeft(2, '0')} $suffix';
-  }
+  /// The chosen time, in the reader's language.
+  ///
+  /// This used to build "AM"/"PM" by hand, so the one screen that asks for a
+  /// birth time printed it in English while every screen that shows one used
+  /// முற்பகல் or පෙ.ව.. `DateFormat` follows `Intl.defaultLocale`, which
+  /// app.dart sets from the chosen language.
+  String _format(Duration d) =>
+      DateFormat('h:mm a').format(DateTime(2000).add(d));
 }
 
 class _PlaceStep extends ConsumerStatefulWidget {
@@ -408,6 +457,9 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
     final results = ref.watch(placeSearchProvider(_query));
 
     return _StepScaffold(
+      // Its results are a ListView with its own scrolling, which needs a
+      // bounded height — a SingleChildScrollView would give it infinity.
+      scrollable: false,
       title: L10n.of(context).onboardingPlaceQuestion,
       subtitle: L10n.of(context).onboardingPlaceHelp,
       child: Column(

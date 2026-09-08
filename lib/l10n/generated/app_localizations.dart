@@ -213,6 +213,12 @@ abstract class L10n {
   /// **'Select time of birth'**
   String get onboardingTimePickerTitle;
 
+  /// No description provided for @onboardingTimeUnknownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t know my birth time'**
+  String get onboardingTimeUnknownLabel;
+
   /// No description provided for @onboardingTimeUnknown.
   ///
   /// In en, this message translates to:

@@ -71,6 +71,9 @@ class L10nEn extends L10n {
   String get onboardingTimePickerTitle => 'Select time of birth';
 
   @override
+  String get onboardingTimeUnknownLabel => 'I don\'t know my birth time';
+
+  @override
   String get onboardingTimeUnknown => 'We will use sunrise (6:00 AM)';
 
   @override

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'chart_sharing.dart';
 import 'dasha_timeline.dart';
+import 'graha_label.dart';
 import 'detail_sheets.dart';
 
 import '../../../core/astro/models.dart';
@@ -263,6 +264,11 @@ class _PositionsTable extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
+          // The rows are tappable so a reader can open the detail from the
+          // row they are already looking at, but onSelectChanged makes
+          // DataTable add a checkbox column, and those checkboxes select
+          // nothing — there is no bulk action to perform.
+          showCheckboxColumn: false,
           columnSpacing: 18,
           headingRowHeight: 40,
           dataRowMinHeight: 38,
@@ -285,18 +291,7 @@ class _PositionsTable extends StatelessWidget {
                   // perverse.
                   onSelectChanged: (_) => showGrahaDetail(context, p),
                   cells: [
-                    DataCell(
-                      Row(
-                        children: [
-                          Text(p.graha.label(AppLocale.of(context))),
-                          if (p.isRetrograde)
-                            Text(
-                              ' ℞',
-                              style: TextStyle(color: AppColors.inauspicious),
-                            ),
-                        ],
-                      ),
-                    ),
+                    DataCell(GrahaLabel(position: p, abbreviated: false)),
                     DataCell(Text(p.rasi.label(AppLocale.of(context)))),
                     DataCell(Text('${p.degreeInRasi.toStringAsFixed(2)}°')),
                     DataCell(Text(p.nakshatra.en)),

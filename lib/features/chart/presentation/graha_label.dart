@@ -30,13 +30,32 @@ import '../../../l10n/generated/app_localizations.dart';
 /// language's word for retrograde, for the same reason the graha abbreviation
 /// is: a Latin R in a Sinhala chart is one more English letter to decode.
 ///
+/// It is separated by a full space rather than the hair space it started with.
+/// A hair space is enough between Latin letters and enough in Sinhala, and it
+/// was not enough in Tamil: ராகு followed by வ closed up into ராகுவ, which a
+/// Tamil reader parses as an inflected form of the graha's name rather than as
+/// a mark on it — the same fault as the old `Ra℞`, in a different script.
+///
 /// The colour is not enough on its own: red says nothing to a reader who
 /// cannot separate the reds, and nothing at all in a grey print.
 class GrahaLabel extends StatelessWidget {
-  const GrahaLabel({required this.position, this.style, super.key});
+  const GrahaLabel({
+    required this.position,
+    this.style,
+    this.abbreviated = true,
+    super.key,
+  });
 
   final GrahaPosition position;
   final TextStyle? style;
+
+  /// False in the positions table, which has room for the graha's full name.
+  ///
+  /// The table is why this flag exists rather than a second widget: it had its
+  /// own copy of the notation and drew a bare `℞` long after both charts had
+  /// stopped, which is the drift this widget was created to prevent — it was
+  /// just never told about the third caller.
+  final bool abbreviated;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +69,14 @@ class GrahaLabel extends StatelessWidget {
 
     return Text.rich(
       TextSpan(
-        text: position.graha.shortLabel(AppLocale.of(context)),
+        text: abbreviated
+            ? position.graha.shortLabel(AppLocale.of(context))
+            : position.graha.label(AppLocale.of(context)),
         style: base,
         children: [
           if (position.isRetrograde)
             TextSpan(
-              text: ' ${L10n.of(context).chartRetrogradeMark}',
+              text: ' ${L10n.of(context).chartRetrogradeMark}',
               style: base?.copyWith(
                 fontSize: (base.fontSize ?? 12) * 0.72,
                 fontFeatures: const [FontFeature.superscripts()],

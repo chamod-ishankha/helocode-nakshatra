@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/chart_style.dart';
 import 'package:nakshatra/core/theme/app_theme.dart';
+import 'package:nakshatra/features/chart/presentation/graha_label.dart';
 import 'package:nakshatra/features/chart/presentation/north_indian_chart.dart';
 import 'package:nakshatra/features/chart/presentation/rasi_chart.dart';
 import 'package:nakshatra/l10n/generated/app_localizations.dart';
+
+import '../support/fonts.dart';
 
 /// The chart drawn in Sinhala or Tamil must contain no English.
 ///
@@ -26,6 +31,10 @@ import 'package:nakshatra/l10n/generated/app_localizations.dart';
 /// Deliberately out of scope: nakṣatra, tithi, yoga and karaṇa names, which are
 /// English until KAN-52 — none of them are drawn by these two widgets.
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(loadAppFonts);
+
   /// A Latin letter, which no Sinhala or Tamil chart should be drawing.
   ///
   /// Digits are fine — house numbers and degrees are digits in all three
@@ -188,30 +197,120 @@ void main() {
     }
   });
 
-  testWidgets('the retrograde mark is separate from the abbreviation', (
+  for (final locale in AppLocale.values) {
+    testWidgets('the retrograde mark stands off the abbreviation in '
+        '${locale.englishName}', (tester) async {
+      // KAN-57: it used to be `℞` concatenated onto the abbreviation, which
+      // read as a rendering fault rather than notation. The mark has to be
+      // there — colour alone says nothing to a reader who cannot separate the
+      // reds, and nothing at all in a screenshot printed in grey — but it must
+      // not join the name.
+      //
+      // Asserting on the whitespace rather than on a particular space
+      // character is the point. It started as a hair space, which is enough
+      // between Latin letters and in Sinhala, and closed up in Tamil: ராகு
+      // and வ ran together into ராகுவ, which reads as an inflected form of
+      // the name. A test pinned to U+200A would have gone on passing.
+      final drawn = await pump(tester, locale, ChartStyle.southIndian);
+
+      final l10n = await L10n.delegate.load(Locale(locale.code));
+      final rahu = Graha.rahu.shortLabel(locale);
+      final mark = l10n.chartRetrogradeMark;
+
+      final label = drawn.firstWhere(
+        (s) => s.startsWith(rahu) && s.endsWith(mark) && s != rahu,
+        orElse: () => '',
+      );
+      expect(
+        label,
+        isNotEmpty,
+        reason: 'Rāhu was drawn without a retrograde mark in $drawn',
+      );
+
+      final between = label.substring(rahu.length, label.length - mark.length);
+      expect(
+        between.trim(),
+        isEmpty,
+        reason: 'expected only spacing between "$rahu" and "$mark"',
+      );
+      expect(
+        between,
+        isNotEmpty,
+        reason: 'the mark is jammed onto the abbreviation: "$label"',
+      );
+
+      expect(
+        drawn.every((s) => !s.contains('℞')),
+        isTrue,
+        reason: 'the ℞ ligature is what made it unreadable',
+      );
+    });
+  }
+
+  testWidgets('the positions table uses the same notation as the chart', (
     tester,
   ) async {
-    // KAN-57: it used to be `℞` concatenated onto the abbreviation, which read
-    // as a rendering fault. The mark must be present — colour alone does not
-    // survive a grey screenshot or a reader who cannot separate the reds — but
-    // it must not be fused into the graha's name.
-    final drawn = await pump(tester, AppLocale.en, ChartStyle.southIndian);
+    // The table drew its own bare `℞` long after both charts had stopped. It
+    // is a third caller that nobody remembered when KAN-57 was fixed "in both
+    // chart styles" — so it now renders through the same widget, and this
+    // checks the full-name mode the table needs.
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('ta'),
+        localizationsDelegates: L10n.localizationsDelegates,
+        supportedLocales: L10n.supportedLocales,
+        theme: AppTheme.light(AppLocale.ta),
+        home: Scaffold(
+          body: GrahaLabel(
+            abbreviated: false,
+            position: const GrahaPosition(
+              graha: Graha.rahu,
+              longitude: 100,
+              latitude: 0,
+              speed: -0.05,
+              house: 4,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final l10n = await L10n.delegate.load(const Locale('ta'));
+    final drawn = tester
+        .widget<Text>(find.byType(Text))
+        .textSpan!
+        .toPlainText();
+
+    expect(drawn, startsWith(Graha.rahu.label(AppLocale.ta)));
+    expect(drawn, endsWith(l10n.chartRetrogradeMark));
+    expect(drawn, isNot(contains('℞')));
+  });
+
+  test('nothing in the app draws the ℞ ligature any more', () {
+    // A grep as a test, because the fault was never one bad expression — it
+    // was the same expression copied to a third place and left behind. This
+    // fails on the copy, wherever someone puts it next.
+    final offenders = <String>[];
+    for (final entity in Directory('lib').listSync(recursive: true)) {
+      if (entity is! File || !entity.path.endsWith('.dart')) continue;
+      final lines = entity.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        // Comments may name it — graha_label's own documentation explains why
+        // it is gone. Only code that draws it is a fault.
+        if (lines[i].trimLeft().startsWith('//')) continue;
+        if (lines[i].contains('℞')) {
+          offenders.add('${entity.path}:${i + 1}');
+        }
+      }
+    }
 
     expect(
-      drawn.any((s) => s.contains('Ra') && s.contains('R')),
-      isTrue,
-      reason: 'Rāhu should be drawn with a retrograde mark',
-    );
-    expect(
-      drawn.every((s) => !s.contains('℞')),
-      isTrue,
-      reason: 'the ℞ ligature is what made it unreadable',
-    );
-    // A hair space between the two, so they cannot be read as one word.
-    expect(
-      drawn.any((s) => s.contains(' ')),
-      isTrue,
-      reason: 'the mark should be separated from the abbreviation',
+      offenders,
+      isEmpty,
+      reason:
+          'these still hardcode ℞ instead of going through GrahaLabel: '
+          '$offenders',
     );
   });
 

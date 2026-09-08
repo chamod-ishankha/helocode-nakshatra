@@ -599,9 +599,23 @@ class _OtherPeriods extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(w.name),
+                    // The times are laid out first and keep their natural
+                    // width; the name takes what is left. spaceBetween gave
+                    // both their full width and overflowed the card once the
+                    // times were formatted in Tamil, which also swallowed the
+                    // gap between them — "Gulika kālaya10:37 முற்பகல்".
+                    Expanded(
+                      // Two lines before truncating: "Gulika kālaya" fits on
+                      // one line in English and wraps rather than losing its
+                      // second word once the times are Tamil-width.
+                      child: Text(
+                        w.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
                     Text(
                       '${fmt.format(w.start)} – ${fmt.format(w.end)}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(

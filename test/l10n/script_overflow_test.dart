@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/core/sync/auth_service.dart';
@@ -12,6 +14,8 @@ import 'package:nakshatra/features/settings/presentation/settings_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:nakshatra/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../support/fonts.dart';
 
 /// Sinhala and Tamil in layouts that were composed in English.
 ///
@@ -25,6 +29,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// aimed at, not the tester's desktop.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(loadAppFonts);
 
   late SharedPreferences prefs;
 
@@ -92,6 +98,10 @@ void main() {
   }
 
   Future<void> pumpSettings(WidgetTester tester, AppLocale locale) async {
+    await initializeDateFormatting();
+    Intl.defaultLocale = locale.code;
+    addTearDown(() => Intl.defaultLocale = null);
+
     tester.view.physicalSize = const Size(360, 640);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);

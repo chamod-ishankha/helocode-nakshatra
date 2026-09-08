@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:nakshatra/core/ads/ad_gate.dart';
 import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/core/astro/panchanga_models.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
@@ -16,6 +19,8 @@ import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
 import 'package:nakshatra/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../support/fonts.dart';
 
 /// The home screen, rendered in each language.
 ///
@@ -35,6 +40,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// draw them in three scripts.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(loadAppFonts);
 
   final sinhala = RegExp(r'[඀-෿]');
   final tamil = RegExp(r'[஀-௿]');
@@ -97,13 +104,31 @@ void main() {
   });
 
   Future<List<String>> pumpHome(WidgetTester tester, AppLocale locale) async {
-    tester.view.physicalSize = const Size(360, 720);
+    // What app.dart and bootstrap.dart do at startup. Without it DateFormat
+    // falls back to en_US and every time on the screen is measured at English
+    // width — which is how a Tamil overflow sat in a test that passed. The
+    // widths are the whole point of the test.
+    await initializeDateFormatting();
+    Intl.defaultLocale = locale.code;
+    addTearDown(() => Intl.defaultLocale = null);
+
+    // A real phone's width, and a viewport tall enough to hold the whole
+    // page. The width is what these tests are about — Sinhala and Tamil are
+    // wider than English and that is what overflows. The height is deliberate
+    // too: at 720 the lower cards are never laid out at all, and the
+    // inauspicious-periods card sat below the fold overflowing by 18px while
+    // this test passed.
+    tester.view.physicalSize = const Size(360, 2600);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
     final container = ProviderContainer(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
+        // bootstrap.dart supplies this; the ad gate throws without it, and
+        // the banner only mounts once the page lays out far enough to reach
+        // it — which is exactly what the tall viewport makes happen.
+        appLaunchedAtProvider.overrideWithValue(today),
         panchangaProvider.overrideWithValue(panchanga),
         inauspiciousProvider.overrideWithValue([
           rahu,

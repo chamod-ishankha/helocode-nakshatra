@@ -57,14 +57,14 @@ abstract final class Nekath {
     required DateTime sunrise,
     required DateTime sunset,
     required int n,
-    required String name,
+    required WindowKind kind,
   }) {
     assert(n >= 1 && n <= 8, 'segment must be 1-8, got $n');
     final eighth = sunset.difference(sunrise) ~/ 8;
     return TimeWindow(
       start: sunrise.add(eighth * (n - 1)),
       end: sunrise.add(eighth * n),
-      name: name,
+      kind: kind,
     );
   }
 
@@ -72,21 +72,21 @@ abstract final class Nekath {
     sunrise: p.sunrise,
     sunset: p.sunset,
     n: _rahuSegment[p.vara]!,
-    name: 'Rāhu kālaya',
+    kind: WindowKind.rahu,
   );
 
   static TimeWindow yamaganda(Panchanga p) => _segment(
     sunrise: p.sunrise,
     sunset: p.sunset,
     n: _yamagandaSegment[p.vara]!,
-    name: 'Yamaganda',
+    kind: WindowKind.yamaganda,
   );
 
   static TimeWindow gulika(Panchanga p) => _segment(
     sunrise: p.sunrise,
     sunset: p.sunset,
     n: _gulikaSegment[p.vara]!,
-    name: 'Gulika kālaya',
+    kind: WindowKind.gulika,
   );
 
   /// All inauspicious windows for the day, earliest first.
@@ -114,7 +114,7 @@ abstract final class Nekath {
           TimeWindow(
             start: cursor,
             end: w.start,
-            name: 'Auspicious',
+            kind: WindowKind.auspicious,
             auspicious: true,
           ),
         );
@@ -126,7 +126,7 @@ abstract final class Nekath {
         TimeWindow(
           start: cursor,
           end: p.sunset,
-          name: 'Auspicious',
+          kind: WindowKind.auspicious,
           auspicious: true,
         ),
       );

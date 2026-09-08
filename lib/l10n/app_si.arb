@@ -32,6 +32,7 @@
   "homeRahuShort": "රාහු",
   "homeAvoidImportant": "වැදගත් කිසිවක් ආරම්භ කිරීමෙන් වළකින්න",
   "homeRunningUntil": "{time} දක්වා",
+  "homeWindowRunningNow": "{window} දැන් ක්‍රියාත්මකයි, {time} දක්වා.",
   "homeOtherInauspicious": "අනෙකුත් අසුබ කාල",
   "homeClearTimes": "අද සුබ වේලාවන්",
   "homeClearTimesHelp": "කිසිදු අසුබ කාලයකට අයත් නොවන දහවල් වේලාව.",

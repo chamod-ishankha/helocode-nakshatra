@@ -1,3 +1,5 @@
+import '../config/app_locale.dart';
+
 import 'models.dart';
 
 /// The thirty tithi (lunar days) of a lunar month.
@@ -111,19 +113,49 @@ enum Karana {
   bool get isInauspicious => this == Karana.vishti;
 }
 
+/// Which period a [TimeWindow] is.
+///
+/// The windows used to be identified by their English name, and two screens
+/// picked rāhu kālaya out of the day with `name.startsWith('Rāhu')`. That is
+/// fine until the name is translated, at which point the headline card
+/// silently finds nothing — so the identity is an enum and the name is only
+/// something to display (KAN-59).
+enum WindowKind {
+  rahu('Rāhu kālaya', 'රාහු කාලය', 'ராகு காலம்'),
+  yamaganda('Yamaganda', 'යමගණ්ඩ', 'யமகண்டம்'),
+  gulika('Gulika kālaya', 'ගුලික කාලය', 'குளிக காலம்'),
+  auspicious('Auspicious', 'සුබ වේලාව', 'சுப நேரம்');
+
+  const WindowKind(this.en, this.si, this.ta);
+
+  final String en;
+  final String si;
+  final String ta;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
+}
+
 /// A window of time, used for both auspicious and inauspicious periods.
 class TimeWindow {
   const TimeWindow({
     required this.start,
     required this.end,
-    required this.name,
+    required this.kind,
     this.auspicious = false,
   });
 
   final DateTime start;
   final DateTime end;
-  final String name;
+  final WindowKind kind;
   final bool auspicious;
+
+  /// The English name, for logs and `toString`. Anything a reader sees goes
+  /// through [WindowKind.label] instead.
+  String get name => kind.en;
 
   Duration get duration => end.difference(start);
 

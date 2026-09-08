@@ -1,28 +1,45 @@
+import '../config/app_locale.dart';
+
 /// The twelve poya of the Sinhala Buddhist year.
 ///
 /// Each is a full moon, named for the lunar month it falls in. When two full
 /// moons land in the same month an intercalary "Adhi" poya is inserted.
 enum PoyaMonth {
-  duruthu('Duruthu', 'දුරුතු', 1),
-  navam('Navam', 'නවම්', 2),
-  medin('Medin', 'මැදින්', 3),
-  bak('Bak', 'බක්', 4),
-  vesak('Vesak', 'වෙසක්', 5),
-  poson('Poson', 'පොසොන්', 6),
-  esala('Esala', 'ඇසළ', 7),
-  nikini('Nikini', 'නිකිණි', 8),
-  binara('Binara', 'බිනර', 9),
-  vap('Vap', 'වප්', 10),
-  il('Il', 'ඉල්', 11),
-  unduvap('Unduvap', 'උඳුවප්', 12);
+  duruthu('Duruthu', 'දුරුතු', 'துருத்து', 1),
+  navam('Navam', 'නවම්', 'நவம்', 2),
+  medin('Medin', 'මැදින්', 'மெதின்', 3),
+  bak('Bak', 'බක්', 'பக்', 4),
+  vesak('Vesak', 'වෙසක්', 'வெசாக்', 5),
+  poson('Poson', 'පොසොන්', 'பொසொன்', 6),
+  esala('Esala', 'ඇසළ', 'எசல', 7),
+  nikini('Nikini', 'නිකිණි', 'நிக்கிணி', 8),
+  binara('Binara', 'බිනර', 'பினர', 9),
+  vap('Vap', 'වප්', 'வப்', 10),
+  il('Il', 'ඉල්', 'இல்', 11),
+  unduvap('Unduvap', 'උඳුවප්', 'உந்துவப்', 12);
 
-  const PoyaMonth(this.en, this.si, this.gregorianMonth);
+  const PoyaMonth(this.en, this.si, this.ta, this.gregorianMonth);
 
   final String en;
   final String si;
 
+  /// The Tamil form.
+  ///
+  /// These are Sinhala month names written in Tamil letters, and that is
+  /// correct rather than the transliteration mistake KAN-58 was about: they
+  /// are proper nouns with no separate Tamil word, the same way Colombo is
+  /// கொழும்பு. What KAN-58 forbade was respelling an English *abbreviation*
+  /// — "La", "Su" — which spells a sound that means nothing.
+  final String ta;
+
   /// The Gregorian month this poya normally falls in.
   final int gregorianMonth;
+
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si,
+    AppLocale.ta => ta,
+    AppLocale.en => en,
+  };
 
   static PoyaMonth forGregorianMonth(int month) =>
       PoyaMonth.values.firstWhere((p) => p.gregorianMonth == month);
@@ -90,6 +107,16 @@ class Festival {
   final String? note;
   final bool isPublicHoliday;
 
+  /// The name in the reader's language, falling back to English.
+  ///
+  /// The home screen used to print `si ?? name`, which is Sinhala in a Tamil
+  /// app and Sinhala in an English one (KAN-59).
+  String label(AppLocale locale) => switch (locale) {
+    AppLocale.si => si ?? name,
+    AppLocale.ta => ta ?? name,
+    AppLocale.en => name,
+  };
+
   int daysFrom(DateTime from) => DateTime(
     date.year,
     date.month,
@@ -107,6 +134,7 @@ class PoyaDay extends Festival {
   }) : super(
          name: isAdhi ? 'Adhi ${month.en} Poya' : '${month.en} Poya',
          si: isAdhi ? 'අධි ${month.si} පොහොය' : '${month.si} පොහොය',
+         ta: isAdhi ? 'அதி ${month.ta} பௌர்ணமி' : '${month.ta} பௌர்ணமி',
          kind: FestivalKind.poya,
          exactMoment: fullMoon,
          note: month.significance,

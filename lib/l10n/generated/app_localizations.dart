@@ -291,6 +291,12 @@ abstract class L10n {
   /// **'until {time}'**
   String homeRunningUntil(String time);
 
+  /// No description provided for @homeWindowRunningNow.
+  ///
+  /// In en, this message translates to:
+  /// **'{window} is running now, until {time}.'**
+  String homeWindowRunningNow(String window, String time);
+
   /// No description provided for @homeOtherInauspicious.
   ///
   /// In en, this message translates to:

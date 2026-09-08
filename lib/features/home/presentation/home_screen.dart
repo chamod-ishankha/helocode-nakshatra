@@ -323,8 +323,13 @@ class _NowBanner extends ConsumerWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              '${current.name} is running now, until '
-              '${DateFormat('h:mm a').format(current.end)}.',
+              // Was an English sentence built inline, so the one banner that
+              // interrupts a reader mid-day spoke English at them whatever
+              // language the app was in (KAN-59).
+              L10n.of(context).homeWindowRunningNow(
+                current.kind.label(AppLocale.of(context)),
+                DateFormat('h:mm a').format(current.end),
+              ),
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -344,7 +349,7 @@ class _RahuKalayaCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final windows = ref.watch(inauspiciousProvider);
-    final rahu = windows.firstWhere((w) => w.name.startsWith('Rāhu'));
+    final rahu = windows.firstWhere((w) => w.kind == WindowKind.rahu);
     final fmt = DateFormat('h:mm a');
     final theme = Theme.of(context);
 
@@ -580,7 +585,7 @@ class _OtherPeriods extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final windows = ref
         .watch(inauspiciousProvider)
-        .where((w) => !w.name.startsWith('Rāhu'))
+        .where((w) => w.kind != WindowKind.rahu)
         .toList();
     final fmt = DateFormat('h:mm a');
 
@@ -598,31 +603,29 @@ class _OtherPeriods extends ConsumerWidget {
             for (final w in windows)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    // The times are laid out first and keep their natural
-                    // width; the name takes what is left. spaceBetween gave
-                    // both their full width and overflowed the card once the
-                    // times were formatted in Tamil, which also swallowed the
-                    // gap between them — "Gulika kālaya10:37 முற்பகல்".
-                    Expanded(
-                      // Two lines before truncating: "Gulika kālaya" fits on
-                      // one line in English and wraps rather than losing its
-                      // second word once the times are Tamil-width.
-                      child: Text(
-                        w.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                // A Wrap, not a Row: the name and the time sit on one line
+                // when they fit and on two when they do not. Sharing one line
+                // was fine while the names were English, overflowed the card
+                // once the times were Tamil, and then — with the names
+                // translated too — broke யமகண்டம் across a line in the middle
+                // of the word. Neither half of this can be made short enough
+                // for one line in every language, so it stops trying.
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 12,
+                    runSpacing: 2,
+                    children: [
+                      Text(w.kind.label(AppLocale.of(context))),
+                      Text(
+                        '${fmt.format(w.start)} – ${fmt.format(w.end)}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      '${fmt.format(w.start)} – ${fmt.format(w.end)}',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -705,13 +708,17 @@ class _PoyaTodayBanner extends ConsumerWidget {
       child: Column(
         children: [
           Text(
-            poya.si ?? poya.name,
+            poya.label(AppLocale.of(context)),
             style: theme.textTheme.titleMedium?.copyWith(
               color: AppColors.accent,
               fontWeight: FontWeight.w700,
             ),
           ),
-          Text(poya.name, style: theme.textTheme.bodySmall),
+          // The English name underneath is a cross-reference, the way the
+          // place list keeps one — dropped when it would just repeat the
+          // line above it.
+          if (AppLocale.of(context) != AppLocale.en)
+            Text(poya.name, style: theme.textTheme.bodySmall),
           const SizedBox(height: 6),
           Text(
             poya.note ?? '',
@@ -778,7 +785,7 @@ class _NextPoyaCard extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            f.name,
+                            f.label(AppLocale.of(context)),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),

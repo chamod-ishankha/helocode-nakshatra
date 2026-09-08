@@ -116,6 +116,11 @@ class L10nSi extends L10n {
   }
 
   @override
+  String homeWindowRunningNow(String window, String time) {
+    return '$window දැන් ක්‍රියාත්මකයි, $time දක්වා.';
+  }
+
+  @override
   String get homeOtherInauspicious => 'අනෙකුත් අසුබ කාල';
 
   @override

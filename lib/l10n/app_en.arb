@@ -59,6 +59,17 @@
       }
     }
   },
+  "homeWindowRunningNow": "{window} is running now, until {time}.",
+  "@homeWindowRunningNow": {
+    "placeholders": {
+      "window": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeOtherInauspicious": "Other inauspicious periods",
   "homeClearTimes": "Clear times today",
   "homeClearTimesHelp": "Daylight not claimed by any inauspicious period.",

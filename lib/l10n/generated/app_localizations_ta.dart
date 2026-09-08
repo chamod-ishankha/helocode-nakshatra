@@ -119,6 +119,11 @@ class L10nTa extends L10n {
   }
 
   @override
+  String homeWindowRunningNow(String window, String time) {
+    return '$window இப்போது நடப்பில், $time வரை.';
+  }
+
+  @override
   String get homeOtherInauspicious => 'பிற அசுப நேரங்கள்';
 
   @override

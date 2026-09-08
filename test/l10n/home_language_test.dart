@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nakshatra/core/ads/ad_gate.dart';
 import 'package:nakshatra/core/astro/models.dart';
+import 'package:nakshatra/core/astro/calendar_models.dart';
 import 'package:nakshatra/core/astro/panchanga_models.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/flavor.dart';
@@ -69,7 +70,14 @@ void main() {
   final rahu = TimeWindow(
     start: at(15, 9),
     end: at(16, 40),
-    name: 'Rāhu kālaya',
+    kind: WindowKind.rahu,
+  );
+
+  final poya = PoyaDay(
+    date: today,
+    month: PoyaMonth.binara,
+    isAdhi: false,
+    fullMoon: at(20, 12),
   );
 
   late SharedPreferences prefs;
@@ -132,20 +140,28 @@ void main() {
         panchangaProvider.overrideWithValue(panchanga),
         inauspiciousProvider.overrideWithValue([
           rahu,
-          TimeWindow(start: at(9, 6), end: at(10, 37), name: 'Yamaganda'),
+          TimeWindow(
+            start: at(9, 6),
+            end: at(10, 37),
+            kind: WindowKind.yamaganda,
+          ),
         ]),
         auspiciousProvider.overrideWithValue([
           TimeWindow(
             start: at(13, 38),
             end: at(15, 9),
-            name: 'Subha',
+            kind: WindowKind.auspicious,
             auspicious: true,
           ),
         ]),
-        currentlyInauspiciousProvider.overrideWithValue(null),
-        poyaTodayProvider.overrideWithValue(null),
-        nextPoyaProvider.overrideWithValue(null),
-        nextFestivalProvider.overrideWithValue(null),
+        // These were all null, so three cards never rendered and the test
+        // could not see what they printed. The running-now banner turned out
+        // to be an English sentence built inline, and the poya card printed
+        // its Sinhala name in a Tamil app (KAN-59).
+        currentlyInauspiciousProvider.overrideWithValue(rahu),
+        poyaTodayProvider.overrideWithValue(poya),
+        nextPoyaProvider.overrideWithValue(poya),
+        nextFestivalProvider.overrideWithValue(poya),
       ],
     );
     addTearDown(container.dispose);
@@ -206,6 +222,41 @@ void main() {
       reason: 'the Tamil screen drew no Tamil at all',
     );
   });
+
+  for (final locale in AppLocale.values) {
+    testWidgets('the named periods and the poya are in '
+        '${locale.englishName}', (tester) async {
+      // Not a blanket Latin check: tithi, nakṣatra, yoga and karaṇa names are
+      // English here until KAN-52, and a sweeping assertion would fail on
+      // those and have to be weakened until it proved nothing.
+      final drawn = await pumpHome(tester, locale);
+      final joined = drawn.join(' | ');
+
+      for (final kind in [WindowKind.rahu, WindowKind.yamaganda]) {
+        expect(
+          joined,
+          contains(kind.label(locale)),
+          reason: '${kind.name} is not in ${locale.englishName}',
+        );
+      }
+
+      expect(
+        joined,
+        contains(poya.label(locale)),
+        reason: 'the poya is not in ${locale.englishName}',
+      );
+
+      if (locale != AppLocale.en) {
+        // The banner used to read "Rāhu kālaya is running now, until ..." in
+        // every language, sentence and all.
+        expect(
+          joined,
+          isNot(contains('is running now')),
+          reason: 'the running-now banner is still an English sentence',
+        );
+      }
+    });
+  }
 
   testWidgets('a Sinhala reader is not shown Tamil', (tester) async {
     final drawn = await pumpHome(tester, AppLocale.si);

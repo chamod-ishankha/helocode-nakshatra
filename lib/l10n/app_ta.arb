@@ -32,6 +32,7 @@
   "homeRahuShort": "ராகு",
   "homeAvoidImportant": "முக்கியமான எதையும் தொடங்குவதைத் தவிர்க்கவும்",
   "homeRunningUntil": "{time} வரை",
+  "homeWindowRunningNow": "{window} இப்போது நடப்பில், {time} வரை.",
   "homeOtherInauspicious": "பிற அசுப நேரங்கள்",
   "homeClearTimes": "இன்றைய நல்ல நேரங்கள்",
   "homeClearTimesHelp": "எந்த அசுப நேரத்திற்கும் உட்படாத பகல் நேரம்.",

@@ -116,6 +116,11 @@ class L10nEn extends L10n {
   }
 
   @override
+  String homeWindowRunningNow(String window, String time) {
+    return '$window is running now, until $time.';
+  }
+
+  @override
   String get homeOtherInauspicious => 'Other inauspicious periods';
 
   @override

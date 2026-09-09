@@ -551,6 +551,48 @@ class L10nSi extends L10n {
   String get settingsLanguage => 'භාෂාව';
 
   @override
+  String get settingsSectionReminders => 'මතක් කිරීම්';
+
+  @override
+  String get settingsDailyReminder => 'උදෑසන නැකත';
+
+  @override
+  String get settingsDailyReminderHint =>
+      'දවසේ රාහු කාලය, යමක් ආරම්භ කිරීමට පෙර.';
+
+  @override
+  String get settingsReminderTime => 'වේලාව';
+
+  @override
+  String get settingsPoyaReminder => 'පොහොය මතක් කිරීම';
+
+  @override
+  String get settingsPoyaReminderHint => 'පොහොය දිනට පෙර දින සවස.';
+
+  @override
+  String get settingsNotificationsBlocked =>
+      'ඔබගේ දුරකථන සැකසුම් තුළ Nakshatra සඳහා දැනුම්දීම් අක්‍රියයි.';
+
+  @override
+  String get notificationDailyTitle => 'අද නැකත';
+
+  @override
+  String notificationDailyBody(String start, String end) {
+    return 'රාහු කාලය $start – $end';
+  }
+
+  @override
+  String get notificationDailyBodyUnknown => 'අද නැකත බැලීමට විවෘත කරන්න.';
+
+  @override
+  String get notificationPoyaTitle => 'හෙට පොහොය';
+
+  @override
+  String notificationPoyaBody(String poya) {
+    return 'හෙට $poya.';
+  }
+
+  @override
   String get settingsSectionData => 'ඔබේ දත්ත';
 
   @override

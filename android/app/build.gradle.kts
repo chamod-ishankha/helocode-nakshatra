@@ -55,6 +55,11 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+
+        // flutter_local_notifications schedules against java.time, which is
+        // API 26+. Desugaring backports it so the reminder works on the older
+        // phones this app is aimed at rather than only on new ones.
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -150,4 +155,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

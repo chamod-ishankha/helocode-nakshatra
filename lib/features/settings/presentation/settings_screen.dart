@@ -14,6 +14,9 @@ import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../account/presentation/auth_messages.dart';
+import '../../../core/notifications/notification_coordinator.dart';
+import '../../../core/notifications/notification_prefs.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../onboarding/data/profile_repository.dart';
 
 /// Settings (KAN-30).
@@ -66,6 +69,9 @@ class SettingsScreen extends ConsumerWidget {
           const _ThemeTile(),
           const _LanguageTile(),
           const _ChartStyleTile(),
+
+          _Section(l.settingsSectionReminders),
+          const _ReminderTiles(),
 
           _Section(l.settingsSectionData),
           ListTile(
@@ -364,6 +370,96 @@ class _ChoiceTile<T> extends StatelessWidget {
       ),
       trailing: const Icon(Icons.expand_more),
       onTap: () => _choose(context),
+    );
+  }
+}
+
+/// The reminder switches (KAN-33).
+///
+/// The Android 13 permission is asked for **here**, when the user turns a
+/// reminder on, rather than at launch. Onboarding is already the highest
+/// drop-off surface in the app, and a permission dialog in front of a benefit
+/// nobody has felt yet gets refused — after which Android will not ask again.
+///
+/// If it is refused the switch goes back to off rather than sitting on while
+/// nothing arrives, and the screen says where to turn it back on.
+class _ReminderTiles extends ConsumerWidget {
+  const _ReminderTiles();
+
+  /// Invalidate before awaiting: a FutureProvider that has already completed
+  /// returns the old result, so without this the await is on the previous
+  /// run and the change never reaches the scheduler.
+  Future<void> _rearm(WidgetRef ref) async {
+    ref.invalidate(notificationRefreshProvider);
+    await ref.read(notificationRefreshProvider.future);
+  }
+
+  Future<void> _toggle(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool on,
+    required Future<void> Function(bool) apply,
+  }) async {
+    if (on && !await NotificationService.requestPermission()) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(L10n.of(context).settingsNotificationsBlocked)),
+      );
+      return;
+    }
+
+    await apply(on);
+    await _rearm(ref);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+    final prefs = ref.watch(notificationPrefsProvider);
+    final notifier = ref.read(notificationPrefsProvider.notifier);
+
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.wb_twilight),
+          title: Text(l.settingsDailyReminder),
+          subtitle: Text(l.settingsDailyReminderHint),
+          value: prefs.daily,
+          onChanged: (on) =>
+              _toggle(context, ref, on: on, apply: notifier.setDaily),
+        ),
+        if (prefs.daily)
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: Text(l.settingsReminderTime),
+            trailing: Text(
+              MaterialLocalizations.of(context).formatTimeOfDay(
+                TimeOfDay(hour: prefs.hour, minute: prefs.minute),
+              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: AppColors.accent),
+            ),
+            onTap: () async {
+              final picked = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay(hour: prefs.hour, minute: prefs.minute),
+              );
+              if (picked == null) return;
+
+              await notifier.setTime(picked.hour, picked.minute);
+              await _rearm(ref);
+            },
+          ),
+        SwitchListTile(
+          secondary: const Icon(Icons.brightness_2_outlined),
+          title: Text(l.settingsPoyaReminder),
+          subtitle: Text(l.settingsPoyaReminderHint),
+          value: prefs.poya,
+          onChanged: (on) =>
+              _toggle(context, ref, on: on, apply: notifier.setPoya),
+        ),
+      ],
     );
   }
 }

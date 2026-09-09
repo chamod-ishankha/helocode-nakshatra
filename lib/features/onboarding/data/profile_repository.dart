@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
+import '../../../core/notifications/notification_prefs.dart';
 import '../../../core/config/theme_preference.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/sync/profile_sync.dart';
@@ -34,6 +35,7 @@ class ProfileRepository {
   static const _localeKey = 'app_locale_v1';
   static const _chartStyleKey = 'chart_style_v1';
   static const _themeKey = 'theme_preference_v1';
+  static const _notificationsKey = 'notification_prefs_v1';
 
   BirthProfile? load() {
     final raw = _prefs.getString(_profileKey);
@@ -68,6 +70,26 @@ class ProfileRepository {
 
   Future<void> saveLocale(AppLocale locale) =>
       _prefs.setString(_localeKey, locale.code);
+
+  /// What the user asked to be notified about.
+  ///
+  /// A corrupt value reads as "nothing enabled" rather than throwing: the
+  /// alternative is an app that will not start because of a preference.
+  NotificationPrefs loadNotificationPrefs() {
+    final raw = _prefs.getString(_notificationsKey);
+    if (raw == null) return const NotificationPrefs();
+
+    try {
+      return NotificationPrefs.fromJson(
+        jsonDecode(raw) as Map<String, dynamic>,
+      );
+    } on Object {
+      return const NotificationPrefs();
+    }
+  }
+
+  Future<void> saveNotificationPrefs(NotificationPrefs prefs) =>
+      _prefs.setString(_notificationsKey, jsonEncode(prefs.toJson()));
 
   ChartStyle loadChartStyle() =>
       ChartStyle.fromName(_prefs.getString(_chartStyleKey));

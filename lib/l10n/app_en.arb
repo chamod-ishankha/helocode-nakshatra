@@ -286,6 +286,35 @@
   "settingsThemeHint": "Light is easier to read outdoors, whatever the phone is set to.",
   "settingsChartStyle": "Chart style",
   "settingsLanguage": "Language",
+  "settingsSectionReminders": "Reminders",
+  "settingsDailyReminder": "Morning nekath",
+  "settingsDailyReminderHint": "The day's rāhu kālaya, before you start anything.",
+  "settingsReminderTime": "Time",
+  "settingsPoyaReminder": "Poya reminder",
+  "settingsPoyaReminderHint": "The evening before a poya day.",
+  "settingsNotificationsBlocked": "Notifications are turned off for Nakshatra in your phone's settings.",
+  "notificationDailyTitle": "Today's nekath",
+  "notificationDailyBody": "Rāhu kālaya {start} – {end}",
+  "@notificationDailyBody": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationDailyBodyUnknown": "Open for today's nekath.",
+  "notificationPoyaTitle": "Poya tomorrow",
+  "notificationPoyaBody": "{poya} is tomorrow.",
+  "@notificationPoyaBody": {
+    "placeholders": {
+      "poya": {
+        "type": "String"
+      }
+    }
+  },
   "settingsSectionData": "Your data",
   "settingsDeleteData": "Delete my details",
   "settingsDeleteHint": "Removes your birth details from this phone and from our backup.",

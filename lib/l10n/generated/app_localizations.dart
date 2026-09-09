@@ -1065,6 +1065,78 @@ abstract class L10n {
   /// **'Language'**
   String get settingsLanguage;
 
+  /// No description provided for @settingsSectionReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get settingsSectionReminders;
+
+  /// No description provided for @settingsDailyReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning nekath'**
+  String get settingsDailyReminder;
+
+  /// No description provided for @settingsDailyReminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The day\'s rāhu kālaya, before you start anything.'**
+  String get settingsDailyReminderHint;
+
+  /// No description provided for @settingsReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get settingsReminderTime;
+
+  /// No description provided for @settingsPoyaReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Poya reminder'**
+  String get settingsPoyaReminder;
+
+  /// No description provided for @settingsPoyaReminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The evening before a poya day.'**
+  String get settingsPoyaReminderHint;
+
+  /// No description provided for @settingsNotificationsBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are turned off for Nakshatra in your phone\'s settings.'**
+  String get settingsNotificationsBlocked;
+
+  /// No description provided for @notificationDailyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s nekath'**
+  String get notificationDailyTitle;
+
+  /// No description provided for @notificationDailyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāhu kālaya {start} – {end}'**
+  String notificationDailyBody(String start, String end);
+
+  /// No description provided for @notificationDailyBodyUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Open for today\'s nekath.'**
+  String get notificationDailyBodyUnknown;
+
+  /// No description provided for @notificationPoyaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Poya tomorrow'**
+  String get notificationPoyaTitle;
+
+  /// No description provided for @notificationPoyaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{poya} is tomorrow.'**
+  String notificationPoyaBody(String poya);
+
   /// No description provided for @settingsSectionData.
   ///
   /// In en, this message translates to:

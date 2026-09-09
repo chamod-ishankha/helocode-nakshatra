@@ -12,6 +12,8 @@ import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/flavor.dart';
 import 'core/logging/analytics_service.dart';
+import 'core/notifications/notification_coordinator.dart';
+import 'core/notifications/notification_service.dart';
 import 'core/logging/app_logger.dart';
 import 'core/logging/crash_reporter.dart';
 import 'core/sync/auth_service.dart';
@@ -59,6 +61,10 @@ Future<void> bootstrap(Flavor flavor) async {
   // twenty users.
   await AnalyticsService.initialize();
 
+  // Registers the channel and the tap handler. Scheduling comes later, once
+  // the profile is known.
+  await NotificationService.initialize();
+
   // Decides whether the account screen offers a Google button at all. Also
   // never throws: a project without the Google provider switched on is the
   // normal state, not an error.
@@ -84,6 +90,15 @@ Future<void> bootstrap(Flavor flavor) async {
   if (FirebaseService.isAvailable) {
     await container.read(profileProvider.notifier).restoreFromBackup();
   }
+
+  // Not awaited. Seven pañcāṅga are a few ephemeris calls each, and the daily
+  // screen is what the user opened the app for; reminders can be re-armed
+  // after it is on screen.
+  unawaited(
+    container
+        .read(notificationRefreshProvider.future)
+        .catchError((Object _) {}),
+  );
 
   runApp(
     UncontrolledProviderScope(

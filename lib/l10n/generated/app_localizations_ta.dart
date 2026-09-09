@@ -558,6 +558,49 @@ class L10nTa extends L10n {
   String get settingsLanguage => 'மொழி';
 
   @override
+  String get settingsSectionReminders => 'நினைவூட்டல்கள்';
+
+  @override
+  String get settingsDailyReminder => 'காலை நேரம்';
+
+  @override
+  String get settingsDailyReminderHint =>
+      'நாளின் ராகு காலம், எதையும் தொடங்கும் முன்.';
+
+  @override
+  String get settingsReminderTime => 'நேரம்';
+
+  @override
+  String get settingsPoyaReminder => 'பௌர்ணமி நினைவூட்டல்';
+
+  @override
+  String get settingsPoyaReminderHint => 'பௌர்ணமி நாளுக்கு முந்தைய மாலை.';
+
+  @override
+  String get settingsNotificationsBlocked =>
+      'உங்கள் தொலைபேசி அமைப்புகளில் Nakshatra-க்கான அறிவிப்புகள் அணைக்கப்பட்டுள்ளன.';
+
+  @override
+  String get notificationDailyTitle => 'இன்றைய நேரம்';
+
+  @override
+  String notificationDailyBody(String start, String end) {
+    return 'ராகு காலம் $start – $end';
+  }
+
+  @override
+  String get notificationDailyBodyUnknown =>
+      'இன்றைய நேரத்தைப் பார்க்கத் திறக்கவும்.';
+
+  @override
+  String get notificationPoyaTitle => 'நாளை பௌர்ணமி';
+
+  @override
+  String notificationPoyaBody(String poya) {
+    return 'நாளை $poya.';
+  }
+
+  @override
   String get settingsSectionData => 'உங்கள் தரவு';
 
   @override

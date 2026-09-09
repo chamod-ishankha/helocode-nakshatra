@@ -554,6 +554,48 @@ class L10nEn extends L10n {
   String get settingsLanguage => 'Language';
 
   @override
+  String get settingsSectionReminders => 'Reminders';
+
+  @override
+  String get settingsDailyReminder => 'Morning nekath';
+
+  @override
+  String get settingsDailyReminderHint =>
+      'The day\'s rāhu kālaya, before you start anything.';
+
+  @override
+  String get settingsReminderTime => 'Time';
+
+  @override
+  String get settingsPoyaReminder => 'Poya reminder';
+
+  @override
+  String get settingsPoyaReminderHint => 'The evening before a poya day.';
+
+  @override
+  String get settingsNotificationsBlocked =>
+      'Notifications are turned off for Nakshatra in your phone\'s settings.';
+
+  @override
+  String get notificationDailyTitle => 'Today\'s nekath';
+
+  @override
+  String notificationDailyBody(String start, String end) {
+    return 'Rāhu kālaya $start – $end';
+  }
+
+  @override
+  String get notificationDailyBodyUnknown => 'Open for today\'s nekath.';
+
+  @override
+  String get notificationPoyaTitle => 'Poya tomorrow';
+
+  @override
+  String notificationPoyaBody(String poya) {
+    return '$poya is tomorrow.';
+  }
+
+  @override
   String get settingsSectionData => 'Your data';
 
   @override

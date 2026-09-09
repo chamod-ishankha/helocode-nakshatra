@@ -58,6 +58,7 @@ dependencies:
   google_mobile_ads: ^9.1.0
   firebase_crashlytics: ^5.3.0
   firebase_analytics: ^12.5.0
+  flutter_local_notifications: ^22.3.0
 
 dev_dependencies:
   flutter_test:

@@ -26,4 +26,7 @@ tasks.register<Delete>("clean") {
 plugins {
     // Add the dependency for the Google services Gradle plugin
     id("com.google.gms.google-services") version "4.5.0" apply false
+    // Uploads the mapping and native symbols, without which a release stack
+    // trace is a list of addresses.
+    id("com.google.firebase.crashlytics") version "3.0.6" apply false
 }

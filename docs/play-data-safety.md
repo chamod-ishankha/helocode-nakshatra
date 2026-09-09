@@ -3,17 +3,25 @@
 The answers to enter in **Play Console → App content → Data safety**.
 
 This describes the build as it stands: `firebase_core`, `firebase_auth`,
-`cloud_firestore`, `google_sign_in` and `google_mobile_ads`, and nothing else
-that touches the network. It is checked in so that a change to what the app
-collects and a change to what we declare land in the same commit. **If you add
-Crashlytics or RevenueCat, this file is wrong until you update it** — see
-[When this changes](#when-this-changes).
+`cloud_firestore`, `google_sign_in`, `google_mobile_ads` and
+`firebase_crashlytics`, and nothing else that touches the network. It is checked
+in so that a change to what the app collects and a change to what we declare
+land in the same commit. **If you add RevenueCat, this file is wrong until you
+update it** — see [When this changes](#when-this-changes).
+
+> **This changed on 2026-09-09 and the console has not caught up.** Crashlytics
+> was added in KAN-19, which makes *App info and performance → Crash logs* and
+> *→ Diagnostics* a Yes. The declaration in Play Console still says No to both.
+> It has to be updated **before the next production submission**, and ideally
+> before the next closed-testing build, since that build already collects.
 
 Play Console can import these answers: **App content → Data safety → export the
 CSV, fill the `Response value` column, re-import.** `tool/` has no generator for
 it; the mapping is small enough to redo from the tables below.
 
-Last verified against the release manifest on 2026-09-07, after KAN-34:
+Last verified against the release manifest on 2026-09-07, after KAN-34.
+Crashlytics was added on 2026-09-09 (KAN-19) and adds no new permission —
+it uses INTERNET and ACCESS_NETWORK_STATE, both already listed:
 
 ```
 android.permission.INTERNET                     us
@@ -148,6 +156,45 @@ That changes when Remove Ads ships (KAN-35) and should be revisited then.
 > part that is certain. Confirm the rest against Google's current guidance
 > rather than against this file.
 
+### App info and performance → Crash logs
+
+| Field | Answer |
+| --- | --- |
+| Collected | **Yes** |
+| Shared | **No** |
+| Processed ephemerally | **No** |
+| Required or optional | **Required** |
+| Collection purpose | **Analytics** |
+
+Stack traces, the exception, and the state of the app when it fell over, sent by
+Firebase Crashlytics (KAN-19). Added because the app went into closed testing
+with twelve people and no way to learn that it had crashed on any of them.
+
+Required rather than optional: there is no in-app switch for it. If one is ever
+added, this becomes optional.
+
+Not shared. Google is a processor here in the same way it is for Auth — it runs
+the service on our behalf and does not get the data for its own purposes. That
+is the opposite of the Advertising ID entry above, which genuinely is shared.
+
+### App info and performance → Diagnostics
+
+| Field | Answer |
+| --- | --- |
+| Collected | **Yes** |
+| Shared | **No** |
+| Processed ephemerally | **No** |
+| Required or optional | **Required** |
+| Collection purpose | **Analytics** |
+
+What Crashlytics attaches to a report so it can be read: device model, OS
+version, free memory and disk, orientation, and how long the app had been
+running. Declared separately from Crash logs because Play treats them as two
+data types even though one SDK sends both.
+
+The app adds one custom key of its own, the build flavor, so a crash from a
+developer's phone can be told apart from a tester's.
+
 ---
 
 ## 3. What to answer No to, and why
@@ -159,9 +206,9 @@ queries it.
   location and holds no location permission. Birth place is a city the user
   types on a form, and is declared above under Other info. Answering Yes here
   would put a Location badge on the listing for something the app cannot do.
-- **App activity / App info and performance** — No. No Analytics and no
-  Crashlytics are wired up. Nothing reports screens viewed, crashes or
-  diagnostics.
+- **App activity** — No. No Analytics is wired up; nothing reports screens
+  viewed or in-app searches. (App info and performance is now a **Yes** — see
+  the Crash logs and Diagnostics entries above.)
 - **Financial info** — No. Play Billing is not integrated yet, and when it is,
   Google processes payment details without the app seeing them.
 - **Contacts, Photos and videos, Messages, Calendar, Files and docs, Audio,
@@ -182,7 +229,7 @@ its own ad serving, so it is declared as shared.
 | --- | --- |
 | **~~AdMob (KAN-34)~~** | Done — Device or other IDs is declared above, shared, for advertising. UMP consent ships with it. |
 | **Remove Ads (KAN-35)** | Device or other IDs becomes **optional** rather than required, since a purchaser can switch ads off. Purchase history appears under Financial info. |
-| **Crashlytics** | App info and performance → Crash logs and Diagnostics → Yes, purpose Analytics. |
+| **~~Crashlytics (KAN-19)~~** | Done — Crash logs and Diagnostics are declared above. |
 | **RevenueCat** | Purchase history under Financial info, and a purchase identifier under User IDs. |
 | **~~Google / email sign-in (KAN-48)~~** | Done — Email address is declared above. |
 

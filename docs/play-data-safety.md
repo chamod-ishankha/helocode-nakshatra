@@ -3,17 +3,26 @@
 The answers to enter in **Play Console → App content → Data safety**.
 
 This describes the build as it stands: `firebase_core`, `firebase_auth`,
-`cloud_firestore`, `google_sign_in`, `google_mobile_ads` and
-`firebase_crashlytics`, and nothing else that touches the network. It is checked
+`cloud_firestore`, `google_sign_in`, `google_mobile_ads`,
+`firebase_crashlytics` and `firebase_analytics`, and nothing else that touches
+the network. It is checked
 in so that a change to what the app collects and a change to what we declare
 land in the same commit. **If you add RevenueCat, this file is wrong until you
 update it** — see [When this changes](#when-this-changes).
 
-> **This changed on 2026-09-09 and the console has not caught up.** Crashlytics
-> was added in KAN-19, which makes *App info and performance → Crash logs* and
-> *→ Diagnostics* a Yes. The declaration in Play Console still says No to both.
-> It has to be updated **before the next production submission**, and ideally
-> before the next closed-testing build, since that build already collects.
+> **This changed on 2026-09-09 and the console has not caught up.** KAN-19
+> added Crashlytics and Analytics, which makes three answers a Yes that are
+> currently No:
+>
+> - *App info and performance → Crash logs*
+> - *App info and performance → Diagnostics*
+> - *App activity → App interactions*
+>
+> All three have to be set **before the next production submission**. Note that
+> the build now in closed testing (1.0.1+2) contains **none** of this — it
+> predates both commits — so nothing is being collected under a wrong
+> declaration today. The declaration must be fixed before the *next* build
+> ships, not retrospectively.
 
 Play Console can import these answers: **App content → Data safety → export the
 CSV, fill the `Response value` column, re-import.** `tool/` has no generator for
@@ -156,6 +165,31 @@ That changes when Remove Ads ships (KAN-35) and should be revisited then.
 > part that is certain. Confirm the rest against Google's current guidance
 > rather than against this file.
 
+### App activity → App interactions
+
+| Field | Answer |
+| --- | --- |
+| Collected | **Yes** |
+| Shared | **No** |
+| Processed ephemerally | **No** |
+| Required or optional | **Required** |
+| Collection purpose | **Analytics** |
+
+Screen views and the automatic session events Firebase Analytics records —
+first open, session start, engagement time (KAN-19). Screen names come from the
+route path, so this records *which* screens are used and never anything a user
+typed into one. Birth details are not sent, and no event carries them.
+
+**Prod only.** `FlavorConfig.enableAnalytics` is false for dev and staging and
+`AnalyticsService` honours it, so a developer reinstalling a debug build does
+not appear as a user. Verified on device: a dev build logs
+`App measurement disabled by setAnalyticsCollectionEnabled(false)`.
+
+> **Check Google's own list before submitting**, as with AdMob above. Google
+> publishes the Data Safety answers expected for Firebase Analytics, and
+> *approximate location derived from IP* is the entry that is argued about.
+> This file declares App interactions, which is the part that is certain.
+
 ### App info and performance → Crash logs
 
 | Field | Answer |
@@ -206,9 +240,9 @@ queries it.
   location and holds no location permission. Birth place is a city the user
   types on a form, and is declared above under Other info. Answering Yes here
   would put a Location badge on the listing for something the app cannot do.
-- **App activity** — No. No Analytics is wired up; nothing reports screens
-  viewed or in-app searches. (App info and performance is now a **Yes** — see
-  the Crash logs and Diagnostics entries above.)
+- **App activity → In-app search history, Installed apps, Other
+  user-generated content** — No. None are read. *App interactions* is now a
+  **Yes** — see the entry above.
 - **Financial info** — No. Play Billing is not integrated yet, and when it is,
   Google processes payment details without the app seeing them.
 - **Contacts, Photos and videos, Messages, Calendar, Files and docs, Audio,

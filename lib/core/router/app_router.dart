@@ -9,6 +9,7 @@ import '../../features/calendar/presentation/calendar_screen.dart';
 import '../../features/chart/presentation/chart_screen.dart';
 import '../../features/compatibility/presentation/compatibility_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../logging/analytics_service.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -83,6 +84,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: Routes.home,
     debugLogDiagnostics: true,
     refreshListenable: profileChanged,
+    // Screen views, when analytics is on at all. The name comes from the route
+    // path, so this records which screens are used and never anything a user
+    // typed into one.
+    observers: [?AnalyticsService.observer],
     redirect: (context, state) => redirectFor(
       location: state.uri.toString(),
       hasProfile: ref.read(profileProvider) != null,

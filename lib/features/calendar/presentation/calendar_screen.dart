@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/muhurta.dart';
+import '../../../core/config/app_locale.dart';
+import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -51,6 +53,8 @@ class CalendarScreen extends ConsumerWidget {
           const _MonthGrid(),
           const SizedBox(height: 8),
           const _Legend(),
+          const SizedBox(height: 24),
+          const _MonthEvents(),
           const SizedBox(height: 24),
           const _BestDays(),
         ],
@@ -263,6 +267,103 @@ class _Legend extends StatelessWidget {
         item(AppColors.accent, l.calendarPoya),
         const SizedBox(width: 20),
         item(AppColors.auspicious, l.calendarFestival),
+      ],
+    );
+  }
+}
+
+/// What the dots on the grid actually are.
+///
+/// The grid marked days and never named them, so a month with no festival in
+/// it — September, which is the one that got looked at — read as though the
+/// app knew about poya days and nothing else (KAN-23).
+///
+/// The second half of this is the more useful half: the festivals the app
+/// **cannot** compute are named here too. Four of Sri Lanka's public holidays
+/// are set by moon sighting or local custom and are gazetted rather than
+/// calculated, and a calendar that silently omits them is telling the reader
+/// something false about the year.
+class _MonthEvents extends ConsumerWidget {
+  const _MonthEvents();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+    final theme = Theme.of(context);
+    final locale = AppLocale.of(context);
+    final markers = ref.watch(monthMarkersProvider);
+
+    final days = markers.keys.toList()..sort();
+    final month = ref.watch(visibleMonthProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l.calendarThisMonth, style: theme.textTheme.titleMedium),
+        const SizedBox(height: 8),
+
+        if (days.isEmpty)
+          Text(
+            l.calendarNoEvents,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+
+        for (final day in days)
+          for (final event in markers[day]!)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: _Dot(
+                      colour: event is PoyaDay
+                          ? AppColors.accent
+                          : AppColors.auspicious,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 34,
+                    child: Text(
+                      '$day',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Text(event.label(locale))),
+                ],
+              ),
+            ),
+
+        const SizedBox(height: 20),
+        Text(l.calendarAnnounced, style: theme.textTheme.titleSmall),
+        const SizedBox(height: 4),
+        Text(
+          l.calendarAnnouncedHelp,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          SriLankanCalendar.unsupportedFestivals.keys.join(' \u00b7 '),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        // The year is stated because the list above is this month's and this
+        // one is not; without it the two read as the same list.
+        Text(
+          '${month.year}',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }

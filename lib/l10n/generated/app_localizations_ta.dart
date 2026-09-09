@@ -161,7 +161,7 @@ class L10nTa extends L10n {
 
   @override
   String get homeFestivalsExcluded =>
-      'தீபாவளியும் ஈதும் இங்கு பட்டியலிடப்படவில்லை: அவற்றின் தேதிகள் கணக்கீட்டை விட வட்டார மரபு மற்றும் பிறை பார்த்தலைப் பொறுத்தே அமைகின்றன. தவறான ஒரு மத நாளை உறுதியாகக் காட்டுவதை விடக் காட்டாமல் இருப்பது நல்லது.';
+      'தீபாவளி, ஈத் மற்றும் மிலாது உன்-நபி இங்கு பட்டியலிடப்படவில்லை: அவற்றின் தேதிகள் கணக்கீட்டை விட வட்டார மரபு மற்றும் பிறை பார்த்தலைப் பொறுத்தே அமைகின்றன. தவறான ஒரு மத நாளை உறுதியாகக் காட்டுவதை விடக் காட்டாமல் இருப்பது நல்லது.';
 
   @override
   String get panchangaTithi => 'திதி';
@@ -608,6 +608,19 @@ class L10nTa extends L10n {
 
   @override
   String get calendarFestival => 'பண்டிகை';
+
+  @override
+  String get calendarThisMonth => 'இந்த மாதம்';
+
+  @override
+  String get calendarNoEvents => 'இந்த மாதம் பௌர்ணமியோ பண்டிகையோ இல்லை.';
+
+  @override
+  String get calendarAnnounced => 'ஆண்டுதோறும் அறிவிக்கப்படும்';
+
+  @override
+  String get calendarAnnouncedHelp =>
+      'இவை பிறை பார்த்தல் அல்லது வழக்கத்தின்படி தீர்மானிக்கப்படுவதால் இங்கு கணக்கிடப்படவில்லை. அந்த ஆண்டின் வர்த்தமானியைப் பாருங்கள்.';
 
   @override
   String get calendarBestDays => 'இந்த மாதத்தின் சிறந்த நாட்கள்';

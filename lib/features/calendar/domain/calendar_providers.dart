@@ -35,10 +35,10 @@ final visibleMonthProvider = NotifierProvider<VisibleMonthNotifier, DateTime>(
 final monthMarkersProvider = Provider<Map<int, List<Festival>>>((ref) {
   final month = ref.watch(visibleMonthProvider);
 
-  final events = <Festival>[
-    ...SriLankanCalendar.poyaDaysIn(month.year),
-    ...SriLankanCalendar.festivalsIn(month.year),
-  ];
+  // festivalsIn already includes the poya days. Adding them again put every
+  // poya in the day's list twice, which the dots hid — `any()` does not care
+  // how many — and a list would not have.
+  final events = SriLankanCalendar.festivalsIn(month.year);
 
   final byDay = <int, List<Festival>>{};
   for (final e in events) {

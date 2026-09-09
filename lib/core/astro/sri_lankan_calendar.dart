@@ -29,6 +29,7 @@ abstract final class SriLankanCalendar {
         'The date follows regional convention and is announced each year.',
     'Eid al-Fitr': 'Determined by local moon sighting, not by calculation.',
     'Eid al-Adha': 'Determined by local moon sighting, not by calculation.',
+    'Milad un-Nabi': 'Determined by local moon sighting, not by calculation.',
   };
 
   /// Every poya day in [year], in order.
@@ -113,7 +114,36 @@ abstract final class SriLankanCalendar {
   /// Thai Pongal — the Sun's entry into sidereal Capricorn (Makara Sankranti).
   static DateTime thaiPongal(int year) => _solarIngress(year, 270);
 
-  /// Fixed-date festivals.
+  /// Easter Sunday in the Gregorian calendar.
+  ///
+  /// The anonymous Gregorian algorithm — pure arithmetic, no ephemeris. That
+  /// matters here more than it looks: every other date in this file needs
+  /// Swiss Ephemeris and therefore a device, so none of them can be tested off
+  /// a phone. This one can be, and is, because Good Friday is a public holiday
+  /// and a wrong one is a wrong day off.
+  static DateTime easterSunday(int year) {
+    final a = year % 19;
+    final b = year ~/ 100;
+    final c = year % 100;
+    final d = b ~/ 4;
+    final e = b % 4;
+    final f = (b + 8) ~/ 25;
+    final g = (b - f + 1) ~/ 3;
+    final h = (19 * a + b - d - g + 15) % 30;
+    final i = c ~/ 4;
+    final k = c % 4;
+    final l = (32 + 2 * e + 2 * i - h - k) % 7;
+    final m = (a + 11 * h + 22 * l) ~/ 451;
+    final month = (h + l - 7 * m + 114) ~/ 31;
+    final day = ((h + l - 7 * m + 114) % 31) + 1;
+    return DateTime(year, month, day);
+  }
+
+  /// Good Friday — the Friday before Easter.
+  static DateTime goodFriday(int year) =>
+      easterSunday(year).subtract(const Duration(days: 2));
+
+  /// Festivals whose date comes from the civil calendar rather than the sky.
   static List<Festival> fixedFestivals(int year) => [
     Festival(
       date: DateTime(year, 12, 25),
@@ -136,6 +166,13 @@ abstract final class SriLankanCalendar {
       ta: 'மே தினம்',
       kind: FestivalKind.fixed,
     ),
+    Festival(
+      date: goodFriday(year),
+      name: 'Good Friday',
+      si: 'මහ සිකුරාදා',
+      ta: 'புனித வெள்ளி',
+      kind: FestivalKind.fixed,
+    ),
   ];
 
   /// Everything this engine can state for [year], in date order.
@@ -155,6 +192,19 @@ abstract final class SriLankanCalendar {
         note:
             'The Sun enters sidereal Aries. Customary observance times are '
             'announced each year and are not derived here.',
+      ),
+      // Sri Lanka gazettes the day before the ingress as a holiday of its
+      // own, so the New Year is two days off work, not one.
+      Festival(
+        date: DateTime(
+          newYear.year,
+          newYear.month,
+          newYear.day,
+        ).subtract(const Duration(days: 1)),
+        name: 'Day before Sinhala and Tamil New Year',
+        si: 'සිංහල හා දෙමළ අලුත් අවුරුදු දිනට පෙර දින',
+        ta: 'சித்திரைப் புத்தாண்டுக்கு முந்தைய நாள்',
+        kind: FestivalKind.solarIngress,
       ),
       Festival(
         date: DateTime(pongal.year, pongal.month, pongal.day),

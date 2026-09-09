@@ -157,7 +157,7 @@ class L10nSi extends L10n {
 
   @override
   String get homeFestivalsExcluded =>
-      'දීපාවලි සහ ඊද් මෙහි ලැයිස්තුගත කර නැත: ඒවායේ දිනයන් ගණනය කිරීමට වඩා කලාපීය සම්ප්‍රදාය සහ සඳ දැකීම අනුව තීරණය වන අතර, විශ්වාසයෙන් වැරදි ආගමික දිනයක් දැක්වීමට වඩා නොදැක්වීම හොඳය.';
+      'දීපාවලි, ඊද් සහ මිලාද් උන්-නබි මෙහි ලැයිස්තුගත කර නැත: ඒවායේ දිනයන් ගණනය කිරීමට වඩා කලාපීය සම්ප්‍රදාය සහ සඳ දැකීම අනුව තීරණය වන අතර, විශ්වාසයෙන් වැරදි ආගමික දිනයක් දැක්වීමට වඩා නොදැක්වීම හොඳය.';
 
   @override
   String get panchangaTithi => 'තිථිය';
@@ -601,6 +601,19 @@ class L10nSi extends L10n {
 
   @override
   String get calendarFestival => 'උත්සවය';
+
+  @override
+  String get calendarThisMonth => 'මෙම මාසයේ';
+
+  @override
+  String get calendarNoEvents => 'මෙම මාසයේ පොහොයක් හෝ උත්සවයක් නැත.';
+
+  @override
+  String get calendarAnnounced => 'වාර්ෂිකව නිවේදනය කෙරේ';
+
+  @override
+  String get calendarAnnouncedHelp =>
+      'මේවා සඳ දැකීම හෝ ප්‍රාදේශීය සම්ප්‍රදාය අනුව තීරණය වන බැවින් මෙහි ගණනය නොකෙරේ. එම වසරේ ගැසට් පත්‍රය බලන්න.';
 
   @override
   String get calendarBestDays => 'මෙම මාසයේ හොඳම දින';

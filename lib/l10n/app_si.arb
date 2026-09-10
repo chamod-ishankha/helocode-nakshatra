@@ -379,5 +379,15 @@
   "notificationFestivalBody": "හෙට {festival}.",
   "notificationDashaTitle": "නව දශාවක් ආරම්භ වේ",
   "notificationDashaMahaBody": "අද සිට ඔබේ {lord} මහාදශාව ආරම්භ වේ.",
-  "notificationDashaAntaraBody": "අද සිට ඔබේ {lord} අන්තර්දශාව ආරම්භ වේ."
+  "notificationDashaAntaraBody": "අද සිට ඔබේ {lord} අන්තර්දශාව ආරම්භ වේ.",
+  "profilesTitle": "සුරකින ලද කේන්දර",
+  "profilesSettingsHint": "පවුලේ අයගේ කේන්දර අතර මාරු වන්න.",
+  "profilesAdd": "තවත් කේන්දරයක් එක් කරන්න",
+  "profilesShowing": "දැන් පෙන්වයි",
+  "profilesRemove": "ඉවත් කරන්න",
+  "profilesRemoveConfirm": "{name} ඉවත් කරන්නද?",
+  "profilesRemoveBody": "ඔවුන්ගේ උපන් තොරතුරු මෙම දුරකථනයෙන් මකා දැමේ.",
+  "profilesBackupNote": "ඔබ පෙන්වන කේන්දරය පමණක් උපස්ථ කෙරේ. සෙසු ඒවා මෙම දුරකථනයේ පමණි.",
+  "profilesUnavailable": "සුරකින ලද කේන්දර සඳහා අවශ්‍ය ගබඩාව මෙම අනුවාදයට විවෘත කළ නොහැකි විය.",
+  "profilesBornOn": "උපන් දිනය {date}"
 }

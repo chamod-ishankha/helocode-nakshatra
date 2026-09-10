@@ -23,10 +23,9 @@ import '../../onboarding/data/profile_repository.dart';
 /// Settings (KAN-30).
 ///
 /// Only what actually works appears here. That rule is why reminders arrived
-/// with KAN-33 and restore purchases with KAN-35, rather than as rows that did
-/// nothing in the meantime — a row that does nothing is worse than a row that
-/// is missing. Multiple profiles is still absent for the same reason: the
-/// storage exists, the switcher does not.
+/// with KAN-33, restore purchases with KAN-35 and saved charts with KAN-19,
+/// each when the thing behind the row existed — a row that does nothing is
+/// worse than a row that is missing.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -64,6 +63,13 @@ class SettingsScreen extends ConsumerWidget {
             // form that could drift out of step with the first — as long as
             // the route says it is an edit, or the redirect turns it away.
             onTap: () => context.push(Routes.editProfile),
+          ),
+          ListTile(
+            leading: const Icon(Icons.groups_outlined),
+            title: Text(l.profilesTitle),
+            subtitle: Text(l.profilesSettingsHint),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.profiles),
           ),
 
           _Section(l.settingsSectionAppearance),

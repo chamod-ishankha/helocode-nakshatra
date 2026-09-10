@@ -11,17 +11,31 @@ import 'app_database.dart';
 /// id belongs to storage, so it is paired on rather than pushed into the
 /// model.
 class SavedProfile {
-  const SavedProfile({required this.id, required this.profile});
+  const SavedProfile({
+    required this.id,
+    required this.profile,
+    this.isSelected = false,
+  });
 
   final int id;
   final BirthProfile profile;
 
-  @override
-  bool operator ==(Object other) =>
-      other is SavedProfile && other.id == id && other.profile == profile;
+  /// Whether this is the one the app is currently showing.
+  ///
+  /// Carried on the row rather than worked out by the caller. A list screen
+  /// that compared names would tick two rows for a father and son who share
+  /// one, which is exactly the family this feature exists for.
+  final bool isSelected;
 
   @override
-  int get hashCode => Object.hash(id, profile);
+  bool operator ==(Object other) =>
+      other is SavedProfile &&
+      other.id == id &&
+      other.profile == profile &&
+      other.isSelected == isSelected;
+
+  @override
+  int get hashCode => Object.hash(id, profile, isSelected);
 }
 
 /// Birth profiles, in SQLite (KAN-19).
@@ -178,6 +192,7 @@ class ProfileStore {
 
   static SavedProfile _toSaved(Profile row) => SavedProfile(
     id: row.id,
+    isSelected: row.isSelected,
     profile: BirthProfile(
       name: row.name,
       birthDate: row.birthDate,

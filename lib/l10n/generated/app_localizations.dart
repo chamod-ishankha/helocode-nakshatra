@@ -2378,6 +2378,66 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Your {lord} antardaśā starts today.'**
   String notificationDashaAntaraBody(Object lord);
+
+  /// No description provided for @profilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved charts'**
+  String get profilesTitle;
+
+  /// No description provided for @profilesSettingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between charts for your family.'**
+  String get profilesSettingsHint;
+
+  /// No description provided for @profilesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another chart'**
+  String get profilesAdd;
+
+  /// No description provided for @profilesShowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing now'**
+  String get profilesShowing;
+
+  /// No description provided for @profilesRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get profilesRemove;
+
+  /// No description provided for @profilesRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String profilesRemoveConfirm(Object name);
+
+  /// No description provided for @profilesRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Their birth details will be deleted from this phone.'**
+  String get profilesRemoveBody;
+
+  /// No description provided for @profilesBackupNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the chart you are showing is backed up. The rest live on this phone.'**
+  String get profilesBackupNote;
+
+  /// No description provided for @profilesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved charts need storage this build could not open.'**
+  String get profilesUnavailable;
+
+  /// No description provided for @profilesBornOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Born {date}'**
+  String profilesBornOn(Object date);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

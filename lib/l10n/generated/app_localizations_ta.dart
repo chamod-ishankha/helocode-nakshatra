@@ -1311,4 +1311,42 @@ class L10nTa extends L10n {
   String notificationDashaAntaraBody(Object lord) {
     return 'இன்று முதல் உங்கள் $lord அந்தர்தசை தொடங்குகிறது.';
   }
+
+  @override
+  String get profilesTitle => 'சேமித்த சாதகங்கள்';
+
+  @override
+  String get profilesSettingsHint =>
+      'குடும்பத்தினரின் சாதகங்களுக்கு இடையே மாறவும்.';
+
+  @override
+  String get profilesAdd => 'மற்றொரு சாதகத்தைச் சேர்க்கவும்';
+
+  @override
+  String get profilesShowing => 'இப்போது காட்டப்படுகிறது';
+
+  @override
+  String get profilesRemove => 'நீக்கு';
+
+  @override
+  String profilesRemoveConfirm(Object name) {
+    return '$name நீக்கவா?';
+  }
+
+  @override
+  String get profilesRemoveBody =>
+      'அவர்களின் பிறப்பு விவரங்கள் இந்தத் தொலைபேசியிலிருந்து நீக்கப்படும்.';
+
+  @override
+  String get profilesBackupNote =>
+      'நீங்கள் காட்டும் சாதகம் மட்டுமே காப்புப் பிரதி எடுக்கப்படும். மற்றவை இந்தத் தொலைபேசியில் மட்டுமே.';
+
+  @override
+  String get profilesUnavailable =>
+      'சேமித்த சாதகங்களுக்குத் தேவையான சேமிப்பை இந்தப் பதிப்பால் திறக்க முடியவில்லை.';
+
+  @override
+  String profilesBornOn(Object date) {
+    return 'பிறந்த நாள் $date';
+  }
 }

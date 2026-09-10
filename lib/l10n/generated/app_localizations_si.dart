@@ -1291,4 +1291,41 @@ class L10nSi extends L10n {
   String notificationDashaAntaraBody(Object lord) {
     return 'අද සිට ඔබේ $lord අන්තර්දශාව ආරම්භ වේ.';
   }
+
+  @override
+  String get profilesTitle => 'සුරකින ලද කේන්දර';
+
+  @override
+  String get profilesSettingsHint => 'පවුලේ අයගේ කේන්දර අතර මාරු වන්න.';
+
+  @override
+  String get profilesAdd => 'තවත් කේන්දරයක් එක් කරන්න';
+
+  @override
+  String get profilesShowing => 'දැන් පෙන්වයි';
+
+  @override
+  String get profilesRemove => 'ඉවත් කරන්න';
+
+  @override
+  String profilesRemoveConfirm(Object name) {
+    return '$name ඉවත් කරන්නද?';
+  }
+
+  @override
+  String get profilesRemoveBody =>
+      'ඔවුන්ගේ උපන් තොරතුරු මෙම දුරකථනයෙන් මකා දැමේ.';
+
+  @override
+  String get profilesBackupNote =>
+      'ඔබ පෙන්වන කේන්දරය පමණක් උපස්ථ කෙරේ. සෙසු ඒවා මෙම දුරකථනයේ පමණි.';
+
+  @override
+  String get profilesUnavailable =>
+      'සුරකින ලද කේන්දර සඳහා අවශ්‍ය ගබඩාව මෙම අනුවාදයට විවෘත කළ නොහැකි විය.';
+
+  @override
+  String profilesBornOn(Object date) {
+    return 'උපන් දිනය $date';
+  }
 }

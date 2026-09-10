@@ -92,6 +92,63 @@ class ProfileRepository {
     await _prefs.remove(_profileKey);
   }
 
+  /// Every saved profile, oldest first (KAN-19).
+  ///
+  /// Empty when there is no database. A build that fell back to preferences
+  /// holds exactly one profile and has nothing to switch between, so an empty
+  /// list is the honest answer rather than a list of one.
+  Future<List<SavedProfile>> all() async => await _store?.all() ?? const [];
+
+  /// Adds another person and makes them the one being shown.
+  ///
+  /// Selected immediately because that is what the user just asked for: they
+  /// typed somebody's birth details, and the next screen should be that
+  /// person's chart.
+  Future<void> add(BirthProfile profile) async {
+    await _store?.add(profile, select: true);
+    _cached = profile;
+    await _saveToPrefs(profile);
+  }
+
+  /// Switches to a saved profile. Returns it, or null if the id is gone.
+  ///
+  /// The preferences mirror follows the selection. It is the fallback for a
+  /// lost database, and a fallback that restores somebody else's chart would
+  /// be worse than one that restores nothing.
+  Future<BirthProfile?> select(int id) async {
+    final store = _store;
+    if (store == null) return null;
+
+    await store.select(id);
+    final selected = await store.selected();
+    if (selected == null) return null;
+
+    _cached = selected.profile;
+    await _saveToPrefs(selected.profile);
+    return selected.profile;
+  }
+
+  /// Removes a saved profile, and returns whoever is being shown afterwards.
+  ///
+  /// [ProfileStore.delete] hands the selection to the oldest survivor, so the
+  /// answer is usually a different person rather than nothing. Null means that
+  /// was the last one and the app is back to having no profile at all.
+  Future<BirthProfile?> remove(int id) async {
+    final store = _store;
+    if (store == null) return null;
+
+    await store.delete(id);
+    final selected = await store.selected();
+    _cached = selected?.profile;
+
+    if (selected == null) {
+      await _prefs.remove(_profileKey);
+    } else {
+      await _saveToPrefs(selected.profile);
+    }
+    return selected?.profile;
+  }
+
   Future<void> _saveToPrefs(BirthProfile profile) =>
       _prefs.setString(_profileKey, jsonEncode(profile.toJson()));
 
@@ -203,6 +260,45 @@ class ProfileNotifier extends Notifier<BirthProfile?> {
     state = null;
   }
 
+  /// Adds another person and switches to them (KAN-19).
+  ///
+  /// Not backed up. [profileSyncProvider] holds one profile per account, so
+  /// only the selected one survives a reinstall — see the note on
+  /// [savedProfilesProvider].
+  Future<void> add(BirthProfile profile) async {
+    await ref.read(profileRepositoryProvider).add(profile);
+    state = profile;
+    ref.invalidate(savedProfilesProvider);
+    unawaited(ref.read(profileSyncProvider).push(profile));
+  }
+
+  /// Switches to a saved profile.
+  ///
+  /// Setting [state] is what rebuilds the whole app around the new person:
+  /// the chart, the daśā, the horoscope and the reminders all watch this.
+  Future<void> switchTo(int id) async {
+    final selected = await ref.read(profileRepositoryProvider).select(id);
+    if (selected == null) return;
+
+    state = selected;
+    ref.invalidate(savedProfilesProvider);
+    unawaited(ref.read(profileSyncProvider).push(selected));
+  }
+
+  /// Deletes one saved profile, keeping whoever the store hands over to.
+  ///
+  /// Distinct from [clear], which erases everything including the backup. This
+  /// removes one person from a family and leaves the rest alone.
+  Future<void> remove(int id) async {
+    final remaining = await ref.read(profileRepositoryProvider).remove(id);
+    state = remaining;
+    ref.invalidate(savedProfilesProvider);
+
+    if (remaining != null) {
+      unawaited(ref.read(profileSyncProvider).push(remaining));
+    }
+  }
+
   /// Restores a backed-up profile when this device has none.
   ///
   /// Called once at startup. Returns true if something was recovered, which is
@@ -272,6 +368,19 @@ class ProfileNotifier extends Notifier<BirthProfile?> {
 
 final profileProvider = NotifierProvider<ProfileNotifier, BirthProfile?>(
   ProfileNotifier.new,
+);
+
+/// Every saved profile (KAN-19).
+///
+/// ## Only the selected one is backed up
+///
+/// [ProfileSync] stores a single profile per account, so a reinstall restores
+/// whoever was being shown and not the rest of the family. The database is the
+/// source of truth and survives app updates; it does not survive the app being
+/// removed. Extending the backup to a list is a schema change to the synced
+/// document and is deliberately not folded in here.
+final savedProfilesProvider = FutureProvider<List<SavedProfile>>(
+  (ref) => ref.watch(profileRepositoryProvider).all(),
 );
 
 class LocaleNotifier extends Notifier<AppLocale> {

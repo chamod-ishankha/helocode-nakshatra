@@ -25,7 +25,11 @@ enum PaywallReason {
   futureDay(RewardedUnlock.futureDay),
 
   /// The paid PDF report (KAN-37), which no subscription grants.
-  birthChartPdf(null, product: PurchaseProduct.birthChartPdf);
+  birthChartPdf(null, product: PurchaseProduct.birthChartPdf),
+
+  /// Adding a second saved chart (KAN-19). Pro grants this, so the sheet
+  /// shows the full ladder rather than a single product.
+  multipleProfiles(null);
 
   const PaywallReason(this.rewarded, {this.product});
 
@@ -57,6 +61,7 @@ enum PaywallReason {
     PaywallReason.compatibilityDetail => l.paywallReasonCompat,
     PaywallReason.futureDay => l.paywallReasonFuture,
     PaywallReason.birthChartPdf => l.reportGenerate,
+    PaywallReason.multipleProfiles => l.paywallFeatureProfiles,
   };
 }
 

@@ -1301,4 +1301,41 @@ class L10nEn extends L10n {
   String notificationDashaAntaraBody(Object lord) {
     return 'Your $lord antardaśā starts today.';
   }
+
+  @override
+  String get profilesTitle => 'Saved charts';
+
+  @override
+  String get profilesSettingsHint => 'Switch between charts for your family.';
+
+  @override
+  String get profilesAdd => 'Add another chart';
+
+  @override
+  String get profilesShowing => 'Showing now';
+
+  @override
+  String get profilesRemove => 'Remove';
+
+  @override
+  String profilesRemoveConfirm(Object name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get profilesRemoveBody =>
+      'Their birth details will be deleted from this phone.';
+
+  @override
+  String get profilesBackupNote =>
+      'Only the chart you are showing is backed up. The rest live on this phone.';
+
+  @override
+  String get profilesUnavailable =>
+      'Saved charts need storage this build could not open.';
+
+  @override
+  String profilesBornOn(Object date) {
+    return 'Born $date';
+  }
 }

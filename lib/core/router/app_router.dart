@@ -12,6 +12,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../logging/analytics_service.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/profiles/presentation/profiles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/horoscope/presentation/horoscope_screen.dart';
 
@@ -25,6 +26,15 @@ abstract final class Routes {
   /// runs before any screen does, and it is the redirect that has to tell the
   /// two cases apart.
   static const String editProfile = '$onboarding?edit=1';
+
+  /// Onboarding opened to collect a *new* person's details (KAN-19).
+  ///
+  /// Distinct from [editProfile]: that one prefills and overwrites, this one
+  /// starts empty and adds. Both have to get past the redirect that normally
+  /// keeps a user who already has a profile out of the wizard.
+  static const String addProfile = '$onboarding?add=1';
+
+  static const String profiles = '/profiles';
   static const String chart = '/chart';
   static const String account = '/account';
 
@@ -65,7 +75,8 @@ String? redirectFor({required String location, required bool hasProfile}) {
   // details" bouncing straight back to home and birth details uneditable,
   // onboarding being the only editor there is (KAN-61).
   final editing = uri.queryParameters['edit'] == '1';
-  if (hasProfile && onOnboarding && !editing) return Routes.home;
+  final adding = uri.queryParameters['add'] == '1';
+  if (hasProfile && onOnboarding && !editing && !adding) return Routes.home;
 
   return null;
 }
@@ -94,9 +105,16 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
     routes: [
       GoRoute(
+        path: Routes.profiles,
+        name: 'profiles',
+        builder: (context, state) => const ProfilesScreen(),
+      ),
+      GoRoute(
         path: Routes.onboarding,
         name: 'onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        builder: (context, state) => OnboardingScreen(
+          adding: state.uri.queryParameters['add'] == '1',
+        ),
       ),
       GoRoute(
         path: Routes.home,

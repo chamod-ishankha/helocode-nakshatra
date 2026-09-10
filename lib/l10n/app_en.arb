@@ -614,5 +614,15 @@
   "notificationFestivalBody": "{festival} is tomorrow.",
   "notificationDashaTitle": "A new daśā begins",
   "notificationDashaMahaBody": "Your {lord} mahādaśā starts today.",
-  "notificationDashaAntaraBody": "Your {lord} antardaśā starts today."
+  "notificationDashaAntaraBody": "Your {lord} antardaśā starts today.",
+  "profilesTitle": "Saved charts",
+  "profilesSettingsHint": "Switch between charts for your family.",
+  "profilesAdd": "Add another chart",
+  "profilesShowing": "Showing now",
+  "profilesRemove": "Remove",
+  "profilesRemoveConfirm": "Remove {name}?",
+  "profilesRemoveBody": "Their birth details will be deleted from this phone.",
+  "profilesBackupNote": "Only the chart you are showing is backed up. The rest live on this phone.",
+  "profilesUnavailable": "Saved charts need storage this build could not open.",
+  "profilesBornOn": "Born {date}"
 }

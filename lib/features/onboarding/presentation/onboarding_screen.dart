@@ -18,7 +18,15 @@ import '../domain/birth_profile.dart';
 /// one question per screen, always resumable by going back, and it never
 /// requires a network connection.
 class OnboardingScreen extends ConsumerStatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({super.key, this.adding = false});
+
+  /// True when this is collecting a *second* person's details (KAN-19).
+  ///
+  /// Passed from the route rather than read from a provider, because the
+  /// wizard has to know before its first build: it decides whether to prefill,
+  /// and prefilling is the difference between editing somebody and quietly
+  /// duplicating them.
+  final bool adding;
 
   @override
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -48,7 +56,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // The wizard used to start empty whatever the state of the profile, so
     // even once the route was reachable at all, "edit" meant retyping a name,
     // a date, a time and a town from nothing (KAN-61).
-    final existing = ref.read(profileProvider);
+    // Adding a second person starts from nothing. Prefilling with whoever is
+    // currently selected would be a trap: every field would look right, and
+    // the one the user forgot to change would quietly make two charts the
+    // same.
+    final existing = widget.adding ? null : ref.read(profileProvider);
     if (existing != null) {
       _editing = true;
 
@@ -117,7 +129,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       birthTimeKnown: _birthTimeKnown,
     );
 
-    await ref.read(profileProvider.notifier).save(profile);
+    final notifier = ref.read(profileProvider.notifier);
+    // add() inserts a row and selects it; save() overwrites the selected one.
+    // Using save() here would silently replace the person the user was
+    // looking at with the one they just typed in.
+    await (widget.adding ? notifier.add(profile) : notifier.save(profile));
     if (mounted) context.go(Routes.chart);
   }
 

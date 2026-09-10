@@ -379,5 +379,15 @@
   "notificationFestivalBody": "நாளை {festival}.",
   "notificationDashaTitle": "புதிய தசை தொடங்குகிறது",
   "notificationDashaMahaBody": "இன்று முதல் உங்கள் {lord} மகாதசை தொடங்குகிறது.",
-  "notificationDashaAntaraBody": "இன்று முதல் உங்கள் {lord} அந்தர்தசை தொடங்குகிறது."
+  "notificationDashaAntaraBody": "இன்று முதல் உங்கள் {lord} அந்தர்தசை தொடங்குகிறது.",
+  "profilesTitle": "சேமித்த சாதகங்கள்",
+  "profilesSettingsHint": "குடும்பத்தினரின் சாதகங்களுக்கு இடையே மாறவும்.",
+  "profilesAdd": "மற்றொரு சாதகத்தைச் சேர்க்கவும்",
+  "profilesShowing": "இப்போது காட்டப்படுகிறது",
+  "profilesRemove": "நீக்கு",
+  "profilesRemoveConfirm": "{name} நீக்கவா?",
+  "profilesRemoveBody": "அவர்களின் பிறப்பு விவரங்கள் இந்தத் தொலைபேசியிலிருந்து நீக்கப்படும்.",
+  "profilesBackupNote": "நீங்கள் காட்டும் சாதகம் மட்டுமே காப்புப் பிரதி எடுக்கப்படும். மற்றவை இந்தத் தொலைபேசியில் மட்டுமே.",
+  "profilesUnavailable": "சேமித்த சாதகங்களுக்குத் தேவையான சேமிப்பை இந்தப் பதிப்பால் திறக்க முடியவில்லை.",
+  "profilesBornOn": "பிறந்த நாள் {date}"
 }

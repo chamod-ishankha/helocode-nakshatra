@@ -28,6 +28,9 @@ class FakePurchaseGateway implements PurchaseGateway {
 
   final List<PurchaseProduct> bought = [];
   final List<String> identified = [];
+
+  /// Makes [identify] fail, for the bad-connection case (KAN-64).
+  bool throwOnIdentify = false;
   int refreshes = 0;
   int restores = 0;
   int forgets = 0;
@@ -58,7 +61,10 @@ class FakePurchaseGateway implements PurchaseGateway {
   }
 
   @override
-  Future<void> identify(String appUserId) async => identified.add(appUserId);
+  Future<void> identify(String appUserId) async {
+    if (throwOnIdentify) throw StateError('the store could not be reached');
+    identified.add(appUserId);
+  }
 
   @override
   Future<void> forget() async => forgets++;

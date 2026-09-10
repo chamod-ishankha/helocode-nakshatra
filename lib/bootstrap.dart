@@ -22,6 +22,7 @@ import 'core/notifications/notification_service.dart';
 import 'core/logging/app_logger.dart';
 import 'core/logging/crash_reporter.dart';
 import 'core/purchases/purchase_controller.dart';
+import 'core/purchases/purchase_identity.dart';
 import 'core/purchases/revenuecat_gateway.dart';
 import 'core/sync/auth_service.dart';
 import 'core/sync/firebase_service.dart';
@@ -171,6 +172,12 @@ Future<void> bootstrap(Flavor flavor) async {
   // else, so it has to be attached on every launch rather than only when a
   // paywall is opened.
   unawaited(container.read(entitlementsProvider.notifier).start());
+
+  // Tells the store when the signed-in account changes (KAN-64). Without it,
+  // signing out leaves the previous account's Pro on screen until the app is
+  // restarted, and buying while anonymous never reaches the account it was
+  // meant for. Lives as long as the container, which is the app.
+  linkPurchasesToAccount(container);
 
   runApp(
     UncontrolledProviderScope(

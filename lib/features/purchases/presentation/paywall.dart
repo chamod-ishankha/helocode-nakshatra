@@ -27,6 +27,10 @@ enum PaywallReason {
 
   futureDay(RewardedUnlock.futureDay),
 
+  navamsaChart(RewardedUnlock.navamsaChart),
+
+  dashaDetail(RewardedUnlock.dashaDetail),
+
   /// The paid PDF report (KAN-37), which no subscription grants.
   birthChartPdf(null, product: PurchaseProduct.birthChartPdf),
 
@@ -57,12 +61,16 @@ enum PaywallReason {
   static PaywallReason forUnlock(RewardedUnlock unlock) => switch (unlock) {
     RewardedUnlock.compatibilityDetail => PaywallReason.compatibilityDetail,
     RewardedUnlock.futureDay => PaywallReason.futureDay,
+    RewardedUnlock.navamsaChart => PaywallReason.navamsaChart,
+    RewardedUnlock.dashaDetail => PaywallReason.dashaDetail,
   };
 
   String? headline(L10n l) => switch (this) {
     PaywallReason.general => null,
     PaywallReason.compatibilityDetail => l.paywallReasonCompat,
     PaywallReason.futureDay => l.paywallReasonFuture,
+    PaywallReason.navamsaChart => l.paywallFeatureCharts,
+    PaywallReason.dashaDetail => l.paywallFeatureDasha,
     PaywallReason.birthChartPdf => l.reportGenerate,
     PaywallReason.multipleProfiles => l.paywallFeatureProfiles,
   };
@@ -234,13 +242,28 @@ class _Features extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
+
+    // Every line here is a promise, and each one is kept by a named gate. The
+    // list is short because it is only allowed to hold things the app really
+    // withholds — it used to carry six, of which four were gated by nothing
+    // at all, so buying Pro changed nothing for a user who came for them.
+    //
+    //   No ads             PaidFeature.removeAds        ad_gate.dart
+    //   Navāṁśa (D9)       PaidFeature.divisionalCharts chart_screen.dart
+    //   Full daśā          PaidFeature.fullDashaTimeline dasha_timeline.dart
+    //   Compatibility      RewardedUnlock.compatibilityDetail — not a
+    //                      PaidFeature: the gate is the rewarded unlock, and
+    //                      Pro opens it by way of adFreeEntitlementProvider.
+    //   Family charts      PaidFeature.multipleProfiles profiles_screen.dart
+    //
+    // test/core/purchases/gates_test.dart fails if a line is added without
+    // one.
     final lines = [
       (Icons.block, l.paywallFeatureNoAds),
       (Icons.grid_view, l.paywallFeatureCharts),
       (Icons.timeline, l.paywallFeatureDasha),
       (Icons.favorite_outline, l.paywallFeatureCompat),
       (Icons.group_outlined, l.paywallFeatureProfiles),
-      (Icons.notifications_active_outlined, l.paywallFeatureTransits),
     ];
 
     return Column(

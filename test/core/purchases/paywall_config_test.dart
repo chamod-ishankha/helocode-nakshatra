@@ -81,20 +81,18 @@ void main() {
       // A partly-wrong value must not fail closed on the whole list, or an
       // experiment would silently stop halfway.
       final config = PaywallConfig.parse(
-        freeFeatures: 'removeAds,transitAlerts',
+        freeFeatures: 'removeAds,divisionalCharts',
       );
 
-      expect(config.freeFeatures, {PaidFeature.transitAlerts});
+      expect(config.freeFeatures, {PaidFeature.divisionalCharts});
     });
 
     test('the openable set is exactly the subscription-only features', () {
       // Derived from the ladder rather than listed, so adding a product keeps
       // this honest. Anything sold outright is off limits by construction.
       expect(PaywallConfig.freeable, {
-        PaidFeature.unlimitedCompatibility,
         PaidFeature.fullDashaTimeline,
         PaidFeature.divisionalCharts,
-        PaidFeature.transitAlerts,
         PaidFeature.multipleProfiles,
       });
     });

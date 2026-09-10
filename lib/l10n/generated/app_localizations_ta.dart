@@ -210,6 +210,16 @@ class L10nTa extends L10n {
   String get chartPositions => 'கிரக நிலைகள்';
 
   @override
+  String get chartVargaRasi => 'ராசி (D1)';
+
+  @override
+  String get chartVargaNavamsa => 'நவாம்சம் (D9)';
+
+  @override
+  String get chartNavamsaApproximate =>
+      'பிறந்த நேரத்தில் ஒவ்வொரு 13 நிமிடத்திற்கும் நவாம்சம் மாறும். சரியான நேரம் தெரியாவிட்டால் இந்தக் கட்டத்தை ஒரு தோராயமாகக் கருதுங்கள்.';
+
+  @override
   String get chartColumnGraha => 'கிரகம்';
 
   @override
@@ -963,6 +973,20 @@ class L10nTa extends L10n {
       'ஒவ்வொரு காரணியும் தனித்தனியாக மதிப்பிடப்பட்ட விதத்தைப் பாருங்கள்.';
 
   @override
+  String get unlockNavamsaTitle => 'நவாம்சக் கட்டம்';
+
+  @override
+  String get unlockNavamsaBody =>
+      'D9 — திருமணத்திற்கும் ஒவ்வொரு கிரகத்தின் உண்மையான பலத்திற்கும் உங்கள் ராசிக் கட்டத்துடன் சேர்த்து படிக்கப்படுகிறது.';
+
+  @override
+  String get unlockDashaTitle => 'மூன்றாம் தசை நிலை';
+
+  @override
+  String get unlockDashaBody =>
+      'ஒவ்வொரு அந்தர்தசையையும் அதன் பிரத்யந்தர்தசைக் காலங்களாகப் பிரித்துப் பார்க்கலாம்.';
+
+  @override
   String get unlockFutureTitle => 'மற்ற நாட்களின் நேரம்';
 
   @override
@@ -1078,7 +1102,7 @@ class L10nTa extends L10n {
 
   @override
   String get purchaseUpgradeHint =>
-      'விளம்பரங்கள் இல்லை, அனைத்து வர்கச் சக்கரங்கள், முழு தசை காலவரிசை.';
+      'விளம்பரங்கள் இல்லை, நவாம்சக் கட்டம், முழு தசை காலவரிசை.';
 
   @override
   String get purchaseManage => 'சந்தாவை நிர்வகி';
@@ -1136,7 +1160,7 @@ class L10nTa extends L10n {
 
   @override
   String get paywallBodyValue =>
-      'அனைத்து வர்க்க சக்கரங்கள், முழு தசை காலவரிசை, விரிவான பொருத்தக் கணிப்பு — எந்த விளம்பரமும் இல்லாமல்.';
+      'நவாம்சக் கட்டம், முழு தசை காலவரிசை, விரிவான பொருத்தக் கணிப்பு — எந்த விளம்பரமும் இல்லாமல்.';
 
   @override
   String get paywallBodySupport =>
@@ -1193,7 +1217,7 @@ class L10nTa extends L10n {
   String get paywallFeatureNoAds => 'எங்கும் விளம்பரங்கள் இல்லை';
 
   @override
-  String get paywallFeatureCharts => 'அனைத்து வர்க்க சக்கரங்கள்';
+  String get paywallFeatureCharts => 'நவாம்ச (D9) கட்டம்';
 
   @override
   String get paywallFeatureDasha => 'முழு தசை காலவரிசை';
@@ -1203,9 +1227,6 @@ class L10nTa extends L10n {
 
   @override
   String get paywallFeatureProfiles => 'முழு குடும்பத்திற்கும் சாதகங்கள்';
-
-  @override
-  String get paywallFeatureTransits => 'கோச்சார அறிவிப்புகள்';
 
   @override
   String get paywallReasonCompat => 'முழு பொருத்தக் கணிப்பையும் பாருங்கள்';

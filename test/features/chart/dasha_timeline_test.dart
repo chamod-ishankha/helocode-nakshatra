@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nakshatra/core/ads/locked_content.dart';
+import 'package:nakshatra/core/ads/rewarded_unlock.dart';
 import 'package:nakshatra/core/astro/dasha.dart';
+import 'package:nakshatra/core/purchases/entitlements.dart';
+import 'package:nakshatra/core/purchases/purchase_controller.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/core/theme/app_theme.dart';
@@ -58,6 +62,18 @@ void main() {
                 level: DashaLevel.antara,
                 start: start.add(Duration(days: 203 * j)),
                 end: start.add(Duration(days: 203 * (j + 1))),
+                // Three rather than nine: the count does not matter to what
+                // is under test, and nine would make every failure message a
+                // wall of dates.
+                children: [
+                  for (var k = 0; k < 3; k++)
+                    DashaPeriod(
+                      lord: lords[(i + j + k) % lords.length],
+                      level: DashaLevel.pratyantara,
+                      start: start.add(Duration(days: 203 * j + 60 * k)),
+                      end: start.add(Duration(days: 203 * j + 60 * (k + 1))),
+                    ),
+                ],
               ),
           ],
         ),
@@ -72,6 +88,9 @@ void main() {
     required bool birthTimeKnown,
     AppLocale locale = AppLocale.en,
     List<DashaPeriod>? timeline,
+    bool ownsPro = false,
+    bool canWatch = true,
+    bool canBuy = true,
   }) async {
     tester.view.physicalSize = const Size(360, 640);
     tester.view.devicePixelRatio = 1.0;
@@ -86,6 +105,22 @@ void main() {
           localeProvider.overrideWith(() => _FixedLocale(locale)),
           dashaProvider.overrideWithValue(
             timeline ?? timelineWithCurrentThird(),
+          ),
+          featureProvider(
+            PaidFeature.fullDashaTimeline,
+          ).overrideWithValue(ownsPro),
+          // Both doors pinned open. The real ones read static ad ids and a
+          // live store, neither of which exists on a host — and a lock with
+          // no way past it opens itself, which would make every assertion
+          // below pass on nothing.
+          rewardedAvailableProvider.overrideWithValue(canWatch),
+          purchasesAvailableProvider.overrideWithValue(canBuy),
+          unlockStoreProvider.overrideWithValue(
+            UnlockStore(
+              prefs: prefs,
+              hasEntitlement: false,
+              adsConfigured: true,
+            ),
           ),
         ],
         child: MaterialApp(
@@ -164,16 +199,75 @@ void main() {
     expect(find.byType(ExpansionTile), findsNothing);
   });
 
-  testWidgets('no third level is shown while it is a Pro feature', (
-    tester,
-  ) async {
+  /// Opens the first antardaśā inside the running mahādaśā.
+  ///
+  /// The running period is the third, and it is the only one expanded, so its
+  /// sub-period rows are the only nested tiles in the tree. They sit well
+  /// below a 640-high viewport, hence the scroll.
+  Future<void> openFirstSubPeriod(WidgetTester tester) async {
+    final antara = find
+        .descendant(
+          of: find.byType(ExpansionTile).at(2),
+          matching: find.byType(ExpansionTile),
+        )
+        .first;
+
+    await tester.ensureVisible(antara);
+    await tester.pumpAndSettle();
+    await tester.tap(antara);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('the third level arrives locked, not missing', (tester) async {
     await pump(tester, birthTimeKnown: true);
 
-    // The engine can generate pratyantardaśā, but showing it behind a lock
-    // that does nothing (KAN-36 is unbuilt) would be worse than not showing
-    // it. Nested ExpansionTiles inside a sub-period would mean it leaked.
-    final tiles = tester.widgetList<ExpansionTile>(find.byType(ExpansionTile));
-    expect(tiles.length, Vimshottari.lords.length);
+    // Nothing on screen until the user asks for it: the running mahādaśā is
+    // open, but no sub-period is, so no lock has appeared yet.
+    expect(find.byType(LockedContent), findsNothing);
+
+    await openFirstSubPeriod(tester);
+
+    // Behind the blur rather than absent. The content is what is being sold,
+    // so it has to be built — with both doors out on top of it.
+    expect(find.byType(LockedContent), findsOneWidget);
+    expect(find.byType(ImageFiltered), findsOneWidget);
+    expect(find.text('Watch a short video'), findsOneWidget);
+  });
+
+  testWidgets('Remove Ads is not Pro', (tester) async {
+    // Somebody who paid to remove ads gets no video button — the promise was
+    // no ads anywhere — but they have not bought Pro, so the content stays
+    // locked with the purchase as the only way through. Opening it for them
+    // would make the cheap one-time buy strictly better value than the
+    // subscription.
+    await pump(tester, birthTimeKnown: true, canWatch: false);
+    await openFirstSubPeriod(tester);
+
+    expect(find.byType(LockedContent), findsOneWidget);
+    expect(find.text('Watch a short video'), findsNothing);
+    expect(find.text('Go Pro'), findsOneWidget);
+  });
+
+  testWidgets('a build that can neither sell nor show ads locks nothing', (
+    tester,
+  ) async {
+    // A clone with no env file. Both doors are missing, so a lock would be a
+    // wall — the app has to stay whole.
+    await pump(tester, birthTimeKnown: true, canWatch: false, canBuy: false);
+    await openFirstSubPeriod(tester);
+
+    expect(find.byType(ImageFiltered), findsNothing);
+    expect(find.text('Go Pro'), findsNothing);
+  });
+
+  testWidgets('Pro sees the third level with nothing over it', (tester) async {
+    await pump(tester, birthTimeKnown: true, ownsPro: true);
+    await openFirstSubPeriod(tester);
+
+    // The prompt is gone, and so is the blur — a paying user must not be
+    // shown a lock they have already opened.
+    expect(find.text('Watch a short video'), findsNothing);
+    expect(find.byType(ImageFiltered), findsNothing);
   });
 
   for (final locale in AppLocale.values) {

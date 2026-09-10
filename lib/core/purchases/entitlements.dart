@@ -50,12 +50,18 @@ enum Entitlement {
 /// That is a pricing decision rather than an engineering one — most ladders
 /// would fold both into the yearly tier — and if it changes it is one entry in
 /// this table.
+/// ## Nothing sits here that nothing gates
+///
+/// `unlimitedCompatibility` and `transitAlerts` used to be in this list and
+/// were read by no code at all, while the paywall sold both. An entry here is
+/// a promise, so it may only exist once something checks it — the test in
+/// `test/core/purchases/gates_test.dart` enforces that. The compatibility
+/// breakdown is gated, but through [RewardedUnlock.compatibilityDetail]
+/// rather than from here.
 enum PaidFeature {
   removeAds({Entitlement.adFree, Entitlement.pro}),
-  unlimitedCompatibility({Entitlement.pro}),
   fullDashaTimeline({Entitlement.pro}),
   divisionalCharts({Entitlement.pro}),
-  transitAlerts({Entitlement.pro}),
   multipleProfiles({Entitlement.pro}),
   birthChartPdf({Entitlement.pdfReport}),
   compatibilityReport({Entitlement.compatibilityReport});

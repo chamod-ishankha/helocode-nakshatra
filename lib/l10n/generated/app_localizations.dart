@@ -453,6 +453,24 @@ abstract class L10n {
   /// **'Planetary positions'**
   String get chartPositions;
 
+  /// No description provided for @chartVargaRasi.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāśi (D1)'**
+  String get chartVargaRasi;
+
+  /// No description provided for @chartVargaNavamsa.
+  ///
+  /// In en, this message translates to:
+  /// **'Navāṁśa (D9)'**
+  String get chartVargaNavamsa;
+
+  /// No description provided for @chartNavamsaApproximate.
+  ///
+  /// In en, this message translates to:
+  /// **'The navāṁśa changes about every 13 minutes of birth time. Without an exact time, treat this chart as a guess.'**
+  String get chartNavamsaApproximate;
+
   /// No description provided for @chartColumnGraha.
   ///
   /// In en, this message translates to:
@@ -1785,6 +1803,30 @@ abstract class L10n {
   /// **'See every factor scored one by one, and what each one judges.'**
   String get unlockCompatBody;
 
+  /// No description provided for @unlockNavamsaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The navāṁśa chart'**
+  String get unlockNavamsaTitle;
+
+  /// No description provided for @unlockNavamsaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The D9, read alongside your rāśi chart for marriage and for the real strength of each planet.'**
+  String get unlockNavamsaBody;
+
+  /// No description provided for @unlockDashaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The third daśā level'**
+  String get unlockDashaTitle;
+
+  /// No description provided for @unlockDashaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Break every antardaśā down into its pratyantardaśā periods.'**
+  String get unlockDashaBody;
+
   /// No description provided for @unlockFutureTitle.
   ///
   /// In en, this message translates to:
@@ -1992,7 +2034,7 @@ abstract class L10n {
   /// No description provided for @purchaseUpgradeHint.
   ///
   /// In en, this message translates to:
-  /// **'No ads, every divisional chart, and the full daśā timeline.'**
+  /// **'No ads, the navāṁśa chart, and the full daśā timeline.'**
   String get purchaseUpgradeHint;
 
   /// No description provided for @purchaseManage.
@@ -2088,7 +2130,7 @@ abstract class L10n {
   /// No description provided for @paywallBodyValue.
   ///
   /// In en, this message translates to:
-  /// **'Every divisional chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.'**
+  /// **'The navāṁśa chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.'**
   String get paywallBodyValue;
 
   /// No description provided for @paywallBodySupport.
@@ -2184,7 +2226,7 @@ abstract class L10n {
   /// No description provided for @paywallFeatureCharts.
   ///
   /// In en, this message translates to:
-  /// **'Every divisional chart'**
+  /// **'The navāṁśa (D9) chart'**
   String get paywallFeatureCharts;
 
   /// No description provided for @paywallFeatureDasha.
@@ -2204,12 +2246,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Charts for the whole family'**
   String get paywallFeatureProfiles;
-
-  /// No description provided for @paywallFeatureTransits.
-  ///
-  /// In en, this message translates to:
-  /// **'Transit alerts'**
-  String get paywallFeatureTransits;
 
   /// No description provided for @paywallReasonCompat.
   ///

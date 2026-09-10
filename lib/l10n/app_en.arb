@@ -120,6 +120,9 @@
     }
   },
   "chartPositions": "Planetary positions",
+  "chartVargaRasi": "Rāśi (D1)",
+  "chartVargaNavamsa": "Navāṁśa (D9)",
+  "chartNavamsaApproximate": "The navāṁśa changes about every 13 minutes of birth time. Without an exact time, treat this chart as a guess.",
   "chartColumnGraha": "Graha",
   "chartColumnRasi": "Rāśi",
   "chartColumnDegree": "Degree",
@@ -454,6 +457,10 @@
   "unlockLastsToday": "Stays unlocked for the rest of today.",
   "unlockCompatTitle": "Full compatibility breakdown",
   "unlockCompatBody": "See every factor scored one by one, and what each one judges.",
+  "unlockNavamsaTitle": "The navāṁśa chart",
+  "unlockNavamsaBody": "The D9, read alongside your rāśi chart for marriage and for the real strength of each planet.",
+  "unlockDashaTitle": "The third daśā level",
+  "unlockDashaBody": "Break every antardaśā down into its pratyantardaśā periods.",
   "unlockFutureTitle": "Nekath for other days",
   "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga.",
   "authErrorGoogleRepeated": "Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.",
@@ -505,7 +512,7 @@
     }
   },
   "purchaseUpgrade": "Go Pro",
-  "purchaseUpgradeHint": "No ads, every divisional chart, and the full daśā timeline.",
+  "purchaseUpgradeHint": "No ads, the navāṁśa chart, and the full daśā timeline.",
   "purchaseManage": "Manage subscription",
   "purchaseRestore": "Restore purchases",
   "purchaseRestoreHint": "Already paid? Bring your purchases to this device.",
@@ -524,7 +531,7 @@
   },
   "paywallHeadlineValue": "Unlock the whole almanac",
   "paywallHeadlineSupport": "Keep Nakshatra going",
-  "paywallBodyValue": "Every divisional chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.",
+  "paywallBodyValue": "The navāṁśa chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.",
   "paywallBodySupport": "Nakshatra is built by one person in Sri Lanka. Going Pro pays for the work — and removes every ad while it does.",
   "paywallBestValue": "Best value",
   "paywallSave": "Save {percent}%",
@@ -559,39 +566,50 @@
   "paywallPricesUnavailable": "Prices are not available right now. Please try again later.",
   "paywallLegal": "Subscriptions renew automatically until cancelled. Cancel any time in Google Play.",
   "paywallFeatureNoAds": "No ads, anywhere",
-  "paywallFeatureCharts": "Every divisional chart",
+  "paywallFeatureCharts": "The navāṁśa (D9) chart",
   "paywallFeatureDasha": "The full daśā timeline",
   "paywallFeatureCompat": "The full compatibility working",
   "paywallFeatureProfiles": "Charts for the whole family",
-  "paywallFeatureTransits": "Transit alerts",
   "paywallReasonCompat": "See the full compatibility working",
   "paywallReasonFuture": "Look further ahead",
   "reportTitle": "Birth Chart Report",
   "reportPreparedOn": "Prepared {date}",
   "@reportPreparedOn": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "reportBornOn": "Born {date} at {time}",
   "@reportBornOn": {
     "placeholders": {
-      "date": {"type": "String"},
-      "time": {"type": "String"}
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "reportBornOnDateOnly": "Born {date}",
   "@reportBornOnDateOnly": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
   "reportPageOf": "Page {page} of {total}",
   "@reportPageOf": {
     "description": "Footer on every report page.",
     "placeholders": {
-      "page": {"type": "int"},
-      "total": {"type": "int"}
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "reportSectionRasi": "Rāśi chart (D1)",

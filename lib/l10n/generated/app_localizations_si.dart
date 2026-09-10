@@ -206,6 +206,16 @@ class L10nSi extends L10n {
   String get chartPositions => 'ග්‍රහ පිහිටීම්';
 
   @override
+  String get chartVargaRasi => 'රාශි (D1)';
+
+  @override
+  String get chartVargaNavamsa => 'නවාංශ (D9)';
+
+  @override
+  String get chartNavamsaApproximate =>
+      'උපන් වේලාවේ මිනිත්තු 13කට වරක් පමණ නවාංශය වෙනස් වේ. නිශ්චිත වේලාවක් නොමැති නම්, මෙය අනුමානයක් ලෙස සලකන්න.';
+
+  @override
   String get chartColumnGraha => 'ග්‍රහයා';
 
   @override
@@ -949,6 +959,20 @@ class L10nSi extends L10n {
       'සෑම සාධකයක්ම වෙන් වෙන් වශයෙන් ලකුණු කර ඇති ආකාරය බලන්න.';
 
   @override
+  String get unlockNavamsaTitle => 'නවාංශ කේන්දරය';
+
+  @override
+  String get unlockNavamsaBody =>
+      'D9 — විවාහය සහ එක් එක් ග්‍රහයාගේ සැබැ ශක්තිය සදහා ඔබේ රාශි කේන්දරය සමඟ කියවරෙනු ලැබේ.';
+
+  @override
+  String get unlockDashaTitle => 'තුන්වන දශා මට්ටම';
+
+  @override
+  String get unlockDashaBody =>
+      'සැම අන්තර්දශාවක්ම එහි ප්‍රත්‍යන්තර්දශා කාලවලට බෙදා දකින්න.';
+
+  @override
   String get unlockFutureTitle => 'වෙනත් දිනවල නැකත්';
 
   @override
@@ -1064,7 +1088,7 @@ class L10nSi extends L10n {
 
   @override
   String get purchaseUpgradeHint =>
-      'දැන්වීම් රහිත, සියලු වර්ග චක්‍ර, සහ සම්පුර්ණ දශා කාලරේඛාව.';
+      'දැන්වීම් රහිත, නවාංශ කේන්දරය, සහ සම්පූර්ණ දශා කාලරේඛාව.';
 
   @override
   String get purchaseManage => 'දායකත්වය කළමනාකරණය';
@@ -1118,7 +1142,7 @@ class L10nSi extends L10n {
 
   @override
   String get paywallBodyValue =>
-      'සියලු වර්ග චක්‍ර, සම්පූර්ණ දශා කාලරේඛාව, සහ විස්තරාත්මක පොරොන්දම් ගණනය — දැන්වීම් කිසිවක් නොමැතිව.';
+      'නවාංශ කේන්දරය, සම්පූර්ණ දශා කාලරේඛාව, සහ විස්තරාත්මක පොරොන්දම ගණනය — දැන්වීම් කිසිවක් නොමැතිව.';
 
   @override
   String get paywallBodySupport =>
@@ -1173,7 +1197,7 @@ class L10nSi extends L10n {
   String get paywallFeatureNoAds => 'කිසිදු තැනක දැන්වීම් නැත';
 
   @override
-  String get paywallFeatureCharts => 'සියලු වර්ග චක්‍ර';
+  String get paywallFeatureCharts => 'නවාංශ (D9) කේන්දරය';
 
   @override
   String get paywallFeatureDasha => 'සම්පූර්ණ දශා කාලරේඛාව';
@@ -1183,9 +1207,6 @@ class L10nSi extends L10n {
 
   @override
   String get paywallFeatureProfiles => 'මුළු පවුලටම කේන්දර';
-
-  @override
-  String get paywallFeatureTransits => 'ගෝචර දැනුම්දීම්';
 
   @override
   String get paywallReasonCompat => 'සම්පූර්ණ පොරොන්දම් ගණනය බලන්න';

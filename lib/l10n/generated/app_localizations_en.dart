@@ -207,6 +207,16 @@ class L10nEn extends L10n {
   String get chartPositions => 'Planetary positions';
 
   @override
+  String get chartVargaRasi => 'Rāśi (D1)';
+
+  @override
+  String get chartVargaNavamsa => 'Navāṁśa (D9)';
+
+  @override
+  String get chartNavamsaApproximate =>
+      'The navāṁśa changes about every 13 minutes of birth time. Without an exact time, treat this chart as a guess.';
+
+  @override
   String get chartColumnGraha => 'Graha';
 
   @override
@@ -955,6 +965,20 @@ class L10nEn extends L10n {
       'See every factor scored one by one, and what each one judges.';
 
   @override
+  String get unlockNavamsaTitle => 'The navāṁśa chart';
+
+  @override
+  String get unlockNavamsaBody =>
+      'The D9, read alongside your rāśi chart for marriage and for the real strength of each planet.';
+
+  @override
+  String get unlockDashaTitle => 'The third daśā level';
+
+  @override
+  String get unlockDashaBody =>
+      'Break every antardaśā down into its pratyantardaśā periods.';
+
+  @override
   String get unlockFutureTitle => 'Nekath for other days';
 
   @override
@@ -1070,7 +1094,7 @@ class L10nEn extends L10n {
 
   @override
   String get purchaseUpgradeHint =>
-      'No ads, every divisional chart, and the full daśā timeline.';
+      'No ads, the navāṁśa chart, and the full daśā timeline.';
 
   @override
   String get purchaseManage => 'Manage subscription';
@@ -1126,7 +1150,7 @@ class L10nEn extends L10n {
 
   @override
   String get paywallBodyValue =>
-      'Every divisional chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.';
+      'The navāṁśa chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.';
 
   @override
   String get paywallBodySupport =>
@@ -1183,7 +1207,7 @@ class L10nEn extends L10n {
   String get paywallFeatureNoAds => 'No ads, anywhere';
 
   @override
-  String get paywallFeatureCharts => 'Every divisional chart';
+  String get paywallFeatureCharts => 'The navāṁśa (D9) chart';
 
   @override
   String get paywallFeatureDasha => 'The full daśā timeline';
@@ -1193,9 +1217,6 @@ class L10nEn extends L10n {
 
   @override
   String get paywallFeatureProfiles => 'Charts for the whole family';
-
-  @override
-  String get paywallFeatureTransits => 'Transit alerts';
 
   @override
   String get paywallReasonCompat => 'See the full compatibility working';

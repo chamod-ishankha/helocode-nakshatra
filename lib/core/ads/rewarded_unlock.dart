@@ -17,6 +17,14 @@ enum RewardedUnlock {
 
   /// Any day after today. Looking back is free; looking ahead is the ask.
   futureDay,
+
+  /// The navāṃśa (D9). The rāśi chart — the one people came for, and the one
+  /// every reading in the app is built on — stays free.
+  navamsaChart,
+
+  /// The third level of the daśā tree. The running period and the mahā/antara
+  /// list stay free, so the timeline is a whole feature without paying.
+  dashaDetail,
 }
 
 /// Why an unlock is currently open, or what it would take to open it.
@@ -88,6 +96,17 @@ class UnlockStore {
 
   bool isOpen(RewardedUnlock unlock) => state(unlock) != UnlockState.locked;
 
+  /// Whether a video was actually watched for [unlock] today.
+  ///
+  /// Unlike [state], this ignores entitlements entirely. [LockedContent] needs
+  /// the distinction: "no ads to watch" and "already owns this" are the same
+  /// answer to [state] but different answers to a Pro feature. Somebody who
+  /// bought Remove Ads has not bought Pro, and treating the two as one would
+  /// make the cheaper one-time purchase strictly better value than the
+  /// subscription — everything Pro sells, for less, once.
+  bool earnedToday(RewardedUnlock unlock) =>
+      _prefs.getString(_key(unlock)) == stampFor(_clock());
+
   /// Records a reward that was actually earned.
   ///
   /// Only ever called after the SDK reports the reward. Calling it when the
@@ -144,6 +163,18 @@ final unlockRevisionProvider = NotifierProvider<UnlockNotifier, int>(
 final rewardedPresenterProvider = Provider<Future<bool> Function()>(
   (ref) =>
       () async => false,
+);
+
+/// Whether a rewarded video can actually be played for this user.
+///
+/// False in a build with no ad unit ids, and false for somebody who paid to
+/// remove ads — the promise was "no ads, anywhere", and a button offering one
+/// is still an ad even when it is opt-in.
+///
+/// Its own provider so a test can say which of the two doors is open without
+/// reaching into static configuration.
+final rewardedAvailableProvider = Provider<bool>(
+  (ref) => AdUnits.isConfigured && !ref.watch(adFreeEntitlementProvider),
 );
 
 final unlockStoreProvider = Provider<UnlockStore>((ref) {

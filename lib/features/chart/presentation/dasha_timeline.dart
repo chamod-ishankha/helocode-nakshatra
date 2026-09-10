@@ -3,22 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/ads/locked_content.dart';
+import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/astro/dasha.dart';
+import '../../../core/purchases/entitlements.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/chart_providers.dart';
 
-/// The daśā tree for the current profile, two levels deep.
+/// The daśā tree for the current profile, all three levels.
 ///
-/// Pratyantardaśā is a Pro feature (KAN-36) and is deliberately not generated
-/// here: showing a third level behind a lock that does nothing would be worse
-/// than not showing it. The engine supports `depth: 3` when the paywall lands.
+/// Generated in full even for a user who has not paid, because the third level
+/// is what sits behind the blur in [_AntaraTile] — a lock over a placeholder
+/// sells nothing. The cost is 729 periods of arithmetic on a tree that is
+/// already being built, which does not register beside the ephemeris call that
+/// produced the chart.
 final dashaProvider = Provider<List<DashaPeriod>?>((ref) {
   final chart = ref.watch(chartProvider)?.valueOrNull;
   if (chart == null) return null;
-  return Vimshottari.forChart(chart, depth: 2);
+  return Vimshottari.forChart(chart, depth: 3);
 });
 
 /// Vimśottarī daśā, with the running period called out.
@@ -221,14 +226,20 @@ class _MahaTile extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         for (final antara in maha.children)
-          _AntaraRow(antara: antara, isCurrent: antara == currentAntara),
+          _AntaraTile(antara: antara, isCurrent: antara == currentAntara),
       ],
     );
   }
 }
 
-class _AntaraRow extends ConsumerWidget {
-  const _AntaraRow({required this.antara, required this.isCurrent});
+/// One antardaśā, opening onto its pratyantardaśās.
+///
+/// The third level is the paid one (KAN-36). It expands rather than navigating
+/// so the lock appears in place, under the row the user tapped, next to the
+/// dates it belongs to — a user who does not want it collapses the row and has
+/// lost nothing.
+class _AntaraTile extends ConsumerWidget {
+  const _AntaraTile({required this.antara, required this.isCurrent});
 
   final DashaPeriod antara;
   final bool isCurrent;
@@ -236,32 +247,107 @@ class _AntaraRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l = L10n.of(context);
+    final locale = ref.watch(localeProvider);
+
+    final row = Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            antara.lord.label(locale),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: isCurrent ? FontWeight.w700 : null,
+              color: isCurrent ? theme.colorScheme.primary : null,
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            '${_shortDate(context, antara.start)} — '
+            '${_shortDate(context, antara.end)}',
+            textAlign: TextAlign.end,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: isCurrent
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ],
+    );
+
+    // A depth-2 tree has nothing under this row, and an expander that opens
+    // onto nothing is worse than a plain row.
+    if (antara.children.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: row,
+      );
+    }
+
+    return ExpansionTile(
+      // Never pre-expanded, not even for the running antara: it would put a
+      // lock on screen before the user asked for anything.
+      tilePadding: EdgeInsets.zero,
+      childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
+      shape: const Border(),
+      collapsedShape: const Border(),
+      dense: true,
+      visualDensity: VisualDensity.compact,
+      title: row,
+      children: [
+        LockedContent(
+          unlock: RewardedUnlock.dashaDetail,
+          feature: PaidFeature.fullDashaTimeline,
+          title: l.unlockDashaTitle,
+          body: l.unlockDashaBody,
+          child: Column(
+            children: [
+              for (final pratyantara in antara.children)
+                _PratyantaraRow(pratyantara: pratyantara),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// One pratyantardaśā — the leaf of the tree.
+///
+/// Smaller and greyer than [_AntaraTile]'s row on purpose: at this depth the
+/// list is read by scanning for a date, not by reading every line.
+class _PratyantaraRow extends ConsumerWidget {
+  const _PratyantaraRow({required this.pratyantara});
+
+  final DashaPeriod pratyantara;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final locale = ref.watch(localeProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
           Expanded(
             flex: 2,
             child: Text(
-              antara.lord.label(locale),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: isCurrent ? FontWeight.w700 : null,
-                color: isCurrent ? theme.colorScheme.primary : null,
-              ),
+              pratyantara.lord.label(locale),
+              style: theme.textTheme.bodySmall,
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
-              '${_shortDate(context, antara.start)} — '
-              '${_shortDate(context, antara.end)}',
+              '${_shortDate(context, pratyantara.start)} — '
+              '${_shortDate(context, pratyantara.end)}',
               textAlign: TextAlign.end,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: isCurrent
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurfaceVariant,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),

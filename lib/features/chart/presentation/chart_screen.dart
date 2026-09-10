@@ -13,16 +13,37 @@ import 'dasha_timeline.dart';
 import 'graha_label.dart';
 import 'detail_sheets.dart';
 
+import '../../../core/ads/locked_content.dart';
+import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/astro/models.dart';
+import '../../../core/astro/varga.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/error/result.dart';
+import '../../../core/purchases/entitlements.dart';
 import '../../../core/router/app_router.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../report/presentation/report_tile.dart';
 import '../domain/chart_providers.dart';
 import 'north_indian_chart.dart';
 import 'rasi_chart.dart';
+
+/// Which chart the screen is drawing (KAN-53).
+///
+/// Deliberately not persisted, unlike [ChartStyle]. The drawing style is a
+/// preference — somebody raised on North Indian charts wants that every time.
+/// The varga is a place you navigate to and come back from, and a user who
+/// left the app on the D9 last week should not reopen it to a chart they have
+/// to pay to read.
+enum _Varga {
+  rasi,
+  navamsa;
+
+  String label(L10n l) => switch (this) {
+    _Varga.rasi => l.chartVargaRasi,
+    _Varga.navamsa => l.chartVargaNavamsa,
+  };
+}
 
 class ChartScreen extends ConsumerStatefulWidget {
   const ChartScreen({super.key});
@@ -34,6 +55,30 @@ class ChartScreen extends ConsumerStatefulWidget {
 class _ChartScreenState extends ConsumerState<ChartScreen> {
   /// Marks the region that gets rendered to PNG when the user shares.
   final _shareBoundary = GlobalKey();
+
+  _Varga _varga = _Varga.rasi;
+
+  /// One chart, drawn in the user's style.
+  ///
+  /// Keyed by style *and* varga so Flutter rebuilds rather than trying to
+  /// reuse the previous element tree — the two layouts share no structure,
+  /// and a D9 is a different chart even when the layout matches.
+  Widget _drawn(BirthChart chart, ChartStyle style, bool birthTimeKnown) {
+    final key = ValueKey('${style.name}-${_varga.name}');
+
+    return switch (style) {
+      ChartStyle.southIndian => RasiChart(
+        key: key,
+        chart: chart,
+        approximateHouses: !birthTimeKnown,
+      ),
+      ChartStyle.northIndian => NorthIndianChart(
+        key: key,
+        chart: chart,
+        approximateHouses: !birthTimeKnown,
+      ),
+    };
+  }
 
   Future<void> _share(String caption) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -106,9 +151,12 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
               const SizedBox(height: AppSpacing.lg),
             ],
             _StyleSwitcher(style: style),
+            const SizedBox(height: AppSpacing.sm),
+            _VargaSwitcher(
+              varga: _varga,
+              onChanged: (v) => setState(() => _varga = v),
+            ),
             const SizedBox(height: AppSpacing.md),
-            // Keyed by style so Flutter rebuilds rather than trying to reuse
-            // the previous layout's element tree, which shares no structure.
             ShareableChart(
               boundaryKey: _shareBoundary,
               caption: L10n.of(context).chartShareCaption(
@@ -116,19 +164,38 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                 DateFormat.yMMMd().format(profile.birthDate),
                 profile.place.label(AppLocale.of(context)),
               ),
-              child: switch (style) {
-                ChartStyle.southIndian => RasiChart(
-                  key: const ValueKey('south'),
-                  chart: chart,
-                  approximateHouses: !profile.birthTimeKnown,
-                ),
-                ChartStyle.northIndian => NorthIndianChart(
-                  key: const ValueKey('north'),
-                  chart: chart,
-                  approximateHouses: !profile.birthTimeKnown,
+              child: switch (_varga) {
+                _Varga.rasi => _drawn(chart, style, profile.birthTimeKnown),
+                // Inside the share boundary on purpose: a screenshot of a
+                // chart the user has not opened yet should be as blurred as
+                // the screen is.
+                _Varga.navamsa => LockedContent(
+                  unlock: RewardedUnlock.navamsaChart,
+                  feature: PaidFeature.divisionalCharts,
+                  title: L10n.of(context).unlockNavamsaTitle,
+                  body: L10n.of(context).unlockNavamsaBody,
+                  child: _drawn(
+                    Varga.navamsa(chart),
+                    style,
+                    profile.birthTimeKnown,
+                  ),
                 ),
               },
             ),
+            if (_varga == _Varga.navamsa) ...[
+              const SizedBox(height: AppSpacing.md),
+              // The D9 magnifies any error in the birth time: one navāṁśa is
+              // 3°20' of the Moon's travel, which is about thirteen minutes.
+              // The rāśi chart survives a rough time; this one does not.
+              if (!profile.birthTimeKnown) ...[
+                InfoNotice(
+                  text: L10n.of(context).chartNavamsaApproximate,
+                  tone: NoticeTone.caution,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+              ],
+              QuietNotice(text: L10n.of(context).reportNavamsaNote),
+            ],
             const SizedBox(height: AppSpacing.xl),
             _SummaryCard(chart: chart),
             const SizedBox(height: AppSpacing.lg),
@@ -182,6 +249,31 @@ class _StyleSwitcher extends ConsumerWidget {
       showSelectedIcon: false,
       onSelectionChanged: (selection) =>
           ref.read(chartStyleProvider.notifier).set(selection.first),
+    );
+  }
+}
+
+/// Rāśi or navāṁśa.
+///
+/// Its own row rather than four segments beside the style buttons: the two
+/// choices are independent — a North Indian D9 is a normal thing to want — and
+/// folding them into one control would imply they are alternatives.
+class _VargaSwitcher extends StatelessWidget {
+  const _VargaSwitcher({required this.varga, required this.onChanged});
+
+  final _Varga varga;
+  final ValueChanged<_Varga> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<_Varga>(
+      segments: [
+        for (final v in _Varga.values)
+          ButtonSegment(value: v, label: Text(v.label(L10n.of(context)))),
+      ],
+      selected: {varga},
+      showSelectedIcon: false,
+      onSelectionChanged: (selection) => onChanged(selection.first),
     );
   }
 }

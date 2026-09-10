@@ -55,6 +55,26 @@ void main() {
       expect(subscriptions, PurchaseProduct.proTiers.toSet());
     });
 
+    test('nothing is offered that unlocks nothing', () {
+      // Found by running the sandbox end to end: compatibility_report showed
+      // on the paywall at US$3.99 and grants an entitlement no feature gate
+      // checks, so buying it would take money and change nothing.
+      //
+      // This list is the check. A product may only be on sale once something
+      // in the app asks for what it grants — when the compatibility report is
+      // built, add it back here and to PurchaseProduct.sellable together.
+      expect(
+        PurchaseProduct.onSale.map((p) => p.id),
+        unorderedEquals([
+          'remove_ads',
+          'pro_monthly',
+          'pro_yearly',
+          'birth_chart_pdf',
+        ]),
+      );
+      expect(PurchaseProduct.compatibilityReport.sellable, isFalse);
+    });
+
     test('every entitlement can actually be bought', () {
       // An entitlement no product grants is a feature gate that can never
       // open — a screen locked forever with no way to pay for it.

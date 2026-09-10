@@ -185,10 +185,10 @@ class RevenueCatGateway implements PurchaseGateway {
     // Two calls, because Android will not return a one-time product under the
     // subscription category or the other way round — `getProducts` filters on
     // it, and asking once quietly returns half the ladder.
-    final subscriptions = PurchaseProduct.values
+    final subscriptions = PurchaseProduct.onSale
         .where((p) => p.isSubscription)
         .toList();
-    final oneTime = PurchaseProduct.values
+    final oneTime = PurchaseProduct.onSale
         .where((p) => !p.isSubscription)
         .toList();
 
@@ -197,8 +197,8 @@ class RevenueCatGateway implements PurchaseGateway {
       ...await _fetch(oneTime, rc.ProductCategory.nonSubscription),
     ];
 
-    if (found.length < PurchaseProduct.values.length) {
-      final missing = PurchaseProduct.values
+    if (found.length < PurchaseProduct.onSale.length) {
+      final missing = PurchaseProduct.onSale
           .where((p) => !found.any((s) => s.product == p))
           .map((p) => p.id)
           .join(', ');

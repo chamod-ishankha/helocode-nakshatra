@@ -26,13 +26,21 @@ enum PurchaseProduct {
   proMonthly('pro_monthly', Entitlement.pro, PurchaseTerm.monthly),
   proYearly('pro_yearly', Entitlement.pro, PurchaseTerm.yearly),
   birthChartPdf('birth_chart_pdf', Entitlement.pdfReport, PurchaseTerm.oneTime),
+
+  /// Not on sale yet — see [sellable].
   compatibilityReport(
     'compatibility_report',
     Entitlement.compatibilityReport,
     PurchaseTerm.oneTime,
+    sellable: false,
   );
 
-  const PurchaseProduct(this.id, this.grants, this.term);
+  const PurchaseProduct(
+    this.id,
+    this.grants,
+    this.term, {
+    this.sellable = true,
+  });
 
   /// The Play Console product id.
   final String id;
@@ -42,7 +50,23 @@ enum PurchaseProduct {
 
   final PurchaseTerm term;
 
+  /// Whether this may be offered to a user yet.
+  ///
+  /// `compatibility_report` is false because nothing checks the entitlement it
+  /// grants: there is no screen gated on [PaidFeature.compatibilityReport], so
+  /// buying it would take money and change nothing. It stays in this table
+  /// because the id and the entitlement are already configured in RevenueCat
+  /// and Play, and because the day the feature exists this is one word.
+  ///
+  /// Found by running the sandbox end to end — it appeared on the paywall at
+  /// US$3.99, under its raw product id, next to four things that do work.
+  final bool sellable;
+
   bool get isSubscription => term != PurchaseTerm.oneTime;
+
+  /// The products a paywall may show.
+  static List<PurchaseProduct> get onSale =>
+      values.where((p) => p.sellable).toList(growable: false);
 
   static PurchaseProduct? byId(String id) {
     for (final p in PurchaseProduct.values) {

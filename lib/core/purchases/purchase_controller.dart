@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/onboarding/data/profile_repository.dart';
+import '../config/remote_config_service.dart';
 import '../logging/analytics_service.dart';
 import '../logging/app_logger.dart';
 import 'entitlement_cache.dart';
 import 'entitlements.dart';
+import 'paywall_config.dart';
 import 'products.dart';
 import 'purchase_gateway.dart';
 
@@ -147,9 +149,28 @@ final entitlementsProvider =
 /// One place to ask, so a new tier or a changed ladder never means auditing
 /// every screen that gates something.
 final featureProvider = Provider.family<bool, PaidFeature>((ref, feature) {
+  // Checked first, and it can only ever say yes. Remote Config removes gates
+  // and never adds one, so a stale or fat-fingered value can only be more
+  // generous than the code — never lock somebody out of what they were told
+  // they would get.
+  if (ref.watch(paywallConfigProvider).isFree(feature)) return true;
+
   final snapshot = ref.watch(entitlementsProvider);
   return snapshot.has(feature, ref.watch(purchaseClockProvider)());
 });
+
+/// What Remote Config currently says about the paywall (KAN-36).
+///
+/// Read once per launch. Remote Config answers from a local cache that
+/// [RemoteConfigService.initialize] refreshes in the background, so this is a
+/// synchronous read of whatever arrived last time.
+final paywallConfigProvider = Provider<PaywallConfig>(
+  (ref) => PaywallConfig.parse(
+    variant: RemoteConfigService.string('paywall_variant'),
+    freeFeatures: RemoteConfigService.string('paywall_free_features'),
+    highlight: RemoteConfigService.string('paywall_highlight_tier'),
+  ),
+);
 
 /// Whether anything can be bought in this build.
 final purchasesAvailableProvider = Provider<bool>(

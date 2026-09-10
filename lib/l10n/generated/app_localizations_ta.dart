@@ -1127,4 +1127,89 @@ class L10nTa extends L10n {
   @override
   String get purchaseFailed =>
       'ஏதேனும் தவறாகிவிட்டது. உங்களிடமிருந்து பணம் வசூலிக்கப்படவில்லை.';
+
+  @override
+  String get paywallHeadlineValue => 'முழு பஞ்சாங்கத்தையும் திறக்கவும்';
+
+  @override
+  String get paywallHeadlineSupport => 'Nakshatra தொடர்ந்து இயங்க உதவுங்கள்';
+
+  @override
+  String get paywallBodyValue =>
+      'அனைத்து வர்க்க சக்கரங்கள், முழு தசை காலவரிசை, விரிவான பொருத்தக் கணிப்பு — எந்த விளம்பரமும் இல்லாமல்.';
+
+  @override
+  String get paywallBodySupport =>
+      'Nakshatra இலங்கையில் ஒருவரால் உருவாக்கப்பட்டது. Pro ஆவது அந்த வேலைக்குப் பணம் தருகிறது — அத்துடன் அனைத்து விளம்பரங்களும் நீங்கும்.';
+
+  @override
+  String get paywallBestValue => 'சிறந்த மதிப்பு';
+
+  @override
+  String paywallSave(int percent) {
+    return '$percent% சேமிக்கவும்';
+  }
+
+  @override
+  String get paywallPerMonth => 'மாதத்திற்கு';
+
+  @override
+  String get paywallPerYear => 'வருடத்திற்கு';
+
+  @override
+  String get paywallOneTime => 'ஒரு முறை கட்டணம்';
+
+  @override
+  String paywallFreeTrial(int days, String price) {
+    return '$days நாட்கள் இலவசம், பின்னர் $price';
+  }
+
+  @override
+  String get paywallRemoveAdsTitle => 'விளம்பரங்களை மட்டும் நீக்கு';
+
+  @override
+  String get paywallRemoveAdsBody =>
+      'ஒரு முறை கட்டணம். மற்ற அனைத்தும் அப்படியே இருக்கும்.';
+
+  @override
+  String get paywallWatchTitle => 'அல்லது ஒரு குறும் காணொளியைப் பாருங்கள்';
+
+  @override
+  String get paywallWatchBody =>
+      'இலவசம், இன்றைய மீதி நேரத்திற்கு இது திறக்கும்.';
+
+  @override
+  String get paywallPricesLoading => 'விலைகள் ஏற்றப்படுகின்றன…';
+
+  @override
+  String get paywallPricesUnavailable =>
+      'விலைகள் இப்போது கிடைக்கவில்லை. பின்னர் மீண்டும் முயலவும்.';
+
+  @override
+  String get paywallLegal =>
+      'ரத்து செய்யும் வரை சந்தா தானாகவே புதுப்பிக்கப்படும். Google Play இல் எப்போது வேண்டுமானாலும் ரத்து செய்யலாம்.';
+
+  @override
+  String get paywallFeatureNoAds => 'எங்கும் விளம்பரங்கள் இல்லை';
+
+  @override
+  String get paywallFeatureCharts => 'அனைத்து வர்க்க சக்கரங்கள்';
+
+  @override
+  String get paywallFeatureDasha => 'முழு தசை காலவரிசை';
+
+  @override
+  String get paywallFeatureCompat => 'முழு பொருத்தக் கணிப்பு';
+
+  @override
+  String get paywallFeatureProfiles => 'முழு குடும்பத்திற்கும் சாதகங்கள்';
+
+  @override
+  String get paywallFeatureTransits => 'கோச்சார அறிவிப்புகள்';
+
+  @override
+  String get paywallReasonCompat => 'முழு பொருத்தக் கணிப்பையும் பாருங்கள்';
+
+  @override
+  String get paywallReasonFuture => 'மேலும் முன்னோக்கிப் பாருங்கள்';
 }

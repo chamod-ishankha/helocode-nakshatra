@@ -12,6 +12,7 @@ import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/env.dart';
 import 'core/config/flavor.dart';
+import 'core/config/remote_config_service.dart';
 import 'core/db/app_database.dart';
 import 'core/db/profile_store.dart';
 import 'core/logging/analytics_service.dart';
@@ -92,6 +93,11 @@ Future<void> bootstrap(Flavor flavor) async {
   // Registers the channel and the tap handler. Scheduling comes later, once
   // the profile is known.
   await NotificationService.initialize();
+
+  // Awaited, but it never waits long: the fetch has its own ten-second
+  // timeout and everything it controls has a compiled-in default, so the
+  // worst case is a paywall drawn without this launch's experiment.
+  await RemoteConfigService.initialize();
 
   // Decides whether the account screen offers a Google button at all. Also
   // never throws: a project without the Google provider switched on is the

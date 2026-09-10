@@ -209,6 +209,7 @@ class RevenueCatGateway implements PurchaseGateway {
               formatted: sp.priceString,
               currencyCode: sp.currencyCode,
               amount: sp.price,
+              freeTrialDays: freeTrialDays(sp.introductoryPrice),
             ),
       ];
     } on Object catch (e, s) {
@@ -283,6 +284,29 @@ class RevenueCatGateway implements PurchaseGateway {
     }
 
     return EntitlementSnapshot(grants: grants, refreshedAt: now);
+  }
+
+  /// How many days of *free* trial an introductory offer is worth.
+  ///
+  /// An introductory price is not necessarily a trial — Play also uses it for
+  /// a discounted first period, and calling "half price for a month" a free
+  /// trial on the paywall would be a false claim about money. Only a price of
+  /// zero counts.
+  static int freeTrialDays(rc.IntroductoryPrice? intro) {
+    if (intro == null || intro.price != 0) return 0;
+
+    final perUnit = switch (intro.periodUnit) {
+      rc.PeriodUnit.day => 1,
+      rc.PeriodUnit.week => 7,
+      rc.PeriodUnit.month => 30,
+      rc.PeriodUnit.year => 365,
+      rc.PeriodUnit.unknown => 0,
+    };
+
+    // cycles matters: Play allows a trial to repeat, and a paywall that says
+    // "3 days" when the store gives two lots of three is underselling.
+    final days = perUnit * intro.periodNumberOfUnits * intro.cycles;
+    return days > 0 ? days : 0;
   }
 
   /// Maps the SDK's error codes onto the outcomes the UI has words for.

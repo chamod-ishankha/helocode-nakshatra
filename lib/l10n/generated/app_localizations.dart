@@ -2072,6 +2072,156 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Something went wrong. You have not been charged.'**
   String get purchaseFailed;
+
+  /// No description provided for @paywallHeadlineValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock the whole almanac'**
+  String get paywallHeadlineValue;
+
+  /// No description provided for @paywallHeadlineSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Nakshatra going'**
+  String get paywallHeadlineSupport;
+
+  /// No description provided for @paywallBodyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Every divisional chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.'**
+  String get paywallBodyValue;
+
+  /// No description provided for @paywallBodySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Nakshatra is built by one person in Sri Lanka. Going Pro pays for the work — and removes every ad while it does.'**
+  String get paywallBodySupport;
+
+  /// No description provided for @paywallBestValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Best value'**
+  String get paywallBestValue;
+
+  /// Badge on the yearly tier. Computed from the store prices, never written into the copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String paywallSave(int percent);
+
+  /// No description provided for @paywallPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'per month'**
+  String get paywallPerMonth;
+
+  /// No description provided for @paywallPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'per year'**
+  String get paywallPerYear;
+
+  /// No description provided for @paywallOneTime.
+  ///
+  /// In en, this message translates to:
+  /// **'one payment'**
+  String get paywallOneTime;
+
+  /// Only shown when the store itself reports a free trial. Never from Remote Config: promising a trial Play will not honour is a lie about money.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days free, then {price}'**
+  String paywallFreeTrial(int days, String price);
+
+  /// No description provided for @paywallRemoveAdsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Just remove the ads'**
+  String get paywallRemoveAdsTitle;
+
+  /// No description provided for @paywallRemoveAdsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One payment. Everything else stays as it is.'**
+  String get paywallRemoveAdsBody;
+
+  /// No description provided for @paywallWatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Or watch a short video'**
+  String get paywallWatchTitle;
+
+  /// No description provided for @paywallWatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Free, and it opens this for the rest of today.'**
+  String get paywallWatchBody;
+
+  /// No description provided for @paywallPricesLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading prices…'**
+  String get paywallPricesLoading;
+
+  /// No description provided for @paywallPricesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices are not available right now. Please try again later.'**
+  String get paywallPricesUnavailable;
+
+  /// No description provided for @paywallLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions renew automatically until cancelled. Cancel any time in Google Play.'**
+  String get paywallLegal;
+
+  /// No description provided for @paywallFeatureNoAds.
+  ///
+  /// In en, this message translates to:
+  /// **'No ads, anywhere'**
+  String get paywallFeatureNoAds;
+
+  /// No description provided for @paywallFeatureCharts.
+  ///
+  /// In en, this message translates to:
+  /// **'Every divisional chart'**
+  String get paywallFeatureCharts;
+
+  /// No description provided for @paywallFeatureDasha.
+  ///
+  /// In en, this message translates to:
+  /// **'The full daśā timeline'**
+  String get paywallFeatureDasha;
+
+  /// No description provided for @paywallFeatureCompat.
+  ///
+  /// In en, this message translates to:
+  /// **'The full compatibility working'**
+  String get paywallFeatureCompat;
+
+  /// No description provided for @paywallFeatureProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Charts for the whole family'**
+  String get paywallFeatureProfiles;
+
+  /// No description provided for @paywallFeatureTransits.
+  ///
+  /// In en, this message translates to:
+  /// **'Transit alerts'**
+  String get paywallFeatureTransits;
+
+  /// No description provided for @paywallReasonCompat.
+  ///
+  /// In en, this message translates to:
+  /// **'See the full compatibility working'**
+  String get paywallReasonCompat;
+
+  /// No description provided for @paywallReasonFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'Look further ahead'**
+  String get paywallReasonFuture;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

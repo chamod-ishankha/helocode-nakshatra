@@ -1117,4 +1117,89 @@ class L10nEn extends L10n {
   @override
   String get purchaseFailed =>
       'Something went wrong. You have not been charged.';
+
+  @override
+  String get paywallHeadlineValue => 'Unlock the whole almanac';
+
+  @override
+  String get paywallHeadlineSupport => 'Keep Nakshatra going';
+
+  @override
+  String get paywallBodyValue =>
+      'Every divisional chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.';
+
+  @override
+  String get paywallBodySupport =>
+      'Nakshatra is built by one person in Sri Lanka. Going Pro pays for the work — and removes every ad while it does.';
+
+  @override
+  String get paywallBestValue => 'Best value';
+
+  @override
+  String paywallSave(int percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String get paywallPerMonth => 'per month';
+
+  @override
+  String get paywallPerYear => 'per year';
+
+  @override
+  String get paywallOneTime => 'one payment';
+
+  @override
+  String paywallFreeTrial(int days, String price) {
+    return '$days days free, then $price';
+  }
+
+  @override
+  String get paywallRemoveAdsTitle => 'Just remove the ads';
+
+  @override
+  String get paywallRemoveAdsBody =>
+      'One payment. Everything else stays as it is.';
+
+  @override
+  String get paywallWatchTitle => 'Or watch a short video';
+
+  @override
+  String get paywallWatchBody =>
+      'Free, and it opens this for the rest of today.';
+
+  @override
+  String get paywallPricesLoading => 'Loading prices…';
+
+  @override
+  String get paywallPricesUnavailable =>
+      'Prices are not available right now. Please try again later.';
+
+  @override
+  String get paywallLegal =>
+      'Subscriptions renew automatically until cancelled. Cancel any time in Google Play.';
+
+  @override
+  String get paywallFeatureNoAds => 'No ads, anywhere';
+
+  @override
+  String get paywallFeatureCharts => 'Every divisional chart';
+
+  @override
+  String get paywallFeatureDasha => 'The full daśā timeline';
+
+  @override
+  String get paywallFeatureCompat => 'The full compatibility working';
+
+  @override
+  String get paywallFeatureProfiles => 'Charts for the whole family';
+
+  @override
+  String get paywallFeatureTransits => 'Transit alerts';
+
+  @override
+  String get paywallReasonCompat => 'See the full compatibility working';
+
+  @override
+  String get paywallReasonFuture => 'Look further ahead';
 }

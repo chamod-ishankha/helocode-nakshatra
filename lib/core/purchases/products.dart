@@ -62,6 +62,7 @@ class StorePrice {
     required this.formatted,
     required this.currencyCode,
     required this.amount,
+    this.freeTrialDays = 0,
   });
 
   final PurchaseProduct product;
@@ -75,6 +76,17 @@ class StorePrice {
 
   /// The numeric price, for comparing tiers rather than for display.
   final double amount;
+
+  /// Days of free trial the store will actually give, or 0 for none.
+  ///
+  /// Read from the store rather than from Remote Config, and that is the whole
+  /// point: a trial is configured in Play Console, and a paywall that promises
+  /// seven free days because a config value said so — while Play charges on
+  /// day one — is an app that lied about money. If the store says nothing, the
+  /// paywall says nothing.
+  final int freeTrialDays;
+
+  bool get hasFreeTrial => freeTrialDays > 0;
 
   /// What a year of this costs, so tiers on different terms can be compared.
   ///

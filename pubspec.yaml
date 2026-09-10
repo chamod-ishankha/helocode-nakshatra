@@ -62,6 +62,7 @@ dependencies:
   drift: ^2.34.4
   drift_flutter: ^0.3.1
   purchases_flutter: ^10.11.0
+  firebase_remote_config: ^6.6.0
 
 dev_dependencies:
   flutter_test:

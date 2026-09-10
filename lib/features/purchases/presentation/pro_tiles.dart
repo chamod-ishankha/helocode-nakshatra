@@ -7,6 +7,7 @@ import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import 'paywall.dart';
 import 'purchase_messages.dart';
 
 /// The purchase rows in Settings (KAN-35).
@@ -64,6 +65,7 @@ class _ProTilesState extends ConsumerState<ProTiles> {
         : null;
     final isPro = entitlements.isActive(Entitlement.pro, now);
     final adFree = entitlements.has(PaidFeature.removeAds, now);
+    final canUpgrade = !isPro && ref.watch(purchasesAvailableProvider);
 
     return Column(
       children: [
@@ -83,6 +85,11 @@ class _ProTilesState extends ConsumerState<ProTiles> {
             },
           ),
           subtitle: adFree ? null : Text(l.purchaseUpgradeHint),
+          // Tappable only while there is something left to buy, and only in a
+          // build that can sell it. A chevron that opens an empty sheet reads
+          // as a broken app rather than as a missing key.
+          trailing: canUpgrade ? const Icon(Icons.chevron_right) : null,
+          onTap: canUpgrade ? () => showPaywall(context, ref) : null,
         ),
 
         if (proUntil != null)

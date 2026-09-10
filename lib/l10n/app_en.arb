@@ -521,5 +521,49 @@
   "purchaseFailed": "Something went wrong. You have not been charged.",
   "@purchaseFailed": {
     "description": "Shown when a purchase fails for a reason the user cannot act on. The second sentence matters: without it people assume they have been charged twice."
-  }
+  },
+  "paywallHeadlineValue": "Unlock the whole almanac",
+  "paywallHeadlineSupport": "Keep Nakshatra going",
+  "paywallBodyValue": "Every divisional chart, the full daśā timeline, and the detailed compatibility working — with no ads anywhere.",
+  "paywallBodySupport": "Nakshatra is built by one person in Sri Lanka. Going Pro pays for the work — and removes every ad while it does.",
+  "paywallBestValue": "Best value",
+  "paywallSave": "Save {percent}%",
+  "@paywallSave": {
+    "description": "Badge on the yearly tier. Computed from the store prices, never written into the copy.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallPerMonth": "per month",
+  "paywallPerYear": "per year",
+  "paywallOneTime": "one payment",
+  "paywallFreeTrial": "{days} days free, then {price}",
+  "@paywallFreeTrial": {
+    "description": "Only shown when the store itself reports a free trial. Never from Remote Config: promising a trial Play will not honour is a lie about money.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallRemoveAdsTitle": "Just remove the ads",
+  "paywallRemoveAdsBody": "One payment. Everything else stays as it is.",
+  "paywallWatchTitle": "Or watch a short video",
+  "paywallWatchBody": "Free, and it opens this for the rest of today.",
+  "paywallPricesLoading": "Loading prices…",
+  "paywallPricesUnavailable": "Prices are not available right now. Please try again later.",
+  "paywallLegal": "Subscriptions renew automatically until cancelled. Cancel any time in Google Play.",
+  "paywallFeatureNoAds": "No ads, anywhere",
+  "paywallFeatureCharts": "Every divisional chart",
+  "paywallFeatureDasha": "The full daśā timeline",
+  "paywallFeatureCompat": "The full compatibility working",
+  "paywallFeatureProfiles": "Charts for the whole family",
+  "paywallFeatureTransits": "Transit alerts",
+  "paywallReasonCompat": "See the full compatibility working",
+  "paywallReasonFuture": "Look further ahead"
 }

@@ -1109,4 +1109,87 @@ class L10nSi extends L10n {
 
   @override
   String get purchaseFailed => 'යමක් වැරදී ඇත. ඔබෙන් මුදල් අය කර නොමැත.';
+
+  @override
+  String get paywallHeadlineValue => 'සම්පූර්ණ ලිත විවෘත කරන්න';
+
+  @override
+  String get paywallHeadlineSupport => 'Nakshatra දිගටම පවත්වාගෙන යන්න';
+
+  @override
+  String get paywallBodyValue =>
+      'සියලු වර්ග චක්‍ර, සම්පූර්ණ දශා කාලරේඛාව, සහ විස්තරාත්මක පොරොන්දම් ගණනය — දැන්වීම් කිසිවක් නොමැතිව.';
+
+  @override
+  String get paywallBodySupport =>
+      'Nakshatra ශ්‍රී ලංකාවේ එක් අයෙකු විසින් නිර්මාණය කරන ලදී. Pro වීමෙන් එම වැඩට ගෙවේ — සහ සියලු දැන්වීම් ඉවත් වේ.';
+
+  @override
+  String get paywallBestValue => 'වඩාත් වාසිදායක';
+
+  @override
+  String paywallSave(int percent) {
+    return '$percent% ඉතිරි කරන්න';
+  }
+
+  @override
+  String get paywallPerMonth => 'මසකට';
+
+  @override
+  String get paywallPerYear => 'වසරකට';
+
+  @override
+  String get paywallOneTime => 'එක් ගෙවීමක්';
+
+  @override
+  String paywallFreeTrial(int days, String price) {
+    return 'දින $days ක් නොමිලේ, පසුව $price';
+  }
+
+  @override
+  String get paywallRemoveAdsTitle => 'දැන්වීම් පමණක් ඉවත් කරන්න';
+
+  @override
+  String get paywallRemoveAdsBody => 'එක් ගෙවීමක්. අනෙක් සියල්ල එලෙසම පවතී.';
+
+  @override
+  String get paywallWatchTitle => 'නැතහොත් කෙටි වීඩියෝවක් නරඹන්න';
+
+  @override
+  String get paywallWatchBody => 'නොමිලේ, අද දවස ඉතිරි කාලයට මෙය විවෘත වේ.';
+
+  @override
+  String get paywallPricesLoading => 'මිල ගණන් පූරණය වෙමින්…';
+
+  @override
+  String get paywallPricesUnavailable =>
+      'මිල ගණන් දැනට ලබාගත නොහැක. කරුණාකර පසුව නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get paywallLegal =>
+      'අවලංගු කරන තෙක් දායකත්වය ස්වයංක්‍රීයව අලුත් වේ. Google Play හරහා ඕනෑම විටෙක අවලංගු කළ හැක.';
+
+  @override
+  String get paywallFeatureNoAds => 'කිසිදු තැනක දැන්වීම් නැත';
+
+  @override
+  String get paywallFeatureCharts => 'සියලු වර්ග චක්‍ර';
+
+  @override
+  String get paywallFeatureDasha => 'සම්පූර්ණ දශා කාලරේඛාව';
+
+  @override
+  String get paywallFeatureCompat => 'සම්පූර්ණ පොරොන්දම් ගණනය';
+
+  @override
+  String get paywallFeatureProfiles => 'මුළු පවුලටම කේන්දර';
+
+  @override
+  String get paywallFeatureTransits => 'ගෝචර දැනුම්දීම්';
+
+  @override
+  String get paywallReasonCompat => 'සම්පූර්ණ පොරොන්දම් ගණනය බලන්න';
+
+  @override
+  String get paywallReasonFuture => 'ඉදිරි දිනවලට බලන්න';
 }

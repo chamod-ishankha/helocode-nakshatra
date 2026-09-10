@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/generated/app_localizations.dart';
+import '../../features/purchases/presentation/paywall.dart';
+import '../purchases/purchase_controller.dart';
 import '../theme/app_theme.dart';
 import 'rewarded_unlock.dart';
 
@@ -99,6 +101,21 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
                   : const Icon(Icons.play_circle_outline),
               label: Text(_busy ? l.unlockLoading : l.unlockWatch),
             ),
+            // The paid path, beside the free one rather than instead of it
+            // (KAN-36). Someone who would rather not watch a video every day
+            // has to be able to see that there is another way out; someone who
+            // will never pay keeps the button they came for.
+            if (ref.watch(purchasesAvailableProvider))
+              TextButton(
+                onPressed: _busy
+                    ? null
+                    : () => showPaywall(
+                        context,
+                        ref,
+                        reason: PaywallReason.forUnlock(widget.unlock),
+                      ),
+                child: Text(l.purchaseUpgrade),
+              ),
             if (_failed) ...[
               const SizedBox(height: 8),
               Text(

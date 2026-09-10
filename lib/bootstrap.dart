@@ -95,10 +95,15 @@ Future<void> bootstrap(Flavor flavor) async {
   // the profile is known.
   await NotificationService.initialize();
 
-  // Awaited, but it never waits long: the fetch has its own ten-second
-  // timeout and everything it controls has a compiled-in default, so the
-  // worst case is a paywall drawn without this launch's experiment.
-  await RemoteConfigService.initialize();
+  // Deliberately not awaited. The fetch has a ten-second timeout, and on a
+  // poor connection awaiting it here is ten seconds of blank screen before the
+  // app opens — paid for by every user, to decide which paywall headline to
+  // use. Everything it controls has a compiled-in default, so a launch that
+  // finishes before it does simply runs on those.
+  //
+  // It is also what makes Remote Config optional in the first place: a project
+  // that never enables it costs nothing at startup.
+  unawaited(RemoteConfigService.initialize());
 
   // Decides whether the account screen offers a Google button at all. Also
   // never throws: a project without the Google provider switched on is the

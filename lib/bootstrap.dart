@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/ads/ad_gate.dart';
 import 'core/ads/ads_service.dart';
+import 'core/ads/interstitial.dart';
 import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/env.dart';
@@ -131,6 +132,15 @@ Future<void> bootstrap(Flavor flavor) async {
       // The real rewarded ad. Defaults to "not earned" so tests and any
       // build without the SDK never hand out an unlock for free.
       rewardedPresenterProvider.overrideWithValue(AdsService.showRewarded),
+      // The real interstitial (KAN-55). Same reasoning: without these a test
+      // and a build with no SDK both behave as "no ad was shown", which is the
+      // answer that leaves the cooldown untouched.
+      interstitialPreloaderProvider.overrideWithValue(
+        AdsService.preloadInterstitial,
+      ),
+      interstitialPresenterProvider.overrideWithValue(
+        AdsService.showInterstitial,
+      ),
     ],
   );
 

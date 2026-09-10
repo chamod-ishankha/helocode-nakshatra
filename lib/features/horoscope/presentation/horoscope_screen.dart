@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/ads/interstitial.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
@@ -17,11 +20,78 @@ import '../domain/horoscope_providers.dart';
 /// Reads for the day selected on the home screen, not always today, so the
 /// date switcher and the calendar keep working the way they do everywhere
 /// else in the app.
-class HoroscopeScreen extends ConsumerWidget {
+class HoroscopeScreen extends ConsumerStatefulWidget {
   const HoroscopeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HoroscopeScreen> createState() => _HoroscopeScreenState();
+}
+
+class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
+  final _scroll = ScrollController();
+
+  /// Whether the reading was scrolled to the end.
+  ///
+  /// The ticket asks for an interstitial *after reading* the horoscope, and
+  /// this is what makes that true rather than "after opening" it. Somebody who
+  /// glances at the sign and backs out has not been given anything, and an ad
+  /// for that is the interruption that gets an app uninstalled.
+  bool _readToEnd = false;
+
+  /// Whether there was a reading on screen at all. Set during build.
+  ///
+  /// False while the day is locked behind a rewarded unlock, or when no copy
+  /// exists for this build. Charging attention for a screen that showed
+  /// nothing is the worst version of this placement.
+  bool _hadReading = false;
+
+  /// Guards against firing twice — the app bar button pops, which then also
+  /// notifies [PopScope].
+  bool _left = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Loaded while the user reads, so leaving is instant. Nothing is loaded
+    // for somebody who bought Remove Ads; the controller checks that.
+    unawaited(ref.read(interstitialControllerProvider).prepare());
+
+    _scroll.addListener(_checkReadToEnd);
+    // Short readings never scroll, so no listener would ever fire. Checked
+    // once after the first layout instead.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkReadToEnd());
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  void _checkReadToEnd() {
+    if (_readToEnd || !_scroll.hasClients) return;
+    // Eight logical pixels of slack: a fling settles a fraction short of the
+    // bottom often enough that an exact comparison never matches.
+    if (_scroll.position.extentAfter <= 8) _readToEnd = true;
+  }
+
+  /// Called once, as the user leaves.
+  ///
+  /// Read before navigating and fired afterwards: the controller holds
+  /// everything it needs, so it does not matter that this widget is on its way
+  /// out, and the ad lands over the screen the user arrived at rather than
+  /// delaying the one they left.
+  void _leaving() {
+    if (_left) return;
+    _left = true;
+    if (!_readToEnd || !_hadReading) return;
+
+    unawaited(ref.read(interstitialControllerProvider).showIfAllowed());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = L10n.of(context);
     final locale = ref.watch(localeProvider);
     final date = ref.watch(selectedDateProvider);
@@ -37,6 +107,7 @@ class HoroscopeScreen extends ConsumerWidget {
 
     final axis = ref.watch(horoscopeAxisProvider);
     final horoscope = locked ? null : ref.watch(horoscopeProvider(axis));
+    _hadReading = horoscope != null;
 
     final lagna = ref.watch(lagnaRasiProvider);
     final moon = ref.watch(janmaRasiProvider);
@@ -45,90 +116,104 @@ class HoroscopeScreen extends ConsumerWidget {
     final bothSame = lagna != null && lagna == moon;
     final sign = ref.watch(horoscopeSignProvider(axis));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.horoscopeTitle),
-        leading: BackButton(onPressed: () => popOrHome(context)),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          if (!bothSame && lagna != null && moon != null) ...[
-            _AxisToggle(axis: axis),
-            const SizedBox(height: 12),
-          ],
-
-          if (sign != null)
-            Text(
-              sign.label(locale),
-              style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-          if (bothSame)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                l.horoscopeSameSign,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-
-          // The lagna moves a sign every two hours, so without a birth time it
-          // is a guess. Saying nothing would present a coin flip as a reading.
-          if (axis == HoroscopeAxis.lagna &&
-              ref.watch(lagnaIsApproximateProvider))
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                l.horoscopeLagnaApproximate,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.inauspicious),
-              ),
-            ),
-
-          const SizedBox(height: 16),
-
-          if (locked)
-            RewardedUnlockCard(
-              unlock: RewardedUnlock.futureDay,
-              title: l.unlockFutureTitle,
-              body: l.unlockFutureBody,
-            )
-          else if (horoscope == null)
-            // No chart yet, or no bundled copy for this build. Neither is
-            // worth an error: the rest of the app still works.
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              child: Text(
-                l.horoscopeUnavailable,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            )
-          else ...[
-            for (final category in HoroscopeEngine.sectionOrder)
-              if (horoscope[category] case final text?)
-                _Section(category: category, text: text),
-            const SizedBox(height: 8),
-            _LuckyRow(horoscope: horoscope),
-          ],
-
-          const SizedBox(height: 24),
-          Text(
-            l.entertainmentOnly,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+    return PopScope(
+      // The system back gesture pops on its own; this only needs to know it
+      // happened. Blocking a back press to show an ad would be both hostile
+      // and against AdMob's own placement rules.
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) _leaving();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l.horoscopeTitle),
+          leading: BackButton(
+            onPressed: () {
+              _leaving();
+              popOrHome(context);
+            },
           ),
-        ],
+        ),
+        body: ListView(
+          controller: _scroll,
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            if (!bothSame && lagna != null && moon != null) ...[
+              _AxisToggle(axis: axis),
+              const SizedBox(height: 12),
+            ],
+
+            if (sign != null)
+              Text(
+                sign.label(locale),
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+            if (bothSame)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  l.horoscopeSameSign,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+
+            // The lagna moves a sign every two hours, so without a birth time it
+            // is a guess. Saying nothing would present a coin flip as a reading.
+            if (axis == HoroscopeAxis.lagna &&
+                ref.watch(lagnaIsApproximateProvider))
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  l.horoscopeLagnaApproximate,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.inauspicious,
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: 16),
+
+            if (locked)
+              RewardedUnlockCard(
+                unlock: RewardedUnlock.futureDay,
+                title: l.unlockFutureTitle,
+                body: l.unlockFutureBody,
+              )
+            else if (horoscope == null)
+              // No chart yet, or no bundled copy for this build. Neither is
+              // worth an error: the rest of the app still works.
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Text(
+                  l.horoscopeUnavailable,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              )
+            else ...[
+              for (final category in HoroscopeEngine.sectionOrder)
+                if (horoscope[category] case final text?)
+                  _Section(category: category, text: text),
+              const SizedBox(height: 8),
+              _LuckyRow(horoscope: horoscope),
+            ],
+
+            const SizedBox(height: 24),
+            Text(
+              l.entertainmentOnly,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

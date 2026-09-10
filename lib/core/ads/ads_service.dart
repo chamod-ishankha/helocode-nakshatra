@@ -115,6 +115,88 @@ abstract final class AdsService {
     );
   }
 
+  static InterstitialAd? _interstitial;
+  static bool _loadingInterstitial = false;
+
+  /// Starts loading an interstitial, if one is not already waiting (KAN-55).
+  ///
+  /// Preloaded rather than fetched at the moment of showing. A load takes a
+  /// second or three; asking for one as the user leaves a screen means they
+  /// watch the next screen sit there and then get hit by an ad, which is both
+  /// a worse interruption and a worse fill rate.
+  ///
+  /// Never throws, and never queues a second load — an unfilled request that
+  /// is retried on every visit is how an app gets its request rate flagged.
+  static Future<void> preloadInterstitial() async {
+    if (!_started || _interstitial != null || _loadingInterstitial) return;
+
+    final unitId = AdUnits.forSlot(AdSlot.interstitial);
+    if (unitId == null) return;
+
+    _loadingInterstitial = true;
+    try {
+      await InterstitialAd.load(
+        adUnitId: unitId,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) {
+            _interstitial = ad;
+            _loadingInterstitial = false;
+          },
+          onAdFailedToLoad: (error) {
+            // Ordinary: no fill is the common case in a small market.
+            AppLogger.info('No interstitial filled: ${error.message}');
+            _loadingInterstitial = false;
+          },
+        ),
+      );
+    } on Object catch (e, s) {
+      AppLogger.warn('Interstitial load threw', e, s);
+      _loadingInterstitial = false;
+    }
+  }
+
+  /// Shows the preloaded interstitial. True only if it really appeared.
+  ///
+  /// Returns false rather than waiting when nothing is loaded. A placement
+  /// that blocks the user while an ad is fetched is worse than a missed
+  /// impression, and the caller uses this answer to decide whether the
+  /// cooldown has been spent.
+  static Future<bool> showInterstitial() async {
+    final ad = _interstitial;
+    if (ad == null) return false;
+
+    // Cleared before showing, so a second placement firing at the same moment
+    // cannot try to show the same ad twice.
+    _interstitial = null;
+
+    var shown = true;
+    final closed = Completer<void>();
+
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        if (!closed.isCompleted) closed.complete();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        AppLogger.warn('Interstitial failed to show: ${error.message}');
+        ad.dispose();
+        shown = false;
+        if (!closed.isCompleted) closed.complete();
+      },
+    );
+
+    try {
+      await ad.show();
+    } on Object catch (e, s) {
+      AppLogger.warn('Interstitial show threw', e, s);
+      return false;
+    }
+
+    await closed.future;
+    return shown;
+  }
+
   /// Loads a rewarded ad and shows it, resolving true only if the reward was
   /// actually earned.
   ///

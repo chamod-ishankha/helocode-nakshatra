@@ -234,6 +234,33 @@ void main() {
     expect(find.text('Watch a short video'), findsOneWidget);
   });
 
+  testWidgets('the lock sits centred, not shifted by the nesting', (
+    tester,
+  ) async {
+    // Reported from the device: the card sat 14 logical pixels right of
+    // centre. Both ExpansionTiles indented their children on the left only,
+    // and anything centred inside inherited the whole asymmetry. Nothing
+    // failed — it just looked wrong, which is why it needs a number.
+    await pump(tester, birthTimeKnown: true);
+    await openFirstSubPeriod(tester);
+
+    final card = tester.getRect(
+      find.descendant(
+        of: find.byType(LockedContent),
+        matching: find.byType(Card),
+      ),
+    );
+    final timeline = tester.getRect(find.byType(DashaTimeline));
+
+    expect(
+      card.center.dx,
+      moreOrLessEquals(timeline.center.dx, epsilon: 0.5),
+      reason:
+          'card spans ${card.left}..${card.right} inside '
+          '${timeline.left}..${timeline.right}',
+    );
+  });
+
   testWidgets('Remove Ads is not Pro', (tester) async {
     // Somebody who paid to remove ads gets no video button — the promise was
     // no ads anywhere — but they have not bought Pro, so the content stays

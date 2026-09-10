@@ -190,7 +190,10 @@ class _MahaTile extends ConsumerWidget {
       // table does not arrive as 81 rows.
       initiallyExpanded: isCurrent,
       tilePadding: EdgeInsets.zero,
-      childrenPadding: const EdgeInsets.only(left: 16, bottom: 8),
+      // Indented on both sides, not just the left. The nesting still reads,
+      // and anything centred inside — the lock over the third level — lands
+      // on the middle of the screen rather than 28px right of it.
+      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       shape: const Border(),
       collapsedShape: const Border(),
       leading: Icon(
@@ -291,7 +294,7 @@ class _AntaraTile extends ConsumerWidget {
       // Never pre-expanded, not even for the running antara: it would put a
       // lock on screen before the user asked for anything.
       tilePadding: EdgeInsets.zero,
-      childrenPadding: const EdgeInsets.only(left: 12, bottom: 8),
+      childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
       shape: const Border(),
       collapsedShape: const Border(),
       dense: true,

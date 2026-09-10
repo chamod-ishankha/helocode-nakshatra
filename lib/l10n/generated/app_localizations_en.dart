@@ -1338,4 +1338,11 @@ class L10nEn extends L10n {
   String profilesBornOn(Object date) {
     return 'Born $date';
   }
+
+  @override
+  String get purchaseOwnedReport => 'Birth chart report — yours';
+
+  @override
+  String get paywallNothingLeft =>
+      'You already have everything on sale. Thank you.';
 }

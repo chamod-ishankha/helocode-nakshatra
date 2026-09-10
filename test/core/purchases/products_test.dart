@@ -126,4 +126,87 @@ void main() {
       );
     });
   });
+
+  group('what is already owned is not offered again', () {
+    final now = DateTime(2026, 9, 10, 12);
+
+    EntitlementSnapshot holding(Map<Entitlement, DateTime?> grants) =>
+        EntitlementSnapshot(grants: grants, refreshedAt: now);
+
+    test('a new user is offered the whole ladder', () {
+      final nothing = EntitlementSnapshot.unknown();
+
+      for (final product in PurchaseProduct.onSale) {
+        expect(
+          product.isRedundantFor(nothing, now),
+          isFalse,
+          reason: product.id,
+        );
+      }
+    });
+
+    test('the report comes off the sheet once it is bought', () {
+      // Reported from the device: birth_chart_pdf was bought in the sandbox
+      // and the paywall kept offering it. Play refuses the second purchase,
+      // so the user would learn this from an error after a payment sheet.
+      final held = holding({Entitlement.pdfReport: null});
+
+      expect(PurchaseProduct.birthChartPdf.isRedundantFor(held, now), isTrue);
+      expect(PurchaseProduct.removeAds.isRedundantFor(held, now), isFalse);
+    });
+
+    test('Pro hides remove_ads, which it already includes', () {
+      // The case entitlement-comparison would miss: a Pro subscriber does not
+      // hold ad_free, but they do have no ads, so remove_ads is money for
+      // nothing.
+      final pro = holding({Entitlement.pro: now.add(const Duration(days: 20))});
+
+      expect(PurchaseProduct.removeAds.isRedundantFor(pro, now), isTrue);
+      for (final tier in PurchaseProduct.proTiers) {
+        expect(tier.isRedundantFor(pro, now), isTrue, reason: tier.id);
+      }
+      // Pro does not include the report, so that one stays for sale.
+      expect(PurchaseProduct.birthChartPdf.isRedundantFor(pro, now), isFalse);
+    });
+
+    test('remove_ads does not hide Pro, which does much more', () {
+      final adFree = holding({Entitlement.adFree: null});
+
+      expect(PurchaseProduct.removeAds.isRedundantFor(adFree, now), isTrue);
+      for (final tier in PurchaseProduct.proTiers) {
+        expect(tier.isRedundantFor(adFree, now), isFalse, reason: tier.id);
+      }
+    });
+
+    test('a lapsed subscription puts everything back on sale', () {
+      // Well past the expiry and past the offline grace, with a refresh newer
+      // than both — so this is the store's own answer, not a guess.
+      final lapsed = EntitlementSnapshot(
+        grants: {Entitlement.pro: now.subtract(const Duration(days: 30))},
+        refreshedAt: now,
+      );
+
+      expect(PurchaseProduct.removeAds.isRedundantFor(lapsed, now), isFalse);
+      expect(PurchaseProduct.proMonthly.isRedundantFor(lapsed, now), isFalse);
+    });
+
+    test('owning everything leaves nothing on sale', () {
+      // What Settings uses to decide whether the row opens a paywall at all.
+      final all = holding({for (final e in Entitlement.values) e: null});
+
+      expect(
+        PurchaseProduct.onSale.where((p) => !p.isRedundantFor(all, now)),
+        isEmpty,
+      );
+    });
+
+    test('every sellable product unlocks something', () {
+      // isRedundantFor answers false for a product that opens nothing, so a
+      // product like that would be offered forever, to everyone, and buying it
+      // twice would still change nothing.
+      for (final product in PurchaseProduct.onSale) {
+        expect(product.unlocks, isNotEmpty, reason: product.id);
+      }
+    });
+  });
 }

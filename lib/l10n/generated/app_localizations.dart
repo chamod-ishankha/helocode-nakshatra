@@ -2438,6 +2438,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Born {date}'**
   String profilesBornOn(Object date);
+
+  /// No description provided for @purchaseOwnedReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth chart report — yours'**
+  String get purchaseOwnedReport;
+
+  /// No description provided for @paywallNothingLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have everything on sale. Thank you.'**
+  String get paywallNothingLeft;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

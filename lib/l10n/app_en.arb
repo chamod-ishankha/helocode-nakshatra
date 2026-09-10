@@ -624,5 +624,7 @@
   "profilesRemoveBody": "Their birth details will be deleted from this phone.",
   "profilesBackupNote": "Only the chart you are showing is backed up. The rest live on this phone.",
   "profilesUnavailable": "Saved charts need storage this build could not open.",
-  "profilesBornOn": "Born {date}"
+  "profilesBornOn": "Born {date}",
+  "purchaseOwnedReport": "Birth chart report — yours",
+  "paywallNothingLeft": "You already have everything on sale. Thank you."
 }

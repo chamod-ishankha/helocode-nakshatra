@@ -1349,4 +1349,11 @@ class L10nTa extends L10n {
   String profilesBornOn(Object date) {
     return 'பிறந்த நாள் $date';
   }
+
+  @override
+  String get purchaseOwnedReport => 'சாதக அறிக்கை — உங்களுடையது';
+
+  @override
+  String get paywallNothingLeft =>
+      'விற்பனையில் உள்ள அனைத்தும் ஏற்கனவே உங்களிடம் உள்ளன. நன்றி.';
 }

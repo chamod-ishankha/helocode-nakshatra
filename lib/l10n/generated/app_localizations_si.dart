@@ -1328,4 +1328,11 @@ class L10nSi extends L10n {
   String profilesBornOn(Object date) {
     return 'උපන් දිනය $date';
   }
+
+  @override
+  String get purchaseOwnedReport => 'කේන්ද්‍ර වාර්තාව — ඔබ සතුයි';
+
+  @override
+  String get paywallNothingLeft =>
+      'විකිණීමට ඇති සියල්ල දැනටමත් ඔබ සතුයි. ස්තූතියි.';
 }

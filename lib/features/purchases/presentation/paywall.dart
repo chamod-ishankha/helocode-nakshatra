@@ -127,6 +127,8 @@ class _PaywallSheet extends ConsumerWidget {
     final theme = Theme.of(context);
     final config = ref.watch(paywallConfigProvider);
     final prices = ref.watch(storePricesProvider);
+    final held = ref.watch(entitlementsProvider);
+    final now = ref.watch(purchaseClockProvider)();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -174,17 +176,34 @@ class _PaywallSheet extends ConsumerWidget {
               // into the app, which would be a price it cannot honour.
               error: (_, _) => QuietNotice(text: l.paywallPricesUnavailable),
               data: (list) {
-                final offered = reason.product == null
+                final forThisReason = reason.product == null
                     ? list
-                    : list.where((p) => p.product == reason.product).toList();
+                    : list.where((p) => p.product == reason.product);
 
-                return offered.isEmpty
-                    ? QuietNotice(text: l.paywallPricesUnavailable)
-                    : _Tiers(
-                        prices: offered,
-                        highlight: config.highlight,
-                        onBuy: (p) => _buy(context, ref, p),
-                      );
+                // Anything already paid for comes off the sheet. Play refuses
+                // a second purchase of a one-time product anyway — the app
+                // would show "you already own this" after the user had gone
+                // through a payment sheet, which is a worse way to learn it.
+                final offered = forThisReason
+                    .where((p) => !p.product.isRedundantFor(held, now))
+                    .toList();
+
+                if (offered.isNotEmpty) {
+                  return _Tiers(
+                    prices: offered,
+                    highlight: config.highlight,
+                    onBuy: (p) => _buy(context, ref, p),
+                  );
+                }
+
+                // Nothing left is a different message from nothing available:
+                // one is a happy customer, the other is a store that did not
+                // answer.
+                return QuietNotice(
+                  text: forThisReason.isEmpty
+                      ? l.paywallPricesUnavailable
+                      : l.paywallNothingLeft,
+                );
               },
             ),
 

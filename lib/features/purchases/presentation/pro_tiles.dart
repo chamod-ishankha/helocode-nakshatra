@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/purchases/entitlements.dart';
+import '../../../core/purchases/products.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -66,7 +67,13 @@ class _ProTilesState extends ConsumerState<ProTiles> {
         : null;
     final isPro = entitlements.isActive(Entitlement.pro, now);
     final adFree = entitlements.has(PaidFeature.removeAds, now);
-    final canUpgrade = !isPro && ref.watch(purchasesAvailableProvider);
+    final ownsReport = entitlements.has(PaidFeature.birthChartPdf, now);
+
+    // Anything still worth buying. Somebody who owns everything should not be
+    // shown a chevron into a sheet with nothing in it.
+    final canUpgrade =
+        ref.watch(purchasesAvailableProvider) &&
+        PurchaseProduct.onSale.any((p) => !p.isRedundantFor(entitlements, now));
 
     return Column(
       children: [
@@ -83,7 +90,14 @@ class _ProTilesState extends ConsumerState<ProTiles> {
             (_, _, true) => l.purchaseStatusAdFree,
             _ => l.purchaseStatusFree,
           }),
-          subtitle: adFree ? null : Text(l.purchaseUpgradeHint),
+          // The headline can only say one thing, and the report is not part
+          // of Pro — so somebody who had bought it was reading "Free". Owned
+          // one-time extras get named underneath.
+          subtitle: Text(
+            ownsReport
+                ? l.purchaseOwnedReport
+                : (adFree ? l.purchaseStatusAdFree : l.purchaseUpgradeHint),
+          ),
           // Tappable only while there is something left to buy, and only in a
           // build that can sell it. A chevron that opens an empty sheet reads
           // as a broken app rather than as a missing key.

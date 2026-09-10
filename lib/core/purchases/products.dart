@@ -64,6 +64,30 @@ enum PurchaseProduct {
 
   bool get isSubscription => term != PurchaseTerm.oneTime;
 
+  /// Everything owning this would open.
+  ///
+  /// Derived from [PaidFeature] rather than listed, so a feature added to that
+  /// table is covered here without anyone remembering to.
+  Set<PaidFeature> get unlocks =>
+      PaidFeature.values.where((f) => f.satisfiedBy.contains(grants)).toSet();
+
+  /// Whether buying this would give the user nothing they do not already have.
+  ///
+  /// The check is on *features*, not on the entitlement, and that distinction
+  /// is the whole point. Somebody on Pro already has no ads, so `remove_ads`
+  /// would be money for nothing — but they do not hold the `ad_free`
+  /// entitlement, so comparing entitlements would happily sell it to them.
+  ///
+  /// It also covers the obvious cases: the report once the report is owned,
+  /// and either Pro tier while Pro is running. Changing between tiers goes
+  /// through Play's own subscription management, which Settings links to —
+  /// doing it from a paywall would need proration this app has not built.
+  bool isRedundantFor(EntitlementSnapshot held, DateTime now) {
+    final features = unlocks;
+    if (features.isEmpty) return false;
+    return features.every((f) => held.has(f, now));
+  }
+
   /// The products a paywall may show.
   static List<PurchaseProduct> get onSale =>
       values.where((p) => p.sellable).toList(growable: false);

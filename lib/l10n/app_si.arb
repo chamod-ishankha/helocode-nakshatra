@@ -389,5 +389,7 @@
   "profilesRemoveBody": "ඔවුන්ගේ උපන් තොරතුරු මෙම දුරකථනයෙන් මකා දැමේ.",
   "profilesBackupNote": "ඔබ පෙන්වන කේන්දරය පමණක් උපස්ථ කෙරේ. සෙසු ඒවා මෙම දුරකථනයේ පමණි.",
   "profilesUnavailable": "සුරකින ලද කේන්දර සඳහා අවශ්‍ය ගබඩාව මෙම අනුවාදයට විවෘත කළ නොහැකි විය.",
-  "profilesBornOn": "උපන් දිනය {date}"
+  "profilesBornOn": "උපන් දිනය {date}",
+  "purchaseOwnedReport": "කේන්ද්‍ර වාර්තාව — ඔබ සතුයි",
+  "paywallNothingLeft": "විකිණීමට ඇති සියල්ල දැනටමත් ඔබ සතුයි. ස්තූතියි."
 }

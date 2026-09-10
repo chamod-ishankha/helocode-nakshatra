@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
+import '../../../core/db/app_database.dart';
+import '../../../core/db/profile_store.dart';
 import '../../../core/notifications/notification_prefs.dart';
 import '../../../core/config/theme_preference.dart';
 import '../../../core/logging/app_logger.dart';
@@ -27,9 +29,23 @@ import '../domain/birth_profile.dart';
 /// survive a reinstall. Everything else — charts, nekath, the almanac — is
 /// computed on-device and nothing about app usage is stored.
 class ProfileRepository {
-  ProfileRepository(this._prefs);
+  ProfileRepository(this._prefs, {ProfileStore? store, BirthProfile? initial})
+    : _store = store,
+      _cached = initial;
 
   final SharedPreferences _prefs;
+
+  /// The database, once it is open. Null in tests that only need preferences.
+  final ProfileStore? _store;
+
+  /// The profile as the database had it at startup, kept in memory so [load]
+  /// can stay synchronous.
+  ///
+  /// The router decides where to send the user before the first frame, from
+  /// whether a profile exists. An async read there would turn that decision
+  /// into a race with itself, so the one read happens in bootstrap and the
+  /// answer is handed in.
+  BirthProfile? _cached;
 
   static const _profileKey = 'birth_profile_v1';
   static const _localeKey = 'app_locale_v1';
@@ -38,6 +54,11 @@ class ProfileRepository {
   static const _notificationsKey = 'notification_prefs_v1';
 
   BirthProfile? load() {
+    // The database wins once it has been read. Preferences are only consulted
+    // on the very first launch after upgrading, before the migration has run.
+    final cached = _cached;
+    if (cached != null) return cached;
+
     final raw = _prefs.getString(_profileKey);
     if (raw == null) return null;
     try {
@@ -52,10 +73,27 @@ class ProfileRepository {
     }
   }
 
-  Future<void> save(BirthProfile profile) =>
-      _prefs.setString(_profileKey, jsonEncode(profile.toJson()));
+  /// Saves to the database, and mirrors to preferences.
+  ///
+  /// The mirror is deliberate. It is not a second source of truth — [load]
+  /// never prefers it once the database has been read — it is the only way
+  /// back if the database file is ever lost, and it costs a few hundred
+  /// bytes. Leaving a *stale* copy there would be worse than none: a restore
+  /// would silently hand the user a birth time they corrected months ago.
+  Future<void> save(BirthProfile profile) async {
+    _cached = profile;
+    await _store?.upsertSelected(profile);
+    await _saveToPrefs(profile);
+  }
 
-  Future<void> clear() => _prefs.remove(_profileKey);
+  Future<void> clear() async {
+    _cached = null;
+    await _store?.clear();
+    await _prefs.remove(_profileKey);
+  }
+
+  Future<void> _saveToPrefs(BirthProfile profile) =>
+      _prefs.setString(_profileKey, jsonEncode(profile.toJson()));
 
   /// The saved language, or the device's if the user has not chosen yet.
   ///
@@ -110,8 +148,34 @@ final sharedPreferencesProvider = Provider<SharedPreferences>(
   (ref) => throw UnimplementedError('sharedPreferencesProvider not overridden'),
 );
 
+/// The open database, or null when there is not one.
+///
+/// Nullable rather than throwing like [sharedPreferencesProvider], because the
+/// two are not the same kind of dependency. Preferences are mandatory; the
+/// database is an upgrade the repository can do without — a build that cannot
+/// open it falls back to preferences and the user keeps their profile. Tests
+/// that do not care about storage get null rather than an exception from a
+/// provider they never asked for.
+final appDatabaseProvider = Provider<AppDatabase?>((ref) => null);
+
+final profileStoreProvider = Provider<ProfileStore?>((ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return db == null ? null : ProfileStore(db);
+});
+
+/// What the database held at startup, after any migration.
+///
+/// Null on a fresh install, and null in tests that do not stand up a database
+/// — in which case the repository falls back to preferences, which is exactly
+/// what every existing test expects.
+final initialProfileProvider = Provider<BirthProfile?>((ref) => null);
+
 final profileRepositoryProvider = Provider<ProfileRepository>(
-  (ref) => ProfileRepository(ref.watch(sharedPreferencesProvider)),
+  (ref) => ProfileRepository(
+    ref.watch(sharedPreferencesProvider),
+    store: ref.watch(profileStoreProvider),
+    initial: ref.watch(initialProfileProvider),
+  ),
 );
 
 /// The saved profile, or null when onboarding has not been completed.

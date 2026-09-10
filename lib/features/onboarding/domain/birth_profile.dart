@@ -29,6 +29,14 @@ class Place {
   final String? _districtSi;
   final String? _districtTa;
 
+  /// The stored translations, exactly as saved — null included.
+  ///
+  /// [districtLabel] falls back to English, which is right on screen and wrong
+  /// when persisting: writing the fallback would turn "no translation yet"
+  /// into "the Sinhala for Kalutara is Kalutara", permanently.
+  String? get districtSiOrNull => _districtSi;
+  String? get districtTaOrNull => _districtTa;
+
   /// IANA zone, which carries Sri Lanka's 1996-2006 offset changes. A fixed
   /// offset would silently corrupt every chart from that decade.
   final String timezone;

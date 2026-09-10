@@ -11,6 +11,8 @@ import 'core/ads/ads_service.dart';
 import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/flavor.dart';
+import 'core/db/app_database.dart';
+import 'core/db/profile_store.dart';
 import 'core/logging/analytics_service.dart';
 import 'core/notifications/notification_coordinator.dart';
 import 'core/notifications/notification_service.dart';
@@ -19,6 +21,7 @@ import 'core/logging/crash_reporter.dart';
 import 'core/sync/auth_service.dart';
 import 'core/sync/firebase_service.dart';
 import 'features/onboarding/data/profile_repository.dart';
+import 'features/onboarding/domain/birth_profile.dart';
 
 /// Shared startup path for every flavor.
 ///
@@ -45,6 +48,28 @@ Future<void> bootstrap(Flavor flavor) async {
 
   final prefs = await SharedPreferences.getInstance();
   await Ephemeris.initialize();
+
+  // The profile moves from SharedPreferences into SQLite here, once (KAN-19).
+  //
+  // Read before the first frame and handed to the repository, so `load()` can
+  // stay synchronous: the router decides where to send the user from whether a
+  // profile exists, and an async read there would race its own redirect.
+  //
+  // The preferences copy is deliberately left behind. It is not read again
+  // once the database has answered, but it is the only way back if the
+  // database file is ever lost.
+  final database = AppDatabase();
+  final store = ProfileStore(database);
+  BirthProfile? startingProfile;
+  try {
+    await store.migrateFromPrefs(ProfileRepository(prefs).load());
+    startingProfile = (await store.selected())?.profile;
+  } on Object catch (e, s) {
+    // A database that will not open must not stop the app: the repository
+    // falls back to preferences and the user keeps their profile.
+    AppLogger.error('Database unavailable, using preferences', e, s);
+    CrashReporter.record(e, s);
+  }
 
   // Firebase is awaited too, but it can never fail the launch: initialize()
   // swallows everything and leaves isAvailable false. A build with no
@@ -77,6 +102,8 @@ Future<void> bootstrap(Flavor flavor) async {
   final container = ProviderContainer(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
+      appDatabaseProvider.overrideWithValue(database),
+      initialProfileProvider.overrideWithValue(startingProfile),
       appLaunchedAtProvider.overrideWithValue(launchedAt),
       // The real rewarded ad. Defaults to "not earned" so tests and any
       // build without the SDK never hand out an unlock for free.

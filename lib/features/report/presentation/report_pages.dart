@@ -84,7 +84,7 @@ abstract final class ReportPages {
   /// screen means there is no MaterialApp above them, so the localizations and
   /// the theme have to be provided explicitly — miss this and the report comes
   /// out in English whatever the user chose.
-  static Widget build(ReportContent content, int index) {
+  static Widget build(ReportContent content, int index, {ThemeData? theme}) {
     final builders = of(content);
     return Localizations(
       locale: Locale(content.locale.code),
@@ -93,7 +93,14 @@ abstract final class ReportPages {
         // Always the light theme. A report is printed and forwarded; a dark
         // one would arrive as a black rectangle in a chat and cost a fortune
         // in toner.
-        data: AppTheme.light(content.locale),
+        //
+        // [theme] is overridden by the sample exporter and by nothing else.
+        // An English report leaves the font family unset, the same as the app,
+        // so it draws in whatever face the device uses — which under
+        // `flutter test` is a placeholder that renders every Latin letter as a
+        // solid box. A sample generated that way is not wrong, but it is
+        // useless as evidence, which is exactly what a sample is for.
+        data: theme ?? AppTheme.light(content.locale),
         child: Builder(
           builder: (context) => builders[index](index + 1, builders.length),
         ),

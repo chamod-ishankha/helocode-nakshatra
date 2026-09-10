@@ -21,7 +21,16 @@ import '../../support/fonts.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(loadAppFonts);
+  /// Whether a real Latin face was found in the SDK.
+  var hasLatin = false;
+
+  setUpAll(() async {
+    await loadAppFonts();
+    // In setUpAll and not in the test that uses it: loading a font after
+    // something has rendered leaves a pending systemFontsDidChange callback,
+    // and the next render tree torn down trips an assertion on it.
+    hasLatin = await loadLatinFont();
+  });
 
   Widget page(String text, {Color background = Colors.white}) => ColoredBox(
     color: background,
@@ -160,6 +169,61 @@ void main() {
         reason:
             'the conjunct is no narrower than the unjoined letters, so the '
             'font is not being shaped',
+      );
+    });
+  });
+
+  testWidgets('Latin is boxes unless a font family is named', (tester) async {
+    await tester.runAsync(() async {
+      // Pins the trap that made the first exported samples unreadable, and
+      // pins the only escape from it.
+      //
+      // Under `flutter test` an unnamed font family resolves to a placeholder
+      // whose every glyph is one em square, so 'IIIII' and 'WWWWW' rasterise
+      // identically. It claims every glyph, which is why registering a real
+      // face and leaning on fontFamilyFallback changes nothing — the fallback
+      // is never reached. Naming a family is the only way out.
+      //
+      // If this ever starts failing, Flutter has changed how the test font
+      // resolves and the sample exporter should be looked at again.
+      Future<int> ink(String text, String? family) async => inkedPixels(
+        await PageRenderer.renderPng(
+          ColoredBox(
+            color: Colors.white,
+            child: SizedBox.fromSize(
+              size: PageRenderer.a4,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.black,
+                    fontFamily: family,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          pixelRatio: 1,
+        ),
+      );
+
+      expect(
+        await ink('IIIII', null),
+        await ink('WWWWW', null),
+        reason: 'the unnamed family should be the placeholder, all one square',
+      );
+
+      expect(
+        hasLatin,
+        isTrue,
+        reason: 'no Roboto in the SDK — the sample exporter cannot work',
+      );
+      expect(
+        await ink('IIIII', testLatinFont),
+        isNot(await ink('WWWWW', testLatinFont)),
+        reason: 'a named family should be a real face with real metrics',
       );
     });
   });

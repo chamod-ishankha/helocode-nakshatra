@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/chart_style.dart';
+import 'package:nakshatra/core/theme/app_theme.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
 import 'package:nakshatra/features/report/data/report_pdf.dart';
 import 'package:nakshatra/features/report/domain/report_content.dart';
@@ -26,8 +27,20 @@ import '../../support/fonts.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  /// Whether a real Latin face was found. See the note in [setUpAll].
+  var hasLatin = false;
+
   setUpAll(() async {
     await loadAppFonts();
+
+    // Loaded here and not in the body, and that ordering is load-bearing.
+    // FontLoader tells every live render object that the system fonts
+    // changed, which leaves a callback pending on each; tearing down an
+    // off-screen render tree while one is outstanding trips an assertion
+    // inside RenderObject.dispose. Loading before anything has been rendered
+    // leaves nothing to notify.
+    hasLatin = await loadLatinFont();
+
     await initializeDateFormatting();
   });
 
@@ -69,8 +82,42 @@ void main() {
       final out = Directory('build/report-samples')
         ..createSync(recursive: true);
 
+      // Without a real Latin face every letter in the English sample is a
+      // solid black box. Not a fault in the report — an English page leaves the
+      // font family unset, exactly as the app does, and under `flutter test` an
+      // unset family is the placeholder face. On a device it is the phone's own
+      // font.
+      //
+      // It has to be named explicitly: the placeholder claims every glyph, so
+      // registering a real face and relying on fallback changes nothing. The
+      // first samples were exported without this and went out unreadable.
+      if (!hasLatin) {
+        // ignore: avoid_print
+        print(
+          'WARNING no Roboto found in the SDK — the English sample will be '
+          'boxes. Do not send it out.',
+        );
+      }
+
       for (final locale in AppLocale.values) {
+        final base = AppTheme.light(locale);
         final bytes = await ReportPdf.build(
+          theme: hasLatin
+              ? base.copyWith(
+                  textTheme: base.textTheme.apply(
+                    // Only where the app itself leaves it unset. Sinhala and
+                    // Tamil already name a real bundled face, and overriding
+                    // those would make the sample a picture of something the
+                    // app never draws.
+                    fontFamily: AppTheme.fontFor(locale) ?? testLatinFont,
+                    fontFamilyFallback: const [
+                      AppTheme.sinhalaFont,
+                      AppTheme.tamilFont,
+                      testLatinFont,
+                    ],
+                  ),
+                )
+              : null,
           ReportContent.of(
             profile: BirthProfile(
               name: switch (locale) {

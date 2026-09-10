@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -36,6 +37,8 @@ abstract final class ReportPdf {
     // Lowered by tests. Six A4 pages at 216 dpi is real rasterising work, and
     // a suite that pays it for every case is a suite that stops being run.
     double pixelRatio = PageRenderer.defaultPixelRatio,
+    // Only the sample exporter passes this. See ReportPages.build.
+    ThemeData? theme,
   }) async {
     final document = pw.Document(
       title: 'Nakshatra — ${content.profile.name}',
@@ -50,7 +53,7 @@ abstract final class ReportPdf {
     final total = ReportPages.count(content);
     for (var index = 0; index < total; index++) {
       final png = await PageRenderer.renderPng(
-        ReportPages.build(content, index),
+        ReportPages.build(content, index, theme: theme),
         pixelRatio: pixelRatio,
       );
 

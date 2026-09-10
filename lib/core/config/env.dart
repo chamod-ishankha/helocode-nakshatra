@@ -31,6 +31,9 @@ abstract final class Env {
   static const String admobRewardedUnitId = String.fromEnvironment(
     'ADMOB_REWARDED_UNIT_ID',
   );
+  static const String admobRewardedInterstitialUnitId = String.fromEnvironment(
+    'ADMOB_REWARDED_INTERSTITIAL_UNIT_ID',
+  );
   static const String revenueCatPublicKey = String.fromEnvironment(
     'REVENUECAT_PUBLIC_SDK_KEY',
   );
@@ -46,6 +49,8 @@ abstract final class Env {
     if (admobBannerUnitId.isEmpty) 'ADMOB_BANNER_UNIT_ID',
     if (admobInterstitialUnitId.isEmpty) 'ADMOB_INTERSTITIAL_UNIT_ID',
     if (admobRewardedUnitId.isEmpty) 'ADMOB_REWARDED_UNIT_ID',
+    if (admobRewardedInterstitialUnitId.isEmpty)
+      'ADMOB_REWARDED_INTERSTITIAL_UNIT_ID',
     if (revenueCatPublicKey.isEmpty) 'REVENUECAT_PUBLIC_SDK_KEY',
   ];
 }

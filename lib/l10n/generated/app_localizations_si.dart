@@ -952,6 +952,10 @@ class L10nSi extends L10n {
   String get unlockLastsToday => 'අද දිනය අවසන් වන තුරු විවෘතව පවතී.';
 
   @override
+  String get adRewardUnlocked =>
+      'අද දිනය සඳහා විවෘත විය: නවාංශ කේන්දරය සහ සම්පූර්ණ දශා කාලරේඛාව.';
+
+  @override
   String get unlockCompatTitle => 'සම්පූර්ණ පොරොන්දම් විස්තරය';
 
   @override

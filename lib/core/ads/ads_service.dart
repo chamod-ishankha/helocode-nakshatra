@@ -4,6 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../logging/app_logger.dart';
 import 'ad_gate.dart';
+import 'rewarded_interstitial.dart';
 
 /// Starts the ads SDK and handles consent (KAN-34).
 ///
@@ -118,6 +119,9 @@ abstract final class AdsService {
   static InterstitialAd? _interstitial;
   static bool _loadingInterstitial = false;
 
+  static RewardedInterstitialAd? _rewardedInterstitial;
+  static bool _loadingRewardedInterstitial = false;
+
   /// Starts loading an interstitial, if one is not already waiting (KAN-55).
   ///
   /// Preloaded rather than fetched at the moment of showing. A load takes a
@@ -195,6 +199,93 @@ abstract final class AdsService {
 
     await closed.future;
     return shown;
+  }
+
+  /// Starts loading a rewarded interstitial, if one is not already waiting.
+  ///
+  /// Preloaded for the same reason the plain interstitial is, and one reason
+  /// more: this one appears as a screen opens rather than as one closes, so
+  /// fetching at the moment of showing would put the load time in front of
+  /// content the user is already looking at.
+  ///
+  /// Returns silently if the SDK has not started. Callers that run near
+  /// launch must await [ready] first — [initialize] is not awaited by
+  /// `bootstrap`, so a preload fired straight after it does nothing at all
+  /// and says nothing about it.
+  static Future<void> preloadRewardedInterstitial() async {
+    if (!_started ||
+        _rewardedInterstitial != null ||
+        _loadingRewardedInterstitial) {
+      return;
+    }
+
+    final unitId = AdUnits.forSlot(AdSlot.rewardedInterstitial);
+    if (unitId == null) return;
+
+    _loadingRewardedInterstitial = true;
+    try {
+      await RewardedInterstitialAd.load(
+        adUnitId: unitId,
+        request: const AdRequest(),
+        rewardedInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback(
+          onAdLoaded: (ad) {
+            _rewardedInterstitial = ad;
+            _loadingRewardedInterstitial = false;
+          },
+          onAdFailedToLoad: (error) {
+            AppLogger.info('No rewarded interstitial filled: ${error.message}');
+            _loadingRewardedInterstitial = false;
+          },
+        ),
+      );
+    } on Object catch (e, s) {
+      AppLogger.warn('Rewarded interstitial load threw', e, s);
+      _loadingRewardedInterstitial = false;
+    }
+  }
+
+  /// Shows the preloaded rewarded interstitial, and says what became of it.
+  ///
+  /// Three outcomes rather than a bool: the caller pays out on `earned` but
+  /// spends the cooldown on `appeared`, and collapsing "nothing was loaded"
+  /// into "the user skipped it" loses exactly that distinction.
+  static Future<RewardedInterstitialOutcome> showRewardedInterstitial() async {
+    final ad = _rewardedInterstitial;
+    if (ad == null) return RewardedInterstitialOutcome.notShown;
+
+    _rewardedInterstitial = null;
+
+    var earned = false;
+    var appeared = true;
+    final closed = Completer<void>();
+
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        if (!closed.isCompleted) closed.complete();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        AppLogger.warn(
+          'Rewarded interstitial failed to show: ${error.message}',
+        );
+        ad.dispose();
+        appeared = false;
+        if (!closed.isCompleted) closed.complete();
+      },
+    );
+
+    try {
+      await ad.show(onUserEarnedReward: (_, _) => earned = true);
+    } on Object catch (e, s) {
+      AppLogger.warn('Rewarded interstitial show threw', e, s);
+      return RewardedInterstitialOutcome.notShown;
+    }
+
+    await closed.future;
+    if (!appeared) return RewardedInterstitialOutcome.notShown;
+    return earned
+        ? RewardedInterstitialOutcome.earned
+        : RewardedInterstitialOutcome.shownOnly;
   }
 
   /// Loads a rewarded ad and shows it, resolving true only if the reward was

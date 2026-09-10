@@ -958,6 +958,10 @@ class L10nEn extends L10n {
   String get unlockLastsToday => 'Stays unlocked for the rest of today.';
 
   @override
+  String get adRewardUnlocked =>
+      'Unlocked for today: the navāṁśa chart and the full daśā timeline.';
+
+  @override
   String get unlockCompatTitle => 'Full compatibility breakdown';
 
   @override

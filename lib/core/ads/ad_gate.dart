@@ -14,6 +14,13 @@ enum AdSlot {
   /// caps exist for.
   interstitial,
 
+  /// Full screen, and it pays for the interruption (KAN-55).
+  ///
+  /// Held to the same grace and cooldown as [interstitial], and to the *same*
+  /// stored timestamp: two full-screen ads a minute apart are two
+  /// interruptions however the second one is labelled.
+  rewardedInterstitial,
+
   /// Watched deliberately in exchange for something. The user asked for it,
   /// so it is not rate-limited the way the others are.
   rewarded,
@@ -90,6 +97,8 @@ class AdGate {
     // grace period once there is a profile to see it alongside.
     if (slot == AdSlot.banner) return null;
 
+    // Everything below applies to both full-screen formats.
+
     if (_clock().difference(_launchedAt) < AdPolicy.sessionGrace) {
       return AdRefusal.withinSessionGrace;
     }
@@ -116,7 +125,13 @@ class AdGate {
   /// the app resets the cooldown, and the three-minute rule would mean
   /// nothing to the user it is meant to protect.
   Future<void> recordShown(AdSlot slot) async {
-    if (slot != AdSlot.interstitial) return;
+    // Both full-screen formats write the same timestamp, so one cannot
+    // follow the other inside the cooldown. Reading this as an interstitial
+    // check and returning early for the rewarded one would leave that
+    // placement with no cooldown at all — it would fire on every chart.
+    if (slot != AdSlot.interstitial && slot != AdSlot.rewardedInterstitial) {
+      return;
+    }
     await _prefs.setInt(_lastInterstitialKey, _clock().millisecondsSinceEpoch);
   }
 
@@ -168,6 +183,9 @@ abstract final class AdUnits {
   static const String rewarded = String.fromEnvironment(
     'ADMOB_REWARDED_UNIT_ID',
   );
+  static const String rewardedInterstitial = String.fromEnvironment(
+    'ADMOB_REWARDED_INTERSTITIAL_UNIT_ID',
+  );
 
   /// Devices that must always be served test creatives, comma separated.
   ///
@@ -202,5 +220,9 @@ abstract final class AdUnits {
     AdSlot.banner => banner.isEmpty ? null : banner,
     AdSlot.interstitial => interstitial.isEmpty ? null : interstitial,
     AdSlot.rewarded => rewarded.isEmpty ? null : rewarded,
+    // Deliberately absent from [isConfigured]: a project that has not set
+    // this key should lose this one placement, not every ad in the app.
+    AdSlot.rewardedInterstitial =>
+      rewardedInterstitial.isEmpty ? null : rewardedInterstitial,
   };
 }

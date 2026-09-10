@@ -13,7 +13,10 @@ import 'dasha_timeline.dart';
 import 'graha_label.dart';
 import 'detail_sheets.dart';
 
+import 'dart:async';
+
 import '../../../core/ads/locked_content.dart';
+import '../../../core/ads/rewarded_interstitial.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/astro/varga.dart';
@@ -58,6 +61,40 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
 
   _Varga _varga = _Varga.rasi;
 
+  @override
+  void initState() {
+    super.initState();
+
+    // After the first frame rather than during it: showing a full-screen ad
+    // from initState fires before the chart has painted, so the user is left
+    // looking at an ad over a blank screen with no idea what they opened.
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => unawaited(_offerReward()),
+    );
+  }
+
+  /// The rewarded interstitial, and paying out if it was watched (KAN-55).
+  ///
+  /// Everything about whether it may appear at all lives in
+  /// [RewardedInterstitialController]; this only pays out and says so. The
+  /// snackbar is not decoration: an unexplained ad is an interruption, and an
+  /// ad that visibly unlocked two things on the screen behind it is a trade.
+  Future<void> _offerReward() async {
+    final earned = await ref
+        .read(rewardedInterstitialControllerProvider)
+        .showIfAllowed(ref.read(unlockStoreProvider));
+    if (!earned || !mounted) return;
+
+    await ref
+        .read(unlockRevisionProvider.notifier)
+        .grant(RewardedInterstitialController.reward);
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(L10n.of(context).adRewardUnlocked)));
+  }
+
   /// One chart, drawn in the user's style.
   ///
   /// Keyed by style *and* varga so Flutter rebuilds rather than trying to
@@ -71,6 +108,9 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
         key: key,
         chart: chart,
         approximateHouses: !birthTimeKnown,
+        // Only when it is not the rāśi chart, so the default caption stays
+        // the one word people expect on the chart they came for.
+        caption: _varga == _Varga.rasi ? null : _varga.label(L10n.of(context)),
       ),
       ChartStyle.northIndian => NorthIndianChart(
         key: key,

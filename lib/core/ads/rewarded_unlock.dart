@@ -143,6 +143,19 @@ class UnlockNotifier extends Notifier<int> {
   @override
   int build() => 0;
 
+  /// Records unlocks earned somewhere other than an unlock card.
+  ///
+  /// The rewarded interstitial pays out through here: it is shown by the
+  /// screen rather than asked for by a tap, so the reward is already earned
+  /// by the time this is called and there is no video left to play.
+  Future<void> grant(Iterable<RewardedUnlock> unlocks) async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    for (final unlock in unlocks) {
+      await UnlockStore.write(prefs, unlock);
+    }
+    state++;
+  }
+
   Future<bool> earn(RewardedUnlock unlock) async {
     final earned = await ref.read(rewardedPresenterProvider)();
     if (!earned) return false;

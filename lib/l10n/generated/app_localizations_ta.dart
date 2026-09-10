@@ -966,6 +966,10 @@ class L10nTa extends L10n {
   String get unlockLastsToday => 'இன்று முழுவதும் திறந்தே இருக்கும்.';
 
   @override
+  String get adRewardUnlocked =>
+      'இன்றைக்குத் திறக்கப்பட்டது: நவாம்சக் கட்டம் மற்றும் முழு தசை காலவரிசை.';
+
+  @override
   String get unlockCompatTitle => 'முழுமையான பொருத்த விவரம்';
 
   @override

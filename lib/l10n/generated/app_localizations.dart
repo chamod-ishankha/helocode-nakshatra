@@ -1791,6 +1791,12 @@ abstract class L10n {
   /// **'Stays unlocked for the rest of today.'**
   String get unlockLastsToday;
 
+  /// No description provided for @adRewardUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked for today: the navāṁśa chart and the full daśā timeline.'**
+  String get adRewardUnlocked;
+
   /// No description provided for @unlockCompatTitle.
   ///
   /// In en, this message translates to:

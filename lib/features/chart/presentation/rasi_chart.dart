@@ -20,9 +20,18 @@ class RasiChart extends StatelessWidget {
     super.key,
     required this.chart,
     this.approximateHouses = false,
+    this.caption,
   });
 
   final BirthChart chart;
+
+  /// What to call this chart in the centre of the grid.
+  ///
+  /// Defaults to "Rāśi chart". A [Varga] projection is a BirthChart like any
+  /// other — which is what lets every renderer work on it unchanged — so
+  /// without this the navāṁśa draws itself and then labels itself the rāśi
+  /// chart, which is the one thing on screen that is plainly false.
+  final String? caption;
 
   /// True when the birth time was unknown, so the lagna is a convention rather
   /// than a computation and must not be presented as fact.
@@ -82,7 +91,7 @@ class RasiChart extends StatelessWidget {
                       // Was a hardcoded Sinhala word above an English one,
                       // which was wrong in all three languages at once.
                       Text(
-                        l10n.chartCentreCaption,
+                        caption ?? l10n.chartCentreCaption,
                         style: theme.textTheme.titleMedium,
                       ),
                       const SizedBox(height: AppSpacing.sm),

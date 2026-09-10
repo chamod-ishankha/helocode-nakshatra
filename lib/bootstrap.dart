@@ -9,6 +9,7 @@ import 'app.dart';
 import 'core/ads/ad_gate.dart';
 import 'core/ads/ads_service.dart';
 import 'core/ads/interstitial.dart';
+import 'core/ads/rewarded_interstitial.dart';
 import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/env.dart';
@@ -147,6 +148,12 @@ Future<void> bootstrap(Flavor flavor) async {
       interstitialPresenterProvider.overrideWithValue(
         AdsService.showInterstitial,
       ),
+      rewardedInterstitialPreloaderProvider.overrideWithValue(
+        AdsService.preloadRewardedInterstitial,
+      ),
+      rewardedInterstitialPresenterProvider.overrideWithValue(
+        AdsService.showRewardedInterstitial,
+      ),
     ],
   );
 
@@ -172,6 +179,26 @@ Future<void> bootstrap(Flavor flavor) async {
   // else, so it has to be attached on every launch rather than only when a
   // paywall is opened.
   unawaited(container.read(entitlementsProvider.notifier).start());
+
+  // Loaded here rather than on the screen before, because the screen before
+  // the chart is the home screen and it is stateless — a preload in its build
+  // would fire on every rebuild. One request per launch, skipped entirely for
+  // a purchaser and for anyone who already holds what it pays out, and by the
+  // time the 90-second grace expires it is ready (KAN-55).
+  //
+  // Chained off `ready` rather than called directly. AdsService.initialize()
+  // is deliberately not awaited above, and asking for an ad before the SDK
+  // has started returns quietly having done nothing — no error, no log, just
+  // a placement that never fires. Found on the device: the chart showed one
+  // ad ever, and only because the first one had been loaded by hand.
+  unawaited(
+    AdsService.ready.then((started) {
+      if (!started) return null;
+      return container
+          .read(rewardedInterstitialControllerProvider)
+          .prepare(container.read(unlockStoreProvider));
+    }),
+  );
 
   // Tells the store when the signed-in account changes (KAN-64). Without it,
   // signing out leaves the previous account's Pro on screen until the app is

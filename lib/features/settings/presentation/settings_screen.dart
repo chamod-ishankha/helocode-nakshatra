@@ -14,6 +14,7 @@ import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../account/presentation/auth_messages.dart';
+import '../../purchases/presentation/pro_tiles.dart';
 import '../../../core/notifications/notification_coordinator.dart';
 import '../../../core/notifications/notification_prefs.dart';
 import '../../../core/notifications/notification_service.dart';
@@ -21,11 +22,11 @@ import '../../onboarding/data/profile_repository.dart';
 
 /// Settings (KAN-30).
 ///
-/// Only what actually works appears here. Multiple profiles need the storage
-/// from KAN-19, notification time needs the pipeline from KAN-33, and restore
-/// purchases needs RevenueCat from KAN-35 — all three are in this ticket's
-/// scope and none of them are listed, because a row that does nothing is worse
-/// than a row that is missing.
+/// Only what actually works appears here. That rule is why reminders arrived
+/// with KAN-33 and restore purchases with KAN-35, rather than as rows that did
+/// nothing in the meantime — a row that does nothing is worse than a row that
+/// is missing. Multiple profiles is still absent for the same reason: the
+/// storage exists, the switcher does not.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -72,6 +73,9 @@ class SettingsScreen extends ConsumerWidget {
 
           _Section(l.settingsSectionReminders),
           const _ReminderTiles(),
+
+          _Section(l.purchaseSectionTitle),
+          const ProTiles(),
 
           _Section(l.settingsSectionData),
           ListTile(

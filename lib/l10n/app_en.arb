@@ -490,5 +490,36 @@
         "type": "int"
       }
     }
+  },
+  "purchaseSectionTitle": "Nakshatra Pro",
+  "purchaseStatusFree": "Free",
+  "purchaseStatusAdFree": "Ads removed",
+  "purchaseStatusProUntil": "Pro until {date}",
+  "@purchaseStatusProUntil": {
+    "description": "Shown in settings while a Pro subscription is running.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "purchaseUpgrade": "Go Pro",
+  "purchaseUpgradeHint": "No ads, every divisional chart, and the full daśā timeline.",
+  "purchaseManage": "Manage subscription",
+  "purchaseRestore": "Restore purchases",
+  "purchaseRestoreHint": "Already paid? Bring your purchases to this device.",
+  "purchaseRestored": "Your purchases are back.",
+  "purchaseRestoreNothing": "Nothing to restore on this account.",
+  "purchaseRestoreFailed": "Could not reach the store. Check your connection and try again.",
+  "purchaseUnavailable": "Purchases are not available in this build.",
+  "purchaseThanks": "Thank you. Your purchase is active.",
+  "purchasePending": "Payment is still processing. This will unlock on its own once it completes.",
+  "purchaseAlreadyOwned": "You already own this. Try Restore purchases.",
+  "purchaseNotAllowed": "Purchases are not allowed on this device.",
+  "purchaseProductUnavailable": "This is not on sale yet. Please try again later.",
+  "purchaseFailed": "Something went wrong. You have not been charged.",
+  "@purchaseFailed": {
+    "description": "Shown when a purchase fails for a reason the user cannot act on. The second sentence matters: without it people assume they have been charged twice."
   }
 }

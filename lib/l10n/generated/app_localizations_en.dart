@@ -1047,4 +1047,74 @@ class L10nEn extends L10n {
   String durationMinutes(int minutes) {
     return '$minutes minutes';
   }
+
+  @override
+  String get purchaseSectionTitle => 'Nakshatra Pro';
+
+  @override
+  String get purchaseStatusFree => 'Free';
+
+  @override
+  String get purchaseStatusAdFree => 'Ads removed';
+
+  @override
+  String purchaseStatusProUntil(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMMMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return 'Pro until $dateString';
+  }
+
+  @override
+  String get purchaseUpgrade => 'Go Pro';
+
+  @override
+  String get purchaseUpgradeHint =>
+      'No ads, every divisional chart, and the full daśā timeline.';
+
+  @override
+  String get purchaseManage => 'Manage subscription';
+
+  @override
+  String get purchaseRestore => 'Restore purchases';
+
+  @override
+  String get purchaseRestoreHint =>
+      'Already paid? Bring your purchases to this device.';
+
+  @override
+  String get purchaseRestored => 'Your purchases are back.';
+
+  @override
+  String get purchaseRestoreNothing => 'Nothing to restore on this account.';
+
+  @override
+  String get purchaseRestoreFailed =>
+      'Could not reach the store. Check your connection and try again.';
+
+  @override
+  String get purchaseUnavailable =>
+      'Purchases are not available in this build.';
+
+  @override
+  String get purchaseThanks => 'Thank you. Your purchase is active.';
+
+  @override
+  String get purchasePending =>
+      'Payment is still processing. This will unlock on its own once it completes.';
+
+  @override
+  String get purchaseAlreadyOwned =>
+      'You already own this. Try Restore purchases.';
+
+  @override
+  String get purchaseNotAllowed => 'Purchases are not allowed on this device.';
+
+  @override
+  String get purchaseProductUnavailable =>
+      'This is not on sale yet. Please try again later.';
+
+  @override
+  String get purchaseFailed =>
+      'Something went wrong. You have not been charged.';
 }

@@ -1055,4 +1055,76 @@ class L10nTa extends L10n {
   String durationMinutes(int minutes) {
     return '$minutes நிமிடங்கள்';
   }
+
+  @override
+  String get purchaseSectionTitle => 'Nakshatra Pro';
+
+  @override
+  String get purchaseStatusFree => 'இலவசம்';
+
+  @override
+  String get purchaseStatusAdFree => 'விளம்பரங்கள் நீக்கப்பட்டன';
+
+  @override
+  String purchaseStatusProUntil(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMMMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString வரை Pro';
+  }
+
+  @override
+  String get purchaseUpgrade => 'Pro ஆக மாறுங்கள்';
+
+  @override
+  String get purchaseUpgradeHint =>
+      'விளம்பரங்கள் இல்லை, அனைத்து வர்கச் சக்கரங்கள், முழு தசை காலவரிசை.';
+
+  @override
+  String get purchaseManage => 'சந்தாவை நிர்வகி';
+
+  @override
+  String get purchaseRestore => 'கொள்முதல்களை மீட்டெடு';
+
+  @override
+  String get purchaseRestoreHint =>
+      'ஏற்கனவே பணம் செலுத்திவிட்டீர்களா? உங்கள் கொள்முதல்களை இந்தச் சாதனத்திற்குக் கொண்டு வாருங்கள்.';
+
+  @override
+  String get purchaseRestored => 'உங்கள் கொள்முதல்கள் மீட்கப்பட்டன.';
+
+  @override
+  String get purchaseRestoreNothing =>
+      'இந்தக் கணக்கில் மீட்டெடுக்க எதுவும் இல்லை.';
+
+  @override
+  String get purchaseRestoreFailed =>
+      'கடையை அடைய முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get purchaseUnavailable =>
+      'இந்தப் பதிப்பில் கொள்முதல்கள் கிடைக்கவில்லை.';
+
+  @override
+  String get purchaseThanks => 'நன்றி. உங்கள் கொள்முதல் செயலில் உள்ளது.';
+
+  @override
+  String get purchasePending =>
+      'கட்டணம் இன்னும் செயலாக்கத்தில் உள்ளது. அது முடிந்ததும் தானாகவே திறக்கும்.';
+
+  @override
+  String get purchaseAlreadyOwned =>
+      'இது ஏற்கனவே உங்களிடம் உள்ளது. “கொள்முதல்களை மீட்டெட” முயலவும்.';
+
+  @override
+  String get purchaseNotAllowed =>
+      'இந்தச் சாதனத்தில் கொள்முதல்கள் அனுமதிக்கப்படவில்லை.';
+
+  @override
+  String get purchaseProductUnavailable =>
+      'இது இன்னும் விற்பனைக்கு வரவில்லை. பின்னர் மீண்டும் முயலவும்.';
+
+  @override
+  String get purchaseFailed =>
+      'ஏதேனும் தவறாகிவிட்டது. உங்களிடமிருந்து பணம் வசூலிக்கப்படவில்லை.';
 }

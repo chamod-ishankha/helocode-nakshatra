@@ -1958,6 +1958,120 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'{minutes} minutes'**
   String durationMinutes(int minutes);
+
+  /// No description provided for @purchaseSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nakshatra Pro'**
+  String get purchaseSectionTitle;
+
+  /// No description provided for @purchaseStatusFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get purchaseStatusFree;
+
+  /// No description provided for @purchaseStatusAdFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Ads removed'**
+  String get purchaseStatusAdFree;
+
+  /// Shown in settings while a Pro subscription is running.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro until {date}'**
+  String purchaseStatusProUntil(DateTime date);
+
+  /// No description provided for @purchaseUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Pro'**
+  String get purchaseUpgrade;
+
+  /// No description provided for @purchaseUpgradeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No ads, every divisional chart, and the full daśā timeline.'**
+  String get purchaseUpgradeHint;
+
+  /// No description provided for @purchaseManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get purchaseManage;
+
+  /// No description provided for @purchaseRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get purchaseRestore;
+
+  /// No description provided for @purchaseRestoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Already paid? Bring your purchases to this device.'**
+  String get purchaseRestoreHint;
+
+  /// No description provided for @purchaseRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Your purchases are back.'**
+  String get purchaseRestored;
+
+  /// No description provided for @purchaseRestoreNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to restore on this account.'**
+  String get purchaseRestoreNothing;
+
+  /// No description provided for @purchaseRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the store. Check your connection and try again.'**
+  String get purchaseRestoreFailed;
+
+  /// No description provided for @purchaseUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases are not available in this build.'**
+  String get purchaseUnavailable;
+
+  /// No description provided for @purchaseThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. Your purchase is active.'**
+  String get purchaseThanks;
+
+  /// No description provided for @purchasePending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment is still processing. This will unlock on its own once it completes.'**
+  String get purchasePending;
+
+  /// No description provided for @purchaseAlreadyOwned.
+  ///
+  /// In en, this message translates to:
+  /// **'You already own this. Try Restore purchases.'**
+  String get purchaseAlreadyOwned;
+
+  /// No description provided for @purchaseNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases are not allowed on this device.'**
+  String get purchaseNotAllowed;
+
+  /// No description provided for @purchaseProductUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not on sale yet. Please try again later.'**
+  String get purchaseProductUnavailable;
+
+  /// Shown when a purchase fails for a reason the user cannot act on. The second sentence matters: without it people assume they have been charged twice.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. You have not been charged.'**
+  String get purchaseFailed;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

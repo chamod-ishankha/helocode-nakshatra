@@ -111,6 +111,23 @@ class AuthService {
 
   AccountStatus get status => AccountStatus.of(_auth?.currentUser);
 
+  /// The id to file purchases under, or null to let the store use its own.
+  ///
+  /// Only a permanent account qualifies (KAN-35). An anonymous uid is created
+  /// fresh on every install and dies with it, so attaching purchases to one
+  /// would file them under an id nobody can ever sign back into — and would
+  /// leave a RevenueCat user behind for every reinstall, which is the same
+  /// litter KAN-54 exists to clean up in Firebase.
+  ///
+  /// Without an id, purchases still restore: Play returns them to the same
+  /// Play account. Signing in is what makes them follow the user to a phone
+  /// with a different one.
+  String? get purchasesUserId {
+    final user = _auth?.currentUser;
+    if (user == null || user.isAnonymous) return null;
+    return user.uid;
+  }
+
   /// Emits on every sign-in, sign-out and link.
   ///
   /// With no Firebase this emits nothing rather than a single "none". A

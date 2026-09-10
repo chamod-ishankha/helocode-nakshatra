@@ -10,6 +10,7 @@ import 'core/ads/ad_gate.dart';
 import 'core/ads/ads_service.dart';
 import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
+import 'core/config/env.dart';
 import 'core/config/flavor.dart';
 import 'core/db/app_database.dart';
 import 'core/db/profile_store.dart';
@@ -18,6 +19,8 @@ import 'core/notifications/notification_coordinator.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/logging/app_logger.dart';
 import 'core/logging/crash_reporter.dart';
+import 'core/purchases/purchase_controller.dart';
+import 'core/purchases/revenuecat_gateway.dart';
 import 'core/sync/auth_service.dart';
 import 'core/sync/firebase_service.dart';
 import 'features/onboarding/data/profile_repository.dart';
@@ -99,8 +102,22 @@ Future<void> bootstrap(Flavor flavor) async {
   // the user opened the app for; ads can arrive after it.
   unawaited(AdsService.initialize());
 
+  // Awaited, unlike ads, because whether the user has paid decides whether the
+  // first frame has a banner in it. This only starts the SDK — it does not go
+  // to the network; the entitlements the first frame uses come from the cache
+  // in EntitlementNotifier.build(), and the store is asked afterwards.
+  //
+  // Filed under the Firebase uid only when the account is permanent. See
+  // AuthService.purchasesUserId for why an anonymous one is worse than none.
+  final purchases = RevenueCatGateway();
+  await purchases.configure(
+    publicKey: Env.revenueCatPublicKey,
+    appUserId: const AuthService().purchasesUserId,
+  );
+
   final container = ProviderContainer(
     overrides: [
+      purchaseGatewayProvider.overrideWithValue(purchases),
       sharedPreferencesProvider.overrideWithValue(prefs),
       appDatabaseProvider.overrideWithValue(database),
       initialProfileProvider.overrideWithValue(startingProfile),
@@ -126,6 +143,13 @@ Future<void> bootstrap(Flavor flavor) async {
         .read(notificationRefreshProvider.future)
         .catchError((Object _) {}),
   );
+
+  // Also not awaited: this is the network round trip that corrects the cached
+  // entitlements, and it subscribes to store updates. A purchase made with a
+  // slow payment method settles through that subscription and through nothing
+  // else, so it has to be attached on every launch rather than only when a
+  // paywall is opened.
+  unawaited(container.read(entitlementsProvider.notifier).start());
 
   runApp(
     UncontrolledProviderScope(

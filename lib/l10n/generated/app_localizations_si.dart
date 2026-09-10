@@ -1041,4 +1041,72 @@ class L10nSi extends L10n {
   String durationMinutes(int minutes) {
     return 'විනාඩි $minutes';
   }
+
+  @override
+  String get purchaseSectionTitle => 'Nakshatra Pro';
+
+  @override
+  String get purchaseStatusFree => 'නොමිලේ';
+
+  @override
+  String get purchaseStatusAdFree => 'දැන්වීම් ඉවතලා ඇත';
+
+  @override
+  String purchaseStatusProUntil(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMMMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString දക්වා Pro';
+  }
+
+  @override
+  String get purchaseUpgrade => 'Pro වෙත මාරු වන්න';
+
+  @override
+  String get purchaseUpgradeHint =>
+      'දැන්වීම් රහිත, සියලු වර්ග චක්‍ර, සහ සම්පුර්ණ දශා කාලරේඛාව.';
+
+  @override
+  String get purchaseManage => 'දායකත්වය කළමනාකරණය';
+
+  @override
+  String get purchaseRestore => 'මිලදී ගැනීම් නැවත ලබාගන්න';
+
+  @override
+  String get purchaseRestoreHint =>
+      'දැනටමත් ගෙවා තිබේද? ඔබේ මිලදී ගැනීම් මෙම උපාංගයට ගෙන එන්න.';
+
+  @override
+  String get purchaseRestored => 'ඔබේ මිලදී ගැනීම් නැවත ලැබී ඇත.';
+
+  @override
+  String get purchaseRestoreNothing => 'මෙම ගිණුමේ නැවත ලබාගත හැකි දෙයක් නැත.';
+
+  @override
+  String get purchaseRestoreFailed =>
+      'වෙළදසැලට සම්බන්ධ විය නොහැකි විය. සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get purchaseUnavailable => 'මෙම අනුවාදයේ මිලදී ගැනීම් නොමැත.';
+
+  @override
+  String get purchaseThanks => 'ස්තූතියි. ඔබේ මිලදී ගැනීම සක්‍රියයි.';
+
+  @override
+  String get purchasePending =>
+      'ගෙවීම තවමත් සකසමින් පවතී. එය සම්පූර්ණ වූ පසු ස්වයංක්‍රීයව විවෘත වේ.';
+
+  @override
+  String get purchaseAlreadyOwned =>
+      'ඔබ දැනටමත් මෙය හිමිකරගෙන ඇත. “මිලදී ගැනීම් නැවත ලබාගන්න” උත්සාහ කරන්න.';
+
+  @override
+  String get purchaseNotAllowed => 'මෙම උපාංගයේ මිලදී ගැනීම් අවසර නැත.';
+
+  @override
+  String get purchaseProductUnavailable =>
+      'මෙය තවම ලබාගත හැකි නොවේ. කරුණාකර පසුව නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get purchaseFailed => 'යමක් වැරදී ඇත. ඔබෙන් මුදල් අය කර නොමැත.';
 }

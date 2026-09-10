@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/data/profile_repository.dart';
+import '../purchases/entitlements.dart';
+import '../purchases/purchase_controller.dart';
 
 /// The kinds of ad this app shows.
 enum AdSlot {
@@ -133,10 +135,15 @@ final appLaunchedAtProvider = Provider<DateTime>(
 
 /// Whether the user has paid to remove ads.
 ///
-/// Always false until RevenueCat lands in KAN-35, which overrides this. It
-/// exists now so every ad site is already asking the right question — wiring
-/// entitlements later is then one provider, not an audit of every placement.
-final adFreeEntitlementProvider = Provider<bool>((ref) => false);
+/// Wired to the store in KAN-35. It was written first as a constant false, so
+/// that every ad site was already asking the right question and connecting
+/// entitlements became this one line rather than an audit of every placement.
+///
+/// Both the one-time `remove_ads` purchase and either Pro tier satisfy it;
+/// [PaidFeature] holds that table.
+final adFreeEntitlementProvider = Provider<bool>(
+  (ref) => ref.watch(featureProvider(PaidFeature.removeAds)),
+);
 
 final adGateProvider = Provider<AdGate>((ref) {
   return AdGate(

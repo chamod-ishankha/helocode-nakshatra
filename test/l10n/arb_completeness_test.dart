@@ -56,6 +56,10 @@ void main() {
       'accountContinueWithGoogle',
       'accountSavedToEmail',
       'chartAyanamsa',
+      // The paid tier's name. It is what Play Console and the RevenueCat
+      // dashboard call it, and what the user sees on the Google receipt —
+      // translating it would make the app and the receipt disagree.
+      'purchaseSectionTitle',
       // Placeholders and a separator, with no words of its own.
       'chartShareCaption',
     };

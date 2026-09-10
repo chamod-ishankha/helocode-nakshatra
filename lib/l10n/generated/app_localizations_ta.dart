@@ -1212,4 +1212,68 @@ class L10nTa extends L10n {
 
   @override
   String get paywallReasonFuture => 'மேலும் முன்னோக்கிப் பாருங்கள்';
+
+  @override
+  String get reportTitle => 'சாதக அறிக்கை';
+
+  @override
+  String reportPreparedOn(String date) {
+    return 'தயாரிக்கப்பட்ட நாள் $date';
+  }
+
+  @override
+  String reportBornOn(String date, String time) {
+    return 'பிறந்த நாள் $date, நேரம் $time';
+  }
+
+  @override
+  String reportBornOnDateOnly(String date) {
+    return 'பிறந்த நாள் $date';
+  }
+
+  @override
+  String reportPageOf(int page, int total) {
+    return 'பக்கம் $page / $total';
+  }
+
+  @override
+  String get reportSectionRasi => 'ராசி சக்கரம் (D1)';
+
+  @override
+  String get reportSectionNavamsa => 'நவாம்ச சக்கரம் (D9)';
+
+  @override
+  String get reportNavamsaNote =>
+      'நவாம்சம் ஒவ்வொரு ராசியையும் ஒன்பது பகுதிகளாகப் பிரிக்கிறது. இது ராசி சக்கரத்திற்குப் பதிலாக அல்ல, அதனுடன் சேர்த்துப் படிக்கப்படுகிறது.';
+
+  @override
+  String get reportSectionDasha => 'விம்சோத்தரி மகாதசை';
+
+  @override
+  String get reportSectionMethod => 'இது எவ்வாறு கணிக்கப்பட்டது';
+
+  @override
+  String get reportMethodBody =>
+      'கிரக நிலைகள் நிராயன முறையில், லஹிரி அயனாம்சம் மற்றும் முழு ராசி பாவ முறையைப் பயன்படுத்தி, உங்கள் சாதனத்திலேயே ஸ்விஸ் எபிமெரிஸ் மூலம் கணிக்கப்பட்டுள்ளன.';
+
+  @override
+  String get reportGenerate => 'சாதக அறிக்கை (PDF)';
+
+  @override
+  String get reportGenerateHint =>
+      'அச்சிடக்கூடிய, உங்கள் மொழியிலான அறிக்கை — வைத்திருக்கவோ பகிரவோ.';
+
+  @override
+  String get reportPreparing => 'உங்கள் அறிக்கை தயாராகிறது…';
+
+  @override
+  String get reportFailed =>
+      'அறிக்கையை உருவாக்க முடியவில்லை. மீண்டும் முயலவும்.';
+
+  @override
+  String get reportShareText => 'எனது சாதகம், Nakshatra வழியாக.';
+
+  @override
+  String get reportRegenerateNote =>
+      'எப்போது வேண்டுமானாலும் மீண்டும் உருவாக்கலாம் — இது ஒரு முறை மட்டும் செலுத்தும் கொள்முதல்.';
 }

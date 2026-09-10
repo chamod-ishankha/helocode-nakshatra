@@ -353,5 +353,22 @@
   "paywallFeatureProfiles": "முழு குடும்பத்திற்கும் சாதகங்கள்",
   "paywallFeatureTransits": "கோச்சார அறிவிப்புகள்",
   "paywallReasonCompat": "முழு பொருத்தக் கணிப்பையும் பாருங்கள்",
-  "paywallReasonFuture": "மேலும் முன்னோக்கிப் பாருங்கள்"
+  "paywallReasonFuture": "மேலும் முன்னோக்கிப் பாருங்கள்",
+  "reportTitle": "சாதக அறிக்கை",
+  "reportPreparedOn": "தயாரிக்கப்பட்ட நாள் {date}",
+  "reportBornOn": "பிறந்த நாள் {date}, நேரம் {time}",
+  "reportBornOnDateOnly": "பிறந்த நாள் {date}",
+  "reportPageOf": "பக்கம் {page} / {total}",
+  "reportSectionRasi": "ராசி சக்கரம் (D1)",
+  "reportSectionNavamsa": "நவாம்ச சக்கரம் (D9)",
+  "reportNavamsaNote": "நவாம்சம் ஒவ்வொரு ராசியையும் ஒன்பது பகுதிகளாகப் பிரிக்கிறது. இது ராசி சக்கரத்திற்குப் பதிலாக அல்ல, அதனுடன் சேர்த்துப் படிக்கப்படுகிறது.",
+  "reportSectionDasha": "விம்சோத்தரி மகாதசை",
+  "reportSectionMethod": "இது எவ்வாறு கணிக்கப்பட்டது",
+  "reportMethodBody": "கிரக நிலைகள் நிராயன முறையில், லஹிரி அயனாம்சம் மற்றும் முழு ராசி பாவ முறையைப் பயன்படுத்தி, உங்கள் சாதனத்திலேயே ஸ்விஸ் எபிமெரிஸ் மூலம் கணிக்கப்பட்டுள்ளன.",
+  "reportGenerate": "சாதக அறிக்கை (PDF)",
+  "reportGenerateHint": "அச்சிடக்கூடிய, உங்கள் மொழியிலான அறிக்கை — வைத்திருக்கவோ பகிரவோ.",
+  "reportPreparing": "உங்கள் அறிக்கை தயாராகிறது…",
+  "reportFailed": "அறிக்கையை உருவாக்க முடியவில்லை. மீண்டும் முயலவும்.",
+  "reportShareText": "எனது சாதகம், Nakshatra வழியாக.",
+  "reportRegenerateNote": "எப்போது வேண்டுமானாலும் மீண்டும் உருவாக்கலாம் — இது ஒரு முறை மட்டும் செலுத்தும் கொள்முதல்."
 }

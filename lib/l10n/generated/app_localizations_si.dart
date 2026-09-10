@@ -1192,4 +1192,68 @@ class L10nSi extends L10n {
 
   @override
   String get paywallReasonFuture => 'ඉදිරි දිනවලට බලන්න';
+
+  @override
+  String get reportTitle => 'කේන්ද්‍ර වාර්තාව';
+
+  @override
+  String reportPreparedOn(String date) {
+    return 'සකස් කළ දිනය $date';
+  }
+
+  @override
+  String reportBornOn(String date, String time) {
+    return 'උපන් දිනය $date, වේලාව $time';
+  }
+
+  @override
+  String reportBornOnDateOnly(String date) {
+    return 'උපන් දිනය $date';
+  }
+
+  @override
+  String reportPageOf(int page, int total) {
+    return 'පිටුව $page / $total';
+  }
+
+  @override
+  String get reportSectionRasi => 'රාශි චක්‍රය (D1)';
+
+  @override
+  String get reportSectionNavamsa => 'නවාංශක චක්‍රය (D9)';
+
+  @override
+  String get reportNavamsaNote =>
+      'නවාංශකය එක් එක් රාශිය කොටස් නවයකට බෙදයි. එය රාශි චක්‍රය වෙනුවට නොව, ඒ සමඟ කියවනු ලැබේ.';
+
+  @override
+  String get reportSectionDasha => 'විංශෝත්තරී මහාදශා';
+
+  @override
+  String get reportSectionMethod => 'මෙය ගණනය කළ ආකාරය';
+
+  @override
+  String get reportMethodBody =>
+      'ග්‍රහ ස්ථාන නිරයන ක්‍රමයට, ලහිරි අයනාංශය සහ පූර්ණ රාශි භාව ක්‍රමය භාවිතයෙන්, ඔබේ උපාංගය තුළදීම ස්විස් එෆෙමරිස් මගින් ගණනය කර ඇත.';
+
+  @override
+  String get reportGenerate => 'කේන්ද්‍ර වාර්තාව (PDF)';
+
+  @override
+  String get reportGenerateHint =>
+      'මුද්‍රණය කළ හැකි, ඔබේ භාෂාවෙන් වූ වාර්තාවක් — තබාගැනීමට හෝ බෙදාගැනීමට.';
+
+  @override
+  String get reportPreparing => 'ඔබේ වාර්තාව සකස් වෙමින්…';
+
+  @override
+  String get reportFailed =>
+      'වාර්තාව සෑදිය නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න.';
+
+  @override
+  String get reportShareText => 'මගේ කේන්දරය, Nakshatra හරහා.';
+
+  @override
+  String get reportRegenerateNote =>
+      'ඕනෑම විටෙක නැවත සෑදිය හැක — මෙය එක් වරක් පමණක් ගෙවන මිලදී ගැනීමකි.';
 }

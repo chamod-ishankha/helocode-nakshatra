@@ -22,9 +22,12 @@ enum PaywallReason {
 
   compatibilityDetail(RewardedUnlock.compatibilityDetail),
 
-  futureDay(RewardedUnlock.futureDay);
+  futureDay(RewardedUnlock.futureDay),
 
-  const PaywallReason(this.rewarded);
+  /// The paid PDF report (KAN-37), which no subscription grants.
+  birthChartPdf(null, product: PurchaseProduct.birthChartPdf);
+
+  const PaywallReason(this.rewarded, {this.product});
 
   /// The rewarded unlock that opens the same content free, if there is one.
   ///
@@ -32,6 +35,16 @@ enum PaywallReason {
   /// who will never pay still earns money by watching, and hiding that option
   /// to push the purchase loses more than it wins in this market.
   final RewardedUnlock? rewarded;
+
+  /// The one product that opens this, when only one does.
+  ///
+  /// The sheet then offers that alone and hides the Pro tiers. It has to:
+  /// [PaidFeature.birthChartPdf] is satisfied by `birth_chart_pdf` and by
+  /// nothing else, so somebody who came here for the report and left having
+  /// bought a yearly subscription would still not have it. Showing a tier that
+  /// does not unlock what the user is looking at is a mis-sale, whatever it
+  /// does for the month's revenue.
+  final PurchaseProduct? product;
 
   /// The paywall that belongs beside a given rewarded unlock.
   static PaywallReason forUnlock(RewardedUnlock unlock) => switch (unlock) {
@@ -43,6 +56,7 @@ enum PaywallReason {
     PaywallReason.general => null,
     PaywallReason.compatibilityDetail => l.paywallReasonCompat,
     PaywallReason.futureDay => l.paywallReasonFuture,
+    PaywallReason.birthChartPdf => l.reportGenerate,
   };
 }
 
@@ -142,8 +156,11 @@ class _PaywallSheet extends ConsumerWidget {
             ),
 
             const SizedBox(height: 16),
-            const _Features(),
-            const SizedBox(height: 16),
+            // The Pro feature list only belongs on a sheet that sells Pro.
+            if (reason.product == null) ...[
+              const _Features(),
+              const SizedBox(height: 16),
+            ],
 
             prices.when(
               loading: () => _Notice(text: l.paywallPricesLoading),
@@ -151,13 +168,19 @@ class _PaywallSheet extends ConsumerWidget {
               // buyable. No price means no button — never a number written
               // into the app, which would be a price it cannot honour.
               error: (_, _) => _Notice(text: l.paywallPricesUnavailable),
-              data: (list) => list.isEmpty
-                  ? _Notice(text: l.paywallPricesUnavailable)
-                  : _Tiers(
-                      prices: list,
-                      highlight: config.highlight,
-                      onBuy: (p) => _buy(context, ref, p),
-                    ),
+              data: (list) {
+                final offered = reason.product == null
+                    ? list
+                    : list.where((p) => p.product == reason.product).toList();
+
+                return offered.isEmpty
+                    ? _Notice(text: l.paywallPricesUnavailable)
+                    : _Tiers(
+                        prices: offered,
+                        highlight: config.highlight,
+                        onBuy: (p) => _buy(context, ref, p),
+                      );
+              },
             ),
 
             if (reason.rewarded case final unlock?) ...[
@@ -240,7 +263,6 @@ class _Tiers extends StatelessWidget {
     final l = L10n.of(context);
     final monthly = _find(PurchaseProduct.proMonthly);
     final yearly = _find(PurchaseProduct.proYearly);
-    final removeAds = _find(PurchaseProduct.removeAds);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,29 +284,50 @@ class _Tiers extends StatelessWidget {
             const SizedBox(height: 8),
           ],
 
-        if (removeAds != null) ...[
-          const SizedBox(height: 4),
-          OutlinedButton(
-            onPressed: () => onBuy(PurchaseProduct.removeAds),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Column(
-                children: [
-                  Text('${l.paywallRemoveAdsTitle} — ${removeAds.formatted}'),
-                  const SizedBox(height: 2),
-                  Text(
-                    l.paywallRemoveAdsBody,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
+        // Every one-time product the store offered on this sheet, rather than
+        // remove_ads alone. A contextual paywall for the PDF report offers the
+        // report and nothing else, and it reaches this loop the same way.
+        for (final price in prices)
+          if (!price.product.isSubscription) ...[
+            const SizedBox(height: 4),
+            OutlinedButton(
+              onPressed: () => onBuy(price.product),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Column(
+                  children: [
+                    Text('${_title(l, price.product)} — ${price.formatted}'),
+                    if (_body(l, price.product) case final hint?) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        hint,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
       ],
     );
   }
+
+  /// Falls back to the store's own product name rather than to a blank button.
+  /// A product that reaches the paywall before it has copy is a mistake, but
+  /// an unlabelled button is a worse one.
+  static String _title(L10n l, PurchaseProduct product) => switch (product) {
+    PurchaseProduct.removeAds => l.paywallRemoveAdsTitle,
+    PurchaseProduct.birthChartPdf => l.reportGenerate,
+    _ => product.id,
+  };
+
+  static String? _body(L10n l, PurchaseProduct product) => switch (product) {
+    PurchaseProduct.removeAds => l.paywallRemoveAdsBody,
+    PurchaseProduct.birthChartPdf => l.reportGenerateHint,
+    _ => null,
+  };
 }
 
 class _TierCard extends StatelessWidget {

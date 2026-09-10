@@ -353,5 +353,22 @@
   "paywallFeatureProfiles": "මුළු පවුලටම කේන්දර",
   "paywallFeatureTransits": "ගෝචර දැනුම්දීම්",
   "paywallReasonCompat": "සම්පූර්ණ පොරොන්දම් ගණනය බලන්න",
-  "paywallReasonFuture": "ඉදිරි දිනවලට බලන්න"
+  "paywallReasonFuture": "ඉදිරි දිනවලට බලන්න",
+  "reportTitle": "කේන්ද්‍ර වාර්තාව",
+  "reportPreparedOn": "සකස් කළ දිනය {date}",
+  "reportBornOn": "උපන් දිනය {date}, වේලාව {time}",
+  "reportBornOnDateOnly": "උපන් දිනය {date}",
+  "reportPageOf": "පිටුව {page} / {total}",
+  "reportSectionRasi": "රාශි චක්‍රය (D1)",
+  "reportSectionNavamsa": "නවාංශක චක්‍රය (D9)",
+  "reportNavamsaNote": "නවාංශකය එක් එක් රාශිය කොටස් නවයකට බෙදයි. එය රාශි චක්‍රය වෙනුවට නොව, ඒ සමඟ කියවනු ලැබේ.",
+  "reportSectionDasha": "විංශෝත්තරී මහාදශා",
+  "reportSectionMethod": "මෙය ගණනය කළ ආකාරය",
+  "reportMethodBody": "ග්‍රහ ස්ථාන නිරයන ක්‍රමයට, ලහිරි අයනාංශය සහ පූර්ණ රාශි භාව ක්‍රමය භාවිතයෙන්, ඔබේ උපාංගය තුළදීම ස්විස් එෆෙමරිස් මගින් ගණනය කර ඇත.",
+  "reportGenerate": "කේන්ද්‍ර වාර්තාව (PDF)",
+  "reportGenerateHint": "මුද්‍රණය කළ හැකි, ඔබේ භාෂාවෙන් වූ වාර්තාවක් — තබාගැනීමට හෝ බෙදාගැනීමට.",
+  "reportPreparing": "ඔබේ වාර්තාව සකස් වෙමින්…",
+  "reportFailed": "වාර්තාව සෑදිය නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+  "reportShareText": "මගේ කේන්දරය, Nakshatra හරහා.",
+  "reportRegenerateNote": "ඕනෑම විටෙක නැවත සෑදිය හැක — මෙය එක් වරක් පමණක් ගෙවන මිලදී ගැනීමකි."
 }

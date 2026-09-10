@@ -565,5 +565,45 @@
   "paywallFeatureProfiles": "Charts for the whole family",
   "paywallFeatureTransits": "Transit alerts",
   "paywallReasonCompat": "See the full compatibility working",
-  "paywallReasonFuture": "Look further ahead"
+  "paywallReasonFuture": "Look further ahead",
+  "reportTitle": "Birth Chart Report",
+  "reportPreparedOn": "Prepared {date}",
+  "@reportPreparedOn": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "reportBornOn": "Born {date} at {time}",
+  "@reportBornOn": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "reportBornOnDateOnly": "Born {date}",
+  "@reportBornOnDateOnly": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "reportPageOf": "Page {page} of {total}",
+  "@reportPageOf": {
+    "description": "Footer on every report page.",
+    "placeholders": {
+      "page": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "reportSectionRasi": "Rāśi chart (D1)",
+  "reportSectionNavamsa": "Navāṁśa chart (D9)",
+  "reportNavamsaNote": "The navāṁśa divides each rāśi into nine parts. It is read alongside the rāśi chart, not instead of it.",
+  "reportSectionDasha": "Vimśottarī mahādaśā",
+  "reportSectionMethod": "How this was calculated",
+  "reportMethodBody": "Positions are sidereal, using the Lahiri ayanāṃśa and whole-sign houses, computed on your device from the Swiss Ephemeris.",
+  "reportGenerate": "Birth chart report (PDF)",
+  "reportGenerateHint": "A printable report in your language, to keep or to share.",
+  "reportPreparing": "Preparing your report…",
+  "reportFailed": "The report could not be created. Please try again.",
+  "reportShareText": "My birth chart, from Nakshatra.",
+  "reportRegenerateNote": "Yours to make again any time — this is a one-time purchase."
 }

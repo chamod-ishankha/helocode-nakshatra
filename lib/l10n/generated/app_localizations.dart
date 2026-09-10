@@ -2222,6 +2222,108 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Look further ahead'**
   String get paywallReasonFuture;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth Chart Report'**
+  String get reportTitle;
+
+  /// No description provided for @reportPreparedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared {date}'**
+  String reportPreparedOn(String date);
+
+  /// No description provided for @reportBornOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Born {date} at {time}'**
+  String reportBornOn(String date, String time);
+
+  /// No description provided for @reportBornOnDateOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Born {date}'**
+  String reportBornOnDateOnly(String date);
+
+  /// Footer on every report page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {total}'**
+  String reportPageOf(int page, int total);
+
+  /// No description provided for @reportSectionRasi.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāśi chart (D1)'**
+  String get reportSectionRasi;
+
+  /// No description provided for @reportSectionNavamsa.
+  ///
+  /// In en, this message translates to:
+  /// **'Navāṁśa chart (D9)'**
+  String get reportSectionNavamsa;
+
+  /// No description provided for @reportNavamsaNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The navāṁśa divides each rāśi into nine parts. It is read alongside the rāśi chart, not instead of it.'**
+  String get reportNavamsaNote;
+
+  /// No description provided for @reportSectionDasha.
+  ///
+  /// In en, this message translates to:
+  /// **'Vimśottarī mahādaśā'**
+  String get reportSectionDasha;
+
+  /// No description provided for @reportSectionMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'How this was calculated'**
+  String get reportSectionMethod;
+
+  /// No description provided for @reportMethodBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Positions are sidereal, using the Lahiri ayanāṃśa and whole-sign houses, computed on your device from the Swiss Ephemeris.'**
+  String get reportMethodBody;
+
+  /// No description provided for @reportGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth chart report (PDF)'**
+  String get reportGenerate;
+
+  /// No description provided for @reportGenerateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A printable report in your language, to keep or to share.'**
+  String get reportGenerateHint;
+
+  /// No description provided for @reportPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your report…'**
+  String get reportPreparing;
+
+  /// No description provided for @reportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The report could not be created. Please try again.'**
+  String get reportFailed;
+
+  /// No description provided for @reportShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'My birth chart, from Nakshatra.'**
+  String get reportShareText;
+
+  /// No description provided for @reportRegenerateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours to make again any time — this is a one-time purchase.'**
+  String get reportRegenerateNote;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

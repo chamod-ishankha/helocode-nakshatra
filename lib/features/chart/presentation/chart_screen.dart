@@ -16,6 +16,7 @@ import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../report/presentation/report_tile.dart';
 import '../domain/chart_providers.dart';
 import 'north_indian_chart.dart';
 import 'rasi_chart.dart';
@@ -130,6 +131,10 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
             _PositionsTable(chart: chart),
             const SizedBox(height: 24),
             DashaTimeline(birthTimeKnown: profile.birthTimeKnown),
+            const SizedBox(height: 24),
+            // Directly under everything the report will contain, so what is
+            // being sold is on screen above the button that sells it.
+            ReportTile(chart: chart),
             const SizedBox(height: 24),
             Text(
               L10n.of(context).chartAyanamsa(chart.ayanamsa.toStringAsFixed(4)),

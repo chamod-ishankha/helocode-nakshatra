@@ -1202,4 +1202,68 @@ class L10nEn extends L10n {
 
   @override
   String get paywallReasonFuture => 'Look further ahead';
+
+  @override
+  String get reportTitle => 'Birth Chart Report';
+
+  @override
+  String reportPreparedOn(String date) {
+    return 'Prepared $date';
+  }
+
+  @override
+  String reportBornOn(String date, String time) {
+    return 'Born $date at $time';
+  }
+
+  @override
+  String reportBornOnDateOnly(String date) {
+    return 'Born $date';
+  }
+
+  @override
+  String reportPageOf(int page, int total) {
+    return 'Page $page of $total';
+  }
+
+  @override
+  String get reportSectionRasi => 'Rāśi chart (D1)';
+
+  @override
+  String get reportSectionNavamsa => 'Navāṁśa chart (D9)';
+
+  @override
+  String get reportNavamsaNote =>
+      'The navāṁśa divides each rāśi into nine parts. It is read alongside the rāśi chart, not instead of it.';
+
+  @override
+  String get reportSectionDasha => 'Vimśottarī mahādaśā';
+
+  @override
+  String get reportSectionMethod => 'How this was calculated';
+
+  @override
+  String get reportMethodBody =>
+      'Positions are sidereal, using the Lahiri ayanāṃśa and whole-sign houses, computed on your device from the Swiss Ephemeris.';
+
+  @override
+  String get reportGenerate => 'Birth chart report (PDF)';
+
+  @override
+  String get reportGenerateHint =>
+      'A printable report in your language, to keep or to share.';
+
+  @override
+  String get reportPreparing => 'Preparing your report…';
+
+  @override
+  String get reportFailed =>
+      'The report could not be created. Please try again.';
+
+  @override
+  String get reportShareText => 'My birth chart, from Nakshatra.';
+
+  @override
+  String get reportRegenerateNote =>
+      'Yours to make again any time — this is a one-time purchase.';
 }

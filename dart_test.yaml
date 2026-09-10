@@ -1,0 +1,14 @@
+# Test configuration.
+#
+# `sample` marks the report exporter (KAN-37), which writes real PDFs to
+# build/report-samples so they can be opened in Adobe Reader, Google Drive and
+# WhatsApp — the acceptance no assertion can stand in for. It is not a test:
+# it asserts nothing and it writes files, so it stays out of the ordinary run.
+#
+#   flutter test test/features/report/sample_export_test.dart --tags sample --run-skipped
+#
+# --run-skipped is required as well as --tags: a `skip` here is what keeps it
+# out of the ordinary run, and --tags alone will not lift it.
+tags:
+  sample:
+    skip: "writes files; run with --tags sample --run-skipped"

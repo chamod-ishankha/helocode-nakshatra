@@ -6,6 +6,7 @@ import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -126,7 +127,7 @@ class _ReportTileState extends ConsumerState<ReportTile> {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             FilledButton.icon(
               onPressed: _busy ? null : _tap,
               icon: _busy

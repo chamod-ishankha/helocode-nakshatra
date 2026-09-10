@@ -9,7 +9,9 @@ import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/config/app_locale.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
@@ -50,11 +52,11 @@ class CompatibilityScreen extends ConsumerWidget {
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           if (mine != null)
             _PersonCard(label: l.compatYourDetails, profile: mine),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           _PartnerCard(partner: partner),
 
           if (partner != null) ...[
@@ -62,7 +64,7 @@ class CompatibilityScreen extends ConsumerWidget {
             const _RoleSelector(),
             const SizedBox(height: 20),
             const _SystemToggle(),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
           ],
 
           if (match == null)
@@ -79,9 +81,9 @@ class CompatibilityScreen extends ConsumerWidget {
           else
             _Results(match: match),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           _Caveat(text: l.compatCaveat),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             l.entertainmentOnly,
             textAlign: TextAlign.center,
@@ -192,7 +194,7 @@ class _RoleSelector extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l.compatRoleQuestion, style: theme.textTheme.titleSmall),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         SegmentedButton<BrideRole>(
           segments: [
             ButtonSegment(value: BrideRole.me, label: Text(l.compatRoleYou)),
@@ -263,8 +265,8 @@ class _Results extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (match.anyTimeUnknown) ...[
-          _Warning(text: l.compatTimeUnknown),
-          const SizedBox(height: 12),
+          InfoNotice(text: l.compatTimeUnknown, tone: NoticeTone.caution),
+          const SizedBox(height: AppSpacing.md),
         ],
 
         if (system == MatchSystem.ashtakoota) ...[
@@ -275,10 +277,18 @@ class _Results extends ConsumerWidget {
             ),
             fraction: match.ashtakoota.total / AshtakootaResult.maximum,
           ),
-          if (match.ashtakoota.hasNadiDosha) _Warning(text: l.compatNadiDosha),
-          if (match.ashtakoota.hasBhakootDosha)
-            _Warning(text: l.compatBhakootDosha),
-          const SizedBox(height: 12),
+          // Each dosha brings its own gap. Two of them stacked used to be
+          // separated by the warning's own top margin; with that gone they
+          // would have touched.
+          if (match.ashtakoota.hasNadiDosha) ...[
+            const SizedBox(height: AppSpacing.sm),
+            InfoNotice(text: l.compatNadiDosha, tone: NoticeTone.caution),
+          ],
+          if (match.ashtakoota.hasBhakootDosha) ...[
+            const SizedBox(height: AppSpacing.sm),
+            InfoNotice(text: l.compatBhakootDosha, tone: NoticeTone.caution),
+          ],
+          const SizedBox(height: AppSpacing.md),
           if (detail)
             for (final s in match.ashtakoota.scores) _KootaRow(score: s)
           else
@@ -295,8 +305,11 @@ class _Results extends ConsumerWidget {
             ),
             fraction: match.porondam.matched / match.porondam.judged,
           ),
-          if (match.porondam.hasRajjuDosha) _Warning(text: l.factorRajjuAbout),
-          const SizedBox(height: 12),
+          if (match.porondam.hasRajjuDosha) ...[
+            const SizedBox(height: AppSpacing.sm),
+            InfoNotice(text: l.factorRajjuAbout, tone: NoticeTone.caution),
+          ],
+          const SizedBox(height: AppSpacing.md),
           if (detail)
             for (final s in match.porondam.scores) _PorondamRow(score: s)
           else
@@ -305,7 +318,7 @@ class _Results extends ConsumerWidget {
               title: l.unlockCompatTitle,
               body: l.unlockCompatBody,
             ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           // The gap to twenty is stated on screen, not only in the code.
           Text(
             l.compatPorondamIncomplete,
@@ -345,7 +358,7 @@ class _ScoreHeadline extends StatelessWidget {
           value,
           style: theme.textTheme.headlineMedium?.copyWith(color: colour),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
@@ -448,7 +461,7 @@ class _FactorRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Text(
             trailing,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -498,39 +511,6 @@ class _KujaSection extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _Warning extends StatelessWidget {
-  const _Warning({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: context.semantic.inauspicious.withValues(alpha: 0.5),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            size: 18,
-            color: context.semantic.inauspicious,
-          ),
-          const SizedBox(width: 8),
-          Expanded(child: Text(text, style: theme.textTheme.bodySmall)),
-        ],
-      ),
     );
   }
 }

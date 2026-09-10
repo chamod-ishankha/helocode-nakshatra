@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'detail_sheets.dart';
@@ -84,7 +85,7 @@ class RasiChart extends StatelessWidget {
                         l10n.chartCentreCaption,
                         style: theme.textTheme.titleMedium,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         // "Virgo lagna", not "Lagna: Virgo" — the sign
                         // qualifies the lagna, and that is the order Sinhala

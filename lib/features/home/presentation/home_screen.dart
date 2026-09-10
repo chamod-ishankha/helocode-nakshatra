@@ -12,6 +12,7 @@ import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -83,7 +84,7 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
           children: [
             const _DateSwitcher(),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             if (dayLocked)
               RewardedUnlockCard(
                 unlock: RewardedUnlock.futureDay,
@@ -94,26 +95,26 @@ class HomeScreen extends ConsumerWidget {
               const _PoyaTodayBanner(),
               const _NowBanner(),
               _RahuKalayaCard(panchanga: panchanga),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               _PanchangaStrip(panchanga: panchanga),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               _SunMoonCard(panchanga: panchanga),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               const _OtherPeriods(),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               const _AuspiciousCard(),
             ],
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             const _NextPoyaCard(),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             const _CalendarCard(),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             const _CompatibilityCard(),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             const _HoroscopeCard(),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             const _ComingSoon(),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               L10n.of(context).entertainmentOnly,
               textAlign: TextAlign.center,
@@ -393,7 +394,7 @@ class _RahuKalayaCard extends ConsumerWidget {
                 color: context.semantic.inauspicious,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               '${fmt.format(rahu.start)}  —  ${fmt.format(rahu.end)}',
               style: theme.textTheme.headlineSmall?.copyWith(
@@ -401,7 +402,7 @@ class _RahuKalayaCard extends ConsumerWidget {
                 color: context.semantic.inauspicious,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               L10n.of(context).durationMinutes(rahu.duration.inMinutes),
               style: theme.textTheme.bodySmall,
@@ -613,7 +614,7 @@ class _OtherPeriods extends ConsumerWidget {
               L10n.of(context).homeOtherInauspicious,
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             for (final w in windows)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
@@ -670,7 +671,7 @@ class _AuspiciousCard extends ConsumerWidget {
                 color: context.semantic.auspicious,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               L10n.of(context).homeClearTimesHelp,
               style: Theme.of(context).textTheme.bodySmall,
@@ -686,7 +687,7 @@ class _AuspiciousCard extends ConsumerWidget {
                       size: 16,
                       color: context.semantic.auspicious,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       '${fmt.format(w.start)} – ${fmt.format(w.end)}',
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -780,7 +781,7 @@ class _NextPoyaCard extends ConsumerWidget {
               L10n.of(context).homeComingUp,
               style: theme.textTheme.titleSmall,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             for (final f in entries)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),

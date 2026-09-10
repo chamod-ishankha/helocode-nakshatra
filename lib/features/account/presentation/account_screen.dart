@@ -5,6 +5,7 @@ import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/sync/profile_sync.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/domain/birth_profile.dart';
@@ -189,7 +190,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           _StatusCard(kind: kind, email: status?.email),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           if (kind == AccountKind.permanent)
             _SignedIn(busy: _busy, onSignOut: _signOut)
           else if (kind == AccountKind.none)
@@ -201,7 +202,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 icon: const Icon(Icons.account_circle_outlined),
                 label: Text(L10n.of(context).accountContinueWithGoogle),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
                   const Expanded(child: Divider()),
@@ -215,7 +216,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   const Expanded(child: Divider()),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
             ],
             _Form(
               formKey: _formKey,
@@ -231,7 +232,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               }),
             ),
           ],
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             L10n.of(context).accountFooter,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -293,13 +294,13 @@ class _StatusCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: colour),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: theme.textTheme.titleSmall),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(body, style: theme.textTheme.bodySmall),
               ],
             ),
@@ -345,7 +346,7 @@ class _Form extends StatelessWidget {
             signingIn ? l.accountSignIn : l.accountKeepSafe,
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           TextFormField(
             controller: email,
             enabled: !busy,
@@ -367,7 +368,7 @@ class _Form extends StatelessWidget {
               return null;
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: password,
             enabled: !busy,
@@ -388,11 +389,11 @@ class _Form extends StatelessWidget {
             },
           ),
           if (!signingIn) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             _VerificationNotice(),
           ],
           if (error != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               error!,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -411,7 +412,7 @@ class _Form extends StatelessWidget {
                   )
                 : Text(signingIn ? l.accountSignIn : l.accountCreate),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           TextButton(
             onPressed: busy ? null : onToggleMode,
             child: Text(
@@ -444,7 +445,7 @@ class _VerificationNotice extends StatelessWidget {
             size: 18,
             color: theme.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               L10n.of(context).accountNoVerification,
@@ -473,7 +474,7 @@ class _SignedIn extends StatelessWidget {
           icon: const Icon(Icons.logout),
           label: Text(L10n.of(context).accountSignOut),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           L10n.of(context).accountSignedOutHelp,
           style: Theme.of(context).textTheme.bodySmall,

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/astro/dignity.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -87,7 +88,7 @@ class _GrahaDetail extends ConsumerWidget {
                 ],
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             _Row(l.chartColumnRasi, position.rasi.label(locale)),
             _Row(
@@ -164,7 +165,7 @@ class _HouseDetail extends ConsumerWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             if (grahas.isEmpty)
               Text(l.detailNoGraha, style: theme.textTheme.bodyMedium)

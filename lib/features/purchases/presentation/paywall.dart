@@ -8,7 +8,9 @@ import '../../../core/logging/analytics_service.dart';
 import '../../../core/purchases/paywall_config.dart';
 import '../../../core/purchases/products.dart';
 import '../../../core/purchases/purchase_controller.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'purchase_messages.dart';
 
@@ -140,14 +142,14 @@ class _PaywallSheet extends ConsumerWidget {
                   color: context.semantic.accent,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
             ],
 
             Text(switch (config.variant) {
               PaywallVariant.value => l.paywallHeadlineValue,
               PaywallVariant.support => l.paywallHeadlineSupport,
             }, style: theme.textTheme.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               switch (config.variant) {
                 PaywallVariant.value => l.paywallBodyValue,
@@ -158,26 +160,26 @@ class _PaywallSheet extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             // The Pro feature list only belongs on a sheet that sells Pro.
             if (reason.product == null) ...[
               const _Features(),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
             ],
 
             prices.when(
-              loading: () => _Notice(text: l.paywallPricesLoading),
+              loading: () => QuietNotice(text: l.paywallPricesLoading),
               // A store that will not answer must not leave a row that looks
               // buyable. No price means no button — never a number written
               // into the app, which would be a price it cannot honour.
-              error: (_, _) => _Notice(text: l.paywallPricesUnavailable),
+              error: (_, _) => QuietNotice(text: l.paywallPricesUnavailable),
               data: (list) {
                 final offered = reason.product == null
                     ? list
                     : list.where((p) => p.product == reason.product).toList();
 
                 return offered.isEmpty
-                    ? _Notice(text: l.paywallPricesUnavailable)
+                    ? QuietNotice(text: l.paywallPricesUnavailable)
                     : _Tiers(
                         prices: offered,
                         highlight: config.highlight,
@@ -187,11 +189,11 @@ class _PaywallSheet extends ConsumerWidget {
             ),
 
             if (reason.rewarded case final unlock?) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               _WatchInstead(unlock: unlock),
             ],
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               l.paywallLegal,
               textAlign: TextAlign.center,
@@ -284,7 +286,7 @@ class _Tiers extends StatelessWidget {
                   : null,
               onTap: () => onBuy(tier),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
           ],
 
         // Every one-time product the store offered on this sheet, rather than
@@ -292,7 +294,7 @@ class _Tiers extends StatelessWidget {
         // report and nothing else, and it reaches this loop the same way.
         for (final price in prices)
           if (!price.product.isSubscription) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             OutlinedButton(
               onPressed: () => onBuy(price.product),
               child: Padding(
@@ -482,22 +484,4 @@ class _WatchInstead extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _Notice extends StatelessWidget {
-  const _Notice({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 20),
-    child: Text(
-      text,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
-    ),
-  );
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'chart_sharing.dart';
@@ -98,7 +99,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
           children: [
             if (!profile.birthTimeKnown) const _ApproximateBanner(),
             _StyleSwitcher(style: style),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             // Keyed by style so Flutter rebuilds rather than trying to reuse
             // the previous layout's element tree, which shares no structure.
             ShareableChart(
@@ -121,29 +122,29 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                 ),
               },
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             _SummaryCard(chart: chart),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               L10n.of(context).chartPositions,
               style: theme.textTheme.titleMedium,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             _PositionsTable(chart: chart),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             DashaTimeline(birthTimeKnown: profile.birthTimeKnown),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             // Directly under everything the report will contain, so what is
             // being sold is on screen above the button that sells it.
             ReportTile(chart: chart),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               L10n.of(context).chartAyanamsa(chart.ayanamsa.toStringAsFixed(4)),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xxl),
             Text(
               L10n.of(context).entertainmentOnly,
               textAlign: TextAlign.center,
@@ -330,12 +331,12 @@ class _ChartError extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.error_outline, size: 48),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               L10n.of(context).chartCalculationFailed,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               failure.message,
               textAlign: TextAlign.center,

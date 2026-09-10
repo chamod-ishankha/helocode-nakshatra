@@ -1,3 +1,4 @@
+import '../../../core/theme/app_spacing.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -122,7 +123,7 @@ class ShareableChart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               child,
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 caption,
                 textAlign: TextAlign.center,

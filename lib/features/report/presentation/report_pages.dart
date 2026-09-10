@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 
 import '../../../core/astro/models.dart';
 import '../../../core/config/chart_style.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../chart/presentation/north_indian_chart.dart';
 import '../../chart/presentation/rasi_chart.dart';
@@ -150,7 +152,7 @@ class _Page extends StatelessWidget {
                 const Divider(height: 20),
               ],
               Expanded(child: child),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -195,7 +197,7 @@ class _Cover extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(Icons.star_border, size: 56, color: context.semantic.accent),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Text(l.reportTitle, style: theme.textTheme.headlineMedium),
         const SizedBox(height: 28),
         Text(
@@ -205,7 +207,7 @@ class _Cover extends StatelessWidget {
             color: context.semantic.accent,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Text(
           // The time is omitted rather than shown as sunrise. Printing "06:00"
           // for somebody who said they did not know would turn an assumption
@@ -219,7 +221,7 @@ class _Cover extends StatelessWidget {
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyLarge,
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           profile.place.label(content.locale),
           textAlign: TextAlign.center,
@@ -234,7 +236,7 @@ class _Cover extends StatelessWidget {
         ),
         if (content.housesApproximate) ...[
           const SizedBox(height: 28),
-          _Note(text: l.chartApproximate),
+          InfoNotice(text: l.chartApproximate),
         ],
       ],
     );
@@ -280,8 +282,8 @@ class _ChartPage extends StatelessWidget {
           ),
         ),
         if (note case final body?) ...[
-          const SizedBox(height: 16),
-          _Note(text: body(l)),
+          const SizedBox(height: AppSpacing.lg),
+          InfoNotice(text: body(l)),
         ],
       ],
     );
@@ -358,7 +360,7 @@ class _Positions extends StatelessWidget {
         ),
         const Spacer(),
         if (content.housesApproximate)
-          _Note(text: L10n.of(context).chartApproximate),
+          InfoNotice(text: L10n.of(context).chartApproximate),
       ],
     );
   }
@@ -441,7 +443,7 @@ class _Dasha extends StatelessWidget {
             ),
           ),
         const Spacer(),
-        if (content.housesApproximate) _Note(text: l.dashaBalanceNote),
+        if (content.housesApproximate) InfoNotice(text: l.dashaBalanceNote),
       ],
     );
   }
@@ -461,7 +463,7 @@ class _Method extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(l.reportMethodBody, style: theme.textTheme.bodyMedium),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Text(
           l.chartAyanamsa(content.chart.ayanamsa.toStringAsFixed(4)),
           style: theme.textTheme.bodySmall?.copyWith(
@@ -476,7 +478,7 @@ class _Method extends StatelessWidget {
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           l.reportRegenerateNote,
           textAlign: TextAlign.center,
@@ -485,31 +487,6 @@ class _Method extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _Note extends StatelessWidget {
-  const _Note({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.semantic.accent.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        text,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
     );
   }
 }

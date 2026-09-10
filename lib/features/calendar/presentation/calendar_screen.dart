@@ -8,6 +8,7 @@ import '../../../core/astro/muhurta.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../home/domain/daily_providers.dart';
@@ -49,14 +50,14 @@ class CalendarScreen extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 32),
         children: [
           _MonthHeader(month: month),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           const _WeekdayRow(),
           const _MonthGrid(),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           const _Legend(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           const _MonthEvents(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           const _BestDays(),
         ],
       ),
@@ -153,7 +154,7 @@ class _MonthGrid extends ConsumerWidget {
                     final index = row * 7 + col;
                     final day = index - leading + 1;
                     if (day < 1 || day > daysInMonth) {
-                      return const SizedBox(height: 48);
+                      return const SizedBox(height: AppSpacing.huge);
                     }
                     final date = DateTime(month.year, month.month, day);
                     return _DayCell(
@@ -301,7 +302,7 @@ class _MonthEvents extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l.calendarThisMonth, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
 
         if (days.isEmpty)
           Text(
@@ -343,7 +344,7 @@ class _MonthEvents extends ConsumerWidget {
 
         const SizedBox(height: 20),
         Text(l.calendarAnnounced, style: theme.textTheme.titleSmall),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           l.calendarAnnouncedHelp,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -385,7 +386,7 @@ class _BestDays extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l.calendarBestDays, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           l.calendarPickActivity,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -410,7 +411,7 @@ class _BestDays extends ConsumerWidget {
               ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
 
         if (activity != null) _ScanResults(month: month, activity: activity),
       ],
@@ -436,7 +437,7 @@ class _ScanResults extends ConsumerWidget {
         child: Column(
           children: [
             const CircularProgressIndicator(),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(l.calendarScanning, style: theme.textTheme.bodySmall),
           ],
         ),

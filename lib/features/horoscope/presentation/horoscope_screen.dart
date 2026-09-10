@@ -1,3 +1,4 @@
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import 'dart:async';
 
@@ -140,7 +141,7 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
           children: [
             if (!bothSame && lagna != null && moon != null) ...[
               _AxisToggle(axis: axis),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
             ],
 
             if (sign != null)
@@ -176,7 +177,7 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
                 ),
               ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             if (locked)
               RewardedUnlockCard(
@@ -201,11 +202,11 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
               for (final category in HoroscopeEngine.sectionOrder)
                 if (horoscope[category] case final text?)
                   _Section(category: category, text: text),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               _LuckyRow(horoscope: horoscope),
             ],
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               l.entertainmentOnly,
               textAlign: TextAlign.center,
@@ -280,7 +281,7 @@ class _Section extends StatelessWidget {
           Row(
             children: [
               Icon(icon, size: 18, color: context.semantic.accent),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
                 style: theme.textTheme.titleSmall?.copyWith(
@@ -391,7 +392,7 @@ class _Lucky extends StatelessWidget {
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -405,7 +406,7 @@ class _Lucky extends StatelessWidget {
                   border: Border.all(color: theme.dividerColor),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
             ],
             Text(
               value,

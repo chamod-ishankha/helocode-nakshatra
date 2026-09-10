@@ -12,6 +12,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../account/presentation/auth_messages.dart';
@@ -350,7 +351,7 @@ class _ChoiceTile<T> extends StatelessWidget {
                     : null,
                 onTap: () => Navigator.of(context).pop(v),
               ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
           ],
         ),
       ),
@@ -444,7 +445,7 @@ class _ReminderTiles extends ConsumerWidget {
         ),
         if (prefs.daily)
           ListTile(
-            leading: const SizedBox(width: 24),
+            leading: const SizedBox(width: AppSpacing.xl),
             title: Text(l.settingsReminderTime),
             trailing: Text(
               MaterialLocalizations.of(context).formatTimeOfDay(

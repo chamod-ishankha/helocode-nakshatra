@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../features/purchases/presentation/paywall.dart';
 import '../purchases/purchase_controller.dart';
+import '../theme/app_spacing.dart';
 import '../theme/semantic_colors.dart';
 import 'rewarded_unlock.dart';
 
@@ -77,20 +78,20 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
             Row(
               children: [
                 const Icon(Icons.lock_outline, size: 18),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(widget.title, style: theme.textTheme.titleSmall),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               widget.body,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             FilledButton.icon(
               onPressed: _busy ? null : _watch,
               icon: _busy
@@ -118,7 +119,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
                 child: Text(l.purchaseUpgrade),
               ),
             if (_failed) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 l.unlockFailed,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -126,7 +127,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
                 ),
               ),
             ],
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             // Sets the expectation that this is a day pass, so tomorrow's
             // lock reads as the design rather than as the app forgetting.
             Text(

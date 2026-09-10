@@ -9,6 +9,7 @@ import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../purchases/presentation/paywall.dart';
@@ -90,9 +91,9 @@ class ProfilesScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         // A database that would not open is not an error worth a red screen:
         // the app still works with the one profile in preferences.
-        error: (_, _) => _Notice(text: l.profilesUnavailable),
+        error: (_, _) => QuietNotice(text: l.profilesUnavailable),
         data: (profiles) => profiles.isEmpty
-            ? _Notice(text: l.profilesUnavailable)
+            ? QuietNotice(text: l.profilesUnavailable)
             : ListView(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
@@ -151,24 +152,4 @@ class ProfilesScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _Notice extends StatelessWidget {
-  const _Notice({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.all(32),
-    child: Center(
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
-    ),
-  );
 }

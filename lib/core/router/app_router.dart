@@ -15,6 +15,7 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profiles/presentation/profiles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/horoscope/presentation/horoscope_screen.dart';
+import '../theme/app_spacing.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
@@ -170,18 +171,18 @@ class _RouteErrorScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.error_outline, size: 48),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 L10n.of(context).routeNotFound,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 '${error ?? 'Unknown route'}',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               FilledButton(
                 onPressed: () => context.go(Routes.home),
                 child: Text(L10n.of(context).routeGoHome),

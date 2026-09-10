@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/astro/dasha.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -48,16 +49,16 @@ class DashaTimeline extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l.dashaTitle, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
 
         if (!birthTimeKnown) ...[
           const _UnreliableTimeWarning(),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
         ],
 
         if (running != null) ...[
           _RunningCard(snapshot: running),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
         ],
 
         for (final maha in timeline)
@@ -70,7 +71,7 @@ class DashaTimeline extends ConsumerWidget {
             isBalance: maha == timeline.first,
           ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           l.dashaBalanceNote,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -166,7 +167,7 @@ class _RunningCard extends ConsumerWidget {
                 : '${maha.lord.label(locale)} — ${antara.lord.label(locale)}',
             style: theme.textTheme.titleLarge,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             l.dashaEnds(_longDate(context, (antara ?? maha).end)),
             style: theme.textTheme.bodySmall?.copyWith(
@@ -259,7 +260,7 @@ class _MahaTile extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         for (final antara in maha.children)
           _AntaraRow(antara: antara, isCurrent: antara == currentAntara),
       ],

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
@@ -244,7 +245,7 @@ class _StepScaffold extends StatelessWidget {
       children: [
         Text(title, style: theme.textTheme.headlineSmall),
         if (subtitle != null) ...[
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             subtitle!,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -252,7 +253,7 @@ class _StepScaffold extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xl),
         if (scrollable) child else Expanded(child: child),
       ],
     );
@@ -415,7 +416,7 @@ class _TimeStep extends StatelessWidget {
               }
             },
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           // A large share of users genuinely do not know their birth time.
           // Blocking them here loses the install outright, so offer the
           // traditional sunrise fallback and be honest about what it costs.
@@ -489,7 +490,7 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
             ),
             onChanged: (v) => setState(() => _query = v),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Expanded(
             child: results.when(
               loading: () => const Center(child: CircularProgressIndicator()),

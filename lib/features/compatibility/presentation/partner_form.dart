@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/config/app_locale.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/place_repository.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -102,7 +103,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(l.compatPartnerDetails, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
             TextField(
               controller: _name,
@@ -112,7 +113,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                 border: const OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             OutlinedButton.icon(
               icon: const Icon(Icons.calendar_today, size: 18),
@@ -132,7 +133,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                     : DateFormat.yMMMd().format(_date!),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             OutlinedButton.icon(
               icon: const Icon(Icons.schedule, size: 18),
@@ -172,7 +173,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                 style: theme.textTheme.bodySmall,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             TextField(
               controller: _placeQuery,
@@ -183,7 +184,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
               ),
               onChanged: (_) => setState(() => _place = null),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             if (_place != null)
               ListTile(
@@ -221,12 +222,12 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                 ),
               ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             FilledButton(
               onPressed: _complete ? _save : null,
               child: Text(l.continueLabel),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
           ],
         ),
       ),

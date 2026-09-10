@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'paywall.dart';
 import 'purchase_messages.dart';
@@ -72,18 +73,16 @@ class _ProTilesState extends ConsumerState<ProTiles> {
         ListTile(
           leading: Icon(
             adFree ? Icons.workspace_premium : Icons.workspace_premium_outlined,
-            color: adFree ? AppColors.accent : null,
+            color: adFree ? context.semantic.accent : null,
           ),
-          title: Text(
-            switch ((isPro, proUntil, adFree)) {
-              // A running subscription is the only case with a date to show;
-              // Pro bought outright would have none.
-              (true, final DateTime until, _) => l.purchaseStatusProUntil(until),
-              (true, _, _) => l.purchaseSectionTitle,
-              (_, _, true) => l.purchaseStatusAdFree,
-              _ => l.purchaseStatusFree,
-            },
-          ),
+          title: Text(switch ((isPro, proUntil, adFree)) {
+            // A running subscription is the only case with a date to show;
+            // Pro bought outright would have none.
+            (true, final DateTime until, _) => l.purchaseStatusProUntil(until),
+            (true, _, _) => l.purchaseSectionTitle,
+            (_, _, true) => l.purchaseStatusAdFree,
+            _ => l.purchaseStatusFree,
+          }),
           subtitle: adFree ? null : Text(l.purchaseUpgradeHint),
           // Tappable only while there is something left to buy, and only in a
           // build that can sell it. A chevron that opens an empty sheet reads

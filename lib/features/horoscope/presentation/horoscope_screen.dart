@@ -1,13 +1,14 @@
+import '../../../core/theme/semantic_colors.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/ads/interstitial.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../home/domain/daily_providers.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -170,7 +171,7 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
                   l.horoscopeLagnaApproximate,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.inauspicious,
+                    color: context.semantic.inauspicious,
                   ),
                 ),
               ),
@@ -278,12 +279,12 @@ class _Section extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 18, color: AppColors.accent),
+              Icon(icon, size: 18, color: context.semantic.accent),
               const SizedBox(width: 8),
               Text(
                 label,
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: AppColors.accent,
+                  color: context.semantic.accent,
                 ),
               ),
             ],
@@ -308,10 +309,12 @@ class _LuckyRow extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: AppColors.auspicious.withValues(alpha: 0.07),
+      color: context.semantic.auspicious.withValues(alpha: 0.07),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.auspicious.withValues(alpha: 0.4)),
+        side: BorderSide(
+          color: context.semantic.auspicious.withValues(alpha: 0.4),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
@@ -407,7 +410,7 @@ class _Lucky extends StatelessWidget {
             Text(
               value,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: AppColors.auspicious,
+                color: context.semantic.auspicious,
               ),
             ),
           ],

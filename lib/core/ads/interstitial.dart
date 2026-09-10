@@ -13,7 +13,8 @@ final interstitialPreloaderProvider = Provider<Future<void> Function()>(
 /// SDK cannot run under `flutter test`, and the rules about when an ad may
 /// appear are worth checking without a network or an AdMob account.
 final interstitialPresenterProvider = Provider<Future<bool> Function()>(
-  (ref) => () async => false,
+  (ref) =>
+      () async => false,
 );
 
 /// When a full-screen ad may appear, and remembering that one did (KAN-55).

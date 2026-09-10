@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -7,8 +8,8 @@ import '../../../core/astro/compatibility/porondam.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_locale.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
@@ -333,10 +334,10 @@ class _ScoreHeadline extends StatelessWidget {
     // Colour by band rather than a single accent: a score is the one thing on
     // this screen a reader takes at a glance.
     final colour = fraction >= 0.7
-        ? AppColors.auspicious
+        ? context.semantic.auspicious
         : fraction >= 0.5
-        ? AppColors.accent
-        : AppColors.inauspicious;
+        ? context.semantic.accent
+        : context.semantic.inauspicious;
 
     return Column(
       children: [
@@ -373,9 +374,9 @@ class _KootaRow extends StatelessWidget {
       about: about,
       trailing: '${_trim(score.points)} / ${score.maximum}',
       colour: score.isZero
-          ? AppColors.inauspicious
+          ? context.semantic.inauspicious
           : score.isFull
-          ? AppColors.auspicious
+          ? context.semantic.auspicious
           : null,
     );
   }
@@ -403,9 +404,9 @@ class _PorondamRow extends StatelessWidget {
         PorondamVerdict.poor => l.verdictPoor,
       },
       colour: switch (score.verdict) {
-        PorondamVerdict.good => AppColors.auspicious,
+        PorondamVerdict.good => context.semantic.auspicious,
         PorondamVerdict.partial => null,
-        PorondamVerdict.poor => AppColors.inauspicious,
+        PorondamVerdict.poor => context.semantic.inauspicious,
       },
     );
   }
@@ -492,7 +493,7 @@ class _KujaSection extends StatelessWidget {
             child: Text(
               l.compatKujaSevere,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.inauspicious,
+                color: context.semantic.inauspicious,
               ),
             ),
           ),
@@ -515,7 +516,7 @@ class _Warning extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: AppColors.inauspicious.withValues(alpha: 0.5),
+          color: context.semantic.inauspicious.withValues(alpha: 0.5),
         ),
       ),
       child: Row(
@@ -524,7 +525,7 @@ class _Warning extends StatelessWidget {
           Icon(
             Icons.warning_amber_rounded,
             size: 18,
-            color: AppColors.inauspicious,
+            color: context.semantic.inauspicious,
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(text, style: theme.textTheme.bodySmall)),

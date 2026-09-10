@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 
 import '../config/app_locale.dart';
+import 'semantic_colors.dart';
 
-/// Placeholder palette.
+/// The seed colours the Material scheme is generated from (KAN-51).
 ///
-/// Deliberately provisional — the real visual direction is decided in KAN-25.
-/// These are here so screens can be built against tokens rather than hardcoded
-/// colours, which makes the eventual restyle a one-file change.
+/// Only the two seeds live here now. The colours that carry meaning — gold,
+/// and the auspicious/inauspicious pair — moved to [SemanticColors], because
+/// they have to differ between the light and dark surfaces and a constant
+/// cannot. Read them through `context.semantic`.
 abstract final class AppColors {
+  /// Deep indigo. Night sky rather than temple poster: the two things this
+  /// app must not look like are a 2010 astrology pamphlet and a generic
+  /// wellness app, and a saturated violet drifts towards the second.
   static const Color primary = Color(0xFF6B4E9B);
+
+  /// The dark theme is seeded from a lighter tint of the same hue, so Material
+  /// generates a scheme with the same character rather than an inverted one.
   static const Color primaryDark = Color(0xFFB79CE0);
-  static const Color accent = Color(0xFFD4A24C);
-
-  /// Inauspicious periods — rahu kalaya, yamaganda, gulika.
-  static const Color inauspicious = Color(0xFFC0392B);
-
-  /// Auspicious windows — subha nekath.
-  static const Color auspicious = Color(0xFF2E7D5B);
 }
 
 abstract final class AppTheme {
@@ -68,6 +69,10 @@ abstract final class AppTheme {
     );
 
     return base.copyWith(
+      // Handed to every screen through `context.semantic`, already correct
+      // for this brightness. See SemanticColors for why they are not
+      // constants.
+      extensions: [SemanticColors.of(brightness)],
       textTheme: _withScriptMetrics(base.textTheme),
       primaryTextTheme: _withScriptMetrics(base.primaryTextTheme),
       appBarTheme: AppBarTheme(

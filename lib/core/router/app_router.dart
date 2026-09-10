@@ -112,9 +112,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.onboarding,
         name: 'onboarding',
-        builder: (context, state) => OnboardingScreen(
-          adding: state.uri.queryParameters['add'] == '1',
-        ),
+        builder: (context, state) =>
+            OnboardingScreen(adding: state.uri.queryParameters['add'] == '1'),
       ),
       GoRoute(
         path: Routes.home,

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'detail_sheets.dart';
 import 'graha_label.dart';
-import '../../../core/theme/app_theme.dart';
 
 /// South Indian rāśi chart.
 ///
@@ -92,7 +92,7 @@ class RasiChart extends StatelessWidget {
                         l10n.chartLagnaOf(chart.lagnaRasi.label(locale)),
                         textAlign: TextAlign.center,
                         style: theme.textTheme.labelMedium?.copyWith(
-                          color: AppColors.accent,
+                          color: context.semantic.accent,
                         ),
                       ),
                       if (approximateHouses)
@@ -101,7 +101,7 @@ class RasiChart extends StatelessWidget {
                           child: Text(
                             l10n.chartApproximateShort,
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: AppColors.inauspicious,
+                              color: context.semantic.inauspicious,
                             ),
                           ),
                         ),
@@ -145,7 +145,7 @@ class _Cell extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: theme.dividerColor),
           color: isLagna
-              ? AppColors.accent.withValues(alpha: 0.10)
+              ? context.semantic.accent.withValues(alpha: 0.10)
               : Colors.transparent,
         ),
         padding: const EdgeInsets.all(4),
@@ -163,7 +163,7 @@ class _Cell extends StatelessWidget {
                       // out a sound that means nothing (KAN-58).
                       l10n.chartLagnaMark,
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppColors.accent,
+                        color: context.semantic.accent,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

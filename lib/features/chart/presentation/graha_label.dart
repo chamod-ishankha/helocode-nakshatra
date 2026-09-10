@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 /// A graha in a chart cell: its abbreviation, and a retrograde mark.
@@ -60,7 +60,7 @@ class GrahaLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colour = position.isRetrograde
-        ? AppColors.inauspicious
+        ? context.semantic.inauspicious
         : Theme.of(context).colorScheme.onSurface;
     final base = (style ?? Theme.of(context).textTheme.labelMedium)?.copyWith(
       fontWeight: FontWeight.w600,

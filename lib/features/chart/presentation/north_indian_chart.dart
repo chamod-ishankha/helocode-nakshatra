@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
+import '../../../core/theme/semantic_colors.dart';
 import 'detail_sheets.dart';
 import 'graha_label.dart';
-import '../../../core/theme/app_theme.dart';
 
 /// North Indian rāśi chart.
 ///
@@ -142,7 +142,7 @@ class NorthIndianChart extends StatelessWidget {
               '$rasiNumber',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: house == 1
-                    ? AppColors.accent
+                    ? context.semantic.accent
                     : theme.colorScheme.onSurfaceVariant,
                 fontWeight: house == 1 ? FontWeight.bold : FontWeight.normal,
               ),

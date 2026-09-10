@@ -38,10 +38,7 @@ class RevenueCatGateway implements PurchaseGateway {
   bool get isReady => _ready;
 
   @override
-  Future<bool> configure({
-    required String publicKey,
-    String? appUserId,
-  }) async {
+  Future<bool> configure({required String publicKey, String? appUserId}) async {
     if (publicKey.isEmpty) {
       AppLogger.info('Purchases off: no RevenueCat key in this build');
       return false;
@@ -125,7 +122,11 @@ class RevenueCatGateway implements PurchaseGateway {
       if (outcome == PurchaseOutcome.cancelled) {
         AppLogger.info('Purchase cancelled: ${product.id}');
       } else {
-        AppLogger.warn('Purchase failed (${outcome.name}): ${product.id}', e, s);
+        AppLogger.warn(
+          'Purchase failed (${outcome.name}): ${product.id}',
+          e,
+          s,
+        );
       }
       return PurchaseAttempt(outcome);
     } on Object catch (e, s) {
@@ -310,22 +311,21 @@ class RevenueCatGateway implements PurchaseGateway {
   }
 
   /// Maps the SDK's error codes onto the outcomes the UI has words for.
-  static PurchaseOutcome outcomeFor(rc.PurchasesErrorCode code) =>
-      switch (code) {
-        rc.PurchasesErrorCode.purchaseCancelledError =>
-          PurchaseOutcome.cancelled,
-        rc.PurchasesErrorCode.paymentPendingError => PurchaseOutcome.pending,
-        rc.PurchasesErrorCode.productAlreadyPurchasedError =>
-          PurchaseOutcome.alreadyOwned,
-        rc.PurchasesErrorCode.receiptAlreadyInUseError =>
-          PurchaseOutcome.alreadyOwned,
-        rc.PurchasesErrorCode.productNotAvailableForPurchaseError =>
-          PurchaseOutcome.unavailable,
-        rc.PurchasesErrorCode.purchaseNotAllowedError =>
-          PurchaseOutcome.notAllowed,
-        rc.PurchasesErrorCode.networkError => PurchaseOutcome.network,
-        rc.PurchasesErrorCode.offlineConnectionError => PurchaseOutcome.network,
-        rc.PurchasesErrorCode.storeProblemError => PurchaseOutcome.network,
-        _ => PurchaseOutcome.failed,
-      };
+  static PurchaseOutcome outcomeFor(
+    rc.PurchasesErrorCode code,
+  ) => switch (code) {
+    rc.PurchasesErrorCode.purchaseCancelledError => PurchaseOutcome.cancelled,
+    rc.PurchasesErrorCode.paymentPendingError => PurchaseOutcome.pending,
+    rc.PurchasesErrorCode.productAlreadyPurchasedError =>
+      PurchaseOutcome.alreadyOwned,
+    rc.PurchasesErrorCode.receiptAlreadyInUseError =>
+      PurchaseOutcome.alreadyOwned,
+    rc.PurchasesErrorCode.productNotAvailableForPurchaseError =>
+      PurchaseOutcome.unavailable,
+    rc.PurchasesErrorCode.purchaseNotAllowedError => PurchaseOutcome.notAllowed,
+    rc.PurchasesErrorCode.networkError => PurchaseOutcome.network,
+    rc.PurchasesErrorCode.offlineConnectionError => PurchaseOutcome.network,
+    rc.PurchasesErrorCode.storeProblemError => PurchaseOutcome.network,
+    _ => PurchaseOutcome.failed,
+  };
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 import '../../features/purchases/presentation/paywall.dart';
 import '../purchases/purchase_controller.dart';
-import '../theme/app_theme.dart';
+import '../theme/semantic_colors.dart';
 import 'rewarded_unlock.dart';
 
 /// The "watch a short video to see this" prompt (KAN-34).
@@ -63,10 +64,10 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
     final theme = Theme.of(context);
 
     return Card(
-      color: AppColors.accent.withValues(alpha: 0.07),
+      color: context.semantic.accent.withValues(alpha: 0.07),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.accent.withValues(alpha: 0.4)),
+        side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -121,7 +122,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
               Text(
                 l.unlockFailed,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.inauspicious,
+                  color: context.semantic.inauspicious,
                 ),
               ),
             ],

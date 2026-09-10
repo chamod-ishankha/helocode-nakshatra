@@ -84,15 +84,10 @@ enum PaidFeature {
 /// nothing and self-corrects the moment the device is online. Every rule below
 /// is written to fail in the second direction.
 class EntitlementSnapshot {
-  const EntitlementSnapshot({
-    required this.grants,
-    required this.refreshedAt,
-  });
+  const EntitlementSnapshot({required this.grants, required this.refreshedAt});
 
   /// Nothing held, as far as we know. [at] is when we last checked.
-  EntitlementSnapshot.empty(DateTime at)
-    : grants = const {},
-      refreshedAt = at;
+  EntitlementSnapshot.empty(DateTime at) : grants = const {}, refreshedAt = at;
 
   /// Nothing held, and the store has never been asked on this install.
   ///
@@ -137,7 +132,8 @@ class EntitlementSnapshot {
     // Past the expiry we were told about. If the store has answered since
     // then, this snapshot is that answer and the entitlement really is gone.
     // If it has not, we are guessing, and we guess in the user's favour.
-    return refreshedAt.isBefore(expires) && at.isBefore(expires.add(offlineGrace));
+    return refreshedAt.isBefore(expires) &&
+        at.isBefore(expires.add(offlineGrace));
   }
 
   bool has(PaidFeature feature, DateTime now) =>

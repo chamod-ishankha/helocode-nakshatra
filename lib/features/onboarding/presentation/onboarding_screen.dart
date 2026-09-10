@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
 import '../data/place_repository.dart';
 import '../data/profile_repository.dart';
 import '../domain/birth_profile.dart';
@@ -429,9 +430,9 @@ class _TimeStep extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: AppColors.accent.withValues(alpha: 0.10),
+                color: context.semantic.accent.withValues(alpha: 0.10),
                 border: Border.all(
-                  color: AppColors.accent.withValues(alpha: 0.4),
+                  color: context.semantic.accent.withValues(alpha: 0.4),
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/astro/dasha.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../onboarding/data/profile_repository.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/chart_providers.dart';
 
@@ -102,7 +103,7 @@ class _UnreliableTimeWarning extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: AppColors.inauspicious.withValues(alpha: 0.5),
+          color: context.semantic.inauspicious.withValues(alpha: 0.5),
         ),
       ),
       child: Row(
@@ -111,7 +112,7 @@ class _UnreliableTimeWarning extends StatelessWidget {
           Icon(
             Icons.warning_amber_rounded,
             size: 20,
-            color: AppColors.inauspicious,
+            color: context.semantic.inauspicious,
           ),
           const SizedBox(width: 10),
           Expanded(

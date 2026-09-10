@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 
 import '../../../core/astro/models.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../chart/presentation/north_indian_chart.dart';
 import '../../chart/presentation/rasi_chart.dart';
@@ -192,7 +194,7 @@ class _Cover extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.star_border, size: 56, color: AppColors.accent),
+        Icon(Icons.star_border, size: 56, color: context.semantic.accent),
         const SizedBox(height: 16),
         Text(l.reportTitle, style: theme.textTheme.headlineMedium),
         const SizedBox(height: 28),
@@ -200,7 +202,7 @@ class _Cover extends StatelessWidget {
           profile.name,
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineSmall?.copyWith(
-            color: AppColors.accent,
+            color: context.semantic.accent,
           ),
         ),
         const SizedBox(height: 12),
@@ -411,7 +413,9 @@ class _Dasha extends StatelessWidget {
                       fontWeight: period.contains(now)
                           ? FontWeight.w700
                           : FontWeight.w400,
-                      color: period.contains(now) ? AppColors.accent : null,
+                      color: period.contains(now)
+                          ? context.semantic.accent
+                          : null,
                     ),
                   ),
                 ),
@@ -429,7 +433,7 @@ class _Dasha extends StatelessWidget {
                     period.contains(now) ? l.dashaRunningNow : '',
                     textAlign: TextAlign.end,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppColors.accent,
+                      color: context.semantic.accent,
                     ),
                   ),
                 ),
@@ -497,7 +501,7 @@ class _Note extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.07),
+        color: context.semantic.accent.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

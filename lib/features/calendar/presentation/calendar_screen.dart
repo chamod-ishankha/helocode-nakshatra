@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -7,7 +8,7 @@ import '../../../core/astro/muhurta.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../home/domain/daily_providers.dart';
 import '../domain/calendar_providers.dart';
@@ -219,8 +220,8 @@ class _DayCell extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (isPoya) const _Dot(colour: AppColors.accent),
-                if (hasFestival) const _Dot(colour: AppColors.auspicious),
+                if (isPoya) _Dot(colour: context.semantic.accent),
+                if (hasFestival) _Dot(colour: context.semantic.auspicious),
               ],
             ),
           ],
@@ -264,9 +265,9 @@ class _Legend extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        item(AppColors.accent, l.calendarPoya),
+        item(context.semantic.accent, l.calendarPoya),
         const SizedBox(width: 20),
-        item(AppColors.auspicious, l.calendarFestival),
+        item(context.semantic.auspicious, l.calendarFestival),
       ],
     );
   }
@@ -321,8 +322,8 @@ class _MonthEvents extends ConsumerWidget {
                     padding: const EdgeInsets.only(top: 6),
                     child: _Dot(
                       colour: event is PoyaDay
-                          ? AppColors.accent
-                          : AppColors.auspicious,
+                          ? context.semantic.accent
+                          : context.semantic.auspicious,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -491,8 +492,8 @@ class _DayRow extends ConsumerWidget {
         '${score.best.score}',
         style: theme.textTheme.titleMedium?.copyWith(
           color: score.best.score >= 80
-              ? AppColors.auspicious
-              : AppColors.accent,
+              ? context.semantic.auspicious
+              : context.semantic.accent,
           fontWeight: FontWeight.w700,
         ),
       ),

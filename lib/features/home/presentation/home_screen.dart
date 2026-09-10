@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +12,7 @@ import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -146,7 +147,7 @@ class _CalendarCard extends ConsumerWidget {
         side: BorderSide(color: theme.dividerColor),
       ),
       child: ListTile(
-        leading: Icon(Icons.calendar_month, color: AppColors.accent),
+        leading: Icon(Icons.calendar_month, color: context.semantic.accent),
         title: Text(L10n.of(context).calendarTitle),
         subtitle: Text(
           L10n.of(context).calendarPickActivity,
@@ -178,7 +179,7 @@ class _CompatibilityCard extends ConsumerWidget {
         side: BorderSide(color: theme.dividerColor),
       ),
       child: ListTile(
-        leading: Icon(Icons.favorite_outline, color: AppColors.accent),
+        leading: Icon(Icons.favorite_outline, color: context.semantic.accent),
         title: Text(L10n.of(context).compatTitle),
         subtitle: Text(
           L10n.of(context).compatIntro,
@@ -214,7 +215,10 @@ class _HoroscopeCard extends ConsumerWidget {
         side: BorderSide(color: theme.dividerColor),
       ),
       child: ListTile(
-        leading: Icon(Icons.auto_awesome_outlined, color: AppColors.accent),
+        leading: Icon(
+          Icons.auto_awesome_outlined,
+          color: context.semantic.accent,
+        ),
         title: Text(L10n.of(context).horoscopeTitle),
         subtitle: Text(
           L10n.of(context).homeHoroscopeSubtitle,
@@ -310,15 +314,18 @@ class _NowBanner extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.inauspicious.withValues(alpha: 0.12),
+        color: context.semantic.inauspicious.withValues(alpha: 0.12),
         border: Border.all(
-          color: AppColors.inauspicious.withValues(alpha: 0.5),
+          color: context.semantic.inauspicious.withValues(alpha: 0.5),
         ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         children: [
-          Icon(Icons.warning_amber_rounded, color: AppColors.inauspicious),
+          Icon(
+            Icons.warning_amber_rounded,
+            color: context.semantic.inauspicious,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -359,13 +366,15 @@ class _RahuKalayaCard extends ConsumerWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.inauspicious.withValues(alpha: 0.45)),
+        side: BorderSide(
+          color: context.semantic.inauspicious.withValues(alpha: 0.45),
+        ),
       ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border(
-            left: BorderSide(color: AppColors.inauspicious, width: 4),
+            left: BorderSide(color: context.semantic.inauspicious, width: 4),
           ),
         ),
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -381,7 +390,7 @@ class _RahuKalayaCard extends ConsumerWidget {
             Text(
               L10n.of(context).homeRahuKalaya,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: AppColors.inauspicious,
+                color: context.semantic.inauspicious,
               ),
             ),
             const SizedBox(height: 12),
@@ -389,7 +398,7 @@ class _RahuKalayaCard extends ConsumerWidget {
               '${fmt.format(rahu.start)}  —  ${fmt.format(rahu.end)}',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColors.inauspicious,
+                color: context.semantic.inauspicious,
               ),
             ),
             const SizedBox(height: 4),
@@ -563,7 +572,7 @@ class _SunMoonCard extends StatelessWidget {
       Expanded(
         child: Column(
           children: [
-            Icon(icon, size: 22, color: AppColors.accent),
+            Icon(icon, size: 22, color: c.semantic.accent),
             const SizedBox(height: 6),
             Text(
               label,
@@ -649,7 +658,7 @@ class _AuspiciousCard extends ConsumerWidget {
     final fmt = DateFormat('h:mm a');
 
     return Card(
-      color: AppColors.auspicious.withValues(alpha: 0.07),
+      color: context.semantic.auspicious.withValues(alpha: 0.07),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -657,9 +666,9 @@ class _AuspiciousCard extends ConsumerWidget {
           children: [
             Text(
               L10n.of(context).homeClearTimes,
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(color: AppColors.auspicious),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: context.semantic.auspicious,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
@@ -675,7 +684,7 @@ class _AuspiciousCard extends ConsumerWidget {
                     Icon(
                       Icons.check_circle_outline,
                       size: 16,
-                      color: AppColors.auspicious,
+                      color: context.semantic.auspicious,
                     ),
                     const SizedBox(width: 8),
                     Text(
@@ -706,8 +715,10 @@ class _PoyaTodayBanner extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.12),
-        border: Border.all(color: AppColors.accent.withValues(alpha: 0.5)),
+        color: context.semantic.accent.withValues(alpha: 0.12),
+        border: Border.all(
+          color: context.semantic.accent.withValues(alpha: 0.5),
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -715,7 +726,7 @@ class _PoyaTodayBanner extends ConsumerWidget {
           Text(
             poya.label(AppLocale.of(context)),
             style: theme.textTheme.titleMedium?.copyWith(
-              color: AppColors.accent,
+              color: context.semantic.accent,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -781,7 +792,7 @@ class _NextPoyaCard extends ConsumerWidget {
                           ? Icons.brightness_1
                           : Icons.celebration_outlined,
                       size: 16,
-                      color: AppColors.accent,
+                      color: context.semantic.accent,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -804,7 +815,7 @@ class _NextPoyaCard extends ConsumerWidget {
                     Text(
                       _countdown(L10n.of(context), f.daysFrom(date)),
                       style: theme.textTheme.labelLarge?.copyWith(
-                        color: AppColors.accent,
+                        color: context.semantic.accent,
                       ),
                     ),
                   ],

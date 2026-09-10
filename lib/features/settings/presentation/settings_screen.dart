@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,7 +12,7 @@ import '../../../core/logging/app_logger.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../account/presentation/auth_messages.dart';
 import '../../purchases/presentation/pro_tiles.dart';
@@ -85,10 +86,13 @@ class SettingsScreen extends ConsumerWidget {
 
           _Section(l.settingsSectionData),
           ListTile(
-            leading: Icon(Icons.delete_outline, color: AppColors.inauspicious),
+            leading: Icon(
+              Icons.delete_outline,
+              color: context.semantic.inauspicious,
+            ),
             title: Text(
               l.settingsDeleteData,
-              style: TextStyle(color: AppColors.inauspicious),
+              style: TextStyle(color: context.semantic.inauspicious),
             ),
             subtitle: Text(l.settingsDeleteHint),
             onTap: () => _confirmDelete(context, ref),
@@ -144,7 +148,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.inauspicious,
+              backgroundColor: context.semantic.inauspicious,
             ),
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l.settingsDeleteConfirm),
@@ -342,7 +346,7 @@ class _ChoiceTile<T> extends StatelessWidget {
               ListTile(
                 title: Text(label(v)),
                 trailing: v == value
-                    ? Icon(Icons.check, color: AppColors.accent)
+                    ? Icon(Icons.check, color: context.semantic.accent)
                     : null,
                 onTap: () => Navigator.of(context).pop(v),
               ),
@@ -368,7 +372,7 @@ class _ChoiceTile<T> extends StatelessWidget {
           Text(
             label(value),
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.accent,
+              color: context.semantic.accent,
             ),
           ),
           if (hint != null)
@@ -448,7 +452,7 @@ class _ReminderTiles extends ConsumerWidget {
               ),
               style: Theme.of(
                 context,
-              ).textTheme.bodyLarge?.copyWith(color: AppColors.accent),
+              ).textTheme.bodyLarge?.copyWith(color: context.semantic.accent),
             ),
             onTap: () async {
               final picked = await showTimePicker(

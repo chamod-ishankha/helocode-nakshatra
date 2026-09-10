@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/ads/ad_gate.dart';
@@ -7,7 +8,7 @@ import '../../../core/logging/analytics_service.dart';
 import '../../../core/purchases/paywall_config.dart';
 import '../../../core/purchases/products.dart';
 import '../../../core/purchases/purchase_controller.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'purchase_messages.dart';
 
@@ -136,19 +137,16 @@ class _PaywallSheet extends ConsumerWidget {
               Text(
                 contextual,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: AppColors.accent,
+                  color: context.semantic.accent,
                 ),
               ),
               const SizedBox(height: 4),
             ],
 
-            Text(
-              switch (config.variant) {
-                PaywallVariant.value => l.paywallHeadlineValue,
-                PaywallVariant.support => l.paywallHeadlineSupport,
-              },
-              style: theme.textTheme.headlineSmall,
-            ),
+            Text(switch (config.variant) {
+              PaywallVariant.value => l.paywallHeadlineValue,
+              PaywallVariant.support => l.paywallHeadlineSupport,
+            }, style: theme.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
               switch (config.variant) {
@@ -231,7 +229,7 @@ class _Features extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 3),
             child: Row(
               children: [
-                Icon(icon, size: 18, color: AppColors.accent),
+                Icon(icon, size: 18, color: context.semantic.accent),
                 const SizedBox(width: 10),
                 // Sinhala and Tamil run longer than English here, and these
                 // are full sentences rather than labels — they must wrap, not
@@ -361,12 +359,14 @@ class _TierCard extends StatelessWidget {
 
     return Card(
       margin: EdgeInsets.zero,
-      color: recommended ? AppColors.accent.withValues(alpha: 0.08) : null,
+      color: recommended
+          ? context.semantic.accent.withValues(alpha: 0.08)
+          : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
           color: recommended
-              ? AppColors.accent
+              ? context.semantic.accent
               : theme.colorScheme.outlineVariant,
           width: recommended ? 1.5 : 1,
         ),
@@ -410,7 +410,7 @@ class _TierCard extends StatelessWidget {
                           price.formatted,
                         ),
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.accent,
+                          color: context.semantic.accent,
                         ),
                       ),
                   ],
@@ -437,7 +437,7 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     decoration: BoxDecoration(
-      color: AppColors.accent,
+      color: context.semantic.accent,
       borderRadius: BorderRadius.circular(20),
     ),
     child: Text(

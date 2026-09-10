@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +8,7 @@ import '../../../core/db/profile_store.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../purchases/presentation/paywall.dart';
@@ -61,7 +62,7 @@ class ProfilesScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l.profilesRemove,
-              style: TextStyle(color: AppColors.inauspicious),
+              style: TextStyle(color: context.semantic.inauspicious),
             ),
           ),
         ],
@@ -101,7 +102,9 @@ class ProfilesScreen extends ConsumerWidget {
                         entry.isSelected
                             ? Icons.radio_button_checked
                             : Icons.radio_button_unchecked,
-                        color: entry.isSelected ? AppColors.accent : null,
+                        color: entry.isSelected
+                            ? context.semantic.accent
+                            : null,
                       ),
                       title: Text(entry.profile.name),
                       subtitle: Text(
@@ -112,7 +115,7 @@ class ProfilesScreen extends ConsumerWidget {
                           ? IconButton(
                               icon: Icon(
                                 Icons.delete_outline,
-                                color: AppColors.inauspicious,
+                                color: context.semantic.inauspicious,
                               ),
                               tooltip: l.profilesRemove,
                               onPressed: () =>

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'chart_sharing.dart';
 import 'dasha_timeline.dart';
@@ -14,7 +16,6 @@ import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../report/presentation/report_tile.dart';
 import '../domain/chart_providers.dart';
@@ -186,8 +187,10 @@ class _ApproximateBanner extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.10),
-        border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
+        color: context.semantic.accent.withValues(alpha: 0.10),
+        border: Border.all(
+          color: context.semantic.accent.withValues(alpha: 0.4),
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -252,7 +255,7 @@ class _SummaryCard extends StatelessWidget {
           value,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.accent,
+            color: context.semantic.accent,
           ),
         ),
       ],

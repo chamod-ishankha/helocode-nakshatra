@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../purchases/presentation/paywall.dart';
@@ -95,9 +96,9 @@ class _ReportTileState extends ConsumerState<ReportTile> {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.accent.withValues(alpha: 0.4)),
+        side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),
       ),
-      color: AppColors.accent.withValues(alpha: 0.06),
+      color: context.semantic.accent.withValues(alpha: 0.06),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -105,7 +106,10 @@ class _ReportTileState extends ConsumerState<ReportTile> {
           children: [
             Row(
               children: [
-                Icon(Icons.picture_as_pdf_outlined, color: AppColors.accent),
+                Icon(
+                  Icons.picture_as_pdf_outlined,
+                  color: context.semantic.accent,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(

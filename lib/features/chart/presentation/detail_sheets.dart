@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/astro/dignity.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 
@@ -68,7 +69,7 @@ class _GrahaDetail extends ConsumerWidget {
                 if (position.isRetrograde)
                   _Chip(
                     label: l.detailRetrograde,
-                    colour: AppColors.inauspicious,
+                    colour: context.semantic.inauspicious,
                   ),
                 if (dignity != null && dignity != Dignity.neutral) ...[
                   const SizedBox(width: 6),
@@ -80,8 +81,8 @@ class _GrahaDetail extends ConsumerWidget {
                       Dignity.neutral => '',
                     },
                     colour: dignity == Dignity.debilitated
-                        ? AppColors.inauspicious
-                        : AppColors.auspicious,
+                        ? context.semantic.inauspicious
+                        : context.semantic.auspicious,
                   ),
                 ],
               ],

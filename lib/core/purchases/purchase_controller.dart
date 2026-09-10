@@ -55,8 +55,7 @@ class EntitlementNotifier extends Notifier<EntitlementSnapshot> {
   DateTime get _now => ref.read(purchaseClockProvider)();
 
   @override
-  EntitlementSnapshot build() =>
-      _cache.read() ?? EntitlementSnapshot.unknown();
+  EntitlementSnapshot build() => _cache.read() ?? EntitlementSnapshot.unknown();
 
   /// Subscribes to store updates and asks it once for the truth.
   ///

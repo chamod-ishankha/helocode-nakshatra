@@ -62,7 +62,7 @@ class InfoNotice extends StatelessWidget {
         // A flat tint of the inauspicious red over a light surface reads as
         // muddy brown — hit once already on the rāhu card. Caution notices are
         // outlined instead, and keep the surface underneath them.
-        color: caution ? null : colour.withValues(alpha: 0.07),
+        color: caution ? null : context.semantic.accentSurface,
         border: caution
             ? Border.all(color: colour.withValues(alpha: 0.5))
             : null,

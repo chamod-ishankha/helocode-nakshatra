@@ -41,6 +41,9 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
     required this.accent,
     required this.inauspicious,
     required this.auspicious,
+    required this.accentSurface,
+    required this.inauspiciousSurface,
+    required this.auspiciousSurface,
   });
 
   /// Gold. The brand's emphasis colour, used for values worth reading first.
@@ -52,11 +55,28 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
   /// Subha nekath — times that are favourable.
   final Color auspicious;
 
+  /// The wash behind a card in each of those meanings.
+  ///
+  /// Explicit rather than the text colour at low alpha, which is what this
+  /// used to be. The two want opposite things: text has to be dark enough to
+  /// read on the surface, and a tint has to stay light enough to *be* a tint —
+  /// so a 10% wash of the light theme's deep gold came out #F4ECE8, a warm
+  /// grey with no gold left in it.
+  ///
+  /// Borders still take the text colour at ~40% alpha. A line is not a
+  /// background; it wants the hue at strength.
+  final Color accentSurface;
+  final Color inauspiciousSurface;
+  final Color auspiciousSurface;
+
   /// Contrast against `#FFFBFE`: gold 5.12:1, red 6.36:1, green 6.26:1.
   static const light = SemanticColors(
     accent: Color(0xFF8C6521),
     inauspicious: Color(0xFFB3271A),
     auspicious: Color(0xFF1F6B4F),
+    accentSurface: Color(0xFFF7EEDC),
+    inauspiciousSurface: Color(0xFFFBEBE8),
+    auspiciousSurface: Color(0xFFE7F4EE),
   );
 
   /// Contrast against `#141218`: gold 8.03:1, red 6.12:1, green 8.58:1.
@@ -64,6 +84,9 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
     accent: Color(0xFFD4A24C),
     inauspicious: Color(0xFFE8705E),
     auspicious: Color(0xFF4FC49A),
+    accentSurface: Color(0xFF241E12),
+    inauspiciousSurface: Color(0xFF2A1A17),
+    auspiciousSurface: Color(0xFF12241D),
   );
 
   static SemanticColors of(Brightness brightness) =>
@@ -74,10 +97,16 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
     Color? accent,
     Color? inauspicious,
     Color? auspicious,
+    Color? accentSurface,
+    Color? inauspiciousSurface,
+    Color? auspiciousSurface,
   }) => SemanticColors(
     accent: accent ?? this.accent,
     inauspicious: inauspicious ?? this.inauspicious,
     auspicious: auspicious ?? this.auspicious,
+    accentSurface: accentSurface ?? this.accentSurface,
+    inauspiciousSurface: inauspiciousSurface ?? this.inauspiciousSurface,
+    auspiciousSurface: auspiciousSurface ?? this.auspiciousSurface,
   );
 
   @override
@@ -87,6 +116,17 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
       accent: Color.lerp(accent, other.accent, t)!,
       inauspicious: Color.lerp(inauspicious, other.inauspicious, t)!,
       auspicious: Color.lerp(auspicious, other.auspicious, t)!,
+      accentSurface: Color.lerp(accentSurface, other.accentSurface, t)!,
+      inauspiciousSurface: Color.lerp(
+        inauspiciousSurface,
+        other.inauspiciousSurface,
+        t,
+      )!,
+      auspiciousSurface: Color.lerp(
+        auspiciousSurface,
+        other.auspiciousSurface,
+        t,
+      )!,
     );
   }
 }

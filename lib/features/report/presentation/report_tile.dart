@@ -99,7 +99,7 @@ class _ReportTileState extends ConsumerState<ReportTile> {
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),
       ),
-      color: context.semantic.accent.withValues(alpha: 0.06),
+      color: context.semantic.accentSurface,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

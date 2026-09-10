@@ -315,7 +315,7 @@ class _NowBanner extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: context.semantic.inauspicious.withValues(alpha: 0.12),
+        color: context.semantic.inauspiciousSurface,
         border: Border.all(
           color: context.semantic.inauspicious.withValues(alpha: 0.5),
         ),
@@ -659,7 +659,7 @@ class _AuspiciousCard extends ConsumerWidget {
     final fmt = DateFormat('h:mm a');
 
     return Card(
-      color: context.semantic.auspicious.withValues(alpha: 0.07),
+      color: context.semantic.auspiciousSurface,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -716,7 +716,7 @@ class _PoyaTodayBanner extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.semantic.accent.withValues(alpha: 0.12),
+        color: context.semantic.accentSurface,
         border: Border.all(
           color: context.semantic.accent.withValues(alpha: 0.5),
         ),

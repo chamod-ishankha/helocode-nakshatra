@@ -65,7 +65,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
     final theme = Theme.of(context);
 
     return Card(
-      color: context.semantic.accent.withValues(alpha: 0.07),
+      color: context.semantic.accentSurface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),

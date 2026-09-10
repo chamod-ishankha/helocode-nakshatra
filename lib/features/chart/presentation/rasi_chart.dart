@@ -145,9 +145,7 @@ class _Cell extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: theme.dividerColor),
-          color: isLagna
-              ? context.semantic.accent.withValues(alpha: 0.10)
-              : Colors.transparent,
+          color: isLagna ? context.semantic.accentSurface : Colors.transparent,
         ),
         padding: const EdgeInsets.all(4),
         child: Column(

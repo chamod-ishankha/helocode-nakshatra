@@ -361,9 +361,7 @@ class _TierCard extends StatelessWidget {
 
     return Card(
       margin: EdgeInsets.zero,
-      color: recommended
-          ? context.semantic.accent.withValues(alpha: 0.08)
-          : null,
+      color: recommended ? context.semantic.accentSurface : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(

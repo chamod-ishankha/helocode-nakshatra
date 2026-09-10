@@ -431,7 +431,7 @@ class _TimeStep extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: context.semantic.accent.withValues(alpha: 0.10),
+                color: context.semantic.accentSurface,
                 border: Border.all(
                   color: context.semantic.accent.withValues(alpha: 0.4),
                 ),

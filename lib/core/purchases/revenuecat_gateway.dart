@@ -44,6 +44,24 @@ class RevenueCatGateway implements PurchaseGateway {
       return false;
     }
 
+    // A `test_` key is RevenueCat's Test Store: purchases are simulated, no
+    // money moves, and — in the SDK's own words — "our SDK will crash if using
+    // it in production". A crash on launch for every user is not a failure
+    // mode this app is allowed to have, and the mistake is an easy one: copy
+    // the dev env file, forget one line, ship it.
+    //
+    // Refused rather than passed through, so the worst case is a prod build
+    // that cannot sell anything until the right key is in place. Play would
+    // reject the submission anyway; better to find out from a log than from
+    // review.
+    if (isTestKey(publicKey) && FlavorConfig.current.flavor == Flavor.prod) {
+      AppLogger.error(
+        'Refusing a RevenueCat Test Store key in a prod build — purchases '
+        'are off. Put the Play-backed public key in env/prod.json.',
+      );
+      return false;
+    }
+
     try {
       // Verbose only where a developer is watching. The SDK logs the app user
       // id and product ids at debug level, which is noise in a release build
@@ -309,6 +327,14 @@ class RevenueCatGateway implements PurchaseGateway {
     final days = perUnit * intro.periodNumberOfUnits * intro.cycles;
     return days > 0 ? days : 0;
   }
+
+  /// Whether this is a RevenueCat Test Store key rather than a real one.
+  ///
+  /// Test Store keys are prefixed `test_`. They simulate the whole purchase
+  /// flow without Play, which is the only way to exercise this before the
+  /// products exist in Play Console — and the only key that must never reach
+  /// a production build.
+  static bool isTestKey(String publicKey) => publicKey.startsWith('test_');
 
   /// Maps the SDK's error codes onto the outcomes the UI has words for.
   static PurchaseOutcome outcomeFor(

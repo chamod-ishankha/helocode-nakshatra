@@ -89,6 +89,58 @@ void main() {
       });
     }
 
+    test('and readable on the tint it is actually drawn on', () {
+      // The gap in the first version of this test. The rāhu card puts
+      // inauspicious-red type on an inauspicious-red wash, so measuring the
+      // type against the plain surface measured a background it never sits
+      // on — it could have passed while the card was unreadable.
+      for (final (name, colours) in [
+        ('light', SemanticColors.light),
+        ('dark', SemanticColors.dark),
+      ]) {
+        for (final (label, text, tint) in [
+          ('accent', colours.accent, colours.accentSurface),
+          ('inauspicious', colours.inauspicious, colours.inauspiciousSurface),
+          ('auspicious', colours.auspicious, colours.auspiciousSurface),
+        ]) {
+          final ratio = contrast(text, tint);
+          expect(
+            ratio,
+            greaterThanOrEqualTo(4.5),
+            reason:
+                '$label on its own $name tint is only '
+                '${ratio.toStringAsFixed(2)}:1',
+          );
+        }
+      }
+    });
+
+    test('a tint is a tint, not a second surface colour', () {
+      // The reason these are explicit rather than the text colour at low
+      // alpha: a 10% wash of the light theme's deep gold came out #F4ECE8, a
+      // warm grey with no gold in it. A tint has to stay close to the surface
+      // it sits on, or it stops being a wash and becomes a panel.
+      for (final (name, theme, colours) in [
+        ('light', light, SemanticColors.light),
+        ('dark', dark, SemanticColors.dark),
+      ]) {
+        for (final (label, tint) in [
+          ('accent', colours.accentSurface),
+          ('inauspicious', colours.inauspiciousSurface),
+          ('auspicious', colours.auspiciousSurface),
+        ]) {
+          final ratio = contrast(tint, theme.colorScheme.surface);
+          expect(
+            ratio,
+            lessThan(1.5),
+            reason:
+                'the $name $label tint is ${ratio.toStringAsFixed(2)}:1 from '
+                'the surface — that is a panel, not a wash',
+          );
+        }
+      }
+    });
+
     test('the theme really hands them over', () {
       // The extension is what makes `context.semantic` correct. Forget to
       // register it and every screen silently falls back to the light set,

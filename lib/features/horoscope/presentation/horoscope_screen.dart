@@ -310,7 +310,7 @@ class _LuckyRow extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: context.semantic.auspicious.withValues(alpha: 0.07),
+      color: context.semantic.auspiciousSurface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(

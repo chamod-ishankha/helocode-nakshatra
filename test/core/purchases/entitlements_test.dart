@@ -56,7 +56,10 @@ void main() {
       final s = snapshot({Entitlement.pro: expires}, refreshedAt: jan1);
 
       expect(
-        s.isActive(Entitlement.pro, expires.add(EntitlementSnapshot.offlineGrace)),
+        s.isActive(
+          Entitlement.pro,
+          expires.add(EntitlementSnapshot.offlineGrace),
+        ),
         isFalse,
       );
       expect(s.isActive(Entitlement.pro, DateTime(2026, 2, 1)), isFalse);
@@ -67,32 +70,32 @@ void main() {
       // is contradictory — a renewal would have moved it. Believing the date
       // rather than the listing is the safe reading, and it keeps the grace
       // window strictly for answers we know are stale.
-      final s = snapshot(
-        {Entitlement.pro: expires},
-        refreshedAt: DateTime(2026, 1, 11),
-      );
+      final s = snapshot({
+        Entitlement.pro: expires,
+      }, refreshedAt: DateTime(2026, 1, 11));
 
       expect(s.isActive(Entitlement.pro, DateTime(2026, 1, 11, 1)), isFalse);
     });
   });
 
   group('winding the device clock back', () {
-    test('does not revive a subscription that expired before the last refresh', () {
-      // Free Pro with no tools: set the date back and an expiry stops being in
-      // the past. The floor at refreshedAt blocks it.
-      final s = snapshot(
-        {Entitlement.pro: DateTime(2026, 1, 10)},
-        refreshedAt: DateTime(2026, 3, 1),
-      );
+    test(
+      'does not revive a subscription that expired before the last refresh',
+      () {
+        // Free Pro with no tools: set the date back and an expiry stops being in
+        // the past. The floor at refreshedAt blocks it.
+        final s = snapshot({
+          Entitlement.pro: DateTime(2026, 1, 10),
+        }, refreshedAt: DateTime(2026, 3, 1));
 
-      expect(s.isActive(Entitlement.pro, DateTime(2026, 1, 5)), isFalse);
-    });
+        expect(s.isActive(Entitlement.pro, DateTime(2026, 1, 5)), isFalse);
+      },
+    );
 
     test('does not disturb a purchase that never expires', () {
-      final s = snapshot(
-        {Entitlement.adFree: null},
-        refreshedAt: DateTime(2026, 3, 1),
-      );
+      final s = snapshot({
+        Entitlement.adFree: null,
+      }, refreshedAt: DateTime(2026, 3, 1));
 
       expect(s.isActive(Entitlement.adFree, DateTime(2020)), isTrue);
     });
@@ -101,10 +104,9 @@ void main() {
   group('what a feature needs', () {
     test('either Pro tier or the one-time purchase removes ads', () {
       final bought = snapshot({Entitlement.adFree: null}, refreshedAt: jan1);
-      final pro = snapshot(
-        {Entitlement.pro: DateTime(2026, 6, 1)},
-        refreshedAt: jan1,
-      );
+      final pro = snapshot({
+        Entitlement.pro: DateTime(2026, 6, 1),
+      }, refreshedAt: jan1);
 
       expect(bought.has(PaidFeature.removeAds, jan1), isTrue);
       expect(pro.has(PaidFeature.removeAds, jan1), isTrue);
@@ -122,20 +124,18 @@ void main() {
       // Following the list of Pro unlocks on KAN-35 exactly. Pinned in a test
       // because it is a pricing decision that looks like an oversight: most
       // ladders fold both into the top tier.
-      final pro = snapshot(
-        {Entitlement.pro: DateTime(2026, 6, 1)},
-        refreshedAt: jan1,
-      );
+      final pro = snapshot({
+        Entitlement.pro: DateTime(2026, 6, 1),
+      }, refreshedAt: jan1);
 
       expect(pro.has(PaidFeature.birthChartPdf, jan1), isFalse);
       expect(pro.has(PaidFeature.compatibilityReport, jan1), isFalse);
     });
 
     test('a lapsed Pro closes every Pro feature at once', () {
-      final s = snapshot(
-        {Entitlement.pro: DateTime(2026, 1, 10)},
-        refreshedAt: jan1,
-      );
+      final s = snapshot({
+        Entitlement.pro: DateTime(2026, 1, 10),
+      }, refreshedAt: jan1);
       final afterGrace = DateTime(2026, 2, 1);
 
       for (final feature in PaidFeature.values) {
@@ -209,18 +209,21 @@ void main() {
       }
     });
 
-    test('an unreadable expiry inside a valid cache drops that entitlement', () {
-      const raw =
-          '{"refreshedAt":"2026-01-01T00:00:00.000Z",'
-          '"grants":{"pro":"soon"}}';
+    test(
+      'an unreadable expiry inside a valid cache drops that entitlement',
+      () {
+        const raw =
+            '{"refreshedAt":"2026-01-01T00:00:00.000Z",'
+            '"grants":{"pro":"soon"}}';
 
-      final back = EntitlementSnapshot.decode(raw)!;
+        final back = EntitlementSnapshot.decode(raw)!;
 
-      // Present but with no date is exactly the shape of a lifetime purchase,
-      // so it must not land there: an unreadable date must never become
-      // "never expires".
-      expect(back.isActive(Entitlement.pro, DateTime(2050)), isFalse);
-    });
+        // Present but with no date is exactly the shape of a lifetime purchase,
+        // so it must not land there: an unreadable date must never become
+        // "never expires".
+        expect(back.isActive(Entitlement.pro, DateTime(2050)), isFalse);
+      },
+    );
   });
 
   group('dashboard identifiers', () {

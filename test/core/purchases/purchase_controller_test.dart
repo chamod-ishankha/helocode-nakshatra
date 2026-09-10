@@ -71,7 +71,10 @@ void main() {
 
       await container.read(entitlementsProvider.notifier).refresh();
 
-      expect(container.read(featureProvider(PaidFeature.fullDashaTimeline)), isTrue);
+      expect(
+        container.read(featureProvider(PaidFeature.fullDashaTimeline)),
+        isTrue,
+      );
       expect(
         EntitlementCache(prefs).read()?.isActive(Entitlement.pro, now),
         isTrue,
@@ -88,7 +91,10 @@ void main() {
       final container = harness();
       await container.read(entitlementsProvider.notifier).refresh();
 
-      expect(container.read(featureProvider(PaidFeature.fullDashaTimeline)), isTrue);
+      expect(
+        container.read(featureProvider(PaidFeature.fullDashaTimeline)),
+        isTrue,
+      );
     });
 
     test('a store that says the subscription is gone is believed', () async {
@@ -100,7 +106,10 @@ void main() {
       final container = harness();
       await container.read(entitlementsProvider.notifier).refresh();
 
-      expect(container.read(featureProvider(PaidFeature.fullDashaTimeline)), isFalse);
+      expect(
+        container.read(featureProvider(PaidFeature.fullDashaTimeline)),
+        isFalse,
+      );
       expect(EntitlementCache(prefs).read()?.isEmpty, isTrue);
     });
   });
@@ -133,7 +142,10 @@ void main() {
           .buy(PurchaseProduct.proMonthly);
 
       expect(result.outcome, PurchaseOutcome.pending);
-      expect(container.read(featureProvider(PaidFeature.fullDashaTimeline)), isFalse);
+      expect(
+        container.read(featureProvider(PaidFeature.fullDashaTimeline)),
+        isFalse,
+      );
     });
 
     test('a pending payment that settles later arrives on its own', () async {
@@ -145,7 +157,10 @@ void main() {
       store.pushUpdate(holding({Entitlement.pro: nextYear}));
       await Future<void>.delayed(Duration.zero);
 
-      expect(container.read(featureProvider(PaidFeature.fullDashaTimeline)), isTrue);
+      expect(
+        container.read(featureProvider(PaidFeature.fullDashaTimeline)),
+        isTrue,
+      );
     });
 
     test('a cancelled purchase changes nothing at all', () async {
@@ -212,10 +227,9 @@ void main() {
       // The store answered, and what it returned is past its date. Reporting
       // "restored" would leave the user staring at a screen that still shows
       // everything locked.
-      store.answer = holding(
-        {Entitlement.pro: DateTime(2025, 12, 1)},
-        at: DateTime(2025, 12, 2),
-      );
+      store.answer = holding({
+        Entitlement.pro: DateTime(2025, 12, 1),
+      }, at: DateTime(2025, 12, 2));
       final container = harness();
 
       expect(

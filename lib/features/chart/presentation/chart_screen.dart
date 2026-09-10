@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'chart_sharing.dart';
 import 'dasha_timeline.dart';
@@ -97,7 +98,13 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
         success: (chart) => ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            if (!profile.birthTimeKnown) const _ApproximateBanner(),
+            if (!profile.birthTimeKnown) ...[
+              InfoNotice(
+                text: L10n.of(context).chartApproximate,
+                icon: Icons.info_outline,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+            ],
             _StyleSwitcher(style: style),
             const SizedBox(height: AppSpacing.md),
             // Keyed by style so Flutter rebuilds rather than trying to reuse
@@ -175,37 +182,6 @@ class _StyleSwitcher extends ConsumerWidget {
       showSelectedIcon: false,
       onSelectionChanged: (selection) =>
           ref.read(chartStyleProvider.notifier).set(selection.first),
-    );
-  }
-}
-
-class _ApproximateBanner extends StatelessWidget {
-  const _ApproximateBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: context.semantic.accent.withValues(alpha: 0.10),
-        border: Border.all(
-          color: context.semantic.accent.withValues(alpha: 0.4),
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              L10n.of(context).chartApproximate,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

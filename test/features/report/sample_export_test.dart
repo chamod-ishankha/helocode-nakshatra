@@ -139,9 +139,7 @@ void main() {
         final file = File('${out.path}/nakshatra-report-${locale.code}.pdf')
           ..writeAsBytesSync(bytes);
         // ignore: avoid_print
-        print(
-          'WROTE ${file.path} — ${(bytes.length / 1024).round()} KB',
-        );
+        print('WROTE ${file.path} — ${(bytes.length / 1024).round()} KB');
       }
     });
   });

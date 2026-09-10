@@ -167,6 +167,23 @@ void main() {
       });
     });
 
+    testWidgets('the unknown-birth-time notice draws too', (tester) async {
+      // Its own case because every other page test uses a known birth time,
+      // so the notice path — now the shared InfoNotice — was never rendered.
+      // The cover and both chart pages carry it.
+      await tester.runAsync(() async {
+        final report = content(timeKnown: false);
+
+        for (final page in [0, 1, 2]) {
+          final png = await PageRenderer.renderPng(
+            ReportPages.build(report, page),
+            pixelRatio: 1,
+          );
+          expect(await _inked(png), greaterThan(400), reason: 'page $page');
+        }
+      });
+    });
+
     testWidgets('both chart styles draw', (tester) async {
       await tester.runAsync(() async {
         for (final style in ChartStyle.values) {

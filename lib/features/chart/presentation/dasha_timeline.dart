@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/astro/dasha.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/info_notice.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/chart_providers.dart';
@@ -31,7 +31,8 @@ class DashaTimeline extends ConsumerWidget {
   const DashaTimeline({super.key, required this.birthTimeKnown});
 
   /// Drives the accuracy warning. This matters far more for a daśā than for
-  /// the houses: see [_UnreliableTimeWarning].
+  /// the houses, which is why an unknown birth time gets a caution notice
+  /// at the top of this section.
   final bool birthTimeKnown;
 
   @override
@@ -52,7 +53,10 @@ class DashaTimeline extends ConsumerWidget {
         const SizedBox(height: AppSpacing.sm),
 
         if (!birthTimeKnown) ...[
-          const _UnreliableTimeWarning(),
+          InfoNotice(
+            text: L10n.of(context).dashaUnreliableTime,
+            tone: NoticeTone.caution,
+          ),
           const SizedBox(height: AppSpacing.md),
         ],
 
@@ -79,51 +83,6 @@ class DashaTimeline extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// The one warning on this screen that is stronger than the houses one.
-///
-/// An unknown birth time is handled elsewhere by assuming sunrise, which
-/// leaves the planets accurate and only the lagna approximate. A daśā is not
-/// so forgiving: it is seeded by how far the Moon has travelled through its
-/// nakṣatra, the Moon moves about half a degree an hour, and a nakṣatra is
-/// only 13°20' wide. Half a day of uncertainty is therefore up to half a
-/// nakṣatra — which can move every date by years and can put the sequence
-/// under the wrong ruling planet entirely.
-class _UnreliableTimeWarning extends StatelessWidget {
-  const _UnreliableTimeWarning();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: context.semantic.inauspicious.withValues(alpha: 0.5),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            size: 20,
-            color: context.semantic.inauspicious,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              L10n.of(context).dashaUnreliableTime,
-              style: theme.textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

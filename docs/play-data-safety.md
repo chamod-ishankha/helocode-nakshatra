@@ -79,12 +79,15 @@ names, and Play does check that a stated route exists — so describe this one
 and not "Start over" on the chart screen, which resets the profile without
 touching the backup.
 
-> **Open obligation.** Now that KAN-48 lets a user create a real account, Play's
-> account-deletion policy applies: it wants a **web** deletion route as well as
-> the in-app one, reachable without installing the app. A page on the HeloCode
-> site satisfies it. This is not yet built, and it is an app-content
-> requirement rather than a Data Safety answer — but it is checked at review,
-> so it blocks the first release that ships sign-in.
+**Web deletion URL to enter:**
+`https://chamod-ishankha.github.io/helocode-site/nakshatra/delete-account.html`
+
+Play's account-deletion policy wants a route reachable without installing the
+app, as well as the in-app one, and it is checked at review. The page is live.
+It names the in-app route first, gives an email route for anyone who has
+already uninstalled, and says plainly that an account created without signing
+in cannot be matched to a person by anybody including us — which is the honest
+answer and better than implying a lookup that cannot happen.
 
 ---
 
@@ -304,22 +307,21 @@ its own ad serving, so it is declared as shared.
 | **~~Remove Ads (KAN-35)~~** | Done — Device or other IDs is now optional, and Purchase history is declared under Financial info. |
 | **~~Crashlytics (KAN-19)~~** | Done — Crash logs and Diagnostics are declared above. |
 | **~~RevenueCat (KAN-35)~~** | Done — Purchase history under Financial info, and the identifier is covered under User IDs. |
-| **A web deletion route** | No Data Safety answer changes, but Play's account-deletion policy needs a page reachable without installing the app. Still open; see the obligation above. |
+| **~~A web deletion route~~** | Done — the URL is above. No Data Safety answer changes; it is entered under App content, Data deletion. |
 | **~~Google / email sign-in (KAN-48)~~** | Done — Email address is declared above. |
 
 Keep this in step with `nakshatra/privacy.html` in the `helocode-site` repo. The
 two have to agree: the policy is the prose version of this table, and Play
 compares them.
 
-Known drift in the published policy, as of 2026-09-11:
+All three known drifts are fixed in the `helocode-site` repo and **committed
+but deliberately not published** (`c674211`): the advertising choice now names
+*Settings → Ad privacy choices*, the RevenueCat row says the purchase is filed
+under the account once the user signs in, and the notification row lists all
+five kinds.
 
-- It says the advertising choice can be changed "later in the app's settings".
-  That was not true until KAN-40 added *Settings → Ad privacy choices*, and is
-  true from the next build onward.
-- The RevenueCat row says it receives "an anonymous purchase identifier". Since
-  KAN-64 that becomes the Firebase uid once the user signs in to a real
-  account, which is worth saying plainly rather than leaving as "anonymous".
-- The Notifications permission row names "daily horoscope and poya reminders".
-  There are five kinds now, including daśā changes and planetary sign changes
-  (KAN-63, KAN-65). All optional, all off by default, so nothing about the
-  permission rationale changes — only the examples.
+**Publish that commit with the app release, not before.** Every one of the
+three describes a build that has not shipped — the closed test is on 1.0.1+2,
+which predates KAN-40, KAN-64, KAN-63 and KAN-65. A policy naming a settings
+row that is not there yet is wrong in a newer and more specific way than the
+text it replaces, and the store listing links to it from the day it changes.

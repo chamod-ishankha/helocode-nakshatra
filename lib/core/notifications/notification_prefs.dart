@@ -9,7 +9,7 @@ import '../../features/onboarding/data/profile_repository.dart';
 /// who only cares about poya days should not have to take a notification every
 /// morning to get one.
 ///
-/// All four are off by default, and that matters more with four than it did
+/// All five are off by default, and that matters more with five than it did
 /// with two: every extra kind is another reason to turn the lot off, so none
 /// of them may arrive unasked.
 class NotificationPrefs {
@@ -18,6 +18,7 @@ class NotificationPrefs {
     this.poya = false,
     this.festival = false,
     this.dasha = false,
+    this.transit = false,
     this.hour = 6,
     this.minute = 30,
   });
@@ -45,16 +46,28 @@ class NotificationPrefs {
   /// only one that is about the reader rather than about the day.
   final bool dasha;
 
+  /// The day a slow graha changes rāśi (KAN-65).
+  ///
+  /// Free, unlike most of what the app added around it. A sign change is the
+  /// thing a reader here already follows by name — සෙනසුරු මාරුව is discussed
+  /// on the news — so it earns its place by bringing people back to the app
+  /// rather than by being withheld from them.
+  ///
+  /// Only the four slow grahas; see [Ingress.slow] for why the Moon and
+  /// Mercury are not an event.
+  final bool transit;
+
   final int hour;
   final int minute;
 
-  bool get anyEnabled => daily || poya || festival || dasha;
+  bool get anyEnabled => daily || poya || festival || dasha || transit;
 
   NotificationPrefs copyWith({
     bool? daily,
     bool? poya,
     bool? festival,
     bool? dasha,
+    bool? transit,
     int? hour,
     int? minute,
   }) => NotificationPrefs(
@@ -62,6 +75,7 @@ class NotificationPrefs {
     poya: poya ?? this.poya,
     festival: festival ?? this.festival,
     dasha: dasha ?? this.dasha,
+    transit: transit ?? this.transit,
     hour: hour ?? this.hour,
     minute: minute ?? this.minute,
   );
@@ -71,6 +85,7 @@ class NotificationPrefs {
     'poya': poya,
     'festival': festival,
     'dasha': dasha,
+    'transit': transit,
     'hour': hour,
     'minute': minute,
   };
@@ -84,6 +99,8 @@ class NotificationPrefs {
         // never agreed to.
         festival: json['festival'] as bool? ?? false,
         dasha: json['dasha'] as bool? ?? false,
+        // Likewise absent before KAN-65, and likewise off.
+        transit: json['transit'] as bool? ?? false,
         // Clamped rather than trusted: a corrupt or hand-edited value would
         // otherwise throw inside the scheduler, where the failure is far from
         // the cause.
@@ -98,16 +115,18 @@ class NotificationPrefs {
       other.poya == poya &&
       other.festival == festival &&
       other.dasha == dasha &&
+      other.transit == transit &&
       other.hour == hour &&
       other.minute == minute;
 
   @override
-  int get hashCode => Object.hash(daily, poya, festival, dasha, hour, minute);
+  int get hashCode =>
+      Object.hash(daily, poya, festival, dasha, transit, hour, minute);
 
   @override
   String toString() =>
       'NotificationPrefs(daily: $daily, poya: $poya, '
-      'festival: $festival, dasha: $dasha, '
+      'festival: $festival, dasha: $dasha, transit: $transit, '
       '${hour.toString().padLeft(2, '0')}:'
       '${minute.toString().padLeft(2, '0')})';
 }
@@ -129,6 +148,8 @@ class NotificationPrefsNotifier extends Notifier<NotificationPrefs> {
   Future<void> setFestival(bool on) => set(state.copyWith(festival: on));
 
   Future<void> setDasha(bool on) => set(state.copyWith(dasha: on));
+
+  Future<void> setTransit(bool on) => set(state.copyWith(transit: on));
 
   Future<void> setTime(int hour, int minute) =>
       set(state.copyWith(hour: hour, minute: minute));

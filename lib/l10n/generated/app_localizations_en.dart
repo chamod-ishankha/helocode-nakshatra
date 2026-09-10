@@ -1306,6 +1306,13 @@ class L10nEn extends L10n {
       'When a new planetary period begins in your chart.';
 
   @override
+  String get settingsTransitReminder => 'Planet sign changes';
+
+  @override
+  String get settingsTransitReminderHint =>
+      'When Saturn, Jupiter, Rāhu or Ketu moves into a new rāśi.';
+
+  @override
   String get notificationFestivalTitle => 'Festival tomorrow';
 
   @override
@@ -1324,6 +1331,21 @@ class L10nEn extends L10n {
   @override
   String notificationDashaAntaraBody(Object lord) {
     return 'Your $lord antardaśā starts today.';
+  }
+
+  @override
+  String notificationTransitTitle(String graha) {
+    return '$graha changes rāśi';
+  }
+
+  @override
+  String notificationTransitBody(String graha, String rasi, int house) {
+    return '$graha enters $rasi today — house $house from your Moon sign.';
+  }
+
+  @override
+  String notificationTransitSadeSati(String rasi) {
+    return 'Śani enters $rasi today. Your sade sati begins — the seven and a half years.';
   }
 
   @override

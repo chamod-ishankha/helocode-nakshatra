@@ -1316,6 +1316,13 @@ class L10nTa extends L10n {
       'உங்கள் சாதகத்தில் புதிய கிரக தசை தொடங்கும் போது.';
 
   @override
+  String get settingsTransitReminder => 'கிரக மாற்றம்';
+
+  @override
+  String get settingsTransitReminderHint =>
+      'சனி, குரு, ராகு அல்லது கேது புதிய ராசிக்குள் நுழையும்போது.';
+
+  @override
   String get notificationFestivalTitle => 'நாளை பண்டிகை';
 
   @override
@@ -1334,6 +1341,21 @@ class L10nTa extends L10n {
   @override
   String notificationDashaAntaraBody(Object lord) {
     return 'இன்று முதல் உங்கள் $lord அந்தர்தசை தொடங்குகிறது.';
+  }
+
+  @override
+  String notificationTransitTitle(String graha) {
+    return '$graha ராசி மாற்றம்';
+  }
+
+  @override
+  String notificationTransitBody(String graha, String rasi, int house) {
+    return '$graha இன்று $rasi ராசிக்குள் நுழைகிறது — உங்கள் சந்திர ராசியிலிருந்து $houseஆம் வீடு.';
+  }
+
+  @override
+  String notificationTransitSadeSati(String rasi) {
+    return 'சனி இன்று $rasi ராசிக்குள் நுழைகிறது. உங்கள் ஏழரை சனி தொடங்குகிறது.';
   }
 
   @override

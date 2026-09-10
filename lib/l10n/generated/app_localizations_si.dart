@@ -1296,6 +1296,13 @@ class L10nSi extends L10n {
       'ඔබේ කේන්දරයේ නව ග්‍රහ දශාවක් ආරම්භ වන විට.';
 
   @override
+  String get settingsTransitReminder => 'ග්‍රහ මාරු';
+
+  @override
+  String get settingsTransitReminderHint =>
+      'ශනි, ගුරු, රාහු හෝ කේතු නව රාශියකට පිවිසෙන විට.';
+
+  @override
   String get notificationFestivalTitle => 'හෙට උත්සව දිනයකි';
 
   @override
@@ -1314,6 +1321,21 @@ class L10nSi extends L10n {
   @override
   String notificationDashaAntaraBody(Object lord) {
     return 'අද සිට ඔබේ $lord අන්තර්දශාව ආරම්භ වේ.';
+  }
+
+  @override
+  String notificationTransitTitle(String graha) {
+    return '$graha රාශිය වෙනස් වේ';
+  }
+
+  @override
+  String notificationTransitBody(String graha, String rasi, int house) {
+    return '$graha අද $rasi රාශියට පිවිසෙයි — ඔබේ චන්ද්‍ර රාශියේ සිට $house වැනි භාවයයි.';
+  }
+
+  @override
+  String notificationTransitSadeSati(String rasi) {
+    return 'ශනි අද $rasi රාශියට පිවිසෙයි. ඔබේ සාඩේ සති — වසර හත හමාර — ආරම්භයි.';
   }
 
   @override

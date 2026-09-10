@@ -8,6 +8,8 @@ import '../../l10n/generated/app_localizations.dart';
 import '../astro/calendar_models.dart';
 import '../astro/dasha.dart';
 import '../astro/ephemeris.dart';
+import '../astro/ingress.dart';
+import '../astro/models.dart';
 import '../astro/nekath.dart';
 import '../astro/panchanga.dart';
 import '../astro/panchanga_models.dart';
@@ -61,6 +63,11 @@ abstract final class NotificationCoordinator {
       final strings = await _strings(locale);
       final now = DateTime.now();
 
+      // One chart, used for both the daśā tree and the natal Moon a transit
+      // is measured from. Computing it twice would be a second full
+      // ephemeris pass at every launch for no new information.
+      final natal = (prefs.dasha || prefs.transit) ? _chartFor(profile) : null;
+
       final planned = NotificationPlanner.plan(
         now: now,
         prefs: prefs,
@@ -71,8 +78,13 @@ abstract final class NotificationCoordinator {
         formatTime: DateFormat('h:mm a', locale.code).format,
         festivals: _festivalsWithin(now),
         festivalName: (festival) => festival.label(locale),
-        dashaPeriods: prefs.dasha ? _dashaPeriods(profile) : const [],
+        dashaPeriods: prefs.dasha && natal != null
+            ? _dashaPeriods(natal)
+            : const [],
         grahaName: (lord) => lord.label(locale),
+        ingresses: prefs.transit ? _ingressesWithin(now, profile) : const [],
+        rasiName: (rasi) => rasi.label(locale),
+        natalMoon: natal?[Graha.moon].rasi,
       );
 
       await NotificationService.reschedule(
@@ -151,20 +163,77 @@ abstract final class NotificationCoordinator {
   /// Computed only when the switch is on: this is a chart calculation, and
   /// running it at every launch for a user who never asked for it is work
   /// nobody benefits from.
-  static List<DashaPeriod> _dashaPeriods(BirthProfile profile) {
+  static List<DashaPeriod> _dashaPeriods(BirthChart chart) {
     try {
-      final chart = Ephemeris.computeChart(
+      final maha = Vimshottari.forChart(chart, depth: 2);
+      return [...maha, for (final m in maha) ...m.children];
+    } on Object catch (e) {
+      AppLogger.warn('Could not compute daśā periods: $e');
+      return const [];
+    }
+  }
+
+  /// The user's own chart, or null if it cannot be computed.
+  static BirthChart? _chartFor(BirthProfile profile) {
+    try {
+      return Ephemeris.computeChart(
         localWallClock: profile.localWallClock,
         zoneName: profile.place.timezone,
         latitude: profile.place.latitude,
         longitude: profile.place.longitude,
       ).valueOrNull;
-      if (chart == null) return const [];
-
-      final maha = Vimshottari.forChart(chart, depth: 2);
-      return [...maha, for (final m in maha) ...m.children];
     } on Object catch (e) {
-      AppLogger.warn('Could not compute daśā periods: $e');
+      AppLogger.warn('Could not compute the natal chart: $e');
+      return null;
+    }
+  }
+
+  /// Slow-graha sign changes inside the scheduling horizon (KAN-65).
+  ///
+  /// Only the horizon, not the year. There is no background job — the
+  /// schedule is topped up when the app is opened — so an ingress further out
+  /// than [NotificationService.horizonDays] would be found, discarded by the
+  /// planner's day loop, and found again next launch. Searching a week costs
+  /// three or four ephemeris calls; searching a year would cost a hundred and
+  /// twenty, at every launch, to schedule nothing.
+  ///
+  /// The place is the user's own rather than a fixed meridian. A sign change
+  /// is a moment in absolute time, so where it is observed from does not move
+  /// it — but the date it lands on is a local date, and Colombo is five and a
+  /// half hours from UTC.
+  static List<SignIngress> _ingressesWithin(
+    DateTime now,
+    BirthProfile profile,
+  ) {
+    try {
+      final from = DateTime(now.year, now.month, now.day);
+
+      return Ingress.between(
+        from: from,
+        to: from.add(const Duration(days: NotificationService.horizonDays)),
+        signsAt: (at) {
+          final chart = Ephemeris.computeChart(
+            localWallClock: DateTime(
+              at.year,
+              at.month,
+              at.day,
+              at.hour,
+              at.minute,
+            ),
+            zoneName: profile.place.timezone,
+            latitude: profile.place.latitude,
+            longitude: profile.place.longitude,
+          ).valueOrNull;
+          if (chart == null) return const {};
+
+          return {
+            for (final entry in chart.positions.entries)
+              entry.key: entry.value.rasi,
+          };
+        },
+      );
+    } on Object catch (e) {
+      AppLogger.warn('Could not find sign changes: $e');
       return const [];
     }
   }
@@ -183,6 +252,9 @@ abstract final class NotificationCoordinator {
       dashaTitle: l10n.notificationDashaTitle,
       dashaMahaBody: l10n.notificationDashaMahaBody,
       dashaAntaraBody: l10n.notificationDashaAntaraBody,
+      transitTitle: l10n.notificationTransitTitle,
+      transitBody: l10n.notificationTransitBody,
+      transitSadeSatiBody: l10n.notificationTransitSadeSati,
     );
   }
 }

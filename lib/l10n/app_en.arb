@@ -629,11 +629,43 @@
   "settingsFestivalReminderHint": "The evening before Avurudu and Thai Pongal.",
   "settingsDashaReminder": "Daśā changes",
   "settingsDashaReminderHint": "When a new planetary period begins in your chart.",
+  "settingsTransitReminder": "Planet sign changes",
+  "settingsTransitReminderHint": "When Saturn, Jupiter, Rāhu or Ketu moves into a new rāśi.",
   "notificationFestivalTitle": "Festival tomorrow",
   "notificationFestivalBody": "{festival} is tomorrow.",
   "notificationDashaTitle": "A new daśā begins",
   "notificationDashaMahaBody": "Your {lord} mahādaśā starts today.",
   "notificationDashaAntaraBody": "Your {lord} antardaśā starts today.",
+  "notificationTransitTitle": "{graha} changes rāśi",
+  "@notificationTransitTitle": {
+    "placeholders": {
+      "graha": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationTransitBody": "{graha} enters {rasi} today — house {house} from your Moon sign.",
+  "@notificationTransitBody": {
+    "placeholders": {
+      "graha": {
+        "type": "String"
+      },
+      "rasi": {
+        "type": "String"
+      },
+      "house": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationTransitSadeSati": "Śani enters {rasi} today. Your sade sati begins — the seven and a half years.",
+  "@notificationTransitSadeSati": {
+    "placeholders": {
+      "rasi": {
+        "type": "String"
+      }
+    }
+  },
   "profilesTitle": "Saved charts",
   "profilesSettingsHint": "Switch between charts for your family.",
   "profilesAdd": "Add another chart",

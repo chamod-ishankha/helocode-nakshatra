@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../astro/models.dart';
 import '../logging/app_logger.dart';
 import 'notification_prefs.dart';
 
@@ -40,6 +41,7 @@ abstract final class NotificationService {
   static const _poyaIdBase = 2000;
   static const _festivalIdBase = 3000;
   static const _dashaIdBase = 4000;
+  static const _transitIdBase = 5000;
 
   static const _channel = AndroidNotificationChannel(
     'daily_nekath',
@@ -183,6 +185,15 @@ abstract final class NotificationService {
 
   /// Stable id for a daśā-change reminder [dayOffset] days out.
   static int dashaId(int dayOffset) => _dashaIdBase + dayOffset;
+
+  /// Stable id for a transit alert about [graha], [dayOffset] days out.
+  ///
+  /// The only id that needs more than the offset. Two slow grahas can change
+  /// sign on the same day — Rāhu and Ketu always do, being opposite each
+  /// other — so an offset alone would give both the same id and the second
+  /// would silently replace the first.
+  static int transitId(int dayOffset, Graha graha) =>
+      _transitIdBase + dayOffset * Graha.values.length + graha.index;
 
   @visibleForTesting
   static void resetForTesting() {

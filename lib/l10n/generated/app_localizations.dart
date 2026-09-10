@@ -2391,6 +2391,18 @@ abstract class L10n {
   /// **'When a new planetary period begins in your chart.'**
   String get settingsDashaReminderHint;
 
+  /// No description provided for @settingsTransitReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Planet sign changes'**
+  String get settingsTransitReminder;
+
+  /// No description provided for @settingsTransitReminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When Saturn, Jupiter, Rāhu or Ketu moves into a new rāśi.'**
+  String get settingsTransitReminderHint;
+
   /// No description provided for @notificationFestivalTitle.
   ///
   /// In en, this message translates to:
@@ -2420,6 +2432,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Your {lord} antardaśā starts today.'**
   String notificationDashaAntaraBody(Object lord);
+
+  /// No description provided for @notificationTransitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{graha} changes rāśi'**
+  String notificationTransitTitle(String graha);
+
+  /// No description provided for @notificationTransitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{graha} enters {rasi} today — house {house} from your Moon sign.'**
+  String notificationTransitBody(String graha, String rasi, int house);
+
+  /// No description provided for @notificationTransitSadeSati.
+  ///
+  /// In en, this message translates to:
+  /// **'Śani enters {rasi} today. Your sade sati begins — the seven and a half years.'**
+  String notificationTransitSadeSati(String rasi);
 
   /// No description provided for @profilesTitle.
   ///

@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../astro/calendar_models.dart';
 import '../astro/dasha.dart';
+import '../astro/gochara.dart';
+import '../astro/ingress.dart';
 import '../astro/models.dart';
 import '../astro/panchanga_models.dart';
 import 'notification_prefs.dart';
@@ -25,6 +27,9 @@ class NotificationStrings {
     required this.dashaTitle,
     required this.dashaMahaBody,
     required this.dashaAntaraBody,
+    required this.transitTitle,
+    required this.transitBody,
+    required this.transitSadeSatiBody,
   });
 
   final String dailyTitle;
@@ -52,6 +57,24 @@ class NotificationStrings {
   /// machine translation in Sinhala and Tamil, where the two words join.
   final String Function(String lord) dashaMahaBody;
   final String Function(String lord) dashaAntaraBody;
+
+  /// Given the moving graha's name.
+  final String Function(String graha) transitTitle;
+
+  /// Given the graha, the sign it is entering, and which house that is from
+  /// the reader's natal Moon.
+  ///
+  /// The house is the whole point. "Saturn enters Aquarius" is an almanac
+  /// fact anybody can read anywhere; "Saturn enters your eighth house" is the
+  /// one the reader opened this app for.
+  final String Function(String graha, String rasi, int house) transitBody;
+
+  /// Śani entering the twelfth from the Moon, which begins sade sati.
+  ///
+  /// Its own line because it is the transit people here ask about by name,
+  /// and burying the start of seven and a half years inside a generic "house
+  /// 12" sentence would be the app failing to say the one thing it knew.
+  final String Function(String rasi) transitSadeSatiBody;
 }
 
 /// Decides what to schedule, and when.
@@ -78,6 +101,9 @@ abstract final class NotificationPlanner {
     required String Function(Festival festival) festivalName,
     required List<DashaPeriod> dashaPeriods,
     required String Function(Graha lord) grahaName,
+    required List<SignIngress> ingresses,
+    required String Function(Rasi rasi) rasiName,
+    required Rasi? natalMoon,
     int horizonDays = NotificationService.horizonDays,
   }) {
     final planned = <ScheduledNotification>[];
@@ -182,9 +208,73 @@ abstract final class NotificationPlanner {
           );
         }
       }
+
+      // Transit alerts (KAN-65). Plural, unlike every other kind: Rāhu and
+      // Ketu sit opposite each other and always change sign on the same day,
+      // so this is the one block that can legitimately schedule two.
+      if (prefs.transit && natalMoon != null) {
+        final at = DateTime(
+          day.year,
+          day.month,
+          day.day,
+          prefs.hour,
+          prefs.minute,
+        );
+
+        if (at.isAfter(now)) {
+          for (final ingress in _ingressesOn(ingresses, day)) {
+            final house = Gochara.houseFrom(natalMoon, ingress.to);
+            final sign = rasiName(ingress.to);
+
+            planned.add(
+              ScheduledNotification(
+                id: NotificationService.transitId(offset, ingress.graha),
+                at: at,
+                title: strings.transitTitle(grahaName(ingress.graha)),
+                // Saturn arriving in the twelfth is the start of sade sati,
+                // and saying "house 12" instead would be the app knowing the
+                // thing the reader came for and not saying it.
+                body:
+                    ingress.graha == Graha.saturn &&
+                        Gochara.saturnPhase(natalMoon, ingress.to) ==
+                            SaturnPhase.sadeSatiRising
+                    ? strings.transitSadeSatiBody(sign)
+                    : strings.transitBody(
+                        grahaName(ingress.graha),
+                        sign,
+                        house,
+                      ),
+                payload: _payload(day),
+              ),
+            );
+          }
+        }
+      }
     }
 
     return planned;
+  }
+
+  /// Every sign change falling on [day].
+  ///
+  /// A list rather than the single value the other helpers return, and not
+  /// deduplicated by graha: a graha that leaves a sign and returns does so
+  /// months apart, so two entries for one graha on one day would mean the
+  /// search was wrong rather than that the day was busy.
+  static List<SignIngress> _ingressesOn(
+    List<SignIngress> ingresses,
+    DateTime day,
+  ) {
+    final out = <SignIngress>[];
+    for (final i in ingresses) {
+      // Stored UTC at midnight, compared as the local day it lands on —
+      // the same convention as _dashaStartingOn, and for the same reason.
+      final on = i.on.toLocal();
+      if (on.year == day.year && on.month == day.month && on.day == day.day) {
+        out.add(i);
+      }
+    }
+    return out;
   }
 
   /// The festival on [day] that is worth interrupting somebody for.

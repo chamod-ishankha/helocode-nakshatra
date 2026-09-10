@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nakshatra/core/astro/calendar_models.dart';
 import 'package:nakshatra/core/astro/dasha.dart';
+import 'package:nakshatra/core/astro/ingress.dart';
 import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/core/astro/panchanga_models.dart';
 import 'package:nakshatra/core/notifications/notification_planner.dart';
@@ -29,6 +30,9 @@ void main() {
     dashaTitle: 'A new daśā',
     dashaMahaBody: (lord) => '$lord mahādaśā',
     dashaAntaraBody: (lord) => '$lord antardaśā',
+    transitTitle: (graha) => '$graha changes rāśi',
+    transitBody: (graha, rasi, house) => '$graha enters $rasi, house $house',
+    transitSadeSatiBody: (rasi) => 'Śani enters $rasi, sade sati begins',
   );
 
   final poya = PoyaDay(
@@ -52,6 +56,15 @@ void main() {
     exactMoment: DateTime(date.year, date.month, date.day, 8, 30),
   );
 
+  SignIngress moves(Graha graha, Rasi to, DateTime on) => SignIngress(
+    graha: graha,
+    // The sign it left. Only [SignIngress.isRetrograde] reads it, and that
+    // is not what any of these cases are about.
+    from: Rasi.values[(to.index - 1) % 12],
+    to: to,
+    on: DateTime.utc(on.year, on.month, on.day),
+  );
+
   DashaPeriod period(DashaLevel level, Graha lord, DateTime start) =>
       DashaPeriod(
         lord: lord,
@@ -67,6 +80,8 @@ void main() {
     List<PoyaDay> poyaDays = const [],
     List<Festival> festivals = const [],
     List<DashaPeriod> dashaPeriods = const [],
+    List<SignIngress> ingresses = const [],
+    Rasi? natalMoon = Rasi.mesha,
     int? horizonDays,
   }) => NotificationPlanner.plan(
     now: now,
@@ -80,6 +95,9 @@ void main() {
     festivalName: (f) => f.name,
     dashaPeriods: dashaPeriods,
     grahaName: (g) => g.en,
+    ingresses: ingresses,
+    rasiName: (r) => r.en,
+    natalMoon: natalMoon,
     horizonDays: horizonDays ?? NotificationService.horizonDays,
   );
 
@@ -472,7 +490,116 @@ void main() {
     });
   });
 
-  group('the four kinds together', () {
+  group('the transit alert (KAN-65)', () {
+    test('a sign change on a coming day is announced', () {
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        // Natal Moon in Aries, Saturn arriving in Leo: the fifth from it.
+        natalMoon: Rasi.mesha,
+        ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 9, 12))],
+      );
+
+      expect(planned, hasLength(1));
+      expect(planned.single.title, 'Saturn changes rāśi');
+      expect(planned.single.body, 'Saturn enters Leo, house 5');
+      expect(planned.single.at, DateTime(2026, 9, 12, 6, 30));
+    });
+
+    test('the house is counted from the natal Moon, not from Aries', () {
+      // The whole value of the alert. Getting this from the lagna, or from a
+      // fixed zero point, would produce a confident sentence about the wrong
+      // house — worse than saying nothing, because it reads as authoritative.
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        natalMoon: Rasi.dhanu,
+        ingresses: [moves(Graha.jupiter, Rasi.mesha, DateTime(2026, 9, 12))],
+      );
+
+      // Sagittarius is 8, Aries is 0: five signs on, counted inclusively.
+      expect(planned.single.body, 'Jupiter enters Aries, house 5');
+    });
+
+    test('Śani reaching the twelfth is named as sade sati', () {
+      // The transit people here ask about by name. Saying "house 12" and
+      // leaving it there would be the app knowing the thing the reader came
+      // for and not saying it.
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        natalMoon: Rasi.mesha,
+        ingresses: [moves(Graha.saturn, Rasi.meena, DateTime(2026, 9, 12))],
+      );
+
+      expect(planned.single.body, 'Śani enters Pisces, sade sati begins');
+    });
+
+    test('only Śani gets the sade sati wording', () {
+      // Guru in the twelfth is an ordinary transit. Borrowing Saturn's line
+      // for it would invent a phase that does not exist.
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        natalMoon: Rasi.mesha,
+        ingresses: [moves(Graha.jupiter, Rasi.meena, DateTime(2026, 9, 12))],
+      );
+
+      expect(planned.single.body, 'Jupiter enters Pisces, house 12');
+    });
+
+    test('two grahas moving on one day get two ids, not one', () {
+      // Rāhu and Ketu are always opposite, so they always change sign on the
+      // same day. An id keyed on the day alone would give them the same one
+      // and the plugin would keep only the second.
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        ingresses: [
+          moves(Graha.rahu, Rasi.karka, DateTime(2026, 9, 12)),
+          moves(Graha.ketu, Rasi.makara, DateTime(2026, 9, 12)),
+        ],
+      );
+
+      expect(planned, hasLength(2));
+      expect(planned.map((n) => n.id).toSet(), hasLength(2));
+    });
+
+    test('nothing is scheduled without a natal Moon to count from', () {
+      // A chart that would not compute. The alert is only worth sending
+      // because of the house, so without one there is nothing to say.
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        natalMoon: null,
+        ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 9, 12))],
+      );
+
+      expect(planned, isEmpty);
+    });
+
+    test('a sign change beyond the horizon waits for the next launch', () {
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(transit: true),
+        ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 10, 20))],
+      );
+
+      expect(planned, isEmpty);
+    });
+
+    test('the switch being off silences it', () {
+      final planned = plan(
+        now: DateTime(2026, 9, 10, 5),
+        prefs: const NotificationPrefs(daily: true),
+        ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 9, 12))],
+      );
+
+      expect(planned.every((n) => !n.title.contains('rāśi')), isTrue);
+    });
+  });
+
+  group('the five kinds together', () {
     test('every kind gets its own id range', () {
       // Ids are what the plugin cancels and replaces by. Two kinds sharing one
       // would mean a festival reminder silently overwriting that day's nekath.
@@ -483,6 +610,7 @@ void main() {
           poya: true,
           festival: true,
           dasha: true,
+          transit: true,
         ),
         poyaDays: [
           PoyaDay(
@@ -496,12 +624,13 @@ void main() {
         dashaPeriods: [
           period(DashaLevel.maha, Graha.jupiter, DateTime(2026, 4, 14)),
         ],
+        ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 4, 14))],
         horizonDays: 2,
       );
 
       final ids = planned.map((n) => n.id).toList();
       expect(ids.toSet(), hasLength(ids.length), reason: 'ids must be unique');
-      expect(planned.map((n) => n.title).toSet(), hasLength(4));
+      expect(planned.map((n) => n.title).toSet(), hasLength(5));
     });
   });
 }

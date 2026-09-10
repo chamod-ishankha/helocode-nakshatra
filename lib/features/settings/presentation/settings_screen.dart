@@ -490,6 +490,14 @@ class _ReminderTiles extends ConsumerWidget {
           onChanged: (on) =>
               _toggle(context, ref, on: on, apply: notifier.setDasha),
         ),
+        SwitchListTile(
+          secondary: const Icon(Icons.swap_horiz),
+          title: Text(l.settingsTransitReminder),
+          subtitle: Text(l.settingsTransitReminderHint),
+          value: prefs.transit,
+          onChanged: (on) =>
+              _toggle(context, ref, on: on, apply: notifier.setTransit),
+        ),
       ],
     );
   }

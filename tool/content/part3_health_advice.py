@@ -90,9 +90,13 @@ FRAGMENTS = [
     ("hea-27", [], [], "If it has persisted more than a week, have it looked at.",
      "සතියකට වඩා පවතී නම් එය පරීක්ෂා කරවා ගන්න.",
      "ஒரு வாரத்திற்கு மேல் தொடர்ந்தால் அதைப் பரிசோதித்துக் கொள்ளுங்கள்."),
-    ("hea-28", [], [], "Movement, not medicine, is what today calls for.",
-     "අද අවශ්‍ය බෙහෙත් නොව චලනයයි.",
-     "இன்று தேவைப்படுவது மருந்தல்ல, அசைவே."),
+    # Was "Movement, not medicine, is what today calls for." Same advice,
+    # without setting movement against medicine — in a Health section
+    # that reads as steering somebody away from treatment, which is the
+    # one thing Play's policy will not have (KAN-40).
+    ("hea-28", [], [], "A short walk will do more for you today than sitting still.",
+     "අද නිශ්චලව සිටීමට වඩා කටු ඇවිදීමක් ඔබට හොඳයි.",
+     "இன்று சும்மா இருப்பதை விட ஒரு சிறிய நடை நல்லது."),
     ("hea-29", [], [], "Say no to the late night; you will thank yourself.",
      "රාත්‍රී අවදිවීමට නොකියන්න; පසුව ඔබට එය අගය කරනු ඇත.",
      "இரவு விழிப்புக்கு மறுத்துவிடுங்கள்; பின்னர் நன்றி சொல்வீர்கள்."),

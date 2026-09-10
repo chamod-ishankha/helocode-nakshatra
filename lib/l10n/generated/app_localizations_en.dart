@@ -616,6 +616,13 @@ class L10nEn extends L10n {
       'Removes your birth details from this phone and from our backup.';
 
   @override
+  String get settingsAdConsent => 'Ad privacy choices';
+
+  @override
+  String get settingsAdConsentHint =>
+      'Change what advertisers may use to choose your ads.';
+
+  @override
   String get settingsDeleteTitle => 'Delete your details?';
 
   @override

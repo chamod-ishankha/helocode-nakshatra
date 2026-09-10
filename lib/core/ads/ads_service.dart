@@ -88,6 +88,56 @@ abstract final class AdsService {
     }
   }
 
+  /// Whether this user must be offered a way to change their ad consent.
+  ///
+  /// True only where the rules require it — the EEA and the UK, as UMP
+  /// decides from the region rather than from anything we ask. Everywhere
+  /// else the entry point is not merely unnecessary but wrong: a settings row
+  /// that opens a form about a choice the user was never given reads as the
+  /// app having collected something it did not.
+  ///
+  /// False on any error, and false before the SDK has started. Failing closed
+  /// hides a row; failing open shows one that opens nothing.
+  static Future<bool> privacyOptionsRequired() async {
+    if (!_started) return false;
+    try {
+      final status = await ConsentInformation.instance
+          .getPrivacyOptionsRequirementStatus();
+      return status == PrivacyOptionsRequirementStatus.required;
+    } on Object catch (e) {
+      AppLogger.info('Could not read the privacy options status: $e');
+      return false;
+    }
+  }
+
+  /// Reopens the consent form so the user can change their mind (KAN-40).
+  ///
+  /// Required by UMP wherever [privacyOptionsRequired] is true: consent that
+  /// cannot be withdrawn is not consent, and AdMob's own policy asks for a
+  /// persistent entry point. It was also already promised — the published
+  /// privacy policy says the choice can be changed "later in the app's
+  /// settings", which was not true of any build before this one.
+  static Future<void> showPrivacyOptions() async {
+    final done = Completer<void>();
+
+    try {
+      await ConsentForm.showPrivacyOptionsForm((error) {
+        if (error != null) {
+          AppLogger.warn('Privacy options form: ${error.message}');
+        }
+        if (!done.isCompleted) done.complete();
+      });
+    } on Object catch (e, s) {
+      AppLogger.warn('Privacy options form threw', e, s);
+      return;
+    }
+
+    await done.future.timeout(
+      const Duration(seconds: 30),
+      onTimeout: () => AppLogger.warn('Privacy options form timed out'),
+    );
+  }
+
   /// Asks UMP whether this user needs a consent form, and shows it if so.
   static Future<void> _requestConsent() async {
     final completer = Completer<void>();

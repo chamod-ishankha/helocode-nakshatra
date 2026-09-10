@@ -14,6 +14,8 @@ import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ads/ad_consent_tile.dart';
+import '../../../core/ads/ad_gate.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../account/presentation/auth_messages.dart';
 import '../../purchases/presentation/pro_tiles.dart';
@@ -98,6 +100,9 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(l.settingsDeleteHint),
             onTap: () => _confirmDelete(context, ref),
           ),
+          // Only where UMP says consent was collected, and never for somebody
+          // who bought their way out of advertising entirely (KAN-40).
+          if (!ref.watch(adFreeEntitlementProvider)) const AdConsentTile(),
 
           _Section(l.settingsSectionAbout),
           ListTile(

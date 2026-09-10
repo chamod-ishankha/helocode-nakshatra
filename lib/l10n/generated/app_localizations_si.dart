@@ -613,6 +613,13 @@ class L10nSi extends L10n {
       'ඔබේ උපන් තොරතුරු මෙම දුරකථනයෙන් සහ අපගේ උපස්ථයෙන් ඉවත් කරයි.';
 
   @override
+  String get settingsAdConsent => 'දැන්වීම් රහස්‍යතා තේරීම්';
+
+  @override
+  String get settingsAdConsentHint =>
+      'ඔබට දැන්වීම් තෝරා ගැනීමට දැන්වීම්කරුවන්ට භාවිත කළ හැකි දේ වෙනස් කරන්න.';
+
+  @override
   String get settingsDeleteTitle => 'ඔබේ තොරතුරු මකන්නද?';
 
   @override

@@ -321,6 +321,8 @@
   "settingsSectionData": "Your data",
   "settingsDeleteData": "Delete my details",
   "settingsDeleteHint": "Removes your birth details from this phone and from our backup.",
+  "settingsAdConsent": "Ad privacy choices",
+  "settingsAdConsentHint": "Change what advertisers may use to choose your ads.",
   "settingsDeleteTitle": "Delete your details?",
   "settingsDeleteBody": "Your birth details will be removed from this phone and from our backup, and your account will be deleted. Your charts and readings go with them, and this cannot be undone.",
   "settingsDeleteConfirm": "Delete",

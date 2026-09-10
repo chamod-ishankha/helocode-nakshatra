@@ -1173,6 +1173,18 @@ abstract class L10n {
   /// **'Removes your birth details from this phone and from our backup.'**
   String get settingsDeleteHint;
 
+  /// No description provided for @settingsAdConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy choices'**
+  String get settingsAdConsent;
+
+  /// No description provided for @settingsAdConsentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Change what advertisers may use to choose your ads.'**
+  String get settingsAdConsentHint;
+
   /// No description provided for @settingsDeleteTitle.
   ///
   /// In en, this message translates to:

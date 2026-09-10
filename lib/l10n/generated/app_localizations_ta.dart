@@ -621,6 +621,13 @@ class L10nTa extends L10n {
       'உங்கள் பிறப்பு விவரங்களை இந்தத் தொலைபேசியிலிருந்தும் எங்கள் காப்புப் பிரதியிலிருந்தும் நீக்கும்.';
 
   @override
+  String get settingsAdConsent => 'விளம்பர தனியுரிமைத் தேர்வுகள்';
+
+  @override
+  String get settingsAdConsentHint =>
+      'உங்களுக்கான விளம்பரங்களைத் தேர்வு செய்ய விளம்பரதாரர்கள் பயன்படுத்துவதை மாற்றவும்.';
+
+  @override
   String get settingsDeleteTitle => 'உங்கள் விவரங்களை அழிக்கவா?';
 
   @override

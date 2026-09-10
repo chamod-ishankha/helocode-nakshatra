@@ -38,6 +38,8 @@ abstract final class NotificationService {
 
   static const _dailyIdBase = 1000;
   static const _poyaIdBase = 2000;
+  static const _festivalIdBase = 3000;
+  static const _dashaIdBase = 4000;
 
   static const _channel = AndroidNotificationChannel(
     'daily_nekath',
@@ -175,6 +177,12 @@ abstract final class NotificationService {
 
   /// Stable id for a poya reminder [dayOffset] days out.
   static int poyaId(int dayOffset) => _poyaIdBase + dayOffset;
+
+  /// Stable id for a festival reminder [dayOffset] days out.
+  static int festivalId(int dayOffset) => _festivalIdBase + dayOffset;
+
+  /// Stable id for a daśā-change reminder [dayOffset] days out.
+  static int dashaId(int dayOffset) => _dashaIdBase + dayOffset;
 
   @visibleForTesting
   static void resetForTesting() {

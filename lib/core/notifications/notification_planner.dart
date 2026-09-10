@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 import '../astro/calendar_models.dart';
+import '../astro/dasha.dart';
+import '../astro/models.dart';
 import '../astro/panchanga_models.dart';
 import 'notification_prefs.dart';
 import 'notification_service.dart';
@@ -18,6 +20,11 @@ class NotificationStrings {
     required this.dailyBodyNoWindow,
     required this.poyaTitle,
     required this.poyaBody,
+    required this.festivalTitle,
+    required this.festivalBody,
+    required this.dashaTitle,
+    required this.dashaMahaBody,
+    required this.dashaAntaraBody,
   });
 
   final String dailyTitle;
@@ -32,6 +39,19 @@ class NotificationStrings {
 
   /// Given the poya's name in the reader's language.
   final String Function(String poya) poyaBody;
+
+  final String festivalTitle;
+
+  /// Given the festival's name in the reader's language.
+  final String Function(String festival) festivalBody;
+
+  final String dashaTitle;
+
+  /// Given the incoming lord's name. Two bodies rather than one with the
+  /// level as a second placeholder: "your {lord} {level} begins" reads as
+  /// machine translation in Sinhala and Tamil, where the two words join.
+  final String Function(String lord) dashaMahaBody;
+  final String Function(String lord) dashaAntaraBody;
 }
 
 /// Decides what to schedule, and when.
@@ -54,6 +74,10 @@ abstract final class NotificationPlanner {
     required List<PoyaDay> poyaDays,
     required String Function(PoyaDay poya) poyaName,
     required String Function(DateTime time) formatTime,
+    required List<Festival> festivals,
+    required String Function(Festival festival) festivalName,
+    required List<DashaPeriod> dashaPeriods,
+    required String Function(Graha lord) grahaName,
     int horizonDays = NotificationService.horizonDays,
   }) {
     final planned = <ScheduledNotification>[];
@@ -111,9 +135,113 @@ abstract final class NotificationPlanner {
           );
         }
       }
+
+      if (prefs.festival) {
+        // Same shape as the poya reminder: the evening before, so there is
+        // still an evening to prepare in.
+        final festival = _festivalOn(
+          festivals,
+          day.add(const Duration(days: 1)),
+        );
+        final at = DateTime(day.year, day.month, day.day, poyaReminderHour);
+
+        if (festival != null && at.isAfter(now)) {
+          planned.add(
+            ScheduledNotification(
+              id: NotificationService.festivalId(offset),
+              at: at,
+              title: strings.festivalTitle,
+              body: strings.festivalBody(festivalName(festival)),
+              payload: _payload(festival.date),
+            ),
+          );
+        }
+      }
+
+      if (prefs.dasha) {
+        final change = _dashaStartingOn(dashaPeriods, day);
+        final at = DateTime(
+          day.year,
+          day.month,
+          day.day,
+          prefs.hour,
+          prefs.minute,
+        );
+
+        if (change != null && at.isAfter(now)) {
+          planned.add(
+            ScheduledNotification(
+              id: NotificationService.dashaId(offset),
+              at: at,
+              title: strings.dashaTitle,
+              body: change.level == DashaLevel.maha
+                  ? strings.dashaMahaBody(grahaName(change.lord))
+                  : strings.dashaAntaraBody(grahaName(change.lord)),
+              payload: _payload(day),
+            ),
+          );
+        }
+      }
     }
 
     return planned;
+  }
+
+  /// The festival on [day] that is worth interrupting somebody for.
+  ///
+  /// ## Why only the solar ingresses
+  ///
+  /// The calendar knows Christmas, Independence Day, May Day and Good Friday
+  /// too. Those are public holidays: the phone's own calendar already has
+  /// them, and this app has nothing to add about them — a notification would
+  /// be a second reminder of a date the user was not asking us about.
+  ///
+  /// A solar ingress is different. The Sinhala and Tamil New Year and Thai
+  /// Pongal are the days this app's own subject matter is about, and the ones
+  /// people actually consult an almanac for. That is two a year.
+  ///
+  /// Read off [FestivalKind] rather than a list of names, so a festival added
+  /// to the calendar later lands on the right side of this by construction.
+  /// The requirement for an [Festival.exactMoment] is what excludes the
+  /// gazetted day *before* the New Year — it shares the kind but is a holiday
+  /// marker rather than an event, and notifying for both would mean two
+  /// notifications on consecutive evenings for one occasion.
+  static Festival? _festivalOn(List<Festival> festivals, DateTime day) {
+    for (final f in festivals) {
+      if (f.kind != FestivalKind.solarIngress || f.exactMoment == null) {
+        continue;
+      }
+      if (f.date.year == day.year &&
+          f.date.month == day.month &&
+          f.date.day == day.day) {
+        return f;
+      }
+    }
+    return null;
+  }
+
+  /// The daśā period beginning on [day], preferring the outer one.
+  ///
+  /// A mahādaśā always starts on the same instant as its first antardaśā, so
+  /// without this preference every mahādaśā change would arrive as two
+  /// notifications a minute apart saying almost the same thing. The outer
+  /// period is the one that matters.
+  static DashaPeriod? _dashaStartingOn(
+    List<DashaPeriod> periods,
+    DateTime day,
+  ) {
+    DashaPeriod? found;
+    for (final p in periods) {
+      final start = p.start.toLocal();
+      if (start.year != day.year ||
+          start.month != day.month ||
+          start.day != day.day) {
+        continue;
+      }
+      if (p.level == DashaLevel.maha) return p;
+      found ??= p;
+    }
+    return found;
   }
 
   static PoyaDay? _poyaOn(List<PoyaDay> poyaDays, DateTime day) {

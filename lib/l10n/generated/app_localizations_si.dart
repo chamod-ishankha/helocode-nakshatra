@@ -1256,4 +1256,39 @@ class L10nSi extends L10n {
   @override
   String get reportRegenerateNote =>
       'ඕනෑම විටෙක නැවත සෑදිය හැක — මෙය එක් වරක් පමණක් ගෙවන මිලදී ගැනීමකි.';
+
+  @override
+  String get settingsFestivalReminder => 'උත්සව නැකත්';
+
+  @override
+  String get settingsFestivalReminderHint =>
+      'අලුත් අවුරුද්දට සහ තෛපොංගල් දිනට පෙර දින සවස.';
+
+  @override
+  String get settingsDashaReminder => 'දශා වෙනස්වීම්';
+
+  @override
+  String get settingsDashaReminderHint =>
+      'ඔබේ කේන්දරයේ නව ග්‍රහ දශාවක් ආරම්භ වන විට.';
+
+  @override
+  String get notificationFestivalTitle => 'හෙට උත්සව දිනයකි';
+
+  @override
+  String notificationFestivalBody(Object festival) {
+    return 'හෙට $festival.';
+  }
+
+  @override
+  String get notificationDashaTitle => 'නව දශාවක් ආරම්භ වේ';
+
+  @override
+  String notificationDashaMahaBody(Object lord) {
+    return 'අද සිට ඔබේ $lord මහාදශාව ආරම්භ වේ.';
+  }
+
+  @override
+  String notificationDashaAntaraBody(Object lord) {
+    return 'අද සිට ඔබේ $lord අන්තර්දශාව ආරම්භ වේ.';
+  }
 }

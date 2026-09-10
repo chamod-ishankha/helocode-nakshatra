@@ -6,6 +6,8 @@ import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/domain/birth_profile.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../astro/calendar_models.dart';
+import '../astro/dasha.dart';
+import '../astro/ephemeris.dart';
 import '../astro/nekath.dart';
 import '../astro/panchanga.dart';
 import '../astro/panchanga_models.dart';
@@ -67,6 +69,10 @@ abstract final class NotificationCoordinator {
         poyaDays: _poyaWithin(now),
         poyaName: (poya) => poya.label(locale),
         formatTime: DateFormat('h:mm a', locale.code).format,
+        festivals: _festivalsWithin(now),
+        festivalName: (festival) => festival.label(locale),
+        dashaPeriods: prefs.dasha ? _dashaPeriods(profile) : const [],
+        grahaName: (lord) => lord.label(locale),
       );
 
       await NotificationService.reschedule(
@@ -115,6 +121,54 @@ abstract final class NotificationCoordinator {
     }
   }
 
+  /// Every festival that could fall inside the horizon.
+  ///
+  /// The same year-boundary problem as the poya list: Thai Pongal is in
+  /// January, so a horizon starting in late December has to look at next year
+  /// too or it would silently never fire.
+  static List<Festival> _festivalsWithin(DateTime now) {
+    try {
+      final horizon = now.add(
+        const Duration(days: NotificationService.horizonDays + 1),
+      );
+      return [
+        ...SriLankanCalendar.festivalsIn(now.year),
+        if (horizon.year != now.year)
+          ...SriLankanCalendar.festivalsIn(horizon.year),
+      ];
+    } on Object catch (e) {
+      AppLogger.warn('Could not list festivals: $e');
+      return const [];
+    }
+  }
+
+  /// The user's mahādaśā and antardaśā, flattened.
+  ///
+  /// Depth two on purpose. Pratyantara periods turn over every few days, so a
+  /// third level would put a notification in this list most weeks and turn the
+  /// rarest reminder in the app into the noisiest.
+  ///
+  /// Computed only when the switch is on: this is a chart calculation, and
+  /// running it at every launch for a user who never asked for it is work
+  /// nobody benefits from.
+  static List<DashaPeriod> _dashaPeriods(BirthProfile profile) {
+    try {
+      final chart = Ephemeris.computeChart(
+        localWallClock: profile.localWallClock,
+        zoneName: profile.place.timezone,
+        latitude: profile.place.latitude,
+        longitude: profile.place.longitude,
+      ).valueOrNull;
+      if (chart == null) return const [];
+
+      final maha = Vimshottari.forChart(chart, depth: 2);
+      return [...maha, for (final m in maha) ...m.children];
+    } on Object catch (e) {
+      AppLogger.warn('Could not compute daśā periods: $e');
+      return const [];
+    }
+  }
+
   static Future<NotificationStrings> _strings(AppLocale locale) async {
     final l10n = await L10n.delegate.load(Locale(locale.code));
 
@@ -124,6 +178,11 @@ abstract final class NotificationCoordinator {
       dailyBodyNoWindow: l10n.notificationDailyBodyUnknown,
       poyaTitle: l10n.notificationPoyaTitle,
       poyaBody: l10n.notificationPoyaBody,
+      festivalTitle: l10n.notificationFestivalTitle,
+      festivalBody: l10n.notificationFestivalBody,
+      dashaTitle: l10n.notificationDashaTitle,
+      dashaMahaBody: l10n.notificationDashaMahaBody,
+      dashaAntaraBody: l10n.notificationDashaAntaraBody,
     );
   }
 }

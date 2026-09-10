@@ -2324,6 +2324,60 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Yours to make again any time — this is a one-time purchase.'**
   String get reportRegenerateNote;
+
+  /// No description provided for @settingsFestivalReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Festival nekath'**
+  String get settingsFestivalReminder;
+
+  /// No description provided for @settingsFestivalReminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The evening before Avurudu and Thai Pongal.'**
+  String get settingsFestivalReminderHint;
+
+  /// No description provided for @settingsDashaReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Daśā changes'**
+  String get settingsDashaReminder;
+
+  /// No description provided for @settingsDashaReminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a new planetary period begins in your chart.'**
+  String get settingsDashaReminderHint;
+
+  /// No description provided for @notificationFestivalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Festival tomorrow'**
+  String get notificationFestivalTitle;
+
+  /// No description provided for @notificationFestivalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{festival} is tomorrow.'**
+  String notificationFestivalBody(Object festival);
+
+  /// No description provided for @notificationDashaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A new daśā begins'**
+  String get notificationDashaTitle;
+
+  /// No description provided for @notificationDashaMahaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {lord} mahādaśā starts today.'**
+  String notificationDashaMahaBody(Object lord);
+
+  /// No description provided for @notificationDashaAntaraBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {lord} antardaśā starts today.'**
+  String notificationDashaAntaraBody(Object lord);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

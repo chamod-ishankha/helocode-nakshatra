@@ -370,5 +370,14 @@
   "reportPreparing": "உங்கள் அறிக்கை தயாராகிறது…",
   "reportFailed": "அறிக்கையை உருவாக்க முடியவில்லை. மீண்டும் முயலவும்.",
   "reportShareText": "எனது சாதகம், Nakshatra வழியாக.",
-  "reportRegenerateNote": "எப்போது வேண்டுமானாலும் மீண்டும் உருவாக்கலாம் — இது ஒரு முறை மட்டும் செலுத்தும் கொள்முதல்."
+  "reportRegenerateNote": "எப்போது வேண்டுமானாலும் மீண்டும் உருவாக்கலாம் — இது ஒரு முறை மட்டும் செலுத்தும் கொள்முதல்.",
+  "settingsFestivalReminder": "பண்டிகை நேரங்கள்",
+  "settingsFestivalReminderHint": "புத்தாண்டு மற்றும் தைப்பொங்கலுக்கு முந்தைய நாள் மாலை.",
+  "settingsDashaReminder": "தசை மாற்றங்கள்",
+  "settingsDashaReminderHint": "உங்கள் சாதகத்தில் புதிய கிரக தசை தொடங்கும் போது.",
+  "notificationFestivalTitle": "நாளை பண்டிகை",
+  "notificationFestivalBody": "நாளை {festival}.",
+  "notificationDashaTitle": "புதிய தசை தொடங்குகிறது",
+  "notificationDashaMahaBody": "இன்று முதல் உங்கள் {lord} மகாதசை தொடங்குகிறது.",
+  "notificationDashaAntaraBody": "இன்று முதல் உங்கள் {lord} அந்தர்தசை தொடங்குகிறது."
 }

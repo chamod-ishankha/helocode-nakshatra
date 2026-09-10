@@ -1276,4 +1276,39 @@ class L10nTa extends L10n {
   @override
   String get reportRegenerateNote =>
       'எப்போது வேண்டுமானாலும் மீண்டும் உருவாக்கலாம் — இது ஒரு முறை மட்டும் செலுத்தும் கொள்முதல்.';
+
+  @override
+  String get settingsFestivalReminder => 'பண்டிகை நேரங்கள்';
+
+  @override
+  String get settingsFestivalReminderHint =>
+      'புத்தாண்டு மற்றும் தைப்பொங்கலுக்கு முந்தைய நாள் மாலை.';
+
+  @override
+  String get settingsDashaReminder => 'தசை மாற்றங்கள்';
+
+  @override
+  String get settingsDashaReminderHint =>
+      'உங்கள் சாதகத்தில் புதிய கிரக தசை தொடங்கும் போது.';
+
+  @override
+  String get notificationFestivalTitle => 'நாளை பண்டிகை';
+
+  @override
+  String notificationFestivalBody(Object festival) {
+    return 'நாளை $festival.';
+  }
+
+  @override
+  String get notificationDashaTitle => 'புதிய தசை தொடங்குகிறது';
+
+  @override
+  String notificationDashaMahaBody(Object lord) {
+    return 'இன்று முதல் உங்கள் $lord மகாதசை தொடங்குகிறது.';
+  }
+
+  @override
+  String notificationDashaAntaraBody(Object lord) {
+    return 'இன்று முதல் உங்கள் $lord அந்தர்தசை தொடங்குகிறது.';
+  }
 }

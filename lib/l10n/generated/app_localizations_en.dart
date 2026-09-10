@@ -1266,4 +1266,39 @@ class L10nEn extends L10n {
   @override
   String get reportRegenerateNote =>
       'Yours to make again any time — this is a one-time purchase.';
+
+  @override
+  String get settingsFestivalReminder => 'Festival nekath';
+
+  @override
+  String get settingsFestivalReminderHint =>
+      'The evening before Avurudu and Thai Pongal.';
+
+  @override
+  String get settingsDashaReminder => 'Daśā changes';
+
+  @override
+  String get settingsDashaReminderHint =>
+      'When a new planetary period begins in your chart.';
+
+  @override
+  String get notificationFestivalTitle => 'Festival tomorrow';
+
+  @override
+  String notificationFestivalBody(Object festival) {
+    return '$festival is tomorrow.';
+  }
+
+  @override
+  String get notificationDashaTitle => 'A new daśā begins';
+
+  @override
+  String notificationDashaMahaBody(Object lord) {
+    return 'Your $lord mahādaśā starts today.';
+  }
+
+  @override
+  String notificationDashaAntaraBody(Object lord) {
+    return 'Your $lord antardaśā starts today.';
+  }
 }

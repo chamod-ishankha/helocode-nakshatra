@@ -605,5 +605,14 @@
   "reportPreparing": "Preparing your report…",
   "reportFailed": "The report could not be created. Please try again.",
   "reportShareText": "My birth chart, from Nakshatra.",
-  "reportRegenerateNote": "Yours to make again any time — this is a one-time purchase."
+  "reportRegenerateNote": "Yours to make again any time — this is a one-time purchase.",
+  "settingsFestivalReminder": "Festival nekath",
+  "settingsFestivalReminderHint": "The evening before Avurudu and Thai Pongal.",
+  "settingsDashaReminder": "Daśā changes",
+  "settingsDashaReminderHint": "When a new planetary period begins in your chart.",
+  "notificationFestivalTitle": "Festival tomorrow",
+  "notificationFestivalBody": "{festival} is tomorrow.",
+  "notificationDashaTitle": "A new daśā begins",
+  "notificationDashaMahaBody": "Your {lord} mahādaśā starts today.",
+  "notificationDashaAntaraBody": "Your {lord} antardaśā starts today."
 }

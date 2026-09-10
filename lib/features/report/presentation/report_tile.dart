@@ -146,7 +146,9 @@ class _ReportTileState extends ConsumerState<ReportTile> {
                     ? (_total == 0
                           ? l.reportPreparing
                           : l.reportPageOf(_done, _total))
-                    : (owned ? l.reportGenerate : l.purchaseUpgrade),
+                    // Not "Go Pro": no subscription grants this, so
+                    // a Pro label here sells the wrong product.
+                    : (owned ? l.reportGenerate : l.reportUnlock),
               ),
             ),
           ],

@@ -1271,6 +1271,9 @@ class L10nEn extends L10n {
   String get reportGenerate => 'Birth chart report (PDF)';
 
   @override
+  String get reportUnlock => 'Unlock this report';
+
+  @override
   String get reportGenerateHint =>
       'A printable report in your language, to keep or to share.';
 

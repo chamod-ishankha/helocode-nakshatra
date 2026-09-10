@@ -1281,6 +1281,9 @@ class L10nTa extends L10n {
   String get reportGenerate => 'சாதக அறிக்கை (PDF)';
 
   @override
+  String get reportUnlock => 'இந்த அறிக்கையைத் திறக்கவும்';
+
+  @override
   String get reportGenerateHint =>
       'அச்சிடக்கூடிய, உங்கள் மொழியிலான அறிக்கை — வைத்திருக்கவோ பகிரவோ.';
 

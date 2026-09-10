@@ -2331,6 +2331,12 @@ abstract class L10n {
   /// **'Birth chart report (PDF)'**
   String get reportGenerate;
 
+  /// No description provided for @reportUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock this report'**
+  String get reportUnlock;
+
   /// No description provided for @reportGenerateHint.
   ///
   /// In en, this message translates to:

@@ -1261,6 +1261,9 @@ class L10nSi extends L10n {
   String get reportGenerate => 'කේන්ද්‍ර වාර්තාව (PDF)';
 
   @override
+  String get reportUnlock => 'මෙම වාර්තාව අගුළු හරින්න';
+
+  @override
   String get reportGenerateHint =>
       'මුද්‍රණය කළ හැකි, ඔබේ භාෂාවෙන් වූ වාර්තාවක් — තබාගැනීමට හෝ බෙදාගැනීමට.';
 

@@ -619,6 +619,7 @@
   "reportSectionMethod": "How this was calculated",
   "reportMethodBody": "Positions are sidereal, using the Lahiri ayanāṃśa and whole-sign houses, computed on your device from the Swiss Ephemeris.",
   "reportGenerate": "Birth chart report (PDF)",
+  "reportUnlock": "Unlock this report",
   "reportGenerateHint": "A printable report in your language, to keep or to share.",
   "reportPreparing": "Preparing your report…",
   "reportFailed": "The report could not be created. Please try again.",

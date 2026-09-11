@@ -1413,4 +1413,20 @@ class L10nTa extends L10n {
   @override
   String get paywallNothingLeft =>
       'விற்பனையில் உள்ள அனைத்தும் ஏற்கனவே உங்களிடம் உள்ளன. நன்றி.';
+
+  @override
+  String get placeCountry => 'நாடு';
+
+  @override
+  String get placeCountryPick => 'ஒரு நாட்டைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get placeCountrySearch => 'நாடுகளைத் தேடுக்கவும்';
+
+  @override
+  String get settingsLicences => 'உரிமங்கள்';
+
+  @override
+  String get settingsLicencesHint =>
+      'திறந்த மூலக் கூறுகள் மற்றும் தரவு மூலங்கள்';
 }

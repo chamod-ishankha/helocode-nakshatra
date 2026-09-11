@@ -33,14 +33,23 @@ class Profiles extends Table {
       boolean().withDefault(const Constant(true))();
 
   TextColumn get placeEn => text()();
-  TextColumn get placeSi => text()();
-  TextColumn get placeTa => text()();
+
+  /// Null where the place has no translation, which is most of the world.
+  /// Not backfilled with the English name: that would record "the Sinhala for
+  /// Chennai is Chennai" and no later release could tell it from a real one.
+  TextColumn get placeSi => text().nullable()();
+  TextColumn get placeTa => text().nullable()();
   TextColumn get district => text()();
   TextColumn get districtSi => text().nullable()();
   TextColumn get districtTa => text().nullable()();
   RealColumn get latitude => real()();
   RealColumn get longitude => real()();
   TextColumn get timezone => text()();
+
+  /// ISO 3166-1 alpha-2. Null for rows saved before the place list went
+  /// worldwide; those are Sri Lankan, but see the migration for why they are
+  /// left null rather than stamped `LK`.
+  TextColumn get countryCode => text().nullable()();
 
   /// Which profile the app is showing. Exactly one row is true; the store
   /// enforces it, because two would make "whose chart is this" unanswerable.
@@ -59,11 +68,34 @@ class AppDatabase extends _$AppDatabase {
   /// case in [migration] — a birth date is not something a user can be asked
   /// to type again because a schema moved.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        // The place list went worldwide (KAN-66). `placeSi`/`placeTa` become
+        // nullable because most of the world has no Sinhala or Tamil name,
+        // and `countryCode` is added.
+        //
+        // Existing rows are left exactly as they are. Every one of them is a
+        // Sri Lankan place with a real translation and a correct
+        // `Asia/Colombo` zone, so there is nothing to correct — and their
+        // `countryCode` stays null rather than being stamped `LK`, because
+        // "saved before countries existed" is the truth and "the user chose
+        // Sri Lanka" is not. Nothing reads the column for a chart.
+        // One statement, not two: `alterTable` rebuilds the table from the
+        // current Dart schema and copies the old rows across, so it is what
+        // widens `placeSi`/`placeTa`. `countryCode` has to be declared here as
+        // a new column — the copy reads the old table, which has no such
+        // column to read. A separate `addColumn` afterwards would be adding a
+        // column the rebuild had already created.
+        await m.alterTable(
+          TableMigration(profiles, newColumns: [profiles.countryCode]),
+        );
+      }
+    },
     beforeOpen: (details) async {
       // Off by default in SQLite, and this schema will grow foreign keys.
       await customStatement('PRAGMA foreign_keys = ON');

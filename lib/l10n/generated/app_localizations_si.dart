@@ -1392,4 +1392,20 @@ class L10nSi extends L10n {
   @override
   String get paywallNothingLeft =>
       'විකිණීමට ඇති සියල්ල දැනටමත් ඔබ සතුයි. ස්තූතියි.';
+
+  @override
+  String get placeCountry => 'රට';
+
+  @override
+  String get placeCountryPick => 'රටකක් තෝරන්න';
+
+  @override
+  String get placeCountrySearch => 'රටවල් ගොනු කරන්න';
+
+  @override
+  String get settingsLicences => 'බලට්ර';
+
+  @override
+  String get settingsLicencesHint =>
+      'විවෘත මූලාශ්‍ර කොම්පොනෙන්ටවර් සහ දත්ත මූලාශ්‍ර';
 }

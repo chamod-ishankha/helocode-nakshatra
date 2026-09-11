@@ -38,6 +38,18 @@ abstract final class Licensing {
       note: 'Historical timezone offsets, including Sri Lanka 1996-2006.',
     ),
     Attribution(
+      name: 'GeoNames',
+      author: 'Unxos GmbH',
+      license: 'CC BY 4.0',
+      url: 'https://www.geonames.org/',
+      // CC BY is not a courtesy: attribution is the condition of the licence,
+      // and it has to reach the people who receive the app rather than sit in
+      // a repository they will never open.
+      note:
+          'Birth-place names, coordinates, districts and time zones for '
+          'every country. Sri Lankan places are our own list.',
+    ),
+    Attribution(
       name: 'Flutter',
       author: 'Google LLC',
       license: 'BSD-3-Clause',

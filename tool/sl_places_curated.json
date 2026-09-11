@@ -1,5 +1,5 @@
 {
-  "_comment": "Birth places for offline lookup. Coordinates are city-centre to about 3 decimal places, which is the granularity astrologers normally work at — a few hundred metres shifts the ascendant by well under an arc-minute. timezone is the IANA zone, which carries Sri Lanka's 1996-2006 offset changes.",
+  "_comment": "Hand-checked Sri Lankan birth places, and the source of the Sinhala and Tamil names for the home market. Input to tool/build_places.py, not a bundled asset: the app reads assets/data/places/LK.json, which is this merged with GeoNames. Kept because GeoNames' Sri Lankan population figures are municipal-council numbers, so its population-15000 cut misses towns as large as Gampaha, Polonnaruwa and Bandarawela, and because its Sinhala coverage is about two thirds. Coordinates are city-centre to about 3 decimal places, which is the granularity astrologers work at.",
   "places": [
     {
       "en": "Colombo",

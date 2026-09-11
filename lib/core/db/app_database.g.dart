@@ -85,9 +85,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   late final GeneratedColumn<String> placeSi = GeneratedColumn<String>(
     'place_si',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _placeTaMeta = const VerificationMeta(
     'placeTa',
@@ -96,9 +96,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   late final GeneratedColumn<String> placeTa = GeneratedColumn<String>(
     'place_ta',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _districtMeta = const VerificationMeta(
     'district',
@@ -166,6 +166,17 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _countryCodeMeta = const VerificationMeta(
+    'countryCode',
+  );
+  @override
+  late final GeneratedColumn<String> countryCode = GeneratedColumn<String>(
+    'country_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isSelectedMeta = const VerificationMeta(
     'isSelected',
   );
@@ -208,6 +219,7 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
     latitude,
     longitude,
     timezone,
+    countryCode,
     isSelected,
     createdAt,
   ];
@@ -275,16 +287,12 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
         _placeSiMeta,
         placeSi.isAcceptableOrUnknown(data['place_si']!, _placeSiMeta),
       );
-    } else if (isInserting) {
-      context.missing(_placeSiMeta);
     }
     if (data.containsKey('place_ta')) {
       context.handle(
         _placeTaMeta,
         placeTa.isAcceptableOrUnknown(data['place_ta']!, _placeTaMeta),
       );
-    } else if (isInserting) {
-      context.missing(_placeTaMeta);
     }
     if (data.containsKey('district')) {
       context.handle(
@@ -329,6 +337,15 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
       );
     } else if (isInserting) {
       context.missing(_timezoneMeta);
+    }
+    if (data.containsKey('country_code')) {
+      context.handle(
+        _countryCodeMeta,
+        countryCode.isAcceptableOrUnknown(
+          data['country_code']!,
+          _countryCodeMeta,
+        ),
+      );
     }
     if (data.containsKey('is_selected')) {
       context.handle(
@@ -380,11 +397,11 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
       placeSi: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}place_si'],
-      )!,
+      ),
       placeTa: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}place_ta'],
-      )!,
+      ),
       district: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}district'],
@@ -409,6 +426,10 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
         DriftSqlType.string,
         data['${effectivePrefix}timezone'],
       )!,
+      countryCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}country_code'],
+      ),
       isSelected: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_selected'],
@@ -442,14 +463,23 @@ class Profile extends DataClass implements Insertable<Profile> {
   /// convention rather than a computation, and every screen must say so.
   final bool birthTimeKnown;
   final String placeEn;
-  final String placeSi;
-  final String placeTa;
+
+  /// Null where the place has no translation, which is most of the world.
+  /// Not backfilled with the English name: that would record "the Sinhala for
+  /// Chennai is Chennai" and no later release could tell it from a real one.
+  final String? placeSi;
+  final String? placeTa;
   final String district;
   final String? districtSi;
   final String? districtTa;
   final double latitude;
   final double longitude;
   final String timezone;
+
+  /// ISO 3166-1 alpha-2. Null for rows saved before the place list went
+  /// worldwide; those are Sri Lankan, but see the migration for why they are
+  /// left null rather than stamped `LK`.
+  final String? countryCode;
 
   /// Which profile the app is showing. Exactly one row is true; the store
   /// enforces it, because two would make "whose chart is this" unanswerable.
@@ -464,14 +494,15 @@ class Profile extends DataClass implements Insertable<Profile> {
     required this.birthTimeMinutes,
     required this.birthTimeKnown,
     required this.placeEn,
-    required this.placeSi,
-    required this.placeTa,
+    this.placeSi,
+    this.placeTa,
     required this.district,
     this.districtSi,
     this.districtTa,
     required this.latitude,
     required this.longitude,
     required this.timezone,
+    this.countryCode,
     required this.isSelected,
     required this.createdAt,
   });
@@ -484,8 +515,12 @@ class Profile extends DataClass implements Insertable<Profile> {
     map['birth_time_minutes'] = Variable<int>(birthTimeMinutes);
     map['birth_time_known'] = Variable<bool>(birthTimeKnown);
     map['place_en'] = Variable<String>(placeEn);
-    map['place_si'] = Variable<String>(placeSi);
-    map['place_ta'] = Variable<String>(placeTa);
+    if (!nullToAbsent || placeSi != null) {
+      map['place_si'] = Variable<String>(placeSi);
+    }
+    if (!nullToAbsent || placeTa != null) {
+      map['place_ta'] = Variable<String>(placeTa);
+    }
     map['district'] = Variable<String>(district);
     if (!nullToAbsent || districtSi != null) {
       map['district_si'] = Variable<String>(districtSi);
@@ -496,6 +531,9 @@ class Profile extends DataClass implements Insertable<Profile> {
     map['latitude'] = Variable<double>(latitude);
     map['longitude'] = Variable<double>(longitude);
     map['timezone'] = Variable<String>(timezone);
+    if (!nullToAbsent || countryCode != null) {
+      map['country_code'] = Variable<String>(countryCode);
+    }
     map['is_selected'] = Variable<bool>(isSelected);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -509,8 +547,12 @@ class Profile extends DataClass implements Insertable<Profile> {
       birthTimeMinutes: Value(birthTimeMinutes),
       birthTimeKnown: Value(birthTimeKnown),
       placeEn: Value(placeEn),
-      placeSi: Value(placeSi),
-      placeTa: Value(placeTa),
+      placeSi: placeSi == null && nullToAbsent
+          ? const Value.absent()
+          : Value(placeSi),
+      placeTa: placeTa == null && nullToAbsent
+          ? const Value.absent()
+          : Value(placeTa),
       district: Value(district),
       districtSi: districtSi == null && nullToAbsent
           ? const Value.absent()
@@ -521,6 +563,9 @@ class Profile extends DataClass implements Insertable<Profile> {
       latitude: Value(latitude),
       longitude: Value(longitude),
       timezone: Value(timezone),
+      countryCode: countryCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(countryCode),
       isSelected: Value(isSelected),
       createdAt: Value(createdAt),
     );
@@ -538,14 +583,15 @@ class Profile extends DataClass implements Insertable<Profile> {
       birthTimeMinutes: serializer.fromJson<int>(json['birthTimeMinutes']),
       birthTimeKnown: serializer.fromJson<bool>(json['birthTimeKnown']),
       placeEn: serializer.fromJson<String>(json['placeEn']),
-      placeSi: serializer.fromJson<String>(json['placeSi']),
-      placeTa: serializer.fromJson<String>(json['placeTa']),
+      placeSi: serializer.fromJson<String?>(json['placeSi']),
+      placeTa: serializer.fromJson<String?>(json['placeTa']),
       district: serializer.fromJson<String>(json['district']),
       districtSi: serializer.fromJson<String?>(json['districtSi']),
       districtTa: serializer.fromJson<String?>(json['districtTa']),
       latitude: serializer.fromJson<double>(json['latitude']),
       longitude: serializer.fromJson<double>(json['longitude']),
       timezone: serializer.fromJson<String>(json['timezone']),
+      countryCode: serializer.fromJson<String?>(json['countryCode']),
       isSelected: serializer.fromJson<bool>(json['isSelected']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -560,14 +606,15 @@ class Profile extends DataClass implements Insertable<Profile> {
       'birthTimeMinutes': serializer.toJson<int>(birthTimeMinutes),
       'birthTimeKnown': serializer.toJson<bool>(birthTimeKnown),
       'placeEn': serializer.toJson<String>(placeEn),
-      'placeSi': serializer.toJson<String>(placeSi),
-      'placeTa': serializer.toJson<String>(placeTa),
+      'placeSi': serializer.toJson<String?>(placeSi),
+      'placeTa': serializer.toJson<String?>(placeTa),
       'district': serializer.toJson<String>(district),
       'districtSi': serializer.toJson<String?>(districtSi),
       'districtTa': serializer.toJson<String?>(districtTa),
       'latitude': serializer.toJson<double>(latitude),
       'longitude': serializer.toJson<double>(longitude),
       'timezone': serializer.toJson<String>(timezone),
+      'countryCode': serializer.toJson<String?>(countryCode),
       'isSelected': serializer.toJson<bool>(isSelected),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -580,14 +627,15 @@ class Profile extends DataClass implements Insertable<Profile> {
     int? birthTimeMinutes,
     bool? birthTimeKnown,
     String? placeEn,
-    String? placeSi,
-    String? placeTa,
+    Value<String?> placeSi = const Value.absent(),
+    Value<String?> placeTa = const Value.absent(),
     String? district,
     Value<String?> districtSi = const Value.absent(),
     Value<String?> districtTa = const Value.absent(),
     double? latitude,
     double? longitude,
     String? timezone,
+    Value<String?> countryCode = const Value.absent(),
     bool? isSelected,
     DateTime? createdAt,
   }) => Profile(
@@ -597,14 +645,15 @@ class Profile extends DataClass implements Insertable<Profile> {
     birthTimeMinutes: birthTimeMinutes ?? this.birthTimeMinutes,
     birthTimeKnown: birthTimeKnown ?? this.birthTimeKnown,
     placeEn: placeEn ?? this.placeEn,
-    placeSi: placeSi ?? this.placeSi,
-    placeTa: placeTa ?? this.placeTa,
+    placeSi: placeSi.present ? placeSi.value : this.placeSi,
+    placeTa: placeTa.present ? placeTa.value : this.placeTa,
     district: district ?? this.district,
     districtSi: districtSi.present ? districtSi.value : this.districtSi,
     districtTa: districtTa.present ? districtTa.value : this.districtTa,
     latitude: latitude ?? this.latitude,
     longitude: longitude ?? this.longitude,
     timezone: timezone ?? this.timezone,
+    countryCode: countryCode.present ? countryCode.value : this.countryCode,
     isSelected: isSelected ?? this.isSelected,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -632,6 +681,9 @@ class Profile extends DataClass implements Insertable<Profile> {
       latitude: data.latitude.present ? data.latitude.value : this.latitude,
       longitude: data.longitude.present ? data.longitude.value : this.longitude,
       timezone: data.timezone.present ? data.timezone.value : this.timezone,
+      countryCode: data.countryCode.present
+          ? data.countryCode.value
+          : this.countryCode,
       isSelected: data.isSelected.present
           ? data.isSelected.value
           : this.isSelected,
@@ -656,6 +708,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
           ..write('timezone: $timezone, ')
+          ..write('countryCode: $countryCode, ')
           ..write('isSelected: $isSelected, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -678,6 +731,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     latitude,
     longitude,
     timezone,
+    countryCode,
     isSelected,
     createdAt,
   );
@@ -699,6 +753,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           other.latitude == this.latitude &&
           other.longitude == this.longitude &&
           other.timezone == this.timezone &&
+          other.countryCode == this.countryCode &&
           other.isSelected == this.isSelected &&
           other.createdAt == this.createdAt);
 }
@@ -710,14 +765,15 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   final Value<int> birthTimeMinutes;
   final Value<bool> birthTimeKnown;
   final Value<String> placeEn;
-  final Value<String> placeSi;
-  final Value<String> placeTa;
+  final Value<String?> placeSi;
+  final Value<String?> placeTa;
   final Value<String> district;
   final Value<String?> districtSi;
   final Value<String?> districtTa;
   final Value<double> latitude;
   final Value<double> longitude;
   final Value<String> timezone;
+  final Value<String?> countryCode;
   final Value<bool> isSelected;
   final Value<DateTime> createdAt;
   const ProfilesCompanion({
@@ -735,6 +791,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.timezone = const Value.absent(),
+    this.countryCode = const Value.absent(),
     this.isSelected = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -745,22 +802,21 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     required int birthTimeMinutes,
     this.birthTimeKnown = const Value.absent(),
     required String placeEn,
-    required String placeSi,
-    required String placeTa,
+    this.placeSi = const Value.absent(),
+    this.placeTa = const Value.absent(),
     required String district,
     this.districtSi = const Value.absent(),
     this.districtTa = const Value.absent(),
     required double latitude,
     required double longitude,
     required String timezone,
+    this.countryCode = const Value.absent(),
     this.isSelected = const Value.absent(),
     required DateTime createdAt,
   }) : name = Value(name),
        birthDate = Value(birthDate),
        birthTimeMinutes = Value(birthTimeMinutes),
        placeEn = Value(placeEn),
-       placeSi = Value(placeSi),
-       placeTa = Value(placeTa),
        district = Value(district),
        latitude = Value(latitude),
        longitude = Value(longitude),
@@ -781,6 +837,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     Expression<double>? latitude,
     Expression<double>? longitude,
     Expression<String>? timezone,
+    Expression<String>? countryCode,
     Expression<bool>? isSelected,
     Expression<DateTime>? createdAt,
   }) {
@@ -799,6 +856,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
       if (timezone != null) 'timezone': timezone,
+      if (countryCode != null) 'country_code': countryCode,
       if (isSelected != null) 'is_selected': isSelected,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -811,14 +869,15 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     Value<int>? birthTimeMinutes,
     Value<bool>? birthTimeKnown,
     Value<String>? placeEn,
-    Value<String>? placeSi,
-    Value<String>? placeTa,
+    Value<String?>? placeSi,
+    Value<String?>? placeTa,
     Value<String>? district,
     Value<String?>? districtSi,
     Value<String?>? districtTa,
     Value<double>? latitude,
     Value<double>? longitude,
     Value<String>? timezone,
+    Value<String?>? countryCode,
     Value<bool>? isSelected,
     Value<DateTime>? createdAt,
   }) {
@@ -837,6 +896,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       timezone: timezone ?? this.timezone,
+      countryCode: countryCode ?? this.countryCode,
       isSelected: isSelected ?? this.isSelected,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -887,6 +947,9 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     if (timezone.present) {
       map['timezone'] = Variable<String>(timezone.value);
     }
+    if (countryCode.present) {
+      map['country_code'] = Variable<String>(countryCode.value);
+    }
     if (isSelected.present) {
       map['is_selected'] = Variable<bool>(isSelected.value);
     }
@@ -913,6 +976,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
           ..write('timezone: $timezone, ')
+          ..write('countryCode: $countryCode, ')
           ..write('isSelected: $isSelected, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -939,14 +1003,15 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       required int birthTimeMinutes,
       Value<bool> birthTimeKnown,
       required String placeEn,
-      required String placeSi,
-      required String placeTa,
+      Value<String?> placeSi,
+      Value<String?> placeTa,
       required String district,
       Value<String?> districtSi,
       Value<String?> districtTa,
       required double latitude,
       required double longitude,
       required String timezone,
+      Value<String?> countryCode,
       Value<bool> isSelected,
       required DateTime createdAt,
     });
@@ -958,14 +1023,15 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<int> birthTimeMinutes,
       Value<bool> birthTimeKnown,
       Value<String> placeEn,
-      Value<String> placeSi,
-      Value<String> placeTa,
+      Value<String?> placeSi,
+      Value<String?> placeTa,
       Value<String> district,
       Value<String?> districtSi,
       Value<String?> districtTa,
       Value<double> latitude,
       Value<double> longitude,
       Value<String> timezone,
+      Value<String?> countryCode,
       Value<bool> isSelected,
       Value<DateTime> createdAt,
     });
@@ -1046,6 +1112,11 @@ class $$ProfilesTableFilterComposer
 
   ColumnFilters<String> get timezone => $composableBuilder(
     column: $table.timezone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get countryCode => $composableBuilder(
+    column: $table.countryCode,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1139,6 +1210,11 @@ class $$ProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get countryCode => $composableBuilder(
+    column: $table.countryCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isSelected => $composableBuilder(
     column: $table.isSelected,
     builder: (column) => ColumnOrderings(column),
@@ -1209,6 +1285,11 @@ class $$ProfilesTableAnnotationComposer
   GeneratedColumn<String> get timezone =>
       $composableBuilder(column: $table.timezone, builder: (column) => column);
 
+  GeneratedColumn<String> get countryCode => $composableBuilder(
+    column: $table.countryCode,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isSelected => $composableBuilder(
     column: $table.isSelected,
     builder: (column) => column,
@@ -1252,14 +1333,15 @@ class $$ProfilesTableTableManager
                 Value<int> birthTimeMinutes = const Value.absent(),
                 Value<bool> birthTimeKnown = const Value.absent(),
                 Value<String> placeEn = const Value.absent(),
-                Value<String> placeSi = const Value.absent(),
-                Value<String> placeTa = const Value.absent(),
+                Value<String?> placeSi = const Value.absent(),
+                Value<String?> placeTa = const Value.absent(),
                 Value<String> district = const Value.absent(),
                 Value<String?> districtSi = const Value.absent(),
                 Value<String?> districtTa = const Value.absent(),
                 Value<double> latitude = const Value.absent(),
                 Value<double> longitude = const Value.absent(),
                 Value<String> timezone = const Value.absent(),
+                Value<String?> countryCode = const Value.absent(),
                 Value<bool> isSelected = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => ProfilesCompanion(
@@ -1277,6 +1359,7 @@ class $$ProfilesTableTableManager
                 latitude: latitude,
                 longitude: longitude,
                 timezone: timezone,
+                countryCode: countryCode,
                 isSelected: isSelected,
                 createdAt: createdAt,
               ),
@@ -1288,14 +1371,15 @@ class $$ProfilesTableTableManager
                 required int birthTimeMinutes,
                 Value<bool> birthTimeKnown = const Value.absent(),
                 required String placeEn,
-                required String placeSi,
-                required String placeTa,
+                Value<String?> placeSi = const Value.absent(),
+                Value<String?> placeTa = const Value.absent(),
                 required String district,
                 Value<String?> districtSi = const Value.absent(),
                 Value<String?> districtTa = const Value.absent(),
                 required double latitude,
                 required double longitude,
                 required String timezone,
+                Value<String?> countryCode = const Value.absent(),
                 Value<bool> isSelected = const Value.absent(),
                 required DateTime createdAt,
               }) => ProfilesCompanion.insert(
@@ -1313,6 +1397,7 @@ class $$ProfilesTableTableManager
                 latitude: latitude,
                 longitude: longitude,
                 timezone: timezone,
+                countryCode: countryCode,
                 isSelected: isSelected,
                 createdAt: createdAt,
               ),

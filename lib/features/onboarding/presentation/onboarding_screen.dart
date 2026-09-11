@@ -11,6 +11,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/router/app_router.dart';
 import '../data/place_repository.dart';
+import 'country_field.dart';
 import '../data/profile_repository.dart';
 import '../domain/birth_profile.dart';
 
@@ -472,7 +473,13 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
   @override
   Widget build(BuildContext context) {
     final locale = ref.watch(localeProvider);
-    final results = ref.watch(placeSearchProvider(_query));
+    final country = ref.watch(effectiveCountryProvider);
+    final results = country.when(
+      loading: () => const AsyncValue<List<Place>>.loading(),
+      error: AsyncValue<List<Place>>.error,
+      data: (cc) =>
+          ref.watch(placeSearchProvider((countryCode: cc, query: _query))),
+    );
 
     return _StepScaffold(
       // Its results are a ListView with its own scrolling, which needs a
@@ -482,6 +489,14 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
       subtitle: L10n.of(context).onboardingPlaceHelp,
       child: Column(
         children: [
+          // The country comes first because it scopes everything below it.
+          // Two places in this data are called Colombo — one in Sri Lanka and
+          // one in Brazil — and nine are called Victoria.
+          SizedBox(
+            width: double.infinity,
+            child: CountryField(onChanged: () => setState(() {})),
+          ),
+          const SizedBox(height: AppSpacing.sm),
           TextField(
             decoration: InputDecoration(
               labelText: L10n.of(context).onboardingPlaceSearch,
@@ -503,7 +518,12 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
                       itemCount: places.length,
                       itemBuilder: (context, i) {
                         final p = places[i];
-                        final selected = widget.value?.en == p.en;
+                        // Name alone is not an identity once the list is
+                        // worldwide — the coordinates are what differ between
+                        // two towns that share a name.
+                        final selected = widget.value?.en == p.en &&
+                            widget.value?.latitude == p.latitude &&
+                            widget.value?.longitude == p.longitude;
                         return ListTile(
                           selected: selected,
                           leading: Icon(

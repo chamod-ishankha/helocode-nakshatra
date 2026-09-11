@@ -1402,4 +1402,19 @@ class L10nEn extends L10n {
   @override
   String get paywallNothingLeft =>
       'You already have everything on sale. Thank you.';
+
+  @override
+  String get placeCountry => 'Country';
+
+  @override
+  String get placeCountryPick => 'Select a country';
+
+  @override
+  String get placeCountrySearch => 'Search countries';
+
+  @override
+  String get settingsLicences => 'Licences';
+
+  @override
+  String get settingsLicencesHint => 'Open-source components and data sources';
 }

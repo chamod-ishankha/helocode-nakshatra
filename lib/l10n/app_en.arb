@@ -680,5 +680,10 @@
   "profilesUnavailable": "Saved charts need storage this build could not open.",
   "profilesBornOn": "Born {date}",
   "purchaseOwnedReport": "Birth chart report — yours",
-  "paywallNothingLeft": "You already have everything on sale. Thank you."
+  "paywallNothingLeft": "You already have everything on sale. Thank you.",
+  "placeCountry": "Country",
+  "placeCountryPick": "Select a country",
+  "placeCountrySearch": "Search countries",
+  "settingsLicences": "Licences",
+  "settingsLicencesHint": "Open-source components and data sources"
 }

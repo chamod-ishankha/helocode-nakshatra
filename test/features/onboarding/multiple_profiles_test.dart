@@ -23,6 +23,7 @@ void main() {
   late ProfileRepository repository;
 
   const colombo = Place(
+    timezone: 'Asia/Colombo',
     en: 'Colombo',
     si: 'කොළඹ',
     ta: 'கொழும்பு',

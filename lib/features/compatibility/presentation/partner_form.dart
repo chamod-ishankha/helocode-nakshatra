@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/place_repository.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../onboarding/presentation/country_field.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import '../domain/compatibility_providers.dart';
 
@@ -87,7 +88,14 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
   Widget build(BuildContext context) {
     final l = L10n.of(context);
     final theme = Theme.of(context);
-    final results = ref.watch(placeSearchProvider(_placeQuery.text));
+    final country = ref.watch(effectiveCountryProvider);
+    final results = country.when(
+      loading: () => const AsyncValue<List<Place>>.loading(),
+      error: AsyncValue<List<Place>>.error,
+      data: (cc) => ref.watch(
+        placeSearchProvider((countryCode: cc, query: _placeQuery.text)),
+      ),
+    );
 
     return Padding(
       // Lifts the sheet clear of the keyboard rather than letting it cover
@@ -171,6 +179,16 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
               title: Text(
                 l.onboardingTimeUnknown,
                 style: theme.textTheme.bodySmall,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+
+            // Scopes the search below it. A partner is often born in a
+            // different country from the user, so this is not a formality.
+            SizedBox(
+              width: double.infinity,
+              child: CountryField(
+                onChanged: () => setState(() => _place = null),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),

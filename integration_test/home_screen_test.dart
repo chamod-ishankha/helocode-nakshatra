@@ -18,6 +18,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   const colombo = Place(
+    timezone: 'Asia/Colombo',
     en: 'Colombo',
     si: 'කොළඹ',
     ta: 'கொழும்பு',

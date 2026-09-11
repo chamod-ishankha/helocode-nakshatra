@@ -84,6 +84,7 @@ dev_dependencies:
   flutter_native_splash: ^2.4.7
   drift_dev: ^2.34.0
   build_runner: ^2.15.1
+  sqlite3: ^3.5.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -98,9 +99,12 @@ flutter:
   generate: true
 
   assets:
-    # Birth places for offline lookup. Onboarding must complete with no
-    # network, so place search cannot depend on a geocoding API.
-    - assets/data/sl_places.json
+    # Birth places for offline lookup, one file per country plus an index.
+    # Onboarding must complete with no network, so place search cannot depend
+    # on a geocoding API. Built by tool/build_places.py from GeoNames
+    # (CC BY 4.0) merged with the hand-checked Sri Lankan list; attribution is
+    # in assets/data/places/README.md.
+    - assets/data/places/
 
     # Authored horoscope copy (KAN-31). Data rather than code so KAN-32 can
     # add hundreds of lines in three languages without touching Dart.

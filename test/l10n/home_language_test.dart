@@ -85,6 +85,7 @@ void main() {
 
   setUp(() async {
     const place = Place(
+      timezone: 'Asia/Colombo',
       en: 'Panadura',
       si: 'පානදුර',
       ta: 'பாணந்துறை',

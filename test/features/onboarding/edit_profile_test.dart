@@ -23,6 +23,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const place = Place(
+    timezone: 'Asia/Colombo',
     en: 'Panadura',
     si: 'පානදුර',
     ta: 'பாணந்துறை',

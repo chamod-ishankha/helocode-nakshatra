@@ -21,6 +21,7 @@ void main() {
   late ProfileStore store;
 
   const colombo = Place(
+    timezone: 'Asia/Colombo',
     en: 'Colombo',
     si: 'කොළඹ',
     ta: 'கொழும்பு',
@@ -33,6 +34,7 @@ void main() {
 
   /// A place saved by a build that had no district translations yet.
   const older = Place(
+    timezone: 'Asia/Colombo',
     en: 'Panadura',
     si: 'පානදුර',
     ta: 'பாணந்துறை',

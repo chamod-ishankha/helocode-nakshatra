@@ -406,5 +406,10 @@
   "profilesUnavailable": "සුරකින ලද කේන්දර සඳහා අවශ්‍ය ගබඩාව මෙම අනුවාදයට විවෘත කළ නොහැකි විය.",
   "profilesBornOn": "උපන් දිනය {date}",
   "purchaseOwnedReport": "කේන්ද්‍ර වාර්තාව — ඔබ සතුයි",
-  "paywallNothingLeft": "විකිණීමට ඇති සියල්ල දැනටමත් ඔබ සතුයි. ස්තූතියි."
+  "paywallNothingLeft": "විකිණීමට ඇති සියල්ල දැනටමත් ඔබ සතුයි. ස්තූතියි.",
+  "placeCountry": "රට",
+  "placeCountryPick": "රටකක් තෝරන්න",
+  "placeCountrySearch": "රටවල් ගොනු කරන්න",
+  "settingsLicences": "බලට්ර",
+  "settingsLicencesHint": "විවෘත මූලාශ්‍ර කොම්පොනෙන්ටවර් සහ දත්ත මූලාශ්‍ර"
 }

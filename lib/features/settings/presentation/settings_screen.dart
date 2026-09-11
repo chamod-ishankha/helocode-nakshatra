@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/chart_style.dart';
 import '../../../core/config/theme_preference.dart';
+import '../../../core/licensing.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
@@ -116,6 +117,19 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(l.settingsTerms),
             trailing: const Icon(Icons.open_in_new, size: 18),
             onTap: () => _open(context, _termsUrl),
+          ),
+          // Not a nicety. The Swiss Ephemeris is used under the AGPL, which
+          // obliges us to offer the source to whoever receives the binary, and
+          // the place data is CC BY, which makes attribution a condition of
+          // using it at all. `Licensing` has carried both facts since the
+          // start and nothing displayed them, so neither reached a user.
+          ListTile(
+            leading: const Icon(Icons.balance_outlined),
+            title: Text(l.settingsLicences),
+            subtitle: Text(l.settingsLicencesHint),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const _LicencesPage()),
+            ),
           ),
           const _VersionTile(),
 
@@ -528,6 +542,58 @@ class _VersionTile extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// What the AGPL and CC BY oblige us to show.
+///
+/// Deliberately plain: every string here is a licence fact or a proper name,
+/// and translating "AGPL-3.0" or "Astrodienst AG" would make the notice less
+/// useful, not more. The surrounding rows are localised; these are not.
+class _LicencesPage extends StatelessWidget {
+  const _LicencesPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L10n.of(context);
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(l.settingsLicences)),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Text(Licensing.notice, style: theme.textTheme.bodyMedium),
+          ),
+          for (final a in Licensing.attributions)
+            ListTile(
+              title: Text(a.name),
+              subtitle: Text(
+                a.note == null
+                    ? '${a.author} · ${a.license}'
+                    : '${a.author} · ${a.license}\n${a.note}',
+              ),
+              isThreeLine: a.note != null,
+              trailing: const Icon(Icons.open_in_new, size: 18),
+              onTap: () => launchUrl(
+                Uri.parse(a.url),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+          ListTile(
+            title: const Text('Source code'),
+            subtitle: const Text(Licensing.sourceUrl),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => launchUrl(
+              Uri.parse(Licensing.sourceUrl),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -2540,6 +2540,36 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'You already have everything on sale. Thank you.'**
   String get paywallNothingLeft;
+
+  /// No description provided for @placeCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get placeCountry;
+
+  /// No description provided for @placeCountryPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a country'**
+  String get placeCountryPick;
+
+  /// No description provided for @placeCountrySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search countries'**
+  String get placeCountrySearch;
+
+  /// No description provided for @settingsLicences.
+  ///
+  /// In en, this message translates to:
+  /// **'Licences'**
+  String get settingsLicences;
+
+  /// No description provided for @settingsLicencesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source components and data sources'**
+  String get settingsLicencesHint;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

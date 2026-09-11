@@ -35,6 +35,7 @@ void main() {
   final latin = RegExp(r'[A-Za-z]');
 
   const place = Place(
+    timezone: 'Asia/Colombo',
     en: 'Panadura',
     si: 'පානදුර',
     ta: 'பாணந்துறை',

@@ -406,5 +406,10 @@
   "profilesUnavailable": "சேமித்த சாதகங்களுக்குத் தேவையான சேமிப்பை இந்தப் பதிப்பால் திறக்க முடியவில்லை.",
   "profilesBornOn": "பிறந்த நாள் {date}",
   "purchaseOwnedReport": "சாதக அறிக்கை — உங்களுடையது",
-  "paywallNothingLeft": "விற்பனையில் உள்ள அனைத்தும் ஏற்கனவே உங்களிடம் உள்ளன. நன்றி."
+  "paywallNothingLeft": "விற்பனையில் உள்ள அனைத்தும் ஏற்கனவே உங்களிடம் உள்ளன. நன்றி.",
+  "placeCountry": "நாடு",
+  "placeCountryPick": "ஒரு நாட்டைத் தேர்ந்தெடுக்கவும்",
+  "placeCountrySearch": "நாடுகளைத் தேடுக்கவும்",
+  "settingsLicences": "உரிமங்கள்",
+  "settingsLicencesHint": "திறந்த மூலக் கூறுகள் மற்றும் தரவு மூலங்கள்"
 }

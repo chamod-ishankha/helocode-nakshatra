@@ -84,6 +84,25 @@ Prices are set in Play, never in the app — the app only ever displays what the
 store returns, in the user's own currency. See the comment at the top of
 `products.dart` for why.
 
+### Product icons
+
+Each product needs one: **32-bit PNG, 1:1, 512–1080 px a side, no text, no
+branding.** They are in `assets/store/products/`, named for the product id, and
+rebuilt with:
+
+```
+python tool/build_product_icons.py
+```
+
+They are drawn rather than photographed so each one is accurate to what is
+being sold: an ad banner struck through, a sheet carrying the chart grid, and
+an open padlock for Pro — badged with a crescent for the monthly term and a sun
+for the yearly one, since Play requires the two to differ and in an almanac a
+month is one cycle of the moon and a year is one of the sun.
+
+No app logo. The eight-pointed star would be branding, which the rule forbids;
+the palette is the app's, which it does not.
+
 ### `compatibility_report`
 
 Declared in code as **not sellable**: nothing in the app gates on what it

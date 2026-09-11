@@ -229,6 +229,7 @@ and Tamil terms convert far better for a fraction of the competition.
 | Content rating | See below |
 | Target audience | 18+ |
 | Data safety | See [play-data-safety.md](play-data-safety.md) |
+| Selling setup | See [play-monetisation.md](play-monetisation.md) |
 
 ## Content rating questionnaire (IARC)
 

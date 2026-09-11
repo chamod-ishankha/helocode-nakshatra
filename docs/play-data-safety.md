@@ -25,6 +25,11 @@ commit — see [When this changes](#when-this-changes).
 > declaration today. The declaration has to be fixed before the *next* build
 > ships, not retrospectively.
 
+Selling in Play Console needs more than this file — the payments profile, the
+products, and RevenueCat's access to Play are in
+[play-monetisation.md](play-monetisation.md), in the order they unblock each
+other.
+
 Play Console can import these answers: **App content → Data safety → export the
 CSV, fill the `Response value` column, re-import.** `tool/` has no generator for
 it; the mapping is small enough to redo from the tables below.

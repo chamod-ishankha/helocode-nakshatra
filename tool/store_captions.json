@@ -1,0 +1,44 @@
+{
+  "_comment": "Subtitles under each store screenshot, from docs/play-listing.md. Headings are NOT here: those are read from the app's own ARB files by build_store_screenshots.py, so the store and the app say the same words. 08-positions is an English-only shot.",
+
+  "01-home": {
+    "en": "Before you start anything",
+    "si": "ඔබ යමක් පටන් ගැනීමට පෙර",
+    "ta": "நீங்கள் தொடங்கும் முன்"
+  },
+  "02-chart": {
+    "en": "Drawn the way you read it",
+    "si": "ඔබ කියවන ආකාරයට",
+    "ta": "நீங்கள் படிக்கும் முறையில்"
+  },
+  "03-dasha": {
+    "en": "Which period is running, and until when",
+    "si": "ගතවන දශාව සහ එය අවසන් වන දිනය",
+    "ta": "நடக்கும் தசை, எப்போது முடியும்"
+  },
+  "04-compatibility": {
+    "en": "Scored factor by factor",
+    "si": "එකින් එක ලකුණු කර",
+    "ta": "ஒவ்வொன்றாக மதிப்பிடப்பட்டு"
+  },
+  "05-horoscope": {
+    "en": "Written from your own chart",
+    "si": "ඔබේම කේන්දරයෙන් ලියැවී",
+    "ta": "உங்கள் சொந்த ஜாதகத்திலிருந்து"
+  },
+  "06-calendar": {
+    "en": "Every poya and festival, a year ahead",
+    "si": "සෑම පෝයක්ම, වසරක් ඉදිරියට",
+    "ta": "ஒவ்வொரு பௌர்ணமியும், ஒரு வருடம் முன்னதாக"
+  },
+  "07-settings": {
+    "en": "Sinhala, Tamil and English throughout",
+    "si": "සිංහල, දෙමළ සහ ඉංග්‍රීසි",
+    "ta": "சிங்களம், தமிழ், ஆங்கிலம்"
+  },
+  "08-positions": {
+    "en": "Every graha to the degree, with its nakshatra",
+    "si": "",
+    "ta": ""
+  }
+}

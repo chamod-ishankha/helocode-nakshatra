@@ -3,6 +3,23 @@
 Captured from the **prod flavour, profile build** on a Galaxy S23 (SM-S911B),
 1080 × 2340, on 11 September 2026. One folder per store listing.
 
+**Upload `framed/`.** `en/`, `si/` and `ta/` hold the raw captures; `framed/`
+holds the same shots on a branded background with a heading and a subtitle,
+at 1080 × 1920. Build them with:
+
+```
+python tool/build_store_screenshots.py
+```
+
+Framing does two jobs. It reads better in a listing, and it fixes a real
+problem: a raw capture off this device is 9:19.5, taller than the 16:9-to-9:16
+window Play documents. The framed canvas is exactly 9:16, so the ratio
+question goes away without stretching a single pixel.
+
+Headings come from the app's own ARB strings — `chartTitle`, `dashaTitle` and
+so on — so the store and the app say the same words rather than two
+translations of one idea. Subtitles live in `tool/store_captions.json`.
+
 Upload in filename order. Play shows the first two above the fold, so the
 daily reason to open the app comes first and the birth chart second.
 
@@ -46,12 +63,14 @@ palette is light-first and a mixed set looks careless.
 
 ## Before uploading
 
-**Check the aspect ratio.** These are 1080 × 2340, which is 9:19.5 — taller
-than the 16:9-to-9:16 window Play documents for phone screenshots. Both sides
-are inside the 320–3840 limits and tall screenshots are usually accepted in
-practice, but confirm at upload. If Play refuses them, letterbox to
-1080 × 1920 rather than stretching: the chart is a square grid and any
-distortion shows immediately.
+**The framed set is 9:16 and needs no ratio check.** The raw ones are 9:19.5;
+upload those only if you would rather ship plain captures, and confirm the
+ratio at upload if you do.
+
+**The Sinhala and Tamil daśā shots start mid-list.** The English one opens on
+the running-period card, which is the better frame; those two were scrolled a
+little too far when captured. Worth re-taking if you want the three listings
+to match exactly.
 
 **The compatibility partner is not saved.** It is session state, so the shot
 was re-entered for each language. The Tamil partner has no name — the

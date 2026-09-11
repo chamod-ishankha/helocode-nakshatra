@@ -220,16 +220,22 @@ class RevenueCatGateway implements PurchaseGateway {
         wanted.map((p) => p.id).toList(),
         productCategory: category,
       );
+      // A subscription with more than one base plan comes back once per plan,
+      // all under the same product. The paywall has one row per product, so
+      // keep the first and let the store's own default ordering decide — two
+      // rows reading "Pro monthly" at different prices is worse than one.
+      final seen = <PurchaseProduct>{};
       return [
         for (final sp in products)
-          if (PurchaseProduct.byId(sp.identifier) case final product?)
-            StorePrice(
-              product: product,
-              formatted: sp.priceString,
-              currencyCode: sp.currencyCode,
-              amount: sp.price,
-              freeTrialDays: freeTrialDays(sp.introductoryPrice),
-            ),
+          if (PurchaseProduct.byStoreId(sp.identifier) case final product?)
+            if (seen.add(product))
+              StorePrice(
+                product: product,
+                formatted: sp.priceString,
+                currencyCode: sp.currencyCode,
+                amount: sp.price,
+                freeTrialDays: freeTrialDays(sp.introductoryPrice),
+              ),
       ];
     } on Object catch (e, s) {
       AppLogger.warn('Could not load ${category.name} prices', e, s);
@@ -258,8 +264,14 @@ class RevenueCatGateway implements PurchaseGateway {
     for (final sp in products) {
       if (sp.identifier == product.id) return sp;
     }
-    // Play returns subscription ids as `product:base_plan` in some
-    // configurations, so fall back to a prefix match before giving up.
+    // Play returns every subscription as `product:base_plan` — not "in some
+    // configurations", always, because a subscription cannot exist without a
+    // base plan. This branch is the one that runs for both Pro tiers; the
+    // exact match above only ever catches the one-time products.
+    //
+    // `prices()` above did not have this fallback, which is how the paywall
+    // ended up showing two one-time products at real prices and no Pro at all
+    // (KAN-68).
     for (final sp in products) {
       if (sp.identifier.startsWith('${product.id}:')) return sp;
     }

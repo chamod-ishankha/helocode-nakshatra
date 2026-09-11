@@ -99,6 +99,29 @@ enum PurchaseProduct {
     return null;
   }
 
+  /// The product behind an identifier as the *store* spells it.
+  ///
+  /// Google Play subscriptions do not come back under the id they were asked
+  /// for. A subscription has base plans, and RevenueCat identifies each one by
+  /// joining them:
+  ///
+  /// ```
+  /// GoogleStoreProduct.id = basePlanId == null
+  ///     ? productId                    // remove_ads
+  ///     : "$productId:$basePlanId"     // pro_monthly:monthly
+  /// ```
+  ///
+  /// A one-time product has no base plan and arrives unchanged, which is why
+  /// matching on [byId] alone looked correct for as long as only the one-time
+  /// products were live: the paywall showed the two of those with real prices
+  /// and silently dropped both Pro tiers, with the store, the key and the
+  /// billing connection all working perfectly (KAN-68).
+  ///
+  /// Splitting on the first `:` is safe in both directions — a Play product id
+  /// may contain letters, digits, underscores and periods, but never a colon.
+  static PurchaseProduct? byStoreId(String storeId) =>
+      byId(storeId.split(':').first);
+
   /// The two Pro tiers, cheapest first.
   static const List<PurchaseProduct> proTiers = [proMonthly, proYearly];
 }

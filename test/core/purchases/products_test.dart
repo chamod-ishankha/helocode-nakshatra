@@ -35,6 +35,36 @@ void main() {
       expect(PurchaseProduct.byId('lifetime_pro'), isNull);
     });
 
+    test('a subscription maps back from the id the store returns', () {
+      // KAN-68. Google Play has no subscription without a base plan, and
+      // RevenueCat identifies one as `productId:basePlanId`. Matching on the
+      // bare id looked right for as long as only the one-time products were
+      // live in Play — those have no base plan, so they came back unchanged,
+      // and the two Pro tiers were dropped from the paywall in silence.
+      expect(
+        PurchaseProduct.byStoreId('pro_monthly:monthly'),
+        PurchaseProduct.proMonthly,
+      );
+      expect(
+        PurchaseProduct.byStoreId('pro_yearly:yearly-autorenewing'),
+        PurchaseProduct.proYearly,
+      );
+
+      // A one-time product arrives with no suffix and must still match.
+      expect(
+        PurchaseProduct.byStoreId('remove_ads'),
+        PurchaseProduct.removeAds,
+      );
+
+      // Whatever the base plan is called, the product is what it belongs to.
+      for (final product in PurchaseProduct.values) {
+        expect(PurchaseProduct.byStoreId('${product.id}:p1m'), product);
+      }
+
+      // And an id that is genuinely not ours stays unmatched, suffix or not.
+      expect(PurchaseProduct.byStoreId('lifetime_pro:monthly'), isNull);
+    });
+
     test('both Pro tiers grant the same entitlement', () {
       // Otherwise switching between monthly and yearly would change what the
       // user can do, which is not what a tier is.

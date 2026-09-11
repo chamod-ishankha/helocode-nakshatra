@@ -103,6 +103,62 @@ month is one cycle of the moon and a year is one of the sun.
 No app logo. The eight-pointed star would be branding, which the rule forbids;
 the palette is the app's, which it does not.
 
+### Subscription benefits
+
+Play takes **up to four**, each **40 characters or fewer**, per
+language. Enter the same four against both `pro_monthly` and
+`pro_yearly` — the tiers differ in billing period, not in what they
+give.
+
+These are the app's own paywall strings, not new copy. What a buyer
+reads in the store and what they read in the app should be the same
+sentence.
+
+**1. `paywallFeatureNoAds`** — gates `PaidFeature.removeAds`
+
+| Locale | Benefit | Chars |
+|---|---|---|
+| `en-US` | No ads, anywhere | 16 |
+| `si-LK` | කිසිදු තැනක දැන්වීම් නැත | 24 |
+| `ta-IN` | எங்கும் விளம்பரங்கள் இல்லை | 26 |
+
+**2. `paywallFeatureCharts`** — gates `PaidFeature.divisionalCharts`
+
+| Locale | Benefit | Chars |
+|---|---|---|
+| `en-US` | The navāṁśa (D9) chart | 22 |
+| `si-LK` | නවාංශ (D9) කේන්දරය | 18 |
+| `ta-IN` | நவாம்ச (D9) கட்டம் | 18 |
+
+**3. `paywallFeatureDasha`** — gates `PaidFeature.fullDashaTimeline`
+
+| Locale | Benefit | Chars |
+|---|---|---|
+| `en-US` | The full daśā timeline | 22 |
+| `si-LK` | සම්පූර්ණ දශා කාලරේඛාව | 21 |
+| `ta-IN` | முழு தசை காலவரிசை | 17 |
+
+**4. `paywallFeatureProfiles`** — gates `PaidFeature.multipleProfiles`
+
+| Locale | Benefit | Chars |
+|---|---|---|
+| `en-US` | Charts for the whole family | 27 |
+| `si-LK` | මුළු පවුලටම කේන්දර | 18 |
+| `ta-IN` | முழு குடும்பத்திற்கும் சாதகங்கள் | 32 |
+
+#### Why the compatibility line is not here
+
+`paywallFeatureCompat` is the fifth bullet on the app's paywall and
+the one left out, because Play allows only four and it is the weakest
+claim of the five. Pro does open the full porondam working — but so
+does watching one rewarded video, so it is not a thing only
+subscribers can have. The other four are gated by `PaidFeature` and by
+nothing else.
+
+Regenerate this section with `tool/print_subscription_benefits.py` if
+the paywall copy ever changes; it reads the ARB files, so the two
+cannot drift.
+
 ### `compatibility_report`
 
 Declared in code as **not sellable**: nothing in the app gates on what it

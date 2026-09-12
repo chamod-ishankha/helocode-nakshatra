@@ -13,14 +13,14 @@ enum PurchaseTerm { oneTime, monthly, yearly }
 ///
 /// ## Prices are deliberately absent
 ///
-/// KAN-35 lists intended prices (LKR 750 for remove_ads, LKR 490 and LKR 3,900
-/// for the Pro tiers, LKR 1,500 and LKR 990 for the two reports), and none of
-/// them belong in code. The store returns a formatted price in the user's own
-/// currency, already carrying whatever regional pricing and local tax Play
-/// applies. A hardcoded "LKR 750" shown to a user whose account will be
-/// charged USD 2.49 is not a cosmetic bug — it is a price the app quoted and
-/// did not honour. Until [StorePrice] arrives from the store, a paywall shows
-/// that it is loading, never a number.
+/// `docs/monetisation-plan.md` carries the prices — LKR 750 / USD 2.99 for
+/// remove_ads, LKR 550 and LKR 5,500 for the Pro tiers, LKR 1,500 for the
+/// report — and none of them belong in code. The store returns a formatted
+/// price in the user's own currency, already carrying whatever regional
+/// pricing and local tax Play applies. A hardcoded "LKR 750" shown to a user
+/// whose account will be charged USD 2.99 is not a cosmetic bug — it is a
+/// price the app quoted and did not honour. Until [StorePrice] arrives from
+/// the store, a paywall shows that it is loading, never a number.
 enum PurchaseProduct {
   removeAds('remove_ads', Entitlement.adFree, PurchaseTerm.oneTime),
   proMonthly('pro_monthly', Entitlement.pro, PurchaseTerm.monthly),

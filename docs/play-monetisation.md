@@ -68,17 +68,21 @@ error, it is a paywall row that silently never appears.
 
 ### One-time products
 
-| Product ID | Grants | Intended price |
-|---|---|---|
-| `remove_ads` | no ads, anywhere | LKR 750 |
-| `birth_chart_pdf` | the PDF report | LKR 1,500 |
+| Product ID | Grants | Sri Lanka | Elsewhere |
+|---|---|---|---|
+| `remove_ads` | no ads, anywhere | LKR 750 | USD 2.99 |
+| `birth_chart_pdf` | the PDF report | LKR 1,500 | USD 6.99 |
 
 ### Subscriptions
 
-| Product ID | Base plan | Grants | Intended price |
-|---|---|---|---|
-| `pro_monthly` | monthly, auto-renewing | Pro | LKR 490 |
-| `pro_yearly` | yearly, auto-renewing | Pro | LKR 3,900 |
+| Product ID | Base plan | Grants | Sri Lanka | Elsewhere |
+|---|---|---|---|---|
+| `pro_monthly` | monthly, auto-renewing | Pro | LKR 550 | USD 2.99 |
+| `pro_yearly` | yearly, auto-renewing | Pro | LKR 5,500 | USD 29.99 |
+
+Yearly is ten months' money for twelve months of Pro — 17% off in LKR, 16% in
+USD. The reasoning behind these numbers, and where the ladder is weak, is in
+[monetisation-plan.md](monetisation-plan.md).
 
 Prices are set in Play, never in the app — the app only ever displays what the
 store returns, in the user's own currency. See the comment at the top of

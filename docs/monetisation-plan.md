@@ -37,6 +37,131 @@ never pay, and the plan has to earn from them anyway.**
 
 ---
 
+## Every screen, and what is on it
+
+Nine routed screens. The **Ads** and **Paid** columns are the whole
+monetisation surface — everything else earns nothing directly and exists to
+bring people back.
+
+| Screen | Route | Ads | Paid |
+|---|---|:--:|:--:|
+| [Home](#home) | `/home` | **Banner** + rewarded | — |
+| [Chart](#chart) | `/chart` | **Rewarded interstitial** + rewarded | PDF report |
+| [Daśā timeline](#daśā-timeline) | in Chart | rewarded | — |
+| [Horoscope](#horoscope) | `/horoscope` | **Interstitial** + rewarded | — |
+| [Compatibility](#compatibility) | `/compatibility` | rewarded | — |
+| [Calendar](#calendar) | `/calendar` | — | — |
+| [Profiles](#profiles) | `/profiles` | — | **Pro gate** |
+| [Settings](#settings) | `/settings` | — | paywall entry |
+| [Account](#account) | `/account` | — | — |
+| [Onboarding](#onboarding) | `/onboarding` | — | — |
+
+### Home
+
+The screen people open every morning, and the one retention rests on. Rāhu
+kālaya is above the fold because that is what they came for.
+
+- **Date switcher** — any past day free; **future days are a rewarded unlock**
+- **Now banner** — which period is running at this moment
+- **Rāhu kālaya card** — the headline, start and end time
+- **Pañcāṅga strip** — vāra, tithi, nakṣatra, yoga, karana, each with its
+  expiry time
+- **Sunrise / sunset / moonrise**
+- **Other inauspicious periods** — gulika kālaya, yamaganda
+- **Auspicious card** — the good windows
+- **Poya banner** — today, if it is one
+- **Next poya card**
+- **Calendar card** → Calendar · **Compatibility card** → Compatibility ·
+  **Horoscope card** → Horoscope
+- **Account action** — sign-in prompt while anonymous
+- 🟢 **Banner ad**, bottom of the page
+
+### Chart
+
+The kēndaraya. Two vargas behind a switcher, and the report offer sits under
+everything it will contain.
+
+- **Varga switcher** — **rāśi free**, **navāṁśa (D9) locked**
+- **Style switcher** — North Indian / South Indian, a persisted preference
+- **Chart drawing** — the grid itself, tappable
+- **Detail sheets** — per-graha dignity, on tap
+- **Summary card** — lagna, rāśi, nakṣatra
+- **Positions table** — every graha, sign, degree
+- **Daśā timeline** (below)
+- **Report tile** — the PDF offer, deliberately under what it contains
+- **Chart sharing** — render and share as an image
+- 🟡 **Rewarded interstitial** fires once on open, paying out **D9 + third daśā
+  level together**
+
+### Daśā timeline
+
+- **Mahādaśā** — free
+- **Antardaśā** — free, expandable
+- **Pratyantardaśā (3rd level)** — **locked**, blurred with buy-or-watch
+
+### Horoscope
+
+The daily reading, for whichever date Home has selected.
+
+- **Axis toggle** — lagna or rāśi
+- **The reading itself**
+- **Future days** — same rewarded unlock as Home
+- 🟡 **Interstitial on exit**, only if the reading was scrolled to the end
+
+### Compatibility
+
+Marriage matching. Both systems offered rather than one folded into the other.
+
+- **Person / partner cards**, and a **partner form** (name, date, time, place)
+- **Role selector** — which person is the bride; asked, never inferred
+- **System toggle** — koota (North) or porondam (South)
+- **Score headline — free.** Locking the number would make the screen
+  worthless rather than tempting
+- **Per-koota / per-porondam breakdown** — **locked**
+- **Kuja dosha section**
+- **Caveat line** — the most important line on the screen
+
+### Calendar
+
+- **Month grid** — poya days and festivals marked
+- **Legend** — naming what the dots are
+- **Activity lookup** — "when this month should I start X?"
+- Tapping a day selects it and returns Home rather than opening a second view
+
+### Profiles
+
+- **List of saved charts**, switch between them
+- **Add a profile** — **the first chart is never gated**; the second onwards is
+  `multipleProfiles`, the one Pro feature no ad can reach
+
+### Settings
+
+- **Your details** — edit birth details, saved charts
+- **Appearance** — theme, language, chart style
+- **Reminders** — morning nekath, poya, festival nekath, daśā changes, planet
+  sign changes
+- **Nakshatra Pro** — current tier, **paywall entry**, restore purchases,
+  manage subscription (only while one is running)
+- **Ad consent** — only where UMP says consent was collected, and never for
+  someone who bought out of ads
+- **Your data** — delete my details
+- **About** — privacy, terms, **licences**, version
+
+### Account
+
+Exists to answer one question: *"will I lose my chart?"*
+
+- Current state, stated in those terms
+- Sign in / link an anonymous account
+- Purchases follow the account from here
+
+### Onboarding
+
+- Name → date → time (with *unknown* handled honestly) → **place**
+- **Country picker + search** across 244 countries, offline
+
+---
+
 ## The shape of it
 
 Three ways in, deliberately layered:

@@ -22,6 +22,7 @@ import 'core/notifications/notification_coordinator.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/logging/app_logger.dart';
 import 'core/logging/crash_reporter.dart';
+import 'core/purchases/nudges.dart';
 import 'core/purchases/purchase_controller.dart';
 import 'core/purchases/purchase_identity.dart';
 import 'core/purchases/revenuecat_gateway.dart';
@@ -54,6 +55,9 @@ Future<void> bootstrap(Flavor flavor) async {
   await initializeDateFormatting();
 
   final prefs = await SharedPreferences.getInstance();
+  // Only the first launch of the install is kept, so Pro nudges can tell the
+  // session the app was installed in from every later one (KAN-75).
+  await NudgeStore.noteLaunch(prefs, launchedAt);
   await Ephemeris.initialize();
 
   // The profile moves from SharedPreferences into SQLite here, once (KAN-19).

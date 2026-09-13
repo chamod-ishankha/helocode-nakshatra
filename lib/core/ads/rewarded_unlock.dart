@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/data/profile_repository.dart';
 import 'ad_gate.dart';
+import '../purchases/nudges.dart';
 import 'rewarded_analytics.dart';
 
 /// Content a user can open by watching a rewarded video (KAN-34).
@@ -155,6 +158,8 @@ class UnlockNotifier extends Notifier<int> {
       await UnlockStore.write(prefs, unlock);
     }
     state++;
+    // One ad, however many unlocks it paid for (KAN-75).
+    unawaited(ref.read(nudgeRevisionProvider.notifier).watched());
   }
 
   Future<bool> earn(RewardedUnlock unlock) async {
@@ -171,6 +176,7 @@ class UnlockNotifier extends Notifier<int> {
     if (!earned) return false;
     await UnlockStore.write(ref.read(sharedPreferencesProvider), unlock);
     state++;
+    unawaited(ref.read(nudgeRevisionProvider.notifier).watched());
     return true;
   }
 

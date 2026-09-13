@@ -2535,6 +2535,36 @@ abstract class L10n {
   /// **'Keep charts for a spouse, children or parents too.'**
   String get familyAddSubtitle;
 
+  /// Pro nudge after the compatibility breakdown lock was seen on three separate days (KAN-75). One sentence, no urgency.
+  ///
+  /// In en, this message translates to:
+  /// **'You keep coming back to this match. See every factor with Pro.'**
+  String get nudgeCompat;
+
+  /// Pro nudge after the navamsa lock was seen on three separate days (KAN-75).
+  ///
+  /// In en, this message translates to:
+  /// **'You have explored your rāśi chart. Go deeper with the navāṁśa and the full daśā.'**
+  String get nudgeNavamsa;
+
+  /// Pro nudge after an attempt to add a second chart met the gate (KAN-75).
+  ///
+  /// In en, this message translates to:
+  /// **'Comparing another chart? Save the whole family with Pro.'**
+  String get nudgeFamily;
+
+  /// Pro nudge after several rewarded ads in the last seven days. count is the real number from the device, always 5 or more (KAN-75). Deliberately quotes no price.
+  ///
+  /// In en, this message translates to:
+  /// **'You have watched {count} ads this week. Pro has none.'**
+  String nudgeAdWatches(int count);
+
+  /// The one action on a Pro nudge. Opens the paywall.
+  ///
+  /// In en, this message translates to:
+  /// **'See Pro'**
+  String get nudgeSeePro;
+
   /// No description provided for @profilesShowing.
   ///
   /// In en, this message translates to:

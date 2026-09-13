@@ -7,6 +7,7 @@ import '../../features/purchases/presentation/paywall.dart';
 import '../purchases/purchase_controller.dart';
 import '../theme/app_spacing.dart';
 import '../theme/semantic_colors.dart';
+import '../purchases/nudges.dart';
 import 'rewarded_analytics.dart';
 import 'rewarded_unlock.dart';
 
@@ -50,6 +51,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
     ref
         .read(unlockRevisionProvider.notifier)
         .offered(widget.unlock, RewardedSurface.card);
+    ref.read(nudgeRevisionProvider.notifier).lockSeen(widget.unlock);
   }
 
   Future<void> _watch() async {

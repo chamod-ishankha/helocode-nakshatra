@@ -10,6 +10,8 @@ import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import 'add_family_member.dart';
+import '../../../core/purchases/nudges.dart';
+import '../../purchases/presentation/pro_nudge.dart';
 
 /// Switching between saved charts (KAN-19).
 ///
@@ -81,6 +83,12 @@ class ProfilesScreen extends ConsumerWidget {
             : ListView(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
+                  // Somebody who met the gate adding a chart, on a later day
+                  // (KAN-75). Almost always renders nothing.
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: ProNudge(triggers: [NudgeTrigger.family]),
+                  ),
                   for (final entry in profiles)
                     ListTile(
                       leading: Icon(

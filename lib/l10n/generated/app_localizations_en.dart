@@ -1394,6 +1394,26 @@ class L10nEn extends L10n {
       'Keep charts for a spouse, children or parents too.';
 
   @override
+  String get nudgeCompat =>
+      'You keep coming back to this match. See every factor with Pro.';
+
+  @override
+  String get nudgeNavamsa =>
+      'You have explored your rāśi chart. Go deeper with the navāṁśa and the full daśā.';
+
+  @override
+  String get nudgeFamily =>
+      'Comparing another chart? Save the whole family with Pro.';
+
+  @override
+  String nudgeAdWatches(int count) {
+    return 'You have watched $count ads this week. Pro has none.';
+  }
+
+  @override
+  String get nudgeSeePro => 'See Pro';
+
+  @override
   String get profilesShowing => 'Showing now';
 
   @override

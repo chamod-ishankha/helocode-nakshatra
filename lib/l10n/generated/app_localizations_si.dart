@@ -1385,6 +1385,26 @@ class L10nSi extends L10n {
       'කලත්‍රයාගේ, දරුවන්ගේ හෝ දෙමාපියන්ගේ කේන්දර ද සුරකින්න.';
 
   @override
+  String get nudgeCompat =>
+      'ඔබ මෙම ගැළපීම නැවත නැවතත් බලනවා. Pro සමඟ සෑම සාධකයක්ම බලන්න.';
+
+  @override
+  String get nudgeNavamsa =>
+      'ඔබ ඔබේ රාශි කේන්දරය ගවේෂණය කළා. නවාංශය සහ සම්පූර්ණ දශාව සමඟ තවත් ගැඹුරට යන්න.';
+
+  @override
+  String get nudgeFamily =>
+      'තවත් කේන්දරයක් සසඳනවාද? Pro සමඟ මුළු පවුලේම කේන්දර සුරකින්න.';
+
+  @override
+  String nudgeAdWatches(int count) {
+    return 'ඔබ මේ සතියේ දැන්වීම් $countක් නැරඹුවා. Pro හි කිසිදු දැන්වීමක් නැත.';
+  }
+
+  @override
+  String get nudgeSeePro => 'Pro බලන්න';
+
+  @override
   String get profilesShowing => 'දැන් පෙන්වයි';
 
   @override

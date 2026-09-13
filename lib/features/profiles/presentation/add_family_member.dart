@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/purchases/entitlements.dart';
+import '../../../core/purchases/nudges.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/router/app_router.dart';
 import '../../purchases/presentation/paywall.dart';
@@ -20,6 +21,9 @@ import '../../purchases/presentation/paywall.dart';
 /// first chart. That one is free, always — see the Profiles screen.
 Future<void> addFamilyMember(BuildContext context, WidgetRef ref) async {
   if (!ref.read(featureProvider(PaidFeature.multipleProfiles))) {
+    // The attempt is what a later family nudge answers (KAN-75).
+    await ref.read(nudgeRevisionProvider.notifier).familyAttempt();
+    if (!context.mounted) return;
     await showPaywall(context, ref, reason: PaywallReason.multipleProfiles);
     return;
   }

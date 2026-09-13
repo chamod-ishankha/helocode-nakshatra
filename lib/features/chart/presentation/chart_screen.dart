@@ -30,6 +30,8 @@ import '../../report/presentation/report_tile.dart';
 import '../domain/chart_providers.dart';
 import 'north_indian_chart.dart';
 import 'rasi_chart.dart';
+import '../../../core/purchases/nudges.dart';
+import '../../purchases/presentation/pro_nudge.dart';
 
 /// Which chart the screen is drawing (KAN-53).
 ///
@@ -195,6 +197,12 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
             _VargaSwitcher(
               varga: _varga,
               onChanged: (v) => setState(() => _varga = v),
+            ),
+            // Above the chart, not on it: the lock underneath works exactly as
+            // it would without this (KAN-75). Almost always renders nothing.
+            const ProNudge(
+              key: ValueKey('chart-nudge'),
+              triggers: [NudgeTrigger.navamsa, NudgeTrigger.adWatches],
             ),
             const SizedBox(height: AppSpacing.md),
             ShareableChart(

@@ -10,6 +10,7 @@ import '../purchases/entitlements.dart';
 import '../purchases/purchase_controller.dart';
 import '../theme/app_spacing.dart';
 import '../theme/semantic_colors.dart';
+import '../purchases/nudges.dart';
 import 'rewarded_analytics.dart';
 import 'rewarded_unlock.dart';
 
@@ -115,15 +116,21 @@ class _LockedContentState extends ConsumerState<LockedContent> {
     // rather than a screen of blurred rectangles nobody can ever open.
     if (owned || earned || (!canWatch && !canBuy)) return widget.child;
 
-    // Only when the video door exists: a lock offering nothing but Pro is not
-    // a rewarded offer, and counting it would dilute the watch rate.
-    if (canWatch && !_offerCounted) {
+    if (!_offerCounted) {
       _offerCounted = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        ref
-            .read(unlockRevisionProvider.notifier)
-            .offered(widget.unlock, RewardedSurface.lock);
+        // Only when the video door exists: a lock offering nothing but Pro is
+        // not a rewarded offer, and counting it would dilute the watch rate.
+        if (canWatch) {
+          ref
+              .read(unlockRevisionProvider.notifier)
+              .offered(widget.unlock, RewardedSurface.lock);
+        }
+        // Counted whether or not a video can be watched. Somebody who bought
+        // Remove Ads and keeps returning to the navāṁśa is the likeliest Pro
+        // buyer there is (KAN-75).
+        ref.read(nudgeRevisionProvider.notifier).lockSeen(widget.unlock);
       });
     }
 

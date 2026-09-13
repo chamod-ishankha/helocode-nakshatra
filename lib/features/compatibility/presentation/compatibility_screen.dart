@@ -18,6 +18,8 @@ import '../../onboarding/data/profile_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import '../domain/compatibility_providers.dart';
 import 'partner_form.dart';
+import '../../../core/purchases/nudges.dart';
+import '../../purchases/presentation/pro_nudge.dart';
 
 /// Marriage matching (KAN-29).
 ///
@@ -280,6 +282,13 @@ class _Results extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // First in the result and keyed, so flipping between porondam and
+        // koota — which swaps the locks below — cannot remount it and ask
+        // twice (KAN-75).
+        const ProNudge(
+          key: ValueKey('compat-nudge'),
+          triggers: [NudgeTrigger.compatDetail, NudgeTrigger.adWatches],
+        ),
         if (match.anyTimeUnknown) ...[
           InfoNotice(text: l.compatTimeUnknown, tone: NoticeTone.caution),
           const SizedBox(height: AppSpacing.md),

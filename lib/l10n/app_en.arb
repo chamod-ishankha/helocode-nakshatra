@@ -707,6 +707,31 @@
   "@familyAddSubtitle": {
     "description": "Under familyAddTitle on the Home card."
   },
+  "nudgeCompat": "You keep coming back to this match. See every factor with Pro.",
+  "@nudgeCompat": {
+    "description": "Pro nudge after the compatibility breakdown lock was seen on three separate days (KAN-75). One sentence, no urgency."
+  },
+  "nudgeNavamsa": "You have explored your rāśi chart. Go deeper with the navāṁśa and the full daśā.",
+  "@nudgeNavamsa": {
+    "description": "Pro nudge after the navamsa lock was seen on three separate days (KAN-75)."
+  },
+  "nudgeFamily": "Comparing another chart? Save the whole family with Pro.",
+  "@nudgeFamily": {
+    "description": "Pro nudge after an attempt to add a second chart met the gate (KAN-75)."
+  },
+  "nudgeAdWatches": "You have watched {count} ads this week. Pro has none.",
+  "@nudgeAdWatches": {
+    "description": "Pro nudge after several rewarded ads in the last seven days. count is the real number from the device, always 5 or more (KAN-75). Deliberately quotes no price.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nudgeSeePro": "See Pro",
+  "@nudgeSeePro": {
+    "description": "The one action on a Pro nudge. Opens the paywall."
+  },
   "profilesShowing": "Showing now",
   "profilesRemove": "Remove",
   "profilesRemoveConfirm": "Remove {name}?",

@@ -1220,6 +1220,28 @@ class L10nSi extends L10n {
   String get paywallFeatureProfiles => 'මුළු පවුලටම කේන්දර';
 
   @override
+  String get paywallOutcomeNoAds => 'කිසිදු බාධාවක් නැතිව';
+
+  @override
+  String get paywallOutcomeCharts => 'ඔබේ කේන්දරය තවත් ගැඹුරින් බලන්න';
+
+  @override
+  String get paywallOutcomeDasha => 'සෑම දශා කාලයක්ම සවිස්තරව';
+
+  @override
+  String get paywallOutcomeCompat =>
+      'කේන්දර දෙක ගැළපෙන්නේ ඇයිද යන්න හරියටම බලන්න';
+
+  @override
+  String get paywallOutcomeProfiles => 'නිවසේ සැමගේ කේන්දර එකම තැනක';
+
+  @override
+  String get paywallChooseYearly => 'Pro වාර්ෂිකව ලබා ගන්න';
+
+  @override
+  String get paywallChooseMonthly => 'Pro මාසිකව ලබා ගන්න';
+
+  @override
   String get paywallReasonCompat => 'සම්පූර්ණ පොරොන්දම් ගණනය බලන්න';
 
   @override

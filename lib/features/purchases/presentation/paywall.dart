@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/ads/ad_gate.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/logging/analytics_service.dart';
+import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/paywall_config.dart';
 import '../../../core/purchases/products.dart';
 import '../../../core/purchases/purchase_controller.dart';
@@ -137,6 +138,7 @@ class _PaywallSheet extends ConsumerWidget {
     final prices = ref.watch(storePricesProvider);
     final held = ref.watch(entitlementsProvider);
     final now = ref.watch(purchaseClockProvider)();
+    final hasPro = held.isActive(Entitlement.pro, now);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -145,20 +147,40 @@ class _PaywallSheet extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (reason.headline(l) case final contextual?) ...[
-              Text(
-                contextual,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: context.semantic.accent,
+            // A visible way out, not only a drag handle and the back button.
+            // Play flags purchase sheets whose dismissal is hard to find, and
+            // a user who cannot see how to leave is a user who feels trapped
+            // (KAN-71).
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (reason.headline(l) case final contextual?) ...[
+                        Text(
+                          contextual,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: context.semantic.accent,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                      ],
+                      Text(switch (config.variant) {
+                        PaywallVariant.value => l.paywallHeadlineValue,
+                        PaywallVariant.support => l.paywallHeadlineSupport,
+                      }, style: theme.textTheme.headlineSmall),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-            ],
-
-            Text(switch (config.variant) {
-              PaywallVariant.value => l.paywallHeadlineValue,
-              PaywallVariant.support => l.paywallHeadlineSupport,
-            }, style: theme.textTheme.headlineSmall),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+              ],
+            ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               switch (config.variant) {
@@ -171,8 +193,15 @@ class _PaywallSheet extends ConsumerWidget {
             ),
 
             const SizedBox(height: AppSpacing.lg),
-            // The Pro feature list only belongs on a sheet that sells Pro.
-            if (reason.product == null) ...[
+
+            // What they already have, stated before anything is offered. A
+            // subscriber who reopens this should read "you have Pro", not a
+            // list of reasons to buy the thing they are paying for (KAN-71).
+            _Owned(held: held, now: now),
+
+            // The Pro feature list only belongs on a sheet that sells Pro, and
+            // not to somebody who already holds it.
+            if (reason.product == null && !hasPro) ...[
               const _Features(),
               const SizedBox(height: AppSpacing.lg),
             ],
@@ -220,15 +249,10 @@ class _PaywallSheet extends ConsumerWidget {
               _WatchInstead(unlock: unlock),
             ],
 
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              l.paywallLegal,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 11,
-              ),
-            ),
+            // On the sheet itself, not only in Settings. Somebody who paid on
+            // another phone meets the paywall first, and sending them hunting
+            // through Settings to prove it is how refund requests start.
+            const _RestoreButton(),
           ],
         ),
       ),
@@ -258,27 +282,56 @@ class _Features extends StatelessWidget {
     //
     // test/core/purchases/gates_test.dart fails if a line is added without
     // one.
+    //
+    // Each benefit leads with what it does for the reader and names the
+    // feature underneath (KAN-71). The feature line is the promise — it is
+    // the same string Play shows as the subscription benefit — and the
+    // outcome above it is the reason to want it. Neither may claim more than
+    // the gate delivers: "understand your deeper chart" is the navāṁśa, not a
+    // reading of anyone's future.
     final lines = [
-      (Icons.block, l.paywallFeatureNoAds),
-      (Icons.grid_view, l.paywallFeatureCharts),
-      (Icons.timeline, l.paywallFeatureDasha),
-      (Icons.favorite_outline, l.paywallFeatureCompat),
-      (Icons.group_outlined, l.paywallFeatureProfiles),
+      (Icons.block, l.paywallOutcomeNoAds, l.paywallFeatureNoAds),
+      (Icons.grid_view, l.paywallOutcomeCharts, l.paywallFeatureCharts),
+      (Icons.timeline, l.paywallOutcomeDasha, l.paywallFeatureDasha),
+      (Icons.favorite_outline, l.paywallOutcomeCompat, l.paywallFeatureCompat),
+      (
+        Icons.group_outlined,
+        l.paywallOutcomeProfiles,
+        l.paywallFeatureProfiles,
+      ),
     ];
+    final theme = Theme.of(context);
 
     return Column(
       children: [
-        for (final (icon, text) in lines)
+        for (final (icon, outcome, feature) in lines)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, size: 18, color: context.semantic.accent),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Icon(icon, size: 18, color: context.semantic.accent),
+                ),
                 const SizedBox(width: 10),
                 // Sinhala and Tamil run longer than English here, and these
                 // are full sentences rather than labels — they must wrap, not
                 // ellipsize.
-                Expanded(child: Text(text)),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(outcome, style: theme.textTheme.titleSmall),
+                      Text(
+                        feature,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -305,16 +358,32 @@ class _Tiers extends StatelessWidget {
     return null;
   }
 
+  /// The Pro tiers in the order the sheet shows them: the highlighted one
+  /// first, then the rest.
+  ///
+  /// Yearly is the highlight by default, so it leads (KAN-71) — the plan most
+  /// people are better off on is the one they read first, and the monthly
+  /// plan is still one short scroll-free glance below it. Remote Config can
+  /// move the highlight; whatever it names goes to the top with it, so the
+  /// badge and the position can never disagree.
+  static List<PurchaseProduct> tierOrder(PurchaseProduct highlight) => [
+    if (PurchaseProduct.proTiers.contains(highlight)) highlight,
+    for (final tier in PurchaseProduct.proTiers)
+      if (tier != highlight) tier,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
+    final theme = Theme.of(context);
     final monthly = _find(PurchaseProduct.proMonthly);
     final yearly = _find(PurchaseProduct.proYearly);
+    final sellsSubscription = prices.any((p) => p.product.isSubscription);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final tier in PurchaseProduct.proTiers)
+        for (final tier in tierOrder(highlight))
           if (_find(tier) case final price?) ...[
             _TierCard(
               price: price,
@@ -330,6 +399,23 @@ class _Tiers extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
           ],
+
+        // The renewal terms sit directly under the subscription buttons, not
+        // at the foot of the sheet below the one-time products and the video
+        // offer. Play requires them to be clear before the purchase, and a
+        // line the user has to scroll past everything else to find is not
+        // that (KAN-71). Only where a subscription is actually offered: on a
+        // sheet selling the PDF alone it would describe nothing on screen.
+        if (sellsSubscription) ...[
+          Text(
+            l.paywallLegal,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
 
         // Every one-time product the store offered on this sheet, rather than
         // remove_ads alone. A contextual paywall for the PDF report offers the
@@ -390,6 +476,14 @@ class _TierCard extends StatelessWidget {
   final int? saving;
   final VoidCallback onTap;
 
+  String _label(L10n l) => switch (price.product.term) {
+    PurchaseTerm.yearly => l.paywallChooseYearly,
+    PurchaseTerm.monthly => l.paywallChooseMonthly,
+    // Tier cards only ever carry subscriptions; the one-time products are
+    // drawn as their own buttons below. Named rather than blank regardless.
+    PurchaseTerm.oneTime => l.paywallOneTime,
+  };
+
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
@@ -413,57 +507,70 @@ class _TierCard extends StatelessWidget {
           width: recommended ? 1.5 : 1,
         ),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            price.formatted,
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            term,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              price.formatted,
+                              style: theme.textTheme.titleMedium,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    // Only when the store itself reports one. Nothing here
-                    // invents a trial.
-                    if (price.hasFreeTrial)
-                      Text(
-                        l.paywallFreeTrial(
-                          price.freeTrialDays,
-                          price.formatted,
-                        ),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: context.semantic.accent,
-                        ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              term,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                  ],
+                      // Only when the store itself reports one. Nothing here
+                      // invents a trial.
+                      if (price.hasFreeTrial)
+                        Text(
+                          l.paywallFreeTrial(
+                            price.freeTrialDays,
+                            price.formatted,
+                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: context.semantic.accent,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              if (saving != null)
-                _Badge(text: l.paywallSave(saving!))
-              else if (recommended)
-                _Badge(text: l.paywallBestValue),
-            ],
-          ),
+                if (saving != null)
+                  _Badge(text: l.paywallSave(saving!))
+                else if (recommended)
+                  _Badge(text: l.paywallBestValue),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+
+            // A button, not a tappable card (KAN-71). The whole card used to
+            // buy on any touch, so a user reaching to read the price could
+            // start a purchase flow. Play's own sheet still stands between a
+            // tap and a charge, but the control that starts it should be
+            // unmistakable — and its label names the billing period, so what
+            // is being bought is on the button itself.
+            if (recommended)
+              FilledButton(onPressed: onTap, child: Text(_label(l)))
+            else
+              OutlinedButton(onPressed: onTap, child: Text(_label(l))),
+          ],
         ),
       ),
     );
@@ -521,6 +628,112 @@ class _WatchInstead extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// What this user already holds, at the top of the sheet (KAN-71).
+///
+/// Nothing at all for somebody who holds nothing. For anybody else, one line
+/// per thing they own, in the words Settings already uses for it — so a
+/// subscriber who opens the paywall reads that they have Pro before they read
+/// anything offered to them, and never mistakes the sheet for a second bill.
+class _Owned extends StatelessWidget {
+  const _Owned({required this.held, required this.now});
+
+  final EntitlementSnapshot held;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L10n.of(context);
+    final theme = Theme.of(context);
+
+    final isPro = held.isActive(Entitlement.pro, now);
+    final proUntil = isPro ? held.grants[Entitlement.pro] : null;
+    final adFree = held.has(PaidFeature.removeAds, now);
+    final ownsReport = held.has(PaidFeature.birthChartPdf, now);
+
+    final lines = [
+      if (isPro)
+        proUntil == null
+            ? l.purchaseSectionTitle
+            : l.purchaseStatusProUntil(proUntil)
+      // Pro already removes ads, so saying both would list one fact twice.
+      else if (adFree)
+        l.purchaseStatusAdFree,
+      if (ownsReport) l.purchaseOwnedReport,
+    ];
+    if (lines.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final line in lines)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    size: 18,
+                    color: context.semantic.accent,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(line, style: theme.textTheme.titleSmall),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Restore purchases, reachable from the paywall itself (KAN-71).
+///
+/// Hidden in a build that cannot sell, for the same reason every purchase
+/// control is: a restore button that can never reach a store is a button that
+/// looks broken.
+class _RestoreButton extends ConsumerStatefulWidget {
+  const _RestoreButton();
+
+  @override
+  ConsumerState<_RestoreButton> createState() => _RestoreButtonState();
+}
+
+class _RestoreButtonState extends ConsumerState<_RestoreButton> {
+  bool _restoring = false;
+
+  Future<void> _restore() async {
+    final l = L10n.of(context);
+    setState(() => _restoring = true);
+
+    final outcome = await ref.read(entitlementsProvider.notifier).restore();
+
+    if (!mounted) return;
+    setState(() => _restoring = false);
+    // The sheet stays open. Whatever came back is already reflected above it —
+    // restored Pro moves to the owned list and its tiers drop away — so the
+    // user sees the result where they asked for it rather than on a screen
+    // they did not choose to go to.
+    showPurchaseMessage(context, outcome.message(l));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!ref.watch(purchasesAvailableProvider)) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: TextButton(
+        onPressed: _restoring ? null : _restore,
+        child: Text(L10n.of(context).purchaseRestore),
       ),
     );
   }

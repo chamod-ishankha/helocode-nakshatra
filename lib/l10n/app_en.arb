@@ -573,6 +573,34 @@
   "paywallFeatureDasha": "The full daśā timeline",
   "paywallFeatureCompat": "The full compatibility working",
   "paywallFeatureProfiles": "Charts for the whole family",
+  "paywallOutcomeNoAds": "Nothing between you and the almanac",
+  "@paywallOutcomeNoAds": {
+    "description": "Paywall benefit title, outcome-led. The feature it names (paywallFeatureNoAds) sits underneath."
+  },
+  "paywallOutcomeCharts": "Understand your deeper chart",
+  "@paywallOutcomeCharts": {
+    "description": "Paywall benefit title for the navamsa chart. Feature line underneath."
+  },
+  "paywallOutcomeDasha": "Every period, in full detail",
+  "@paywallOutcomeDasha": {
+    "description": "Paywall benefit title for the full dasha timeline. Feature line underneath."
+  },
+  "paywallOutcomeCompat": "See exactly why two charts match",
+  "@paywallOutcomeCompat": {
+    "description": "Paywall benefit title for the full compatibility working. Feature line underneath."
+  },
+  "paywallOutcomeProfiles": "Everyone at home, in one app",
+  "@paywallOutcomeProfiles": {
+    "description": "Paywall benefit title for several saved charts. Feature line underneath."
+  },
+  "paywallChooseYearly": "Get Pro yearly",
+  "@paywallChooseYearly": {
+    "description": "Button that buys the yearly Pro subscription. Names the billing period on purpose."
+  },
+  "paywallChooseMonthly": "Get Pro monthly",
+  "@paywallChooseMonthly": {
+    "description": "Button that buys the monthly Pro subscription. Names the billing period on purpose."
+  },
   "paywallReasonCompat": "See the full compatibility working",
   "paywallReasonFuture": "Look further ahead",
   "reportTitle": "Birth Chart Report",

@@ -1240,6 +1240,30 @@ class L10nTa extends L10n {
   String get paywallFeatureProfiles => 'முழு குடும்பத்திற்கும் சாதகங்கள்';
 
   @override
+  String get paywallOutcomeNoAds => 'எந்த இடையூறும் இல்லாமல்';
+
+  @override
+  String get paywallOutcomeCharts =>
+      'உங்கள் ஜாதகத்தை இன்னும் ஆழமாகப் பாருங்கள்';
+
+  @override
+  String get paywallOutcomeDasha => 'ஒவ்வொரு தசா காலமும் முழு விவரத்துடன்';
+
+  @override
+  String get paywallOutcomeCompat =>
+      'இரு ஜாதகங்கள் ஏன் பொருந்துகின்றன என்று துல்லியமாகப் பாருங்கள்';
+
+  @override
+  String get paywallOutcomeProfiles =>
+      'வீட்டில் அனைவரின் ஜாதகங்களும் ஒரே இடத்தில்';
+
+  @override
+  String get paywallChooseYearly => 'Pro வருடாந்திரமாகப் பெறுங்கள்';
+
+  @override
+  String get paywallChooseMonthly => 'Pro மாதாந்திரமாகப் பெறுங்கள்';
+
+  @override
   String get paywallReasonCompat => 'முழு பொருத்தக் கணிப்பையும் பாருங்கள்';
 
   @override

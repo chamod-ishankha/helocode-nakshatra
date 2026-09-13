@@ -1230,6 +1230,27 @@ class L10nEn extends L10n {
   String get paywallFeatureProfiles => 'Charts for the whole family';
 
   @override
+  String get paywallOutcomeNoAds => 'Nothing between you and the almanac';
+
+  @override
+  String get paywallOutcomeCharts => 'Understand your deeper chart';
+
+  @override
+  String get paywallOutcomeDasha => 'Every period, in full detail';
+
+  @override
+  String get paywallOutcomeCompat => 'See exactly why two charts match';
+
+  @override
+  String get paywallOutcomeProfiles => 'Everyone at home, in one app';
+
+  @override
+  String get paywallChooseYearly => 'Get Pro yearly';
+
+  @override
+  String get paywallChooseMonthly => 'Get Pro monthly';
+
+  @override
   String get paywallReasonCompat => 'See the full compatibility working';
 
   @override

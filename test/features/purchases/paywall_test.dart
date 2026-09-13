@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/ads/rewarded_unlock.dart';
 import 'package:nakshatra/core/config/flavor.dart';
+import 'package:nakshatra/core/purchases/entitlements.dart';
 import 'package:nakshatra/core/purchases/products.dart';
 import 'package:nakshatra/core/purchases/purchase_controller.dart';
 import 'package:nakshatra/core/theme/app_theme.dart';
@@ -55,6 +56,7 @@ void main() {
     WidgetTester tester, {
     AppLocale locale = AppLocale.en,
     PaywallReason reason = PaywallReason.general,
+    EntitlementSnapshot? held,
   }) async {
     // A 360x640 logical screen: the cheap Android phones this app is aimed at.
     tester.view.physicalSize = const Size(360, 640);
@@ -68,6 +70,12 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
+
+    // What the user already owns, as the store would report it on launch.
+    if (held != null) {
+      store.answer = held;
+      await container.read(entitlementsProvider.notifier).refresh();
+    }
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -212,6 +220,148 @@ void main() {
     // free one appears. This is the mapping that makes that possible.
     for (final unlock in RewardedUnlock.values) {
       expect(PaywallReason.forUnlock(unlock).rewarded, unlock);
+    }
+  });
+
+  group('KAN-71: the purchase controls a buyer sees', () {
+    testWidgets('yearly comes first, because it is the highlighted plan', (
+      tester,
+    ) async {
+      await open(tester);
+
+      final yearly = tester.getTopLeft(find.text('Get Pro yearly'));
+      final monthly = tester.getTopLeft(find.text('Get Pro monthly'));
+      expect(yearly.dy, lessThan(monthly.dy));
+    });
+
+    testWidgets('each button names the period it bills for, and buys it', (
+      tester,
+    ) async {
+      await open(tester);
+
+      await tester.ensureVisible(find.text('Get Pro monthly'));
+      await tester.tap(find.text('Get Pro monthly'));
+      await tester.pumpAndSettle();
+      expect(store.bought, [PurchaseProduct.proMonthly]);
+    });
+
+    testWidgets('touching the price does not start a purchase', (tester) async {
+      // The whole card used to be the button. Reading the price is not asking
+      // to pay it.
+      await open(tester);
+
+      // Scrolled into view first. Below the fold a tap lands on nothing, and
+      // this test would pass whether the card buys or not — which it did,
+      // until a deliberately broken card proved it.
+      await tester.ensureVisible(find.text('LKR 3900'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('LKR 3900'));
+      await tester.pumpAndSettle();
+      expect(store.bought, isEmpty);
+    });
+
+    testWidgets('the renewal terms sit between the plans and anything else', (
+      tester,
+    ) async {
+      // Play requires price, period, renewal and cancellation to be clear
+      // before the purchase. A line below the one-time products and the video
+      // offer is not that.
+      await open(tester);
+
+      final legal = find.text(
+        'Subscriptions renew automatically until cancelled. '
+        'Cancel any time in Google Play.',
+      );
+      expect(legal, findsOneWidget);
+
+      final lastPlan = tester.getBottomLeft(find.text('Get Pro monthly')).dy;
+      final terms = tester.getTopLeft(legal).dy;
+      final removeAds = tester
+          .getTopLeft(find.textContaining('Just remove the ads'))
+          .dy;
+
+      expect(terms, greaterThan(lastPlan));
+      expect(terms, lessThan(removeAds));
+    });
+
+    testWidgets('a sheet selling no subscription carries no renewal terms', (
+      tester,
+    ) async {
+      store.catalogue = [price(PurchaseProduct.birthChartPdf, 1490)];
+
+      await open(tester, reason: PaywallReason.birthChartPdf);
+
+      expect(find.textContaining('renew automatically'), findsNothing);
+    });
+
+    testWidgets('there is a visible close button, and it closes the sheet', (
+      tester,
+    ) async {
+      await open(tester);
+
+      expect(find.byIcon(Icons.close), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Get Pro yearly'), findsNothing);
+    });
+
+    testWidgets('restore is on the sheet and asks the store', (tester) async {
+      store.answer = EntitlementSnapshot.empty(DateTime.now());
+      await open(tester);
+
+      await tester.ensureVisible(find.text('Restore purchases'));
+      await tester.tap(find.text('Restore purchases'));
+      await tester.pumpAndSettle();
+
+      expect(store.restores, 1);
+    });
+
+    testWidgets('restore is hidden in a build that cannot sell', (
+      tester,
+    ) async {
+      store.isReady = false;
+      await open(tester);
+
+      expect(find.text('Restore purchases'), findsNothing);
+    });
+
+    testWidgets('a subscriber is told they have Pro, not sold it again', (
+      tester,
+    ) async {
+      final until = DateTime.now().add(const Duration(days: 200));
+      await open(
+        tester,
+        held: EntitlementSnapshot(
+          grants: {Entitlement.pro: until},
+          refreshedAt: DateTime.now(),
+        ),
+      );
+
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+      expect(find.textContaining('Pro until'), findsOneWidget);
+      // No plan to buy, and no list of reasons to buy what they hold.
+      expect(find.text('Get Pro yearly'), findsNothing);
+      expect(find.text('Get Pro monthly'), findsNothing);
+      expect(find.text('Understand your deeper chart'), findsNothing);
+    });
+
+    testWidgets('somebody who owns nothing sees no owned list', (tester) async {
+      await open(tester);
+
+      expect(find.byIcon(Icons.check_circle), findsNothing);
+    });
+
+    for (final locale in AppLocale.values) {
+      testWidgets('the buttons and terms draw in ${locale.englishName}', (
+        tester,
+      ) async {
+        await open(tester, locale: locale);
+
+        expect(tester.takeException(), isNull);
+        expect(find.byType(FilledButton), findsOneWidget);
+        expect(find.byType(OutlinedButton), findsWidgets);
+      });
     }
   });
 }

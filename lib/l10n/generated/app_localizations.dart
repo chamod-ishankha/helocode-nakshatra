@@ -2265,6 +2265,48 @@ abstract class L10n {
   /// **'Charts for the whole family'**
   String get paywallFeatureProfiles;
 
+  /// Paywall benefit title, outcome-led. The feature it names (paywallFeatureNoAds) sits underneath.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing between you and the almanac'**
+  String get paywallOutcomeNoAds;
+
+  /// Paywall benefit title for the navamsa chart. Feature line underneath.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand your deeper chart'**
+  String get paywallOutcomeCharts;
+
+  /// Paywall benefit title for the full dasha timeline. Feature line underneath.
+  ///
+  /// In en, this message translates to:
+  /// **'Every period, in full detail'**
+  String get paywallOutcomeDasha;
+
+  /// Paywall benefit title for the full compatibility working. Feature line underneath.
+  ///
+  /// In en, this message translates to:
+  /// **'See exactly why two charts match'**
+  String get paywallOutcomeCompat;
+
+  /// Paywall benefit title for several saved charts. Feature line underneath.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone at home, in one app'**
+  String get paywallOutcomeProfiles;
+
+  /// Button that buys the yearly Pro subscription. Names the billing period on purpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro yearly'**
+  String get paywallChooseYearly;
+
+  /// Button that buys the monthly Pro subscription. Names the billing period on purpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro monthly'**
+  String get paywallChooseMonthly;
+
   /// No description provided for @paywallReasonCompat.
   ///
   /// In en, this message translates to:

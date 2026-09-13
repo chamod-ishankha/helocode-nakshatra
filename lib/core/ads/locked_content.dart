@@ -10,6 +10,7 @@ import '../purchases/entitlements.dart';
 import '../purchases/purchase_controller.dart';
 import '../theme/app_spacing.dart';
 import '../theme/semantic_colors.dart';
+import 'rewarded_analytics.dart';
 import 'rewarded_unlock.dart';
 
 /// Real content, blurred, with both ways past it on top (KAN-36).
@@ -71,6 +72,13 @@ class _LockedContentState extends ConsumerState<LockedContent> {
   bool _busy = false;
   bool _failed = false;
 
+  /// Whether this lock's offer has been counted (KAN-70).
+  ///
+  /// Unlike the card, this widget stays mounted locked and unlocked, and
+  /// build reruns constantly — so it counts the first build that actually
+  /// shows a watch button, and never again for this lock.
+  bool _offerCounted = false;
+
   /// Enough blur that no glyph survives it.
   static const double _sigma = 9;
 
@@ -106,6 +114,18 @@ class _LockedContentState extends ConsumerState<LockedContent> {
     // file has neither ad ids nor a store key, and must still be a whole app
     // rather than a screen of blurred rectangles nobody can ever open.
     if (owned || earned || (!canWatch && !canBuy)) return widget.child;
+
+    // Only when the video door exists: a lock offering nothing but Pro is not
+    // a rewarded offer, and counting it would dilute the watch rate.
+    if (canWatch && !_offerCounted) {
+      _offerCounted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ref
+            .read(unlockRevisionProvider.notifier)
+            .offered(widget.unlock, RewardedSurface.lock);
+      });
+    }
 
     return Stack(
       alignment: Alignment.center,

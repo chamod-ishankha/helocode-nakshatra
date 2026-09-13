@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'ad_gate.dart';
+import 'rewarded_analytics.dart';
 import 'rewarded_unlock.dart';
 
 /// What happened when a rewarded interstitial was asked for.
@@ -76,11 +77,15 @@ class RewardedInterstitialController {
     required this.gate,
     required this.present,
     required this.preload,
+    this.log = noRewardedLog,
   });
 
   final AdGate gate;
   final Future<RewardedInterstitialOutcome> Function() present;
   final Future<void> Function() preload;
+
+  /// Records what became of each attempt (KAN-70).
+  final RewardedLog log;
 
   /// What a watched ad opens, for the rest of the local day.
   ///
@@ -117,6 +122,12 @@ class RewardedInterstitialController {
     if (_watchedToday(unlocks)) return false;
 
     final outcome = await present();
+
+    // Every attempt the policy allowed, including a failed fill. A placement
+    // that rarely fills and a placement that fills and gets skipped look the
+    // same in revenue and need opposite fixes (KAN-70).
+    log(RewardedEvent.interstitial, {'outcome': outcome.name});
+
     if (outcome.appeared) {
       await gate.recordShown(AdSlot.rewardedInterstitial);
     }
@@ -148,5 +159,6 @@ final rewardedInterstitialControllerProvider =
         gate: ref.watch(adGateProvider),
         present: ref.watch(rewardedInterstitialPresenterProvider),
         preload: ref.watch(rewardedInterstitialPreloaderProvider),
+        log: ref.watch(rewardedLogProvider),
       );
     });

@@ -7,6 +7,7 @@ import '../../features/purchases/presentation/paywall.dart';
 import '../purchases/purchase_controller.dart';
 import '../theme/app_spacing.dart';
 import '../theme/semantic_colors.dart';
+import 'rewarded_analytics.dart';
 import 'rewarded_unlock.dart';
 
 /// The "watch a short video to see this" prompt (KAN-34).
@@ -39,6 +40,17 @@ class RewardedUnlockCard extends ConsumerStatefulWidget {
 class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
   bool _busy = false;
   bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Every caller mounts this card only while its content is locked and an
+    // ad can be watched, so appearing is being offered. Counted on mount
+    // rather than in build, which reruns on every tap (KAN-70).
+    ref
+        .read(unlockRevisionProvider.notifier)
+        .offered(widget.unlock, RewardedSurface.card);
+  }
 
   Future<void> _watch() async {
     setState(() {

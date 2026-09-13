@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/data/profile_repository.dart';
 import 'ad_gate.dart';
+import 'rewarded_analytics.dart';
 
 /// Content a user can open by watching a rewarded video (KAN-34).
 ///
@@ -158,10 +159,30 @@ class UnlockNotifier extends Notifier<int> {
 
   Future<bool> earn(RewardedUnlock unlock) async {
     final earned = await ref.read(rewardedPresenterProvider)();
+
+    // Logged here and not in the lock or the card, because both come through
+    // this one method — two call sites would be two chances to count a watch
+    // twice or not at all (KAN-70).
+    ref.read(rewardedLogProvider)(
+      earned ? RewardedEvent.earned : RewardedEvent.notEarned,
+      rewardedParams(unlock),
+    );
+
     if (!earned) return false;
     await UnlockStore.write(ref.read(sharedPreferencesProvider), unlock);
     state++;
     return true;
+  }
+
+  /// Records that a watch button was shown and usable (KAN-70).
+  ///
+  /// The denominator for [earn]: without it there is no telling a lock nobody
+  /// taps from a lock nobody sees.
+  void offered(RewardedUnlock unlock, RewardedSurface surface) {
+    ref.read(rewardedLogProvider)(
+      RewardedEvent.offered,
+      rewardedParams(unlock, surface),
+    );
   }
 }
 

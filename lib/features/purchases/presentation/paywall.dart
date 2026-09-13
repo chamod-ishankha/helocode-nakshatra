@@ -15,6 +15,12 @@ import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'purchase_messages.dart';
 
+/// One line in the paywall's list of what Pro gives (KAN-71).
+///
+/// A type rather than a list of strings so the order can be decided, and
+/// tested, without a [BuildContext].
+enum PaywallBenefit { noAds, charts, dasha, compat, profiles }
+
 /// Why the paywall opened (KAN-36).
 ///
 /// Contextual, not a generic wall. Somebody who just tried to see the daśā
@@ -65,6 +71,29 @@ enum PaywallReason {
     RewardedUnlock.navamsaChart => PaywallReason.navamsaChart,
     RewardedUnlock.dashaDetail => PaywallReason.dashaDetail,
   };
+
+  /// The benefit that matches why the sheet opened, if one does.
+  ///
+  /// Someone who tapped "Add a family member" should read about family charts
+  /// first, not fifth (KAN-74). Future days has no line of its own — it rides
+  /// on the rewarded unlock, not on a Pro gate — so it leaves the order alone.
+  PaywallBenefit? get leads => switch (this) {
+    PaywallReason.navamsaChart => PaywallBenefit.charts,
+    PaywallReason.dashaDetail => PaywallBenefit.dasha,
+    PaywallReason.compatibilityDetail => PaywallBenefit.compat,
+    PaywallReason.multipleProfiles => PaywallBenefit.profiles,
+    PaywallReason.general ||
+    PaywallReason.futureDay ||
+    PaywallReason.birthChartPdf => null,
+  };
+
+  /// The benefits in the order this sheet shows them: the one the user came
+  /// for first, the rest in their usual order behind it.
+  List<PaywallBenefit> get benefitOrder => [
+    ?leads,
+    for (final b in PaywallBenefit.values)
+      if (b != leads) b,
+  ];
 
   String? headline(L10n l) => switch (this) {
     PaywallReason.general => null,
@@ -202,7 +231,7 @@ class _PaywallSheet extends ConsumerWidget {
             // The Pro feature list only belongs on a sheet that sells Pro, and
             // not to somebody who already holds it.
             if (reason.product == null && !hasPro) ...[
-              const _Features(),
+              _Features(order: reason.benefitOrder),
               const SizedBox(height: AppSpacing.lg),
             ],
 
@@ -261,7 +290,9 @@ class _PaywallSheet extends ConsumerWidget {
 }
 
 class _Features extends StatelessWidget {
-  const _Features();
+  const _Features({required this.order});
+
+  final List<PaywallBenefit> order;
 
   @override
   Widget build(BuildContext context) {
@@ -290,15 +321,34 @@ class _Features extends StatelessWidget {
     // the gate delivers: "understand your deeper chart" is the navāṁśa, not a
     // reading of anyone's future.
     final lines = [
-      (Icons.block, l.paywallOutcomeNoAds, l.paywallFeatureNoAds),
-      (Icons.grid_view, l.paywallOutcomeCharts, l.paywallFeatureCharts),
-      (Icons.timeline, l.paywallOutcomeDasha, l.paywallFeatureDasha),
-      (Icons.favorite_outline, l.paywallOutcomeCompat, l.paywallFeatureCompat),
-      (
-        Icons.group_outlined,
-        l.paywallOutcomeProfiles,
-        l.paywallFeatureProfiles,
-      ),
+      for (final benefit in order)
+        switch (benefit) {
+          PaywallBenefit.noAds => (
+            Icons.block,
+            l.paywallOutcomeNoAds,
+            l.paywallFeatureNoAds,
+          ),
+          PaywallBenefit.charts => (
+            Icons.grid_view,
+            l.paywallOutcomeCharts,
+            l.paywallFeatureCharts,
+          ),
+          PaywallBenefit.dasha => (
+            Icons.timeline,
+            l.paywallOutcomeDasha,
+            l.paywallFeatureDasha,
+          ),
+          PaywallBenefit.compat => (
+            Icons.favorite_outline,
+            l.paywallOutcomeCompat,
+            l.paywallFeatureCompat,
+          ),
+          PaywallBenefit.profiles => (
+            Icons.group_outlined,
+            l.paywallOutcomeProfiles,
+            l.paywallFeatureProfiles,
+          ),
+        },
     ];
     final theme = Theme.of(context);
 

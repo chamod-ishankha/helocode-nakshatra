@@ -10,6 +10,8 @@ import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
 import '../../../core/config/app_locale.dart';
+import '../../../core/purchases/entitlements.dart';
+import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -17,6 +19,7 @@ import '../../../core/theme/semantic_colors.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../profiles/presentation/add_family_member.dart';
 import '../domain/daily_providers.dart';
 
 /// The screen users open every morning.
@@ -112,6 +115,7 @@ class HomeScreen extends ConsumerWidget {
             const _CompatibilityCard(),
             const SizedBox(height: AppSpacing.sm),
             const _HoroscopeCard(),
+            const _FamilyCard(),
             const SizedBox(height: AppSpacing.xl),
             const _ComingSoon(),
             const SizedBox(height: AppSpacing.xl),
@@ -229,6 +233,61 @@ class _HoroscopeCard extends ConsumerWidget {
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => context.push(Routes.horoscope),
+      ),
+    );
+  }
+}
+
+/// The door to family charts (KAN-74).
+///
+/// Several saved charts is the one Pro feature no rewarded ad can open, and in
+/// this market it is the natural one — an almanac in a Sri Lankan house is
+/// read for a spouse, a child, a parent. It used to be reachable only from
+/// Settings, so the people most likely to want it were the least likely to
+/// find it.
+///
+/// Placed with the other cards people choose to open, below the day's
+/// almanac, never above it: this is an invitation, not the reason anybody
+/// opened the app this morning. It says "family member" rather than
+/// "profile", because family is why they would do it.
+class _FamilyCard extends ConsumerWidget {
+  const _FamilyCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final l = L10n.of(context);
+
+    final visible = showFamilyCard(
+      savedCharts: ref.watch(savedProfilesProvider).value?.length ?? 0,
+      ownsFeature: ref.watch(featureProvider(PaidFeature.multipleProfiles)),
+      canBuy: ref.watch(purchasesAvailableProvider),
+    );
+    if (!visible) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: theme.dividerColor),
+        ),
+        child: ListTile(
+          leading: Icon(
+            Icons.group_add_outlined,
+            color: context.semantic.accent,
+          ),
+          title: Text(l.familyAddTitle),
+          subtitle: Text(
+            l.familyAddSubtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall,
+          ),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => addFamilyMember(context, ref),
+        ),
       ),
     );
   }

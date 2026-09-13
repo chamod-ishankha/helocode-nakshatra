@@ -2523,11 +2523,17 @@ abstract class L10n {
   /// **'Switch between charts for your family.'**
   String get profilesSettingsHint;
 
-  /// No description provided for @profilesAdd.
+  /// Adds another person's chart. On the Home card and the Saved charts screen. 'Family member', not 'profile': family is why anyone would do it (KAN-74).
   ///
   /// In en, this message translates to:
-  /// **'Add another chart'**
-  String get profilesAdd;
+  /// **'Add a family member'**
+  String get familyAddTitle;
+
+  /// Under familyAddTitle on the Home card.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep charts for a spouse, children or parents too.'**
+  String get familyAddSubtitle;
 
   /// No description provided for @profilesShowing.
   ///

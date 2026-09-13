@@ -1387,7 +1387,11 @@ class L10nEn extends L10n {
   String get profilesSettingsHint => 'Switch between charts for your family.';
 
   @override
-  String get profilesAdd => 'Add another chart';
+  String get familyAddTitle => 'Add a family member';
+
+  @override
+  String get familyAddSubtitle =>
+      'Keep charts for a spouse, children or parents too.';
 
   @override
   String get profilesShowing => 'Showing now';

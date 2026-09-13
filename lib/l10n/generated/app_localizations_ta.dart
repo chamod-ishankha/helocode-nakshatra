@@ -1401,7 +1401,11 @@ class L10nTa extends L10n {
       'குடும்பத்தினரின் சாதகங்களுக்கு இடையே மாறவும்.';
 
   @override
-  String get profilesAdd => 'மற்றொரு சாதகத்தைச் சேர்க்கவும்';
+  String get familyAddTitle => 'குடும்ப உறுப்பினரைச் சேர்க்கவும்';
+
+  @override
+  String get familyAddSubtitle =>
+      'வாழ்க்கைத் துணை, குழந்தைகள் அல்லது பெற்றோரின் ஜாதகங்களையும் சேமியுங்கள்.';
 
   @override
   String get profilesShowing => 'இப்போது காட்டப்படுகிறது';

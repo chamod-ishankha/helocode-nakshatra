@@ -1378,7 +1378,11 @@ class L10nSi extends L10n {
   String get profilesSettingsHint => 'පවුලේ අයගේ කේන්දර අතර මාරු වන්න.';
 
   @override
-  String get profilesAdd => 'තවත් කේන්දරයක් එක් කරන්න';
+  String get familyAddTitle => 'පවුලේ සාමාජිකයෙක් එක් කරන්න';
+
+  @override
+  String get familyAddSubtitle =>
+      'කලත්‍රයාගේ, දරුවන්ගේ හෝ දෙමාපියන්ගේ කේන්දර ද සුරකින්න.';
 
   @override
   String get profilesShowing => 'දැන් පෙන්වයි';

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/db/profile_store.dart';
-import '../../../core/purchases/entitlements.dart';
-import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
-import '../../purchases/presentation/paywall.dart';
+import 'add_family_member.dart';
 
 /// Switching between saved charts (KAN-19).
 ///
@@ -28,19 +25,6 @@ import '../../purchases/presentation/paywall.dart';
 /// this stops being "the app" and starts being the feature.
 class ProfilesScreen extends ConsumerWidget {
   const ProfilesScreen({super.key});
-
-  Future<void> _addAnother(BuildContext context, WidgetRef ref) async {
-    if (!ref.read(featureProvider(PaidFeature.multipleProfiles))) {
-      await showPaywall(context, ref, reason: PaywallReason.multipleProfiles);
-      return;
-    }
-    if (!context.mounted) return;
-
-    // Straight into onboarding, which is already the only birth-details
-    // editor there is. It writes through ProfileNotifier.add rather than
-    // save when it was opened this way.
-    context.push(Routes.addProfile);
-  }
 
   Future<void> _confirmRemove(
     BuildContext context,
@@ -134,8 +118,8 @@ class ProfilesScreen extends ConsumerWidget {
                   const Divider(height: 24),
                   ListTile(
                     leading: const Icon(Icons.person_add_alt),
-                    title: Text(l.profilesAdd),
-                    onTap: () => _addAnother(context, ref),
+                    title: Text(l.familyAddTitle),
+                    onTap: () => addFamilyMember(context, ref),
                   ),
 
                   Padding(

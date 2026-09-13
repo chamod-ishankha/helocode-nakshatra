@@ -699,7 +699,14 @@
   },
   "profilesTitle": "Saved charts",
   "profilesSettingsHint": "Switch between charts for your family.",
-  "profilesAdd": "Add another chart",
+  "familyAddTitle": "Add a family member",
+  "@familyAddTitle": {
+    "description": "Adds another person's chart. On the Home card and the Saved charts screen. 'Family member', not 'profile': family is why anyone would do it (KAN-74)."
+  },
+  "familyAddSubtitle": "Keep charts for a spouse, children or parents too.",
+  "@familyAddSubtitle": {
+    "description": "Under familyAddTitle on the Home card."
+  },
   "profilesShowing": "Showing now",
   "profilesRemove": "Remove",
   "profilesRemoveConfirm": "Remove {name}?",

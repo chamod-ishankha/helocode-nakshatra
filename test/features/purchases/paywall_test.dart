@@ -364,4 +364,73 @@ void main() {
       });
     }
   });
+
+  group('KAN-74: the benefit the user came for leads', () {
+    test('every order is the whole list, once each', () {
+      // Reordering must never drop a benefit or show one twice — the list is
+      // what Pro promises, and gates_test ties each line to a real gate.
+      for (final reason in PaywallReason.values) {
+        final order = reason.benefitOrder;
+        expect(order.toSet(), PaywallBenefit.values.toSet(), reason: '$reason');
+        expect(order, hasLength(PaywallBenefit.values.length));
+      }
+    });
+
+    test('each reason puts its own benefit first', () {
+      expect(
+        PaywallReason.multipleProfiles.benefitOrder.first,
+        PaywallBenefit.profiles,
+      );
+      expect(
+        PaywallReason.navamsaChart.benefitOrder.first,
+        PaywallBenefit.charts,
+      );
+      expect(
+        PaywallReason.dashaDetail.benefitOrder.first,
+        PaywallBenefit.dasha,
+      );
+      expect(
+        PaywallReason.compatibilityDetail.benefitOrder.first,
+        PaywallBenefit.compat,
+      );
+    });
+
+    test('a reason with no benefit of its own keeps the usual order', () {
+      for (final reason in [
+        PaywallReason.general,
+        PaywallReason.futureDay,
+        PaywallReason.birthChartPdf,
+      ]) {
+        expect(reason.benefitOrder, PaywallBenefit.values, reason: '$reason');
+      }
+    });
+
+    testWidgets('opened from "Add a family member", family is read first', (
+      tester,
+    ) async {
+      await open(tester, reason: PaywallReason.multipleProfiles);
+
+      final family = tester.getTopLeft(
+        find.text('Everyone at home, in one app'),
+      );
+      final noAds = tester.getTopLeft(
+        find.text('Nothing between you and the almanac'),
+      );
+      expect(family.dy, lessThan(noAds.dy));
+    });
+
+    testWidgets('opened from Settings, no ads still comes first', (
+      tester,
+    ) async {
+      await open(tester);
+
+      final family = tester.getTopLeft(
+        find.text('Everyone at home, in one app'),
+      );
+      final noAds = tester.getTopLeft(
+        find.text('Nothing between you and the almanac'),
+      );
+      expect(noAds.dy, lessThan(family.dy));
+    });
+  });
 }

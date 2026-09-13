@@ -225,7 +225,7 @@ and Tamil terms convert far better for a fraction of the competition.
 | App category | Lifestyle |
 | Tags | Astrology, Horoscopes (max 5; these two are the only accurate ones) |
 | Contains ads | **Yes** — AdMob banner, interstitial and rewarded |
-| In-app purchases | **Yes** — LKR 490 to LKR 3,900 range |
+| In-app purchases | **Yes** — LKR 590 to LKR 4,990 range |
 | Content rating | See below |
 | Target audience | 18+ |
 | Data safety | See [play-data-safety.md](play-data-safety.md) |

@@ -13,14 +13,14 @@ enum PurchaseTerm { oneTime, monthly, yearly }
 ///
 /// ## Prices are deliberately absent
 ///
-/// `docs/monetisation-plan.md` carries the prices — LKR 750 / USD 2.99 for
-/// remove_ads, LKR 550 and LKR 5,500 for the Pro tiers, LKR 1,500 for the
-/// report — and none of them belong in code. The store returns a formatted
-/// price in the user's own currency, already carrying whatever regional
-/// pricing and local tax Play applies. A hardcoded "LKR 750" shown to a user
-/// whose account will be charged USD 2.99 is not a cosmetic bug — it is a
-/// price the app quoted and did not honour. Until [StorePrice] arrives from
-/// the store, a paywall shows that it is loading, never a number.
+/// The prices live in Play Console and `docs/monetisation-plan.md`, not here —
+/// not even in this comment, which quoted them twice and went stale both
+/// times. The store returns a formatted price in the user's own currency,
+/// already carrying whatever regional pricing and local tax Play applies. A
+/// hardcoded rupee price shown to a user whose account is charged in dollars
+/// is not a cosmetic bug — it is a price the app quoted and did not honour.
+/// Until [StorePrice] arrives from the store, a paywall shows that it is
+/// loading, never a number.
 enum PurchaseProduct {
   removeAds('remove_ads', Entitlement.adFree, PurchaseTerm.oneTime),
   proMonthly('pro_monthly', Entitlement.pro, PurchaseTerm.monthly),

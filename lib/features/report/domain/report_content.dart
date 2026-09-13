@@ -20,7 +20,7 @@ import '../../onboarding/domain/birth_profile.dart';
 /// a definition rather than a reading. Natal interpretation is authored
 /// content — it needs an astrologer and three translators, the same as the
 /// poya notes in KAN-62 — and inventing it in code would put made-up claims
-/// about somebody's life in a document they paid LKR 1,500 for.
+/// about somebody's life in a document they paid for.
 class ReportContent {
   ReportContent({
     required this.profile,

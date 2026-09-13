@@ -70,18 +70,18 @@ error, it is a paywall row that silently never appears.
 
 | Product ID | Grants | Sri Lanka | Elsewhere |
 |---|---|---|---|
-| `remove_ads` | no ads, anywhere | LKR 750 | USD 2.99 |
-| `birth_chart_pdf` | the PDF report | LKR 1,500 | USD 6.99 |
+| `remove_ads` | no ads, anywhere | LKR 990 | USD 4.99 |
+| `birth_chart_pdf` | the PDF report | LKR 1,490 | USD 6.99 |
 
 ### Subscriptions
 
 | Product ID | Base plan | Grants | Sri Lanka | Elsewhere |
 |---|---|---|---|---|
-| `pro_monthly` | monthly, auto-renewing | Pro | LKR 550 | USD 2.99 |
-| `pro_yearly` | yearly, auto-renewing | Pro | LKR 5,500 | USD 29.99 |
+| `pro_monthly` | monthly, auto-renewing | Pro | LKR 590 | USD 3.99 |
+| `pro_yearly` | yearly, auto-renewing | Pro | LKR 4,990 | USD 29.99 |
 
-Yearly is ten months' money for twelve months of Pro — 17% off in LKR, 16% in
-USD. The reasoning behind these numbers, and where the ladder is weak, is in
+Set in Play Console on 2026-09-13 (KAN-69). Against twelve months, yearly saves
+30% in LKR and 37% in USD. The reasoning behind these numbers, and where the ladder is weak, is in
 [monetisation-plan.md](monetisation-plan.md).
 
 Prices are set in Play, never in the app — the app only ever displays what the

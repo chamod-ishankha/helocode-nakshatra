@@ -39,7 +39,7 @@ enum PaywallVariant {
 ///
 /// Anything a one-time product exists to sell is off limits, so no config
 /// value can switch off ads for everybody or hand out a report somebody else
-/// paid LKR 1,500 for. That leaves exactly the soft Pro features, which are
+/// paid for. That leaves exactly the soft Pro features, which are
 /// the ones worth experimenting with anyway.
 class PaywallConfig {
   const PaywallConfig({

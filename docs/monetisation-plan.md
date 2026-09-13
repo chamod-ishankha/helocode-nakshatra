@@ -276,26 +276,30 @@ midnight is the one they experience.
 ### Prices
 
 Set in Play Console, never in the app. The app displays only what the store
-returns, in the buyer's own currency — a hardcoded "LKR 750" shown to someone
-whose account is charged USD is a price we quoted and did not honour.
+returns, in the buyer's own currency — a hardcoded rupee price shown to someone
+whose account is charged in dollars is a price we quoted and did not honour.
+
+Set in Play Console on 2026-09-13 (KAN-69).
 
 **One-time**
 
 | Product | Sri Lanka | Elsewhere | Grants |
 |---|---|---|---|
-| `birth_chart_pdf` | **LKR 1,500** | **USD 6.99** | The printable PDF report |
-| `remove_ads` | **LKR 750** | **USD 2.99** | No ads, anywhere, forever |
+| `birth_chart_pdf` | **LKR 1,490** | **USD 6.99** | The printable PDF report |
+| `remove_ads` | **LKR 990** | **USD 4.99** | No ads, anywhere, forever |
 
 **Subscriptions** — both grant the same Pro entitlement; they differ only in
 billing period.
 
 | Product | Sri Lanka | Elsewhere | Period |
 |---|---|---|---|
-| `pro_monthly` | **LKR 550** | **USD 2.99** | Monthly, auto-renewing |
-| `pro_yearly` | **LKR 5,500** | **USD 29.99** | Yearly, auto-renewing |
+| `pro_monthly` | **LKR 590** | **USD 3.99** | Monthly, auto-renewing |
+| `pro_yearly` | **LKR 4,990** | **USD 29.99** | Yearly, auto-renewing |
 
-Yearly is ten months' money for twelve months of Pro — a **17% saving in LKR**,
-**16% in USD**. Consistent across both currencies, which is right.
+The paywall's yearly badge is computed from these numbers, not written in the
+copy: it shows **save 30%** to a buyer charged in rupees and **save 37%** to a
+buyer charged in dollars. Both are true; they are not the same claim — see
+weakness 3.
 
 `compatibility_report` exists in the product table but is **not sellable**:
 nothing in the app gates on what it grants, so buying it would take money and
@@ -339,20 +343,19 @@ on revenue, and a second number here could disagree with the money.
 
 ## Where this plan is weak
 
-The five things worth arguing about before the next price change.
+The things worth arguing about before the next price change.
 
-### 1. Outside Sri Lanka, Remove Ads undercuts Pro monthly at the same price
+### 1. Remove Ads undercut Pro monthly — fixed by KAN-69
 
-`remove_ads` is **USD 2.99 once**. `pro_monthly` is **USD 2.99 every month**.
+Until 2026-09-13, `remove_ads` was USD 2.99 once and `pro_monthly` was USD 2.99
+every month: the same number, one charged once and one charged forever. For
+anyone whose motive was stopping ads, the one-time product strictly dominated.
 
-For any international user whose actual motive is "stop the ads" — and for most
-users that is the motive — the one-time product strictly dominates. Same first
-payment, never charged again. Pro has to win on multiple profiles alone, which
-is a thin reason to pay twelve times as much a year.
+Remove Ads now costs more than a month of Pro in both currencies — LKR 990
+against 590, USD 4.99 against 3.99. The rule for every future price change:
 
-In LKR the ladder is fine: 750 once versus 550 a month reads as a real choice.
-It is only the USD column where the two collided. Widening that gap — Remove
-Ads up, or monthly down — is the highest-leverage single change on this page.
+> **Remove Ads must never cost the same as, or less than, one month of Pro, in
+> any currency.**
 
 ### 2. Two of the four Play subscription benefits are free every day
 
@@ -368,27 +371,38 @@ out daily. What Pro *uniquely* has is no-ads and multiple profiles. Either the
 benefit copy should lead on those, or the daily reset on the chart unlocks
 should get less generous.
 
-### 3. The regional discount is not consistent across the ladder
+### 3. The yearly saving, and the regional discount, differ by currency
 
-At roughly 300 LKR to the dollar, what a Sri Lankan pays as a share of the
-international price:
+**The yearly saving.** Against twelve months of the monthly plan, yearly saves
+**30% in LKR** (4,990 against 7,080) and **37% in USD** (29.99 against 47.88).
+Before KAN-69 it was 17% and 16%.
 
-| Product | Share |
-|---|---|
-| `pro_monthly` | ~61% |
-| `pro_yearly` | ~61% |
-| `birth_chart_pdf` | ~72% |
-| `remove_ads` | ~84% |
+Nothing breaks — the badge is computed per buyer from the store's own prices,
+so each buyer sees a true number. But a Sri Lankan and a British user are shown
+different savings for the same product, and a screenshot of one beside the
+other looks like a mistake. To make them match, move USD yearly to about 33.99
+(30%) or LKR yearly to about 4,450 (37%).
 
-Subscriptions are discounted deeply and consistently; one-time products barely
-are. Nothing forces these to match, but right now the difference looks like
-drift rather than a decision. Pick a target share and apply it.
+**The regional discount.** At roughly 300 LKR to the dollar, a Sri Lankan pays
+this share of the international price:
+
+| Product | Before KAN-69 | Now |
+|---|---|---|
+| `pro_monthly` | ~61% | ~49% |
+| `pro_yearly` | ~61% | ~55% |
+| `remove_ads` | ~84% | ~66% |
+| `birth_chart_pdf` | ~72% | ~71% |
+
+Sri Lanka is now cheaper across the board and the spread is narrower — 49–71%
+rather than 61–84%. The PDF barely moved, which makes it the least discounted
+product in the home market.
 
 ### 4. The PDF costs more than two months of Pro and is not in Pro
 
-`birth_chart_pdf` at LKR 1,500 is nearly **three times** Remove Ads and
-**2.7 times** a month of Pro — and a yearly subscriber who has paid LKR 5,500
-still has to pay it. That will read as mean to the people who spent the most.
+`birth_chart_pdf` at LKR 1,490 is **1.5 times** Remove Ads and **2.5 times** a
+month of Pro — and a yearly subscriber who has paid LKR 4,990 still has to pay
+it. That will read as mean to the people who spent the most. KAN-73 proposes a
+Pro member price.
 
 It may still be right — the ticket calls it the highest-margin single product
 and it is genuinely a different thing — but "Pro does not include the report"
@@ -414,7 +428,7 @@ order of leverage:
 
 | Ticket | Change | Kind |
 |---|---|---|
-| KAN-69 | Pricing ladder — separate Remove Ads from Pro, even out the regional discount | console |
+| KAN-69 | Pricing ladder — separate Remove Ads from Pro — **done 2026-09-13** | console |
 | KAN-70 | Rewarded access — from a daily reset to a scarce preview, **measured first** | code, decision |
 | KAN-71 | Paywall — yearly-first anchor, outcome-led copy, compliance checklist | code |
 | KAN-72 | Free trial on Pro, and proof the paywall reports it truthfully | console + verify |
@@ -428,8 +442,8 @@ order of leverage:
 Two suggestions from that review were **declined**, and the tickets say why:
 transit alerts as a Pro benefit (they are free for everyone, by decision), and
 "priority access to new features" (a promise that would have to be kept
-forever). One number in it was corrected: the proposed yearly price saves 29%
-in LKR and 37% in USD, which are different claims for the same product.
+forever). Its yearly prices save 30% in LKR and 37% in USD; they were adopted
+as proposed, and weakness 3 records the difference.
 
 ---
 

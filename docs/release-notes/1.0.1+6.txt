@@ -1,0 +1,21 @@
+<en-US>
+Add a family member straight from the home screen, and keep charts for everyone at home.
+
+The Pro screen is clearer. Each plan shows what it costs and how often, the renewal terms sit right beside it, and you can restore a purchase from there too.
+
+Pro subscribers can now see what they used this month, in Settings.
+</en-US>
+<si-LK>
+මුල් තිරයෙන්ම පවුලේ සාමාජිකයෙක් එක් කර, නිවසේ සැමගේ කේන්දර සුරකින්න.
+
+Pro තිරය දැන් වඩාත් පැහැදිලියි. සෑම සැලසුමක්ම එහි මිල සහ ගෙවන කාලය පෙන්වයි, අලුත් කිරීමේ කොන්දේසි ඒ අසලම ඇත, එතැනින්ම මිලදී ගැනීමක් යළි ලබා ගත හැකිය.
+
+Pro දායකයින්ට මේ මාසයේ භාවිතය දැන් සැකසුම් තුළ බැලිය හැකිය.
+</si-LK>
+<ta-IN>
+முகப்புத் திரையிலிருந்தே குடும்ப உறுப்பினரைச் சேர்த்து, வீட்டில் அனைவரின் ஜாதகங்களையும் சேமியுங்கள்.
+
+Pro திரை இப்போது தெளிவாக உள்ளது. ஒவ்வொரு திட்டமும் அதன் விலையையும் கட்டணக் காலத்தையும் காட்டுகிறது, புதுப்பித்தல் விதிமுறைகள் அதன் அருகிலேயே உள்ளன, அங்கிருந்தே கொள்முதலை மீட்டெடுக்கலாம்.
+
+Pro சந்தாதாரர்கள் இந்த மாதப் பயன்பாட்டை இப்போது அமைப்புகளில் பார்க்கலாம்.
+</ta-IN>

@@ -1428,6 +1428,27 @@ class L10nTa extends L10n {
   String get nudgeSeePro => 'Pro-வைப் பாருங்கள்';
 
   @override
+  String get proMeterTitle => 'Nakshatra Pro உடன் இந்த மாதம்';
+
+  @override
+  String proMeterCharts(int count) {
+    return 'சேர்த்த குடும்ப ஜாதகங்கள்: $count';
+  }
+
+  @override
+  String proMeterCompat(int count) {
+    return 'பொருத்தச் சரிபார்ப்புகள்: $count';
+  }
+
+  @override
+  String proMeterDasha(int count) {
+    return 'திறந்த தசா காலங்கள்: $count';
+  }
+
+  @override
+  String get proMeterNoAds => 'Pro செயலில் இருக்கும்போது விளம்பரங்கள் இல்லை';
+
+  @override
   String get profilesShowing => 'இப்போது காட்டப்படுகிறது';
 
   @override

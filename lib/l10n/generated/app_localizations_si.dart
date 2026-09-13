@@ -1405,6 +1405,27 @@ class L10nSi extends L10n {
   String get nudgeSeePro => 'Pro බලන්න';
 
   @override
+  String get proMeterTitle => 'Nakshatra Pro සමඟ මේ මාසය';
+
+  @override
+  String proMeterCharts(int count) {
+    return 'එක් කළ පවුලේ කේන්දර: $count';
+  }
+
+  @override
+  String proMeterCompat(int count) {
+    return 'ගැළපීම් පරීක්ෂා: $count';
+  }
+
+  @override
+  String proMeterDasha(int count) {
+    return 'විවෘත කළ දශා කාල: $count';
+  }
+
+  @override
+  String get proMeterNoAds => 'Pro සක්‍රිය අතරතුර දැන්වීම් නැත';
+
+  @override
   String get profilesShowing => 'දැන් පෙන්වයි';
 
   @override

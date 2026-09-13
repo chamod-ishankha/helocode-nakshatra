@@ -2565,6 +2565,36 @@ abstract class L10n {
   /// **'See Pro'**
   String get nudgeSeePro;
 
+  /// Heading of the Pro value meter on the Settings Pro tile. Only shown while Pro is active (KAN-77).
+  ///
+  /// In en, this message translates to:
+  /// **'This month with Nakshatra Pro'**
+  String get proMeterTitle;
+
+  /// Charts added this calendar month while Pro was active. A real count, never shown when zero.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 family chart added} other{{count} family charts added}}'**
+  String proMeterCharts(int count);
+
+  /// Partner matches checked this calendar month while Pro was active. Never shown when zero.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 compatibility check} other{{count} compatibility checks}}'**
+  String proMeterCompat(int count);
+
+  /// Dasha periods opened to their third level this month while Pro was active. Never shown when zero.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 daśā period explored} other{{count} daśā periods explored}}'**
+  String proMeterDasha(int count);
+
+  /// Always true for an active subscriber. Deliberately not 'no ads this month': someone who subscribed mid-month saw ads earlier in it.
+  ///
+  /// In en, this message translates to:
+  /// **'No ads while Pro is active'**
+  String get proMeterNoAds;
+
   /// No description provided for @profilesShowing.
   ///
   /// In en, this message translates to:

@@ -1414,6 +1414,45 @@ class L10nEn extends L10n {
   String get nudgeSeePro => 'See Pro';
 
   @override
+  String get proMeterTitle => 'This month with Nakshatra Pro';
+
+  @override
+  String proMeterCharts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count family charts added',
+      one: '1 family chart added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String proMeterCompat(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count compatibility checks',
+      one: '1 compatibility check',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String proMeterDasha(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count daśā periods explored',
+      one: '1 daśā period explored',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get proMeterNoAds => 'No ads while Pro is active';
+
+  @override
   String get profilesShowing => 'Showing now';
 
   @override

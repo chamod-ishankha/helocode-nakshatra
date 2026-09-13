@@ -7,6 +7,7 @@ import '../../../core/ads/locked_content.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/astro/dasha.dart';
 import '../../../core/purchases/entitlements.dart';
+import '../../../core/purchases/pro_usage.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -300,6 +301,14 @@ class _AntaraTile extends ConsumerWidget {
       dense: true,
       visualDensity: VisualDensity.compact,
       title: row,
+      // Opening a period is the use the meter reports (KAN-77). Collapsing is
+      // not, and nothing is counted unless Pro is active.
+      onExpansionChanged: (open) {
+        if (!open) return;
+        ref
+            .read(proUsageRevisionProvider.notifier)
+            .record(ProUsage.dashaExplored);
+      },
       children: [
         LockedContent(
           unlock: RewardedUnlock.dashaDetail,

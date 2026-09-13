@@ -732,6 +732,41 @@
   "@nudgeSeePro": {
     "description": "The one action on a Pro nudge. Opens the paywall."
   },
+  "proMeterTitle": "This month with Nakshatra Pro",
+  "@proMeterTitle": {
+    "description": "Heading of the Pro value meter on the Settings Pro tile. Only shown while Pro is active (KAN-77)."
+  },
+  "proMeterCharts": "{count, plural, =1{1 family chart added} other{{count} family charts added}}",
+  "@proMeterCharts": {
+    "description": "Charts added this calendar month while Pro was active. A real count, never shown when zero.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "proMeterCompat": "{count, plural, =1{1 compatibility check} other{{count} compatibility checks}}",
+  "@proMeterCompat": {
+    "description": "Partner matches checked this calendar month while Pro was active. Never shown when zero.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "proMeterDasha": "{count, plural, =1{1 daśā period explored} other{{count} daśā periods explored}}",
+  "@proMeterDasha": {
+    "description": "Dasha periods opened to their third level this month while Pro was active. Never shown when zero.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "proMeterNoAds": "No ads while Pro is active",
+  "@proMeterNoAds": {
+    "description": "Always true for an active subscriber. Deliberately not 'no ads this month': someone who subscribed mid-month saw ads earlier in it."
+  },
   "profilesShowing": "Showing now",
   "profilesRemove": "Remove",
   "profilesRemoveConfirm": "Remove {name}?",

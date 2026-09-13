@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/logging/app_logger.dart';
 import '../../../core/purchases/entitlements.dart';
+import '../../../core/purchases/pro_usage.dart';
 import '../../../core/purchases/products.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/theme/semantic_colors.dart';
@@ -105,6 +106,11 @@ class _ProTilesState extends ConsumerState<ProTiles> {
           onTap: canUpgrade ? () => showPaywall(context, ref) : null,
         ),
 
+        // What the subscription has been used for. Subscribers only — for a
+        // lapsed one this tile goes back to the offer above, and the meter does
+        // not linger as a reminder of what they stopped paying for (KAN-77).
+        if (isPro) const _ProMeter(),
+
         if (proUntil != null)
           ListTile(
             leading: const Icon(Icons.open_in_new, size: 20),
@@ -128,6 +134,64 @@ class _ProTilesState extends ConsumerState<ProTiles> {
           onTap: _restoring ? null : _restore,
         ),
       ],
+    );
+  }
+}
+
+/// This month's use of Pro, in real numbers (KAN-77).
+///
+/// Every line is a count that actually went up while Pro was active; a line
+/// whose count is zero is left out rather than shown as a zero that reads like
+/// a failure. The last line is not a count at all: for an active subscriber it
+/// is simply true, and it is the one that lands.
+class _ProMeter extends ConsumerWidget {
+  const _ProMeter();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+    final theme = Theme.of(context);
+    final usage = ref.watch(proUsageStoreProvider);
+
+    final lines = [
+      for (final (u, icon, text) in [
+        (ProUsage.chartAdded, Icons.group_outlined, l.proMeterCharts),
+        (ProUsage.compatibilityCheck, Icons.favorite_outline, l.proMeterCompat),
+        (ProUsage.dashaExplored, Icons.timeline, l.proMeterDasha),
+      ])
+        if (usage.count(u) case final n when n > 0) (icon, text(n)),
+      (Icons.block, l.proMeterNoAds),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.proMeterTitle,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: context.semantic.accent,
+            ),
+          ),
+          const SizedBox(height: 6),
+          for (final (icon, text) in lines)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 16,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(text, style: theme.textTheme.bodySmall)),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

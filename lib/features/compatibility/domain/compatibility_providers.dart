@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/astro/compatibility/ashtakoota.dart';
@@ -5,6 +7,7 @@ import '../../../core/astro/compatibility/kuja_dosha.dart';
 import '../../../core/astro/compatibility/porondam.dart';
 import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
+import '../../../core/purchases/pro_usage.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
 
@@ -27,7 +30,16 @@ class PartnerNotifier extends Notifier<BirthProfile?> {
   @override
   BirthProfile? build() => null;
 
-  void set(BirthProfile profile) => state = profile;
+  void set(BirthProfile profile) {
+    state = profile;
+    // A partner entered is a match checked — counted for Pro's meter (KAN-77).
+    unawaited(
+      ref
+          .read(proUsageRevisionProvider.notifier)
+          .record(ProUsage.compatibilityCheck),
+    );
+  }
+
   void clear() => state = null;
 }
 

@@ -10,6 +10,7 @@ import '../../../core/config/chart_style.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/profile_store.dart';
 import '../../../core/notifications/notification_prefs.dart';
+import '../../../core/purchases/pro_usage.dart';
 import '../../../core/config/theme_preference.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/sync/profile_sync.dart';
@@ -269,6 +270,10 @@ class ProfileNotifier extends Notifier<BirthProfile?> {
     await ref.read(profileRepositoryProvider).add(profile);
     state = profile;
     ref.invalidate(savedProfilesProvider);
+    // Counted only while Pro is active, for the meter on the Pro tile (KAN-77).
+    unawaited(
+      ref.read(proUsageRevisionProvider.notifier).record(ProUsage.chartAdded),
+    );
     unawaited(ref.read(profileSyncProvider).push(profile));
   }
 

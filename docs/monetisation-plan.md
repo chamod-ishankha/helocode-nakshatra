@@ -406,6 +406,31 @@ is the first candidate. **Not** beside the chart grid or the daśā rows: AdMob'
 accidental-click rules bite hardest next to content a user taps on, and that
 ban is account-level.
 
+### What is being done about it
+
+Each weakness above, and the rest of an external review of this plan, is a
+ticket under the monetisation epic (KAN-10), labelled `monetisation`. Rough
+order of leverage:
+
+| Ticket | Change | Kind |
+|---|---|---|
+| KAN-69 | Pricing ladder — separate Remove Ads from Pro, even out the regional discount | console |
+| KAN-70 | Rewarded access — from a daily reset to a scarce preview, **measured first** | code, decision |
+| KAN-71 | Paywall — yearly-first anchor, outcome-led copy, compliance checklist | code |
+| KAN-72 | Free trial on Pro, and proof the paywall reports it truthfully | console + verify |
+| KAN-73 | PDF — a Pro member price via a second SKU | code + console |
+| KAN-74 | Family charts as the headline Pro feature, reachable from Home | code |
+| KAN-75 | Behavioural nudges — one honest sentence, once a day at most | code |
+| KAN-76 | One more banner — compatibility result, below the caveat | code |
+| KAN-77 | Pro value meter — what this month's subscription actually gave them | code, later |
+| KAN-78 | Paywall and nudge copy in Sinhala and Tamil, written natively | content |
+
+Two suggestions from that review were **declined**, and the tickets say why:
+transit alerts as a Pro benefit (they are free for everyone, by decision), and
+"priority access to new features" (a promise that would have to be kept
+forever). One number in it was corrected: the proposed yearly price saves 29%
+in LKR and 37% in USD, which are different claims for the same product.
+
 ---
 
 ## Not to break

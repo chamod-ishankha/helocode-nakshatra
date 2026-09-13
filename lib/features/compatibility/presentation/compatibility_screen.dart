@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/astro/compatibility/ashtakoota.dart';
 import '../../../core/astro/compatibility/porondam.dart';
+import '../../../core/ads/banner_ad_slot.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
@@ -91,6 +92,21 @@ class CompatibilityScreen extends ConsumerWidget {
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
+
+          // The screen's one ad, and the last thing on it (KAN-76).
+          //
+          // Below the result, below the caveat, below the disclaimer — seen
+          // by someone who has read the whole match and scrolled past the
+          // warning, never by someone still reading it. Every control on this
+          // screen (the partner card, the bride selector, the system toggle,
+          // the unlock buttons in the breakdown) sits above that. AdMob
+          // enforces its accidental-click rule hardest beside things a user
+          // taps, and the ban is account-wide.
+          //
+          // Only once there is a result. A screen still asking for the
+          // partner's details is a form, and an ad at the foot of a form sits
+          // one thumb-length from the button that fills it in.
+          if (match != null) const BannerAdSlot(),
         ],
       ),
     );

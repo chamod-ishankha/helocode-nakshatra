@@ -49,7 +49,7 @@ bring people back.
 | [Chart](#chart) | `/chart` | **Rewarded interstitial** + rewarded | PDF report |
 | [Daśā timeline](#daśā-timeline) | in Chart | rewarded | — |
 | [Horoscope](#horoscope) | `/horoscope` | **Interstitial** + rewarded | — |
-| [Compatibility](#compatibility) | `/compatibility` | rewarded | — |
+| [Compatibility](#compatibility) | `/compatibility` | **Banner** + rewarded | — |
 | [Calendar](#calendar) | `/calendar` | — | — |
 | [Profiles](#profiles) | `/profiles` | — | **Pro gate** |
 | [Settings](#settings) | `/settings` | — | paywall entry |
@@ -120,6 +120,7 @@ Marriage matching. Both systems offered rather than one folded into the other.
 - **Per-koota / per-porondam breakdown** — **locked**
 - **Kuja dosha section**
 - **Caveat line** — the most important line on the screen
+- 🟢 **Banner ad**, the last thing on the page, and only once there is a result
 
 ### Calendar
 
@@ -190,23 +191,33 @@ still worth money, every day, if the path is in front of them.
 Four AdMob formats, four different jobs. Policy lives in `AdGate`; each
 placement only runs it.
 
-### 1. Banner — the daily screen, and nowhere else
+### 1. Banners — Home and the compatibility result
 
-| | |
-|---|---|
-| Screen | **Home** (the daily almanac) — `home_screen.dart:128` |
-| Position | Bottom of the page, below the almanac content |
-| Widget | `BannerAdSlot`, adaptive to the device width |
-| Frequency | Always on, one per screen view |
-| Hidden for | Anyone holding `removeAds` (Remove Ads **or** Pro) |
+| | Home | Compatibility |
+|---|---|---|
+| Position | Bottom of the page, after the disclaimer | Bottom of the page, after the caveat and the disclaimer |
+| Shown | Always | **Only once a match is on screen** |
+| Added | KAN-34 | KAN-76 |
 
-This is the only banner in the app. Chart, daśā, compatibility, horoscope and
-settings carry none.
+Both use `BannerAdSlot`, adaptive to the device width. It loads only after the
+SDK is ready, renders nothing rather than an empty gap if fill never comes, and
+is hidden for anyone holding `removeAds` (Remove Ads **or** Pro).
 
-It sits on Home because Home is the screen people open daily and briefly — the
-habit screen. A banner there is seen constantly and interrupts nothing. It
-loads only after the SDK is ready, and renders nothing at all rather than
-holding an empty gap if the fill never comes.
+Home carries one because it is the habit screen — opened daily and briefly, so
+a banner is seen constantly and interrupts nothing. Compatibility carries one
+because a result is read top to bottom and every control on the screen sits
+above it: the partner card, the bride selector, the system toggle, the unlock
+buttons. At its foot the ad is at least 88 dp below the last of those. Before a
+result exists the screen is a form, and the banner stays away from it.
+
+Chart, daśā, horoscope and settings carry none. The chart grid and the daśā
+rows are tapped constantly, and an ad beside them is the accidental-click
+pattern AdMob bans accounts for.
+
+**The rule, enforced by `test/core/ads/banner_placement_test.dart`:** a banner
+is the last thing on its page, after the "for entertainment purposes only"
+line, with nothing tappable in between. The test also lists the screens allowed
+a banner, so adding a third is a deliberate change rather than a pasted line.
 
 ### 2. Interstitial — leaving a horoscope reading
 
@@ -408,17 +419,17 @@ It may still be right — the ticket calls it the highest-margin single product
 and it is genuinely a different thing — but "Pro does not include the report"
 should be a sentence somewhere a buyer sees, not a surprise at the paywall.
 
-### 5. One banner, on one screen
+### 5. Banner inventory is still thin — partly addressed by KAN-76
 
-Home is the only screen with a banner. Chart, daśā, compatibility and horoscope
-have none, and those are the screens people linger on.
+Until KAN-76 Home was the only screen with a banner. The compatibility result
+now has one too, below the caveat. Chart, daśā and horoscope still have none,
+and those are the screens people linger on.
 
-This is restraint, not oversight, and restraint is defensible — but it is also
-the largest untouched inventory in the app. If ad revenue needs to grow without
-touching the paid ladder, a banner below the fold on the compatibility result
-is the first candidate. **Not** beside the chart grid or the daśā rows: AdMob's
-accidental-click rules bite hardest next to content a user taps on, and that
-ban is account-level.
+That stays restraint rather than oversight: the chart grid and the daśā rows
+are tapped constantly, and AdMob's accidental-click rules bite hardest next to
+content a user taps. The next candidate, if the compatibility banner earns, is
+**Calendar** — a deliberate destination, glanced at and left, like Home. One
+placement measured before the next.
 
 ### What is being done about it
 
@@ -435,7 +446,7 @@ order of leverage:
 | KAN-73 | PDF — a Pro member price via a second SKU | code + console |
 | KAN-74 | Family charts as the headline Pro feature, reachable from Home | code |
 | KAN-75 | Behavioural nudges — one honest sentence, once a day at most | code |
-| KAN-76 | One more banner — compatibility result, below the caveat | code |
+| KAN-76 | One more banner — compatibility result, below the caveat — **done 2026-09-14** | code |
 | KAN-77 | Pro value meter — what this month's subscription actually gave them | code, later |
 | KAN-78 | Paywall and nudge copy in Sinhala and Tamil, written natively | content |
 

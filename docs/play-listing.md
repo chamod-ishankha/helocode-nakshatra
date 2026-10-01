@@ -227,9 +227,52 @@ and Tamil terms convert far better for a fraction of the competition.
 | Contains ads | **Yes** — AdMob banner, interstitial and rewarded |
 | In-app purchases | **Yes** — LKR 590 to LKR 4,990 range |
 | Content rating | See below |
-| Target audience | 18+ |
+| Target audience | **18+ only** — see [Target audience](#target-audience-the-families-policy-trap) |
 | Data safety | See [play-data-safety.md](play-data-safety.md) |
 | Selling setup | See [play-monetisation.md](play-monetisation.md) |
+
+## Target audience: the Families Policy trap
+
+**App content → Target audience and content.**
+
+Tick **18 and over** and nothing else. Every age band below 13 must be clear.
+
+### What happens if a child band is ticked
+
+Play applies its **Families Policy** to any app whose target audience includes
+children, even when adults are included too. That policy forbids SDKs not
+approved for children unless the app shows a **neutral age screen** — an
+un-prefilled birthday prompt that then filters what under-13s can see.
+
+This app serves AdMob and has none. So a single child band ticked here is an
+automatic rejection, with no code change that would fix it short of building an
+age gate the app has no use for.
+
+**It has already happened once**, on the first production submission:
+
+> Families Policy Requirements: Neutral Age Screen — Your app violates Families
+> Policy Requirements because it doesn't have a neutral age screen.
+
+The fix was the declaration, not the app. No new build was needed.
+
+### The birth-date step is not an age screen
+
+Onboarding asks for a birth date, and it is tempting to call that the age
+screen. It is not, on two counts: the picker opens pre-filled (25 years ago,
+and 1995 on the partner form), which Play names explicitly as *not* neutral;
+and nothing downstream filters content by the answer. If an age screen is ever
+genuinely needed, it has to be a separate, empty prompt with real filtering
+behind it — not this one relabelled.
+
+### Also answer
+
+| Question | Answer |
+|---|---|
+| Could your store listing appeal to children? | **No** |
+| Target age groups | **18 and over** only |
+
+Porondam and kuja dosha are marriage matching. An 18+ declaration is the honest
+one, not a workaround.
 
 ## Content rating questionnaire (IARC)
 
@@ -250,6 +293,11 @@ News, or Educational**.
 | Horror or fear themes | No |
 
 Expected outcome: **Everyone / PEGI 3 / 3+**.
+
+> **An "Everyone" rating is not a children's declaration.** It describes the
+> content — no violence, no profanity, nothing to warn about — and it does not
+> target anybody. The target audience above is the separate declaration, and it
+> is the one the Families Policy reads.
 
 > **The misrepresentation rule is the one to be careful about.** Play's
 > Misrepresentation policy covers fortune-telling and prediction. An app that

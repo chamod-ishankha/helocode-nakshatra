@@ -74,3 +74,5 @@ admob.properties
 
 # FVM Version Cache
 .fvm/
+# Private redesign mocks (not for the public repo)
+/docs/redesign/

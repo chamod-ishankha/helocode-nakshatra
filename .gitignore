@@ -71,3 +71,6 @@ env/*.json
 # Build output
 /build/
 admob.properties
+
+# FVM Version Cache
+.fvm/

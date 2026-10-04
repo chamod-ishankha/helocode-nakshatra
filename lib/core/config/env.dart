@@ -38,6 +38,11 @@ abstract final class Env {
     'REVENUECAT_PUBLIC_SDK_KEY',
   );
 
+  /// Dev-only shortcut: treat Pro as owned, so ads and every Pro gate are off
+  /// without a purchase. Read through [devUnlocksPro], which also requires the
+  /// dev flavor — this define alone can never unlock anything in a prod build.
+  static const bool devUnlockPro = bool.fromEnvironment('DEV_UNLOCK_PRO');
+
   static bool get hasAdmob =>
       admobAppId.isNotEmpty && admobBannerUnitId.isNotEmpty;
 

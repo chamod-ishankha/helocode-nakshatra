@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/onboarding/data/profile_repository.dart';
+import '../config/env.dart';
+import '../config/flavor.dart';
 import '../config/remote_config_service.dart';
 import '../logging/analytics_service.dart';
 import '../logging/app_logger.dart';
@@ -153,6 +155,13 @@ final featureProvider = Provider.family<bool, PaidFeature>((ref, feature) {
   // generous than the code — never lock somebody out of what they were told
   // they would get.
   if (ref.watch(paywallConfigProvider).isFree(feature)) return true;
+
+  // Development only: open every paid feature, so ads, Pro and the report
+  // products can all be worked on without buying. Needs both the dev flavor
+  // and the explicit define from env/dev.json, and the test suite has neither
+  // — FlavorConfig defaults to dev, which is why the flavor alone is not
+  // enough.
+  if (FlavorConfig.current.flavor.isDev && Env.devUnlockPro) return true;
 
   final snapshot = ref.watch(entitlementsProvider);
   return snapshot.has(feature, ref.watch(purchaseClockProvider)());

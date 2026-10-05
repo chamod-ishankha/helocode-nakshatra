@@ -1529,4 +1529,20 @@ class L10nSi extends L10n {
   @override
   String get introPrivateBody =>
       'ඔබ උපස්ථ කිරීමට තෝරා ගන්නේ නම් මිස, ඔබේ උපන් විස්තර මෙම දුරකථනයෙන් පිටතට නොයයි.';
+
+  @override
+  String get onboardingDateWheelHint => 'ඔබේ උපන් දිනයට අනුචලනය කරන්න';
+
+  @override
+  String get onboardingTimeWheelHint => 'ඔබේ උපන් වේලාවට අනුචලනය කරන්න';
+
+  @override
+  String onboardingPlaceZone(String zone, String offset) {
+    return 'මෙහි වේලාවන් ගණනය කරන්නේ $zone අනුවයි; එදින එය $offset විය.';
+  }
+
+  @override
+  String onboardingPlaceZoneOnly(String zone) {
+    return 'මෙහි වේලාවන් ගණනය කරන්නේ $zone අනුවයි.';
+  }
 }

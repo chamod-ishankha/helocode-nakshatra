@@ -104,7 +104,7 @@ void main() {
     // intro had only the system back button, which closed the app.
     await pump(tester, withProfile: false);
 
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
   });
 
   testWidgets('an edit cannot go back past its first step', (tester) async {
@@ -112,6 +112,6 @@ void main() {
     // and an arrow that led there would show a returning reader the welcome.
     await pump(tester, withProfile: true);
 
-    expect(find.byIcon(Icons.arrow_back), findsNothing);
+    expect(find.byIcon(Icons.arrow_back_rounded), findsNothing);
   });
 }

@@ -445,5 +445,9 @@
   "introLanguagesBody": "සිංහල, දෙමළ සහ ඉංග්‍රීසි — එකිනෙක තමන්ගේම අක්ෂරවලින්. ඕනෑම වේලාවක මාරු කරන්න.",
   "introPrivateKicker": "පෞද්ගලිකත්වය",
   "introPrivateTitle": "ඔබට පමණයි",
-  "introPrivateBody": "ඔබ උපස්ථ කිරීමට තෝරා ගන්නේ නම් මිස, ඔබේ උපන් විස්තර මෙම දුරකථනයෙන් පිටතට නොයයි."
+  "introPrivateBody": "ඔබ උපස්ථ කිරීමට තෝරා ගන්නේ නම් මිස, ඔබේ උපන් විස්තර මෙම දුරකථනයෙන් පිටතට නොයයි.",
+  "onboardingDateWheelHint": "ඔබේ උපන් දිනයට අනුචලනය කරන්න",
+  "onboardingTimeWheelHint": "ඔබේ උපන් වේලාවට අනුචලනය කරන්න",
+  "onboardingPlaceZone": "මෙහි වේලාවන් ගණනය කරන්නේ {zone} අනුවයි; එදින එය {offset} විය.",
+  "onboardingPlaceZoneOnly": "මෙහි වේලාවන් ගණනය කරන්නේ {zone} අනුවයි."
 }

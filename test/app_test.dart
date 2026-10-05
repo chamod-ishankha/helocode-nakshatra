@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nakshatra/core/ui/brand_button.dart';
 import 'package:nakshatra/app.dart';
 import 'package:nakshatra/core/config/flavor.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
@@ -91,13 +92,13 @@ void main() {
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
 
-    final button = tester.widget<FilledButton>(find.byType(FilledButton));
+    final button = tester.widget<BrandButton>(find.byType(BrandButton));
     expect(button.onPressed, isNull, reason: 'no name yet');
 
     await tester.enterText(find.byType(TextField), 'Chamod');
     await tester.pumpAndSettle();
 
-    final enabled = tester.widget<FilledButton>(find.byType(FilledButton));
+    final enabled = tester.widget<BrandButton>(find.byType(BrandButton));
     expect(enabled.onPressed, isNotNull);
   });
 }

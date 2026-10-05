@@ -800,5 +800,13 @@
   "introLanguagesBody": "Sinhala, Tamil and English, each in its own script. Switch any time.",
   "introPrivateKicker": "Private by design",
   "introPrivateTitle": "Yours alone",
-  "introPrivateBody": "Your birth details stay on this phone unless you choose to back them up."
+  "introPrivateBody": "Your birth details stay on this phone unless you choose to back them up.",
+  "onboardingDateWheelHint": "Scroll to your date of birth",
+  "@onboardingDateWheelHint": {"description": "Under the date wheels before they have been moved."},
+  "onboardingTimeWheelHint": "Scroll to your time of birth",
+  "@onboardingTimeWheelHint": {"description": "Under the time wheels before they have been moved."},
+  "onboardingPlaceZone": "Times here are worked out in {zone}, which was {offset} on that date.",
+  "@onboardingPlaceZone": {"description": "Under the chosen birth place. zone is an IANA name like Asia/Colombo; offset is like UTC+5:30.", "placeholders": {"zone": {"type": "String"}, "offset": {"type": "String"}}},
+  "onboardingPlaceZoneOnly": "Times here are worked out in {zone}.",
+  "@onboardingPlaceZoneOnly": {"description": "As onboardingPlaceZone, when the offset could not be looked up.", "placeholders": {"zone": {"type": "String"}}}
 }

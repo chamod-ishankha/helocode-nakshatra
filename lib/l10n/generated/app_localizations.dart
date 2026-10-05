@@ -2774,6 +2774,30 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Your birth details stay on this phone unless you choose to back them up.'**
   String get introPrivateBody;
+
+  /// Under the date wheels before they have been moved.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to your date of birth'**
+  String get onboardingDateWheelHint;
+
+  /// Under the time wheels before they have been moved.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to your time of birth'**
+  String get onboardingTimeWheelHint;
+
+  /// Under the chosen birth place. zone is an IANA name like Asia/Colombo; offset is like UTC+5:30.
+  ///
+  /// In en, this message translates to:
+  /// **'Times here are worked out in {zone}, which was {offset} on that date.'**
+  String onboardingPlaceZone(String zone, String offset);
+
+  /// As onboardingPlaceZone, when the offset could not be looked up.
+  ///
+  /// In en, this message translates to:
+  /// **'Times here are worked out in {zone}.'**
+  String onboardingPlaceZoneOnly(String zone);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

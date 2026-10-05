@@ -1553,4 +1553,20 @@ class L10nTa extends L10n {
   @override
   String get introPrivateBody =>
       'நீங்கள் காப்புப்பிரதி எடுக்கத் தேர்ந்தெடுத்தால் தவிர, உங்கள் பிறப்பு விவரங்கள் இந்தத் தொலைபேசியை விட்டு வெளியேறாது.';
+
+  @override
+  String get onboardingDateWheelHint => 'உங்கள் பிறந்த தேதிக்கு உருட்டவும்';
+
+  @override
+  String get onboardingTimeWheelHint => 'உங்கள் பிறந்த நேரத்திற்கு உருட்டவும்';
+
+  @override
+  String onboardingPlaceZone(String zone, String offset) {
+    return 'இங்குள்ள நேரங்கள் $zone படி கணக்கிடப்படுகின்றன; அன்று அது $offset ஆக இருந்தது.';
+  }
+
+  @override
+  String onboardingPlaceZoneOnly(String zone) {
+    return 'இங்குள்ள நேரங்கள் $zone படி கணக்கிடப்படுகின்றன.';
+  }
 }

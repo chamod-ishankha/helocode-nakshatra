@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../data/place_repository.dart';
 
@@ -38,13 +39,39 @@ class CountryField extends ConsumerWidget {
       _ => null,
     };
 
-    return OutlinedButton.icon(
-      icon: const Icon(Icons.public, size: 18),
-      label: Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Text(name ?? l.placeCountry),
+    final palette = BrandPalette.of(context);
+    // Styled as the redesign's text fields (KAN-82), since it sits directly
+    // above one and is read as the first of a pair.
+    return Material(
+      color: palette.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(color: palette.line),
       ),
-      onPressed: name == null ? null : () => _open(context, ref),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: name == null ? null : () => _open(context, ref),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            children: [
+              Icon(Icons.public, size: 20, color: palette.muted),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  name ?? l.placeCountry,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: palette.text,
+                  ),
+                ),
+              ),
+              Icon(Icons.expand_more_rounded, color: palette.muted),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

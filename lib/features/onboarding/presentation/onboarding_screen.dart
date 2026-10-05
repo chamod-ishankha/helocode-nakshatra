@@ -5,7 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/brand_palette.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/brand_button.dart';
+import '../../../core/ui/info_notice.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 import '../../../core/config/app_locale.dart';
@@ -14,6 +19,8 @@ import '../data/place_repository.dart';
 import 'country_field.dart';
 import '../data/profile_repository.dart';
 import '../domain/birth_profile.dart';
+import '../domain/birth_wheels.dart';
+import 'birth_wheels_view.dart';
 
 /// Birth-details capture.
 ///
@@ -96,6 +103,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   };
 
   void _next() {
+    // The name field keeps focus after its page slides away, and its keyboard
+    // then covered the date wheels on the next one.
+    FocusScope.of(context).unfocus();
     if (_step == _stepCount - 1) {
       _finish();
       return;
@@ -119,6 +129,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       return;
     }
     if (_step == 0) return;
+    FocusScope.of(context).unfocus();
     setState(() => _step--);
     _pageController.animateToPage(
       _step,
@@ -163,70 +174,116 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Widget _scaffold(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    final l10n = L10n.of(context);
+    final last = _step == _stepCount - 1;
+
     return Scaffold(
-      appBar: AppBar(
-        leading: _step > 0 || _backLeavesWizard
-            ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _back)
-            : null,
-        title: LinearProgressIndicator(
-          value: (_step + 1) / _stepCount,
-          minHeight: 4,
-        ),
-        titleSpacing: 0,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _NameStep(
-                    controller: _nameController,
-                    onChanged: () => setState(() {}),
-                  ),
-                  _DateStep(
-                    value: _birthDate,
-                    onChanged: (d) => setState(() => _birthDate = d),
-                  ),
-                  _TimeStep(
-                    value: _birthTime,
-                    known: _birthTimeKnown,
-                    onChanged: (t, known) => setState(() {
-                      _birthTime = t;
-                      _birthTimeKnown = known;
-                    }),
-                  ),
-                  _PlaceStep(
-                    value: _place,
-                    onChanged: (p) => setState(() => _place = p),
-                  ),
-                ],
+      backgroundColor: palette.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: palette.backdrop),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 24, 0),
+                child: Row(
+                  children: [
+                    if (_step > 0 || _backLeavesWizard) ...[
+                      RoundIconButton(
+                        icon: Icons.arrow_back_rounded,
+                        tooltip: MaterialLocalizations.of(
+                          context,
+                        ).backButtonTooltip,
+                        onPressed: _back,
+                      ),
+                      const SizedBox(width: 14),
+                    ],
+                    Expanded(
+                      child: _Progress(step: _step, count: _stepCount),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _canAdvance && !_saving ? _next : null,
-                  child: _saving
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(
-                          _step == _stepCount - 1
-                              ? L10n.of(context).onboardingSeeChart
-                              : L10n.of(context).continueLabel,
-                        ),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _NameStep(
+                      controller: _nameController,
+                      onChanged: () => setState(() {}),
+                    ),
+                    _DateStep(
+                      value: _birthDate,
+                      onChanged: (d) => setState(() => _birthDate = d),
+                    ),
+                    _TimeStep(
+                      value: _birthTime,
+                      known: _birthTimeKnown,
+                      onChanged: (t, known) => setState(() {
+                        _birthTime = t;
+                        _birthTimeKnown = known;
+                      }),
+                    ),
+                    _PlaceStep(
+                      value: _place,
+                      birthDate: _birthDate,
+                      birthTime: _birthTimeKnown
+                          ? _birthTime
+                          : BirthProfile.defaultUnknownTime,
+                      onChanged: (p) => setState(() => _place = p),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: BrandButton(
+                    expand: true,
+                    label: last ? l10n.onboardingSeeChart : l10n.continueLabel,
+                    onPressed: _canAdvance && !_saving ? _next : null,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One gold segment per question, filled up to this one.
+class _Progress extends StatelessWidget {
+  const _Progress({required this.step, required this.count});
+
+  final int step, count;
+
+  @override
+  Widget build(BuildContext context) {
+    final gold = context.semantic.accent;
+    final idle = BrandPalette.of(context).line;
+    return Semantics(
+      label: '${step + 1} / $count',
+      child: Row(
+        children: [
+          for (var i = 0; i < count; i++) ...[
+            if (i > 0) const SizedBox(width: 6),
+            Expanded(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 4,
+                decoration: BoxDecoration(
+                  color: i <= step ? gold : idle,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
           ],
-        ),
+        ],
       ),
     );
   }
@@ -254,7 +311,7 @@ class _StepScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
 
     // The question and its explanation scroll with the step, not above it.
     // Scrolling only the child was not enough: in a 380px-tall window — a
@@ -264,14 +321,19 @@ class _StepScaffold extends StatelessWidget {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: theme.textTheme.headlineSmall),
+        Text(
+          title,
+          style: BrandFonts.displayStyle(
+            context,
+            size: 30,
+            color: palette.text,
+          ),
+        ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacing.sm),
           Text(
             subtitle!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 14, height: 1.5, color: palette.muted),
           ),
         ],
         const SizedBox(height: AppSpacing.xl),
@@ -286,6 +348,32 @@ class _StepScaffold extends StatelessWidget {
   }
 }
 
+/// The redesign's text field: a filled, rounded box with a gold focus ring.
+InputDecoration _fieldDecoration(
+  BuildContext context, {
+  String? label,
+  IconData? icon,
+}) {
+  final palette = BrandPalette.of(context);
+  OutlineInputBorder border(Color color, [double width = 1]) =>
+      OutlineInputBorder(
+        borderRadius: BorderRadius.circular(18),
+        borderSide: BorderSide(color: color, width: width),
+      );
+  return InputDecoration(
+    labelText: label,
+    prefixIcon: icon == null ? null : Icon(icon, color: palette.muted),
+    filled: true,
+    fillColor: palette.surface,
+    labelStyle: TextStyle(color: palette.muted),
+    floatingLabelStyle: TextStyle(color: context.semantic.accent),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+    border: border(palette.line),
+    enabledBorder: border(palette.line),
+    focusedBorder: border(context.semantic.accent, 1.5),
+  );
+}
+
 class _NameStep extends StatelessWidget {
   const _NameStep({required this.controller, required this.onChanged});
   final TextEditingController controller;
@@ -293,18 +381,65 @@ class _NameStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final semantic = context.semantic;
+    final palette = BrandPalette.of(context);
+
     return _StepScaffold(
       title: L10n.of(context).onboardingNameQuestion,
       subtitle: L10n.of(context).onboardingNameHelp,
-      child: TextField(
-        controller: controller,
-        autofocus: true,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          labelText: L10n.of(context).onboardingNameLabel,
-          border: const OutlineInputBorder(),
-        ),
-        onChanged: (_) => onChanged(),
+      child: Column(
+        children: [
+          // The first letter of what is typed, as the chart's monogram: the
+          // name is only a label, and this shows what it labels.
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, _) {
+              final text = value.text.trim();
+              return ExcludeSemantics(
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: semantic.accentSurface,
+                    border: Border.all(color: semantic.accent),
+                  ),
+                  child: Text(
+                    text.isEmpty
+                        ? '?'
+                        : String.fromCharCodes(
+                            text.runes.take(1),
+                          ).toUpperCase(),
+                    style: BrandFonts.displayStyle(
+                      context,
+                      size: 40,
+                      color: semantic.accent,
+                    ).copyWith(height: 1),
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          TextField(
+            controller: controller,
+            autofocus: true,
+            textAlign: TextAlign.center,
+            textCapitalization: TextCapitalization.words,
+            style: TextStyle(
+              fontFamilyFallback: AppTheme.scriptFallbacks,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: palette.text,
+            ),
+            decoration: _fieldDecoration(
+              context,
+              label: L10n.of(context).onboardingNameLabel,
+            ),
+            onChanged: (_) => onChanged(),
+          ),
+        ],
       ),
     );
   }
@@ -317,32 +452,22 @@ class _DateStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
     return _StepScaffold(
       title: L10n.of(context).onboardingDateQuestion,
       subtitle: L10n.of(context).onboardingDateHelp,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          OutlinedButton.icon(
-            icon: const Icon(Icons.calendar_today),
-            label: Text(
-              value == null
-                  ? L10n.of(context).onboardingDatePickerTitle
-                  : DateFormat('d MMMM yyyy').format(value!),
-            ),
-            onPressed: () async {
-              final now = DateTime.now();
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: value ?? DateTime(now.year - 25),
-                // The ephemeris is validated over this span; outside it the
-                // engine refuses rather than returning a silently wrong chart.
-                firstDate: DateTime(1900),
-                lastDate: now,
-                helpText: L10n.of(context).onboardingDateLabel,
-              );
-              if (picked != null) onChanged(picked);
-            },
+          BirthDateWheels(value: value, onChanged: onChanged),
+          const SizedBox(height: AppSpacing.md),
+          // The chosen date read back in full, weekday and all, so a wheel
+          // left one notch off is caught here rather than in the chart.
+          Text(
+            value == null
+                ? L10n.of(context).onboardingDateWheelHint
+                : DateFormat.yMMMMEEEEd().format(value!),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: palette.muted),
           ),
         ],
       ),
@@ -363,65 +488,64 @@ class _TimeStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final l10n = L10n.of(context);
+
     return _StepScaffold(
-      title: L10n.of(context).onboardingTimeQuestion,
-      subtitle: L10n.of(context).onboardingTimeHelp,
+      title: l10n.onboardingTimeQuestion,
+      subtitle: l10n.onboardingTimeHelp,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          OutlinedButton.icon(
-            icon: const Icon(Icons.schedule),
-            label: Text(
-              value == null || !known
-                  ? L10n.of(context).onboardingTimePickerTitle
-                  : _format(value!),
-            ),
-            onPressed: () async {
-              final picked = await showTimePicker(
-                context: context,
-                initialTime: value == null
-                    ? const TimeOfDay(hour: 6, minute: 0)
-                    : TimeOfDay(
-                        hour: value!.inHours,
-                        minute: value!.inMinutes % 60,
-                      ),
-                helpText: L10n.of(context).onboardingTimeLabel,
-              );
-              if (picked != null) {
-                onChanged(
-                  Duration(hours: picked.hour, minutes: picked.minute),
-                  true,
-                );
-              }
-            },
+          BirthTimeWheels(
+            value: value,
+            enabled: known,
+            onChanged: (t) => onChanged(t, true),
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            !known
+                ? l10n.onboardingTimeUnknown
+                : value == null
+                ? l10n.onboardingTimeWheelHint
+                : _format(value!),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: palette.muted),
+          ),
+          const SizedBox(height: AppSpacing.lg),
           // A large share of users genuinely do not know their birth time.
           // Blocking them here loses the install outright, so offer the
           // traditional sunrise fallback and be honest about what it costs.
-          CheckboxListTile(
-            value: !known,
-            onChanged: (v) => onChanged(value, !(v ?? false)),
-            title: Text(L10n.of(context).onboardingTimeUnknownLabel),
-            subtitle: Text(L10n.of(context).onboardingTimeUnknown),
-            contentPadding: EdgeInsets.zero,
-          ),
-          if (!known)
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: context.semantic.accentSurface,
-                border: Border.all(
-                  color: context.semantic.accent.withValues(alpha: 0.4),
+          Material(
+            color: !known ? semantic.accentSurface : palette.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+              side: BorderSide(color: !known ? semantic.accent : palette.line),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: CheckboxListTile(
+              value: !known,
+              onChanged: (v) => onChanged(value, !(v ?? false)),
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: semantic.accent,
+              title: Text(
+                l10n.onboardingTimeUnknownLabel,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: palette.text,
                 ),
-                borderRadius: BorderRadius.circular(10),
               ),
-              child: Text(
-                L10n.of(context).onboardingTimeUnknownHelp,
-                style: theme.textTheme.bodySmall,
+              subtitle: Text(
+                l10n.onboardingTimeUnknown,
+                style: TextStyle(color: palette.muted),
               ),
             ),
+          ),
+          if (!known) ...[
+            const SizedBox(height: AppSpacing.md),
+            InfoNotice(text: l10n.onboardingTimeUnknownHelp),
+          ],
         ],
       ),
     );
@@ -438,8 +562,18 @@ class _TimeStep extends StatelessWidget {
 }
 
 class _PlaceStep extends ConsumerStatefulWidget {
-  const _PlaceStep({required this.value, required this.onChanged});
+  const _PlaceStep({
+    required this.value,
+    required this.birthDate,
+    required this.birthTime,
+    required this.onChanged,
+  });
   final Place? value;
+
+  /// For the timezone note: the offset a place had depends on the date, and
+  /// for Sri Lanka between 1996 and 2006 it was not +5:30.
+  final DateTime? birthDate;
+  final Duration? birthTime;
   final ValueChanged<Place> onChanged;
 
   @override
@@ -453,6 +587,9 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
   Widget build(BuildContext context) {
     final locale = ref.watch(localeProvider);
     final country = ref.watch(effectiveCountryProvider);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final l10n = L10n.of(context);
     final results = country.when(
       loading: () => const AsyncValue<List<Place>>.loading(),
       error: AsyncValue<List<Place>>.error,
@@ -460,12 +597,21 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
           ref.watch(placeSearchProvider((countryCode: cc, query: _query))),
     );
 
+    final chosen = widget.value;
+    final offset = chosen == null || widget.birthDate == null
+        ? null
+        : BirthWheels.offsetAt(
+            chosen.timezone,
+            widget.birthDate!,
+            widget.birthTime ?? BirthProfile.defaultUnknownTime,
+          );
+
     return _StepScaffold(
       // Its results are a ListView with its own scrolling, which needs a
       // bounded height — a SingleChildScrollView would give it infinity.
       scrollable: false,
-      title: L10n.of(context).onboardingPlaceQuestion,
-      subtitle: L10n.of(context).onboardingPlaceHelp,
+      title: l10n.onboardingPlaceQuestion,
+      subtitle: l10n.onboardingPlaceHelp,
       child: Column(
         children: [
           // The country comes first because it scopes everything below it.
@@ -477,50 +623,102 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
           ),
           const SizedBox(height: AppSpacing.sm),
           TextField(
-            decoration: InputDecoration(
-              labelText: L10n.of(context).onboardingPlaceSearch,
-              prefixIcon: const Icon(Icons.search),
-              border: const OutlineInputBorder(),
+            decoration: _fieldDecoration(
+              context,
+              label: l10n.onboardingPlaceSearch,
+              icon: Icons.search_rounded,
+            ),
+            style: TextStyle(
+              fontFamilyFallback: AppTheme.scriptFallbacks,
+              color: palette.text,
             ),
             onChanged: (v) => setState(() => _query = v),
           ),
-          const SizedBox(height: AppSpacing.md),
+          if (chosen != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            // Which zone the chart will be cast in, said out loud. A wrong
+            // timezone is the worst bug this app can have and nothing else on
+            // screen would show it.
+            InfoNotice(
+              text: offset == null
+                  ? l10n.onboardingPlaceZoneOnly(chosen.timezone)
+                  : l10n.onboardingPlaceZone(
+                      chosen.timezone,
+                      BirthWheels.offsetLabel(offset),
+                    ),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.sm),
           Expanded(
             child: results.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(
-                child: Text(L10n.of(context).onboardingPlaceLoadFailed('$e')),
-              ),
+              error: (e, _) =>
+                  Center(child: Text(l10n.onboardingPlaceLoadFailed('$e'))),
               data: (places) => places.isEmpty
-                  ? Center(child: Text(L10n.of(context).onboardingPlaceNoMatch))
-                  : ListView.builder(
+                  ? Center(
+                      child: Text(
+                        l10n.onboardingPlaceNoMatch,
+                        style: TextStyle(color: palette.muted),
+                      ),
+                    )
+                  : ListView.separated(
                       itemCount: places.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 6),
                       itemBuilder: (context, i) {
                         final p = places[i];
                         // Name alone is not an identity once the list is
                         // worldwide — the coordinates are what differ between
                         // two towns that share a name.
                         final selected =
-                            widget.value?.en == p.en &&
-                            widget.value?.latitude == p.latitude &&
-                            widget.value?.longitude == p.longitude;
-                        return ListTile(
-                          selected: selected,
-                          leading: Icon(
-                            selected
-                                ? Icons.check_circle
-                                : Icons.location_on_outlined,
+                            chosen?.en == p.en &&
+                            chosen?.latitude == p.latitude &&
+                            chosen?.longitude == p.longitude;
+                        return Material(
+                          color: selected
+                              ? semantic.accentSurface
+                              : Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            side: BorderSide(
+                              color: selected
+                                  ? semantic.accent
+                                  : Colors.transparent,
+                            ),
                           ),
-                          title: Text(p.label(locale)),
-                          subtitle: Text(
-                            // The English name stays alongside for a reader
-                            // who knows the town by it — the district beside
-                            // it should still be in their language.
-                            locale == AppLocale.en
-                                ? p.district
-                                : '${p.en} · ${p.districtLabel(locale)}',
+                          clipBehavior: Clip.antiAlias,
+                          child: ListTile(
+                            selected: selected,
+                            selectedColor: palette.text,
+                            leading: Icon(
+                              Icons.location_on_outlined,
+                              color: selected ? semantic.accent : palette.muted,
+                            ),
+                            // A tick as well as the gold: the choice is never
+                            // carried by colour alone.
+                            trailing: selected
+                                ? Icon(
+                                    Icons.check_rounded,
+                                    color: semantic.accent,
+                                  )
+                                : null,
+                            title: Text(
+                              p.label(locale),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: palette.text,
+                              ),
+                            ),
+                            subtitle: Text(
+                              // The English name stays alongside for a reader
+                              // who knows the town by it — the district beside
+                              // it should still be in their language.
+                              locale == AppLocale.en
+                                  ? p.district
+                                  : '${p.en} · ${p.districtLabel(locale)}',
+                              style: TextStyle(color: palette.muted),
+                            ),
+                            onTap: () => widget.onChanged(p),
                           ),
-                          onTap: () => widget.onChanged(p),
                         );
                       },
                     ),

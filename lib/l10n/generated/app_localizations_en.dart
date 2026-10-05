@@ -1554,4 +1554,20 @@ class L10nEn extends L10n {
   @override
   String get introPrivateBody =>
       'Your birth details stay on this phone unless you choose to back them up.';
+
+  @override
+  String get onboardingDateWheelHint => 'Scroll to your date of birth';
+
+  @override
+  String get onboardingTimeWheelHint => 'Scroll to your time of birth';
+
+  @override
+  String onboardingPlaceZone(String zone, String offset) {
+    return 'Times here are worked out in $zone, which was $offset on that date.';
+  }
+
+  @override
+  String onboardingPlaceZoneOnly(String zone) {
+    return 'Times here are worked out in $zone.';
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nakshatra/core/ui/brand_button.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
@@ -98,7 +99,7 @@ void main() {
     // An edit opens on the name step; name and date are already filled, so
     // Continue is live on both.
     for (var i = 0; i < 2; i++) {
-      await tester.tap(find.byType(FilledButton));
+      await tester.tap(find.byType(BrandButton));
       await tester.pumpAndSettle();
     }
   }

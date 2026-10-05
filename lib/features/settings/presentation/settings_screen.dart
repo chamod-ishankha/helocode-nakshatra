@@ -14,6 +14,9 @@ import '../../../core/error/result.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_card.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ads/ad_consent_tile.dart';
 import '../../../core/ads/ad_gate.dart';
@@ -45,105 +48,168 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final accountKind =
+        ref.watch(accountStatusProvider).value?.kind ?? AccountKind.none;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l.settingsTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => popOrHome(context),
-        ),
-      ),
-      body: ListView(
-        children: [
-          _Section(l.settingsSectionProfile),
-          ListTile(
-            leading: const Icon(Icons.person_outline),
-            title: Text(l.settingsEditProfile),
-            subtitle: Text(l.settingsEditProfileHint),
-            trailing: const Icon(Icons.chevron_right),
-            // Onboarding is the only editor there is, and it already handles
-            // every field. Sending the user back through it beats a second
-            // form that could drift out of step with the first — as long as
-            // the route says it is an edit, or the redirect turns it away.
-            onTap: () => context.push(Routes.editProfile),
-          ),
-          ListTile(
-            leading: const Icon(Icons.groups_outlined),
-            title: Text(l.profilesTitle),
-            subtitle: Text(l.profilesSettingsHint),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(Routes.profiles),
-          ),
-
-          _Section(l.settingsSectionAppearance),
-          const _ThemeTile(),
-          const _LanguageTile(),
-          const _ChartStyleTile(),
-
-          _Section(l.settingsSectionReminders),
-          const _ReminderTiles(),
-
-          _Section(l.purchaseSectionTitle),
-          const ProTiles(),
-
-          _Section(l.settingsSectionData),
-          ListTile(
-            leading: Icon(
-              Icons.delete_outline,
-              color: context.semantic.inauspicious,
-            ),
-            title: Text(
-              l.settingsDeleteData,
-              style: TextStyle(color: context.semantic.inauspicious),
-            ),
-            subtitle: Text(l.settingsDeleteHint),
-            onTap: () => _confirmDelete(context, ref),
-          ),
-          // Only where UMP says consent was collected, and never for somebody
-          // who bought their way out of advertising entirely (KAN-40).
-          if (!ref.watch(adFreeEntitlementProvider)) const AdConsentTile(),
-
-          _Section(l.settingsSectionAbout),
-          ListTile(
-            leading: const Icon(Icons.privacy_tip_outlined),
-            title: Text(l.settingsPrivacy),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => _open(context, _privacyUrl),
-          ),
-          ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: Text(l.settingsTerms),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => _open(context, _termsUrl),
-          ),
-          // Not a nicety. The Swiss Ephemeris is used under the AGPL, which
-          // obliges us to offer the source to whoever receives the binary, and
-          // the place data is CC BY, which makes attribution a condition of
-          // using it at all. `Licensing` has carried both facts since the
-          // start and nothing displayed them, so neither reached a user.
-          ListTile(
-            leading: const Icon(Icons.balance_outlined),
-            title: Text(l.settingsLicences),
-            subtitle: Text(l.settingsLicencesHint),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const _LicencesPage()),
-            ),
-          ),
-          const _VersionTile(),
-
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-            child: Text(
-              l.entertainmentOnly,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+      backgroundColor: palette.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: palette.backdrop),
+        child: SafeArea(
+          bottom: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 32),
+            children: [
+              Row(
+                children: [
+                  RoundIconButton(
+                    icon: Icons.arrow_back_rounded,
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
+                    onPressed: () => popOrHome(context),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      l.settingsTitle,
+                      style: BrandFonts.displayStyle(
+                        context,
+                        size: 26,
+                        color: palette.text,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // What the reader holds, first (KAN-90). It was a row like any
+              // other, halfway down.
+              const ProTiles(),
+
+              _Group(
+                title: l.settingsSectionProfile,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.person_outline),
+                    title: Text(l.settingsEditProfile),
+                    subtitle: Text(l.settingsEditProfileHint),
+                    trailing: const Icon(Icons.chevron_right),
+                    // Onboarding is the only editor there is, and it already
+                    // handles every field. Sending the user back through it
+                    // beats a second form that could drift out of step with
+                    // the first — as long as the route says it is an edit, or
+                    // the redirect turns it away.
+                    onTap: () => context.push(Routes.editProfile),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.groups_outlined),
+                    title: Text(l.profilesTitle),
+                    subtitle: Text(l.profilesSettingsHint),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push(Routes.profiles),
+                  ),
+                  // Here as well as on Home, which loses its app-bar icons to
+                  // the bottom navigation: the backup state belongs with the
+                  // reader's other details.
+                  ListTile(
+                    leading: const Icon(Icons.cloud_outlined),
+                    title: Text(l.accountTitle),
+                    subtitle: Text(switch (accountKind) {
+                      AccountKind.permanent => l.accountSavedToEmailHelp,
+                      AccountKind.anonymous => l.accountPhoneOnly,
+                      AccountKind.none => l.accountUnavailable,
+                    }),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push(Routes.account),
+                  ),
+                ],
+              ),
+
+              _Group(
+                title: l.settingsSectionAppearance,
+                children: const [
+                  _ThemeTile(),
+                  _LanguageTile(),
+                  _ChartStyleTile(),
+                ],
+              ),
+
+              _Group(
+                title: l.settingsSectionReminders,
+                children: const [_ReminderTiles()],
+              ),
+
+              _Group(
+                title: l.settingsSectionData,
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.delete_outline,
+                      color: context.semantic.inauspicious,
+                    ),
+                    title: Text(
+                      l.settingsDeleteData,
+                      style: TextStyle(color: context.semantic.inauspicious),
+                    ),
+                    subtitle: Text(l.settingsDeleteHint),
+                    onTap: () => _confirmDelete(context, ref),
+                  ),
+                  // Only where UMP says consent was collected, and never for
+                  // somebody who bought their way out of advertising entirely
+                  // (KAN-40).
+                  if (!ref.watch(adFreeEntitlementProvider))
+                    const AdConsentTile(),
+                ],
+              ),
+
+              _Group(
+                title: l.settingsSectionAbout,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.privacy_tip_outlined),
+                    title: Text(l.settingsPrivacy),
+                    trailing: const Icon(Icons.open_in_new, size: 18),
+                    onTap: () => _open(context, _privacyUrl),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.description_outlined),
+                    title: Text(l.settingsTerms),
+                    trailing: const Icon(Icons.open_in_new, size: 18),
+                    onTap: () => _open(context, _termsUrl),
+                  ),
+                  // Not a nicety. The Swiss Ephemeris is used under the AGPL,
+                  // which obliges us to offer the source to whoever receives
+                  // the binary, and the place data is CC BY, which makes
+                  // attribution a condition of using it at all. `Licensing`
+                  // has carried both facts since the start and nothing
+                  // displayed them, so neither reached a user.
+                  ListTile(
+                    leading: const Icon(Icons.balance_outlined),
+                    title: Text(l.settingsLicences),
+                    subtitle: Text(l.settingsLicencesHint),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const _LicencesPage(),
+                      ),
+                    ),
+                  ),
+                  const _VersionTile(),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+              Text(
+                l.entertainmentOnly,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: palette.muted),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -159,6 +225,7 @@ class SettingsScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: BrandPalette.of(context).background,
         title: Text(l.settingsDeleteTitle),
         content: Text(l.settingsDeleteBody),
         actions: [
@@ -223,22 +290,58 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-class _Section extends StatelessWidget {
-  const _Section(this.title);
+/// A titled card of rows (KAN-90).
+///
+/// The rows stay [ListTile]s inside it: the KAN-60 layout tests measure them,
+/// and a tile already handles a long Tamil title wrapping beside its icon.
+class _Group extends StatelessWidget {
+  const _Group({required this.title, required this.children});
 
   final String title;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 6),
-      child: Text(
-        title,
-        style: theme.textTheme.labelMedium?.copyWith(
-          color: theme.colorScheme.primary,
+    final palette = BrandPalette.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(6, 22, 6, 8),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 13, color: palette.muted),
+          ),
         ),
-      ),
+        BrandCard(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: ListTileTheme(
+            data: ListTileThemeData(
+              iconColor: palette.muted,
+              textColor: palette.text,
+              subtitleTextStyle: TextStyle(
+                fontSize: 13,
+                height: 1.45,
+                color: palette.muted,
+              ),
+            ),
+            child: Column(
+              children: [
+                for (var i = 0; i < children.length; i++) ...[
+                  if (i > 0)
+                    Divider(
+                      height: 1,
+                      indent: 16,
+                      endIndent: 16,
+                      color: palette.line,
+                    ),
+                  children[i],
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -350,6 +453,7 @@ class _ChoiceTile<T> extends StatelessWidget {
     final chosen = await showModalBottomSheet<T>(
       context: context,
       showDragHandle: true,
+      backgroundColor: BrandPalette.of(context).background,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -457,6 +561,7 @@ class _ReminderTiles extends ConsumerWidget {
     return Column(
       children: [
         SwitchListTile(
+          activeThumbColor: context.semantic.accent,
           secondary: const Icon(Icons.wb_twilight),
           title: Text(l.settingsDailyReminder),
           subtitle: Text(l.settingsDailyReminderHint),
@@ -488,6 +593,7 @@ class _ReminderTiles extends ConsumerWidget {
             },
           ),
         SwitchListTile(
+          activeThumbColor: context.semantic.accent,
           secondary: const Icon(Icons.brightness_2_outlined),
           title: Text(l.settingsPoyaReminder),
           subtitle: Text(l.settingsPoyaReminderHint),
@@ -496,6 +602,7 @@ class _ReminderTiles extends ConsumerWidget {
               _toggle(context, ref, on: on, apply: notifier.setPoya),
         ),
         SwitchListTile(
+          activeThumbColor: context.semantic.accent,
           secondary: const Icon(Icons.celebration_outlined),
           title: Text(l.settingsFestivalReminder),
           subtitle: Text(l.settingsFestivalReminderHint),
@@ -504,6 +611,7 @@ class _ReminderTiles extends ConsumerWidget {
               _toggle(context, ref, on: on, apply: notifier.setFestival),
         ),
         SwitchListTile(
+          activeThumbColor: context.semantic.accent,
           secondary: const Icon(Icons.timeline),
           title: Text(l.settingsDashaReminder),
           subtitle: Text(l.settingsDashaReminderHint),
@@ -512,6 +620,7 @@ class _ReminderTiles extends ConsumerWidget {
               _toggle(context, ref, on: on, apply: notifier.setDasha),
         ),
         SwitchListTile(
+          activeThumbColor: context.semantic.accent,
           secondary: const Icon(Icons.swap_horiz),
           title: Text(l.settingsTransitReminder),
           subtitle: Text(l.settingsTransitReminderHint),
@@ -561,40 +670,69 @@ class _LicencesPage extends StatelessWidget {
     final l = L10n.of(context);
     final theme = Theme.of(context);
 
+    final palette = BrandPalette.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l.settingsLicences)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Text(Licensing.notice, style: theme.textTheme.bodyMedium),
-          ),
-          for (final a in Licensing.attributions)
-            ListTile(
-              title: Text(a.name),
-              subtitle: Text(
-                a.note == null
-                    ? '${a.author} · ${a.license}'
-                    : '${a.author} · ${a.license}\n${a.note}',
+      backgroundColor: palette.background,
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 8),
+              child: Row(
+                children: [
+                  RoundIconButton(
+                    icon: Icons.arrow_back_rounded,
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      l.settingsLicences,
+                      style: BrandFonts.displayStyle(
+                        context,
+                        size: 26,
+                        color: palette.text,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              isThreeLine: a.note != null,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Text(Licensing.notice, style: theme.textTheme.bodyMedium),
+            ),
+            for (final a in Licensing.attributions)
+              ListTile(
+                title: Text(a.name),
+                subtitle: Text(
+                  a.note == null
+                      ? '${a.author} · ${a.license}'
+                      : '${a.author} · ${a.license}\n${a.note}',
+                ),
+                isThreeLine: a.note != null,
+                trailing: const Icon(Icons.open_in_new, size: 18),
+                onTap: () => launchUrl(
+                  Uri.parse(a.url),
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+            ListTile(
+              title: const Text('Source code'),
+              subtitle: const Text(Licensing.sourceUrl),
               trailing: const Icon(Icons.open_in_new, size: 18),
               onTap: () => launchUrl(
-                Uri.parse(a.url),
+                Uri.parse(Licensing.sourceUrl),
                 mode: LaunchMode.externalApplication,
               ),
             ),
-          ListTile(
-            title: const Text('Source code'),
-            subtitle: const Text(Licensing.sourceUrl),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => launchUrl(
-              Uri.parse(Licensing.sourceUrl),
-              mode: LaunchMode.externalApplication,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

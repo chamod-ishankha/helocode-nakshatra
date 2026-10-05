@@ -9,6 +9,9 @@ import '../../../core/purchases/pro_usage.dart';
 import '../../../core/purchases/products.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/theme/semantic_colors.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_card.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'paywall.dart';
 import 'purchase_messages.dart';
@@ -76,62 +79,139 @@ class _ProTilesState extends ConsumerState<ProTiles> {
         ref.watch(purchasesAvailableProvider) &&
         PurchaseProduct.onSale.any((p) => !p.isRedundantFor(entitlements, now));
 
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(
-            adFree ? Icons.workspace_premium : Icons.workspace_premium_outlined,
-            color: adFree ? context.semantic.accent : null,
-          ),
-          title: Text(switch ((isPro, proUntil, adFree)) {
-            // A running subscription is the only case with a date to show;
-            // Pro bought outright would have none.
-            (true, final DateTime until, _) => l.purchaseStatusProUntil(until),
-            (true, _, _) => l.purchaseSectionTitle,
-            (_, _, true) => l.purchaseStatusAdFree,
-            _ => l.purchaseStatusFree,
-          }),
-          // The headline can only say one thing, and the report is not part
-          // of Pro — so somebody who had bought it was reading "Free". Owned
-          // one-time extras get named underneath.
-          subtitle: Text(
-            ownsReport
-                ? l.purchaseOwnedReport
-                : (adFree ? l.purchaseStatusAdFree : l.purchaseUpgradeHint),
-          ),
-          // Tappable only while there is something left to buy, and only in a
-          // build that can sell it. A chevron that opens an empty sheet reads
-          // as a broken app rather than as a missing key.
-          trailing: canUpgrade ? const Icon(Icons.chevron_right) : null,
-          onTap: canUpgrade ? () => showPaywall(context, ref) : null,
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+
+    final status = ListTile(
+      contentPadding: const EdgeInsets.fromLTRB(16, 6, 12, 6),
+      leading: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: semantic.accent,
+          borderRadius: BorderRadius.circular(14),
         ),
+        child: Icon(
+          adFree ? Icons.workspace_premium : Icons.workspace_premium_outlined,
+          color: palette.background,
+        ),
+      ),
+      title: Text(
+        switch ((isPro, proUntil, adFree)) {
+          // A running subscription is the only case with a date to show;
+          // Pro bought outright would have none.
+          (true, final DateTime until, _) => l.purchaseStatusProUntil(until),
+          (true, _, _) => l.purchaseSectionTitle,
+          (_, _, true) => l.purchaseStatusAdFree,
+          _ => l.purchaseStatusFree,
+        },
+        style: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+          color: palette.text,
+        ),
+      ),
+      // The headline can only say one thing, and the report is not part of
+      // Pro — so somebody who had bought it was reading "Free". Owned one-time
+      // extras get named underneath.
+      subtitle: Text(
+        ownsReport
+            ? l.purchaseOwnedReport
+            : (adFree ? l.purchaseStatusAdFree : l.purchaseUpgradeHint),
+        style: TextStyle(fontSize: 13, height: 1.45, color: palette.muted),
+      ),
+      // Tappable only while there is something left to buy, and only in a
+      // build that can sell it. A chevron that opens an empty sheet reads as a
+      // broken app rather than as a missing key.
+      trailing: canUpgrade
+          ? Icon(Icons.chevron_right, color: palette.muted)
+          : null,
+      onTap: canUpgrade ? () => showPaywall(context, ref) : null,
+    );
 
-        // What the subscription has been used for. Subscribers only — for a
-        // lapsed one this tile goes back to the offer above, and the meter does
-        // not linger as a reminder of what they stopped paying for (KAN-77).
-        if (isPro) const _ProMeter(),
-
-        if (proUntil != null)
-          ListTile(
-            leading: const Icon(Icons.open_in_new, size: 20),
-            title: Text(l.purchaseManage),
-            onTap: _manage,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // The status as the screen's first card, in gold (KAN-90).
+        Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(BrandCard.radius),
+            border: Border.all(color: semantic.accent),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              // Composited onto the card colour so both stops share its
+              // transparency (see the chart's centre panel).
+              colors: [
+                Color.alphaBlend(
+                  semantic.accent.withValues(alpha: 0.20),
+                  palette.surface,
+                ),
+                Color.alphaBlend(
+                  palette.violet.withValues(alpha: 0.10),
+                  palette.surface,
+                ),
+              ],
+            ),
           ),
-
-        ListTile(
-          leading: const Icon(Icons.restore),
-          title: Text(l.purchaseRestore),
-          subtitle: Text(l.purchaseRestoreHint),
-          trailing: _restoring
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : null,
-          // Disabled while it runs. Two restores at once is not harmful, but
-          // the second finishes first often enough to show the wrong message.
-          onTap: _restoring ? null : _restore,
+          child: Material(
+            type: MaterialType.transparency,
+            child: Column(
+              children: [
+                status,
+                // What the subscription has been used for. Subscribers only —
+                // for a lapsed one this goes back to the offer above, and the
+                // meter does not linger as a reminder of what they stopped
+                // paying for (KAN-77).
+                if (isPro) const _ProMeter(),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        BrandCard(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: ListTileTheme(
+            data: ListTileThemeData(
+              iconColor: palette.muted,
+              textColor: palette.text,
+              subtitleTextStyle: TextStyle(fontSize: 13, color: palette.muted),
+            ),
+            child: Column(
+              children: [
+                if (proUntil != null) ...[
+                  ListTile(
+                    leading: const Icon(Icons.open_in_new, size: 20),
+                    title: Text(l.purchaseManage),
+                    onTap: _manage,
+                  ),
+                  Divider(
+                    height: 1,
+                    indent: 16,
+                    endIndent: 16,
+                    color: palette.line,
+                  ),
+                ],
+                ListTile(
+                  leading: const Icon(Icons.restore),
+                  title: Text(l.purchaseRestore),
+                  subtitle: Text(l.purchaseRestoreHint),
+                  trailing: _restoring
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : null,
+                  // Disabled while it runs. Two restores at once is not
+                  // harmful, but the second finishes first often enough to
+                  // show the wrong message.
+                  onTap: _restoring ? null : _restore,
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -164,7 +244,7 @@ class _ProMeter extends ConsumerWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+      padding: const EdgeInsets.fromLTRB(76, 0, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

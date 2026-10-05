@@ -16,6 +16,8 @@ import '../../onboarding/presentation/birth_wheels_view.dart';
 import '../../onboarding/presentation/country_field.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import '../domain/compatibility_providers.dart';
+import '../../../core/ui/state_views.dart';
+import '../../../core/logging/app_logger.dart';
 
 /// Collects the partner's birth details.
 ///
@@ -276,10 +278,17 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
               SizedBox(
                 height: 200,
                 child: results.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (e, _) =>
-                      Center(child: Text(l.onboardingPlaceLoadFailed('$e'))),
+                  loading: () => const ListSkeleton(),
+                  error: (e, s) {
+                    AppLogger.error('Place list failed to load', e, s);
+                    return InlineRetry(
+                      message: l.placesLoadFailed,
+                      onRetry: () {
+                        ref.invalidate(countryListProvider);
+                        ref.invalidate(placeSearchProvider);
+                      },
+                    );
+                  },
                   data: (places) => places.isEmpty
                       ? Center(
                           child: Text(

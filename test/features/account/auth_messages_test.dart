@@ -139,4 +139,25 @@ void main() {
       expect(si[code], isNot(ta[code]), reason: 'si and ta identical: $code');
     }
   });
+
+  group('isNoConnection', () {
+    // Decides between the offline card and a red error line (KAN-95).
+    test('is the network failure, and only that', () {
+      expect(
+        isNoConnection(
+          const AuthFailure('offline', code: 'network-request-failed'),
+        ),
+        isTrue,
+      );
+      expect(
+        isNoConnection(const AuthFailure('x', code: 'wrong-password')),
+        isFalse,
+      );
+    });
+
+    test('is false for anything that is not an auth failure', () {
+      expect(isNoConnection(const UnexpectedFailure('boom')), isFalse);
+      expect(isNoConnection(null), isFalse);
+    });
+  });
 }

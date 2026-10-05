@@ -35,6 +35,8 @@ import 'north_indian_chart.dart';
 import 'rasi_chart.dart';
 import '../../../core/purchases/nudges.dart';
 import '../../purchases/presentation/pro_nudge.dart';
+import '../../../core/ui/state_views.dart';
+import '../../../core/logging/app_logger.dart';
 
 /// Which chart the screen is drawing (KAN-53).
 ///
@@ -153,7 +155,10 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
     if (profile == null || result == null) {
       return Scaffold(
         backgroundColor: palette.background,
-        body: const Center(child: CircularProgressIndicator()),
+        body: DecoratedBox(
+          decoration: BoxDecoration(gradient: palette.backdrop),
+          child: const SafeArea(bottom: false, child: PageSkeleton()),
+        ),
       );
     }
 
@@ -565,42 +570,32 @@ class _PositionsList extends StatelessWidget {
   }
 }
 
-class _ChartError extends StatelessWidget {
+class _ChartError extends ConsumerWidget {
   const _ChartError({required this.failure});
   final Failure failure;
 
   @override
-  Widget build(BuildContext context) {
-    final palette = BrandPalette.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.warning_amber_rounded,
-              size: 48,
-              color: context.semantic.inauspicious,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              L10n.of(context).chartCalculationFailed,
-              textAlign: TextAlign.center,
-              style: BrandFonts.displayStyle(
-                context,
-                size: 22,
-                color: palette.text,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              failure.message,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: palette.muted),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+    // The engine's own message goes to the log, not the screen: "swe_calc
+    // returned -1" tells the reader nothing, and "Nothing was lost" is what
+    // they need to hear (KAN-95).
+    AppLogger.error('Chart calculation failed: ${failure.message}');
+
+    return StatusView(
+      icon: Icons.warning_amber_rounded,
+      warning: true,
+      title: l.chartCalculationFailed,
+      body: l.chartErrorBody,
+      action: (
+        label: l.stateTryAgain,
+        onPressed: () => ref.invalidate(chartProvider),
+      ),
+      // A wrong place or a date the ephemeris cannot reach is the likeliest
+      // cause the reader can do anything about.
+      secondary: (
+        label: l.chartCheckDetails,
+        onPressed: () => context.push(Routes.editProfile),
       ),
     );
   }

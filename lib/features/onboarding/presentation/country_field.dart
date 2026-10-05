@@ -8,6 +8,8 @@ import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/brand_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../data/place_repository.dart';
+import '../../../core/ui/state_views.dart';
+import '../../../core/logging/app_logger.dart';
 
 /// The country the place search is scoped to, and a sheet to change it.
 ///
@@ -156,8 +158,14 @@ class _CountrySheetState extends ConsumerState<_CountrySheet> {
             const SizedBox(height: AppSpacing.sm),
             Expanded(
               child: countries.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => message(l.onboardingPlaceLoadFailed('$e')),
+                loading: () => const ListSkeleton(rows: 6, height: 48),
+                error: (e, s) {
+                  AppLogger.error('Country list failed to load', e, s);
+                  return InlineRetry(
+                    message: l.placesLoadFailed,
+                    onRetry: () => ref.invalidate(countryListProvider),
+                  );
+                },
                 data: (list) {
                   final q = _query.trim().toLowerCase();
                   // Sri Lanka first while nothing is typed: most readers are

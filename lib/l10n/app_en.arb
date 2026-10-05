@@ -39,14 +39,6 @@
   "onboardingPlaceSearch": "Search town or district",
   "onboardingPlaceHelp": "Coordinates set the ascendant. Search in Sinhala, Tamil or English.",
   "onboardingPlaceNoMatch": "No matching place",
-  "onboardingPlaceLoadFailed": "Could not load places: {error}",
-  "@onboardingPlaceLoadFailed": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "onboardingSeeChart": "See my chart",
   "homeRahuKalaya": "Rāhu kālaya",
   "homeRahuShort": "Rāhu",
@@ -846,5 +838,13 @@
   "reportColumnSubPeriod": "Sub-period",
   "reportColumnFrom": "From",
   "reportColumnTo": "To",
-  "reportDashaDatesNote": "Dates are worked out from the Moon's position at birth. If the birth time is unknown, they may shift by years."
+  "reportDashaDatesNote": "Dates are worked out from the Moon's position at birth. If the birth time is unknown, they may shift by years.",
+  "stateCalculating": "Calculating on your phone…",
+  "stateTryAgain": "Try again",
+  "chartErrorBody": "Something went wrong while working out your positions. Nothing was lost.",
+  "chartCheckDetails": "Check birth details",
+  "stateOfflineTitle": "No connection",
+  "stateOfflineBody": "Your chart still works offline. Only backup, ads and purchases need a network.",
+  "placesLoadFailed": "The list of places could not be loaded.",
+  "calendarScanFailed": "This month could not be scored."
 }

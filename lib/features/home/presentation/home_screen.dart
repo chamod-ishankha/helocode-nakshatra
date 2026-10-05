@@ -25,6 +25,7 @@ import '../../onboarding/data/profile_repository.dart';
 import '../../profiles/presentation/add_family_member.dart';
 import '../domain/daily_providers.dart';
 import '../domain/rahu_now.dart';
+import '../../../core/ui/state_views.dart';
 
 /// Built at each use rather than once: a format made at first use keeps the
 /// language it was made in, so after switching to Tamil every time on the
@@ -122,7 +123,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (profile == null || panchanga == null) {
       return Scaffold(
         backgroundColor: palette.background,
-        body: const Center(child: CircularProgressIndicator()),
+        body: DecoratedBox(
+          decoration: BoxDecoration(gradient: palette.backdrop),
+          child: const SafeArea(bottom: false, child: PageSkeleton()),
+        ),
       );
     }
 

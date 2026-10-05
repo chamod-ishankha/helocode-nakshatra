@@ -10,6 +10,14 @@ import '../../../l10n/generated/app_localizations.dart';
 /// and therefore a language. Keeping the translation here is what lets
 /// AuthService stay free of localisation and stay unit-testable without a
 /// widget tree.
+/// Whether [failure] was the network rather than the account (KAN-95).
+///
+/// Asked separately from [authMessage] so the screen can show the offline
+/// card — which says the rest of the app still works — instead of a red line
+/// that reads as though everything is broken.
+bool isNoConnection(Object? failure) =>
+    failure is AuthFailure && failure.code == 'network-request-failed';
+
 String authMessage(BuildContext context, AuthFailure failure) {
   final l = L10n.of(context);
 

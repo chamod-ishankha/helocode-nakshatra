@@ -17,8 +17,10 @@ import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profiles/presentation/profiles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/horoscope/presentation/horoscope_screen.dart';
-import '../theme/app_spacing.dart';
 import 'app_shell.dart';
+import '../logging/app_logger.dart';
+import '../theme/brand_palette.dart';
+import '../ui/state_views.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
@@ -236,31 +238,24 @@ class _RouteErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L10n.of(context);
+    final palette = BrandPalette.of(context);
+    // The router's own text — "no routes for location: /x?y" — is for the
+    // log. It used to be printed under the title.
+    AppLogger.warn('Route not found: ${error ?? 'unknown'}');
+
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline, size: 48),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                L10n.of(context).routeNotFound,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                '${error ?? 'Unknown route'}',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              FilledButton(
-                onPressed: () => context.go(Routes.home),
-                child: Text(L10n.of(context).routeGoHome),
-              ),
-            ],
+      backgroundColor: palette.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: palette.backdrop),
+        child: SafeArea(
+          child: StatusView(
+            icon: Icons.highlight_off_rounded,
+            title: l.routeNotFound,
+            action: (
+              label: l.routeGoHome,
+              onPressed: () => context.go(Routes.home),
+            ),
           ),
         ),
       ),

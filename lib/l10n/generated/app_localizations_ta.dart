@@ -96,11 +96,6 @@ class L10nTa extends L10n {
   String get onboardingPlaceNoMatch => 'பொருந்தும் இடம் இல்லை';
 
   @override
-  String onboardingPlaceLoadFailed(String error) {
-    return 'இடங்களை ஏற்ற முடியவில்லை: $error';
-  }
-
-  @override
   String get onboardingSeeChart => 'எனது ஜாதகத்தைப் பார்க்க';
 
   @override
@@ -1657,4 +1652,30 @@ class L10nTa extends L10n {
   @override
   String get reportDashaDatesNote =>
       'தேதிகள் பிறப்பின் போது சந்திரனின் நிலையிலிருந்து கணக்கிடப்படுகின்றன. பிறந்த நேரம் தெரியாவிட்டால், அவை ஆண்டுகள் வரை மாறக்கூடும்.';
+
+  @override
+  String get stateCalculating => 'உங்கள் தொலைபேசியில் கணக்கிடுகிறது…';
+
+  @override
+  String get stateTryAgain => 'மீண்டும் முயலவும்';
+
+  @override
+  String get chartErrorBody =>
+      'உங்கள் கிரக நிலைகளைக் கணக்கிடும்போது ஏதோ தவறு நடந்தது. எதுவும் இழக்கப்படவில்லை.';
+
+  @override
+  String get chartCheckDetails => 'பிறப்பு விவரங்களைச் சரிபார்க்கவும்';
+
+  @override
+  String get stateOfflineTitle => 'இணைப்பு இல்லை';
+
+  @override
+  String get stateOfflineBody =>
+      'உங்கள் ஜாதகம் இணைப்பின்றியும் இயங்கும். காப்புப்பிரதி, விளம்பரங்கள் மற்றும் வாங்குதல்களுக்கு மட்டுமே இணைப்பு தேவை.';
+
+  @override
+  String get placesLoadFailed => 'இடங்களின் பட்டியலை ஏற்ற முடியவில்லை.';
+
+  @override
+  String get calendarScanFailed => 'இந்த மாதத்தைக் கணக்கிட முடியவில்லை.';
 }

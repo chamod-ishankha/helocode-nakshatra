@@ -22,6 +22,8 @@ import '../data/profile_repository.dart';
 import '../domain/birth_profile.dart';
 import '../domain/birth_wheels.dart';
 import 'birth_wheels_view.dart';
+import '../../../core/ui/state_views.dart';
+import '../../../core/logging/app_logger.dart';
 
 /// Birth-details capture.
 ///
@@ -626,9 +628,17 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
           const SizedBox(height: AppSpacing.sm),
           Expanded(
             child: results.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) =>
-                  Center(child: Text(l10n.onboardingPlaceLoadFailed('$e'))),
+              loading: () => const ListSkeleton(),
+              error: (e, s) {
+                AppLogger.error('Place list failed to load', e, s);
+                return InlineRetry(
+                  message: l10n.placesLoadFailed,
+                  onRetry: () {
+                    ref.invalidate(countryListProvider);
+                    ref.invalidate(placeSearchProvider);
+                  },
+                );
+              },
               data: (places) => places.isEmpty
                   ? Center(
                       child: Text(

@@ -20,6 +20,7 @@ import '../../onboarding/data/profile_repository.dart';
 import 'add_family_member.dart';
 import '../../../core/purchases/nudges.dart';
 import '../../purchases/presentation/pro_nudge.dart';
+import '../../../core/ui/state_views.dart';
 
 /// Switching between saved charts (KAN-19).
 ///
@@ -123,7 +124,7 @@ class ProfilesScreen extends ConsumerWidget {
     );
 
     return saved.when(
-      loading: () => page([const Center(child: CircularProgressIndicator())]),
+      loading: () => page([const ListSkeleton(height: 72)]),
       // A database that would not open is not an error worth a red screen:
       // the app still works with the one profile in preferences.
       error: (_, _) => page([QuietNotice(text: l.profilesUnavailable)]),

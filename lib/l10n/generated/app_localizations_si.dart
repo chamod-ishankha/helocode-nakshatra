@@ -94,11 +94,6 @@ class L10nSi extends L10n {
   String get onboardingPlaceNoMatch => 'ගැළපෙන ස්ථානයක් නැත';
 
   @override
-  String onboardingPlaceLoadFailed(String error) {
-    return 'ස්ථාන පූරණය කළ නොහැකි විය: $error';
-  }
-
-  @override
   String get onboardingSeeChart => 'මගේ කේන්දරය බලන්න';
 
   @override
@@ -1632,4 +1627,30 @@ class L10nSi extends L10n {
   @override
   String get reportDashaDatesNote =>
       'දිනයන් උපතේදී චන්ද්‍රයාගේ පිහිටීමෙන් ගණනය කෙරේ. උපන් වේලාව නොදන්නේ නම්, ඒවා වසර ගණනකින් වෙනස් විය හැක.';
+
+  @override
+  String get stateCalculating => 'ඔබේ දුරකථනයේ ගණනය කරමින්…';
+
+  @override
+  String get stateTryAgain => 'නැවත උත්සාහ කරන්න';
+
+  @override
+  String get chartErrorBody =>
+      'ඔබේ ග්‍රහ පිහිටීම් ගණනය කිරීමේදී දෝෂයක් ඇති විය. කිසිවක් නැති වී නැත.';
+
+  @override
+  String get chartCheckDetails => 'උපත් විස්තර පරීක්ෂා කරන්න';
+
+  @override
+  String get stateOfflineTitle => 'සම්බන්ධතාවයක් නැත';
+
+  @override
+  String get stateOfflineBody =>
+      'ඔබේ කේන්ද්‍රය නොබැඳිව ද ක්‍රියා කරයි. උපස්ථය, දැන්වීම් සහ මිලදී ගැනීම් සඳහා පමණක් ජාලයක් අවශ්‍යයි.';
+
+  @override
+  String get placesLoadFailed => 'ස්ථාන ලැයිස්තුව පූරණය කළ නොහැකි විය.';
+
+  @override
+  String get calendarScanFailed => 'මෙම මාසය ගණනය කළ නොහැකි විය.';
 }

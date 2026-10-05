@@ -255,12 +255,6 @@ abstract class L10n {
   /// **'No matching place'**
   String get onboardingPlaceNoMatch;
 
-  /// No description provided for @onboardingPlaceLoadFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not load places: {error}'**
-  String onboardingPlaceLoadFailed(String error);
-
   /// No description provided for @onboardingSeeChart.
   ///
   /// In en, this message translates to:
@@ -2954,6 +2948,54 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Dates are worked out from the Moon\'s position at birth. If the birth time is unknown, they may shift by years.'**
   String get reportDashaDatesNote;
+
+  /// No description provided for @stateCalculating.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating on your phone…'**
+  String get stateCalculating;
+
+  /// No description provided for @stateTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get stateTryAgain;
+
+  /// No description provided for @chartErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while working out your positions. Nothing was lost.'**
+  String get chartErrorBody;
+
+  /// No description provided for @chartCheckDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Check birth details'**
+  String get chartCheckDetails;
+
+  /// No description provided for @stateOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection'**
+  String get stateOfflineTitle;
+
+  /// No description provided for @stateOfflineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your chart still works offline. Only backup, ads and purchases need a network.'**
+  String get stateOfflineBody;
+
+  /// No description provided for @placesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The list of places could not be loaded.'**
+  String get placesLoadFailed;
+
+  /// No description provided for @calendarScanFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This month could not be scored.'**
+  String get calendarScanFailed;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

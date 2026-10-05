@@ -17,6 +17,7 @@ import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../home/domain/daily_providers.dart';
 import '../domain/calendar_providers.dart';
+import '../../../core/logging/app_logger.dart';
 
 /// The nekath calendar (KAN-30).
 ///
@@ -599,7 +600,10 @@ class _ScanResults extends ConsumerWidget {
           ],
         ),
       ),
-      error: (e, _) => InfoNotice(text: '$e', tone: NoticeTone.caution),
+      error: (e, s) {
+        AppLogger.error('Best-days scan failed', e, s);
+        return InfoNotice(text: l.calendarScanFailed, tone: NoticeTone.caution);
+      },
       data: (days) {
         // Only days that actually score well are offered. Listing the least
         // bad day of a poor month as a recommendation would be misleading.

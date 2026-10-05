@@ -17,6 +17,7 @@ import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import 'auth_messages.dart';
+import '../../../core/ui/state_views.dart';
 
 /// Attaching a real identity to the anonymous account (KAN-48).
 ///
@@ -41,6 +42,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   bool _busy = false;
   String? _error;
 
+  /// The last failure was the network, not the account.
+  bool _offline = false;
+
   @override
   void dispose() {
     _email.dispose();
@@ -54,6 +58,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     setState(() {
       _busy = true;
       _error = null;
+      _offline = false;
     });
 
     final auth = ref.read(authServiceProvider);
@@ -90,6 +95,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         setState(() {
           _busy = false;
           _error = text;
+          _offline = isNoConnection(failure);
           // The address existing is not a dead end, it is the sign-in case.
           // Flipping the form is the whole remedy, so do it for them.
           if (taken) _signingIn = true;
@@ -107,6 +113,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     setState(() {
       _busy = true;
       _error = null;
+      _offline = false;
     });
 
     final auth = ref.read(authServiceProvider);
@@ -137,6 +144,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     setState(() {
       _busy = false;
       _error = text;
+      _offline = isNoConnection(f);
     });
 
     if (result.isSuccess) _confirm(L10n.of(context).accountSignedInGoogleToast);
@@ -169,6 +177,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     setState(() {
       _busy = false;
       _error = text;
+      _offline = isNoConnection(f);
     });
     if (result.isSuccess) _confirm(L10n.of(context).accountSignedOutToast);
   }
@@ -256,10 +265,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   signingIn: _signingIn,
                   busy: _busy,
                   error: _error,
+                  offline: _offline,
                   onSubmit: _submit,
                   onToggleMode: () => setState(() {
                     _signingIn = !_signingIn;
                     _error = null;
+                    _offline = false;
                   }),
                 ),
               ],
@@ -382,6 +393,7 @@ class _Form extends StatelessWidget {
     required this.signingIn,
     required this.busy,
     required this.error,
+    required this.offline,
     required this.onSubmit,
     required this.onToggleMode,
   });
@@ -392,6 +404,7 @@ class _Form extends StatelessWidget {
   final bool signingIn;
   final bool busy;
   final String? error;
+  final bool offline;
   final VoidCallback onSubmit;
   final VoidCallback onToggleMode;
 
@@ -455,7 +468,10 @@ class _Form extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             _VerificationNotice(),
           ],
-          if (error != null) ...[
+          if (offline) ...[
+            const SizedBox(height: AppSpacing.md),
+            const OfflineNotice(),
+          ] else if (error != null) ...[
             const SizedBox(height: AppSpacing.md),
             InfoNotice(text: error!, tone: NoticeTone.caution),
           ],

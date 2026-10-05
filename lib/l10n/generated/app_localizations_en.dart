@@ -94,11 +94,6 @@ class L10nEn extends L10n {
   String get onboardingPlaceNoMatch => 'No matching place';
 
   @override
-  String onboardingPlaceLoadFailed(String error) {
-    return 'Could not load places: $error';
-  }
-
-  @override
   String get onboardingSeeChart => 'See my chart';
 
   @override
@@ -1659,4 +1654,30 @@ class L10nEn extends L10n {
   @override
   String get reportDashaDatesNote =>
       'Dates are worked out from the Moon\'s position at birth. If the birth time is unknown, they may shift by years.';
+
+  @override
+  String get stateCalculating => 'Calculating on your phone…';
+
+  @override
+  String get stateTryAgain => 'Try again';
+
+  @override
+  String get chartErrorBody =>
+      'Something went wrong while working out your positions. Nothing was lost.';
+
+  @override
+  String get chartCheckDetails => 'Check birth details';
+
+  @override
+  String get stateOfflineTitle => 'No connection';
+
+  @override
+  String get stateOfflineBody =>
+      'Your chart still works offline. Only backup, ads and purchases need a network.';
+
+  @override
+  String get placesLoadFailed => 'The list of places could not be loaded.';
+
+  @override
+  String get calendarScanFailed => 'This month could not be scored.';
 }

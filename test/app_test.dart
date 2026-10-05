@@ -33,16 +33,33 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('a first launch lands in onboarding', (tester) async {
+  /// Lets the launch scenes finish. They play over the first screen and
+  /// block taps until they fade, as on a phone.
+  Future<void> pastLaunch(WidgetTester tester) async {
+    await tester.pumpAndSettle();
+  }
+
+  /// The intro slides animate continuously (an orbit, a pulse), so they never
+  /// settle; step through them with fixed pumps instead.
+  Future<void> pumpSlide(WidgetTester tester) async {
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+  }
+
+  testWidgets('a first launch lands on the language choice', (tester) async {
     await pumpApp(tester);
+    await pastLaunch(tester);
 
     // With no saved profile there is nothing to show, so every route must
-    // redirect here rather than rendering an empty chart.
+    // redirect to the welcome — and the welcome opens on the language, so
+    // everything after it is read in the right script (KAN-81).
     expect(find.text('Choose your language'), findsOneWidget);
   });
 
-  testWidgets('the language step offers all three languages', (tester) async {
+  testWidgets('the language choice offers all three languages', (tester) async {
     await pumpApp(tester);
+    await pastLaunch(tester);
 
     // Each language is listed in its own script — a Tamil speaker looks for
     // "தமிழ்", not "Tamil".
@@ -51,18 +68,27 @@ void main() {
     expect(find.text('English'), findsWidgets);
   });
 
-  testWidgets('the flow advances from language to name', (tester) async {
+  testWidgets('language leads to the intro, and skipping it to the name', (
+    tester,
+  ) async {
     await pumpApp(tester);
+    await pastLaunch(tester);
 
     await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
+    await pumpSlide(tester);
+    expect(find.text('Worked out here, not looked up'), findsOneWidget);
 
+    await tester.tap(find.text('Skip'));
+    await tester.pumpAndSettle();
     expect(find.text('What is your name?'), findsOneWidget);
   });
 
   testWidgets('Continue is disabled until a name is entered', (tester) async {
     await pumpApp(tester);
+    await pastLaunch(tester);
     await tester.tap(find.text('Continue'));
+    await pumpSlide(tester);
+    await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
 
     final button = tester.widget<FilledButton>(find.byType(FilledButton));

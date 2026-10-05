@@ -9,6 +9,7 @@ import '../../features/calendar/presentation/calendar_screen.dart';
 import '../../features/chart/presentation/chart_screen.dart';
 import '../../features/compatibility/presentation/compatibility_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/launch/presentation/welcome_screen.dart';
 import '../logging/analytics_service.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
@@ -19,6 +20,14 @@ import '../theme/app_spacing.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
+  /// Language, then three intro slides, for somebody with no chart yet
+  /// (KAN-81). Everything funnels here until onboarding is finished.
+  static const String welcome = '/welcome';
+
+  /// The last intro slide, for going back from the first onboarding question
+  /// without being asked to choose a language again.
+  static const String welcomeLastSlide = '$welcome?page=3';
+
   static const String onboarding = '/onboarding';
 
   /// Onboarding opened deliberately, to change details that already exist.
@@ -58,16 +67,24 @@ void popOrHome(BuildContext context) =>
 /// Where a request for [location] should actually go.
 ///
 /// A top-level function rather than a closure inside the router so it can be
-/// tested for what it is — three rules about who may see the onboarding
-/// wizard — without standing up a navigator and every screen behind it.
+/// tested for what it is — rules about who may see the welcome flow and the
+/// onboarding wizard — without standing up a navigator and every screen
+/// behind it.
 ///
 /// Returns null to allow the request through.
 String? redirectFor({required String location, required bool hasProfile}) {
   final uri = Uri.parse(location);
   final onOnboarding = uri.path == Routes.onboarding;
+  final onWelcome = uri.path == Routes.welcome;
 
-  // Nothing to show until there is a profile, so everything funnels in.
-  if (!hasProfile && !onOnboarding) return Routes.onboarding;
+  // Nothing to show until there is a profile, so everything funnels in —
+  // through the welcome, which asks for a language before anything else.
+  // Onboarding itself is let through: it is where the welcome hands over.
+  if (!hasProfile && !onOnboarding && !onWelcome) return Routes.welcome;
+
+  // The welcome is for meeting the app. Somebody with a chart who lands on it
+  // (a restored location, a stale link) belongs on the daily screen.
+  if (hasProfile && onWelcome) return Routes.home;
 
   // Sending a user who has a profile out of the wizard is right when they
   // landed there by accident — a restored location after a restart, a stale
@@ -105,6 +122,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       hasProfile: ref.read(profileProvider) != null,
     ),
     routes: [
+      GoRoute(
+        path: Routes.welcome,
+        name: 'welcome',
+        builder: (context, state) => WelcomeScreen(
+          initialPage:
+              int.tryParse(state.uri.queryParameters['page'] ?? '') ?? 0,
+        ),
+      ),
       GoRoute(
         path: Routes.profiles,
         name: 'profiles',

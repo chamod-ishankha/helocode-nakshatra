@@ -200,9 +200,11 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
 
-    // Leave for onboarding regardless. The local profile is gone either way,
-    // so every screen behind this one is reading data that no longer exists.
-    context.go(Routes.onboarding);
+    // Leave regardless. The local profile is gone either way, so every screen
+    // behind this one is reading data that no longer exists. To the welcome
+    // rather than straight into the questions: with nothing kept, this is a
+    // new reader, and a new reader is asked for a language first (KAN-81).
+    context.go(Routes.welcome);
   }
 
   static Future<void> _open(BuildContext context, String url) async {

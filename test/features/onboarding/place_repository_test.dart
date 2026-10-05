@@ -35,7 +35,8 @@ void main() {
         expect(
           places.length,
           c.placeCount,
-          reason: '${c.code} index says ${c.placeCount}, file has '
+          reason:
+              '${c.code} index says ${c.placeCount}, file has '
               '${places.length} — the index and the files were built '
               'from different runs',
         );
@@ -44,21 +45,24 @@ void main() {
       }
     });
 
-    test('Sri Lanka and India are named in script, and sort findably', () async {
-      final byCode = {for (final c in await repo.countries()) c.code: c};
+    test(
+      'Sri Lanka and India are named in script, and sort findably',
+      () async {
+        final byCode = {for (final c in await repo.countries()) c.code: c};
 
-      expect(byCode['LK']!.label(true, false), 'ශ්‍රී ලංකාව');
-      expect(byCode['LK']!.label(false, true), 'இலங்கை');
-      expect(byCode['IN']!.label(false, true), 'இந்தியா');
+        expect(byCode['LK']!.label(true, false), 'ශ්‍රී ලංකාව');
+        expect(byCode['LK']!.label(false, true), 'இலங்கை');
+        expect(byCode['IN']!.label(false, true), 'இந்தியா');
 
-      // No Sinhala for India, so a Sinhala reader gets English rather than
-      // nothing — the same fallback the place list uses.
-      expect(byCode['IN']!.label(true, false), 'India');
+        // No Sinhala for India, so a Sinhala reader gets English rather than
+        // nothing — the same fallback the place list uses.
+        expect(byCode['IN']!.label(true, false), 'India');
 
-      // Searchable by code as well as name: someone who knows "AE" should not
-      // have to remember "United Arab Emirates".
-      expect(byCode['AE']!.searchable, contains('ae'));
-    });
+        // Searchable by code as well as name: someone who knows "AE" should not
+        // have to remember "United Arab Emirates".
+        expect(byCode['AE']!.searchable, contains('ae'));
+      },
+    );
   });
 
   group('timezones', () {
@@ -88,10 +92,12 @@ void main() {
     });
 
     test('a place outside Sri Lanka keeps its own zone', () async {
-      final chennai =
-          (await repo.inCountry('IN')).firstWhere((p) => p.en == 'Chennai');
-      final london =
-          (await repo.inCountry('GB')).firstWhere((p) => p.en == 'London');
+      final chennai = (await repo.inCountry(
+        'IN',
+      )).firstWhere((p) => p.en == 'Chennai');
+      final london = (await repo.inCountry(
+        'GB',
+      )).firstWhere((p) => p.en == 'London');
 
       expect(chennai.timezone, 'Asia/Kolkata');
       expect(london.timezone, 'Europe/London');
@@ -107,11 +113,19 @@ void main() {
       const wall = [1990, 6, 15, 14, 30];
       final inLondon = tz.TZDateTime(
         tz.getLocation('Europe/London'),
-        wall[0], wall[1], wall[2], wall[3], wall[4],
+        wall[0],
+        wall[1],
+        wall[2],
+        wall[3],
+        wall[4],
       );
       final inColombo = tz.TZDateTime(
         tz.getLocation('Asia/Colombo'),
-        wall[0], wall[1], wall[2], wall[3], wall[4],
+        wall[0],
+        wall[1],
+        wall[2],
+        wall[3],
+        wall[4],
       );
 
       final gap = inLondon.toUtc().difference(inColombo.toUtc());
@@ -166,8 +180,9 @@ void main() {
     test('only Sri Lanka and India carry translated names', () async {
       for (final c in await repo.countries()) {
         final places = await repo.inCountry(c.code);
-        final translated =
-            places.where((p) => p.siOrNull != null || p.taOrNull != null);
+        final translated = places.where(
+          (p) => p.siOrNull != null || p.taOrNull != null,
+        );
         if (c.code == 'LK' || c.code == 'IN') continue;
         expect(
           translated,
@@ -238,7 +253,12 @@ void main() {
       // so its population-15000 cut drops towns this size. If a future rebuild
       // ever leans on GeoNames alone, these disappear silently.
       final names = (await repo.inCountry('LK')).map((p) => p.en).toSet();
-      for (final town in ['Gampaha', 'Polonnaruwa', 'Bandarawela', 'Tangalle']) {
+      for (final town in [
+        'Gampaha',
+        'Polonnaruwa',
+        'Bandarawela',
+        'Tangalle',
+      ]) {
         expect(names, contains(town));
       }
     });

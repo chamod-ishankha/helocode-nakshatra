@@ -1498,4 +1498,59 @@ class L10nTa extends L10n {
   @override
   String get settingsLicencesHint =>
       'திறந்த மூலக் கூறுகள் மற்றும் தரவு மூலங்கள்';
+
+  @override
+  String get splashTagline =>
+      'உங்கள் பஞ்சாங்கம், உங்கள் தொலைபேசியிலேயே கணக்கிடப்படுகிறது.';
+
+  @override
+  String get splashPublisher => 'HeloCode Labs உருவாக்கிய செயலி';
+
+  @override
+  String get welcomeLanguageHint =>
+      'இதை எப்போது வேண்டுமானாலும் அமைப்புகளில் மாற்றலாம்.';
+
+  @override
+  String introProgress(int step, int total) {
+    return '$total இல் $step';
+  }
+
+  @override
+  String get introSkip => 'தவிர்';
+
+  @override
+  String get introNext => 'அடுத்து';
+
+  @override
+  String get introStart => 'தொடங்குங்கள்';
+
+  @override
+  String get introOnPhoneKicker => 'உங்கள் தொலைபேசியில்';
+
+  @override
+  String get introOnPhoneTitle => 'இங்கேயே கணக்கிடப்படுகிறது, தேடப்படுவதில்லை';
+
+  @override
+  String get introOnPhoneBody =>
+      'ஒவ்வொரு ஜாதகமும் பஞ்சாங்கமும் உங்கள் சாதனத்திலேயே கணக்கிடப்படுகின்றன. இணைய இணைப்பு தேவையில்லை.';
+
+  @override
+  String get introLanguagesKicker => 'மூன்று மொழிகள்';
+
+  @override
+  String get introLanguagesTitle => 'படிக்கும் விதத்திலேயே எழுதப்பட்டது';
+
+  @override
+  String get introLanguagesBody =>
+      'சிங்களம், தமிழ், ஆங்கிலம் — ஒவ்வொன்றும் அதன் சொந்த எழுத்தில். எப்போது வேண்டுமானாலும் மாற்றலாம்.';
+
+  @override
+  String get introPrivateKicker => 'தனியுரிமை';
+
+  @override
+  String get introPrivateTitle => 'உங்களுக்கு மட்டுமே';
+
+  @override
+  String get introPrivateBody =>
+      'நீங்கள் காப்புப்பிரதி எடுக்கத் தேர்ந்தெடுத்தால் தவிர, உங்கள் பிறப்பு விவரங்கள் இந்தத் தொலைபேசியை விட்டு வெளியேறாது.';
 }

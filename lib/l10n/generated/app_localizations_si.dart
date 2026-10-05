@@ -1475,4 +1475,58 @@ class L10nSi extends L10n {
   @override
   String get settingsLicencesHint =>
       'විවෘත මූලාශ්‍ර කොම්පොනෙන්ටවර් සහ දත්ත මූලාශ්‍ර';
+
+  @override
+  String get splashTagline => 'ඔබේ ලිත, ඔබේ දුරකථනයේම ගණනය කෙරේ.';
+
+  @override
+  String get splashPublisher => 'HeloCode Labs නිර්මාණයකි';
+
+  @override
+  String get welcomeLanguageHint =>
+      'ඕනෑම වේලාවක සැකසුම් තුළින් මෙය වෙනස් කළ හැක.';
+
+  @override
+  String introProgress(int step, int total) {
+    return '$totalන් $step';
+  }
+
+  @override
+  String get introSkip => 'මඟ හරින්න';
+
+  @override
+  String get introNext => 'ඊළඟ';
+
+  @override
+  String get introStart => 'ආරම්භ කරන්න';
+
+  @override
+  String get introOnPhoneKicker => 'ඔබේ දුරකථනයේ';
+
+  @override
+  String get introOnPhoneTitle => 'මෙහිම ගණනය කරයි, සොයා ගන්නේ නැත';
+
+  @override
+  String get introOnPhoneBody =>
+      'සෑම කේන්දරයක්ම සහ පංචාංගයක්ම ගණනය වන්නේ ඔබේ උපාංගයේමය. ජාල සම්බන්ධතාවක් අවශ්‍ය නැත.';
+
+  @override
+  String get introLanguagesKicker => 'භාෂා තුනක්';
+
+  @override
+  String get introLanguagesTitle => 'කියවන ආකාරයටම ලියා ඇත';
+
+  @override
+  String get introLanguagesBody =>
+      'සිංහල, දෙමළ සහ ඉංග්‍රීසි — එකිනෙක තමන්ගේම අක්ෂරවලින්. ඕනෑම වේලාවක මාරු කරන්න.';
+
+  @override
+  String get introPrivateKicker => 'පෞද්ගලිකත්වය';
+
+  @override
+  String get introPrivateTitle => 'ඔබට පමණයි';
+
+  @override
+  String get introPrivateBody =>
+      'ඔබ උපස්ථ කිරීමට තෝරා ගන්නේ නම් මිස, ඔබේ උපන් විස්තර මෙම දුරකථනයෙන් පිටතට නොයයි.';
 }

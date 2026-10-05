@@ -50,6 +50,27 @@ abstract final class Licensing {
           'every country. Sri Lankan places are our own list.',
     ),
     Attribution(
+      name: 'Noto Sans Sinhala and Noto Sans Tamil',
+      author: 'Google LLC',
+      license: 'OFL-1.1',
+      url: 'https://fonts.google.com/noto',
+      note: 'The Sinhala and Tamil text throughout the app.',
+    ),
+    Attribution(
+      name: 'Fraunces',
+      author: 'The Fraunces Project Authors',
+      license: 'OFL-1.1',
+      url: 'https://github.com/undercasetype/Fraunces',
+      note: 'Headings, times and the Nakshatra name.',
+    ),
+    Attribution(
+      name: 'Geist',
+      author: 'The Geist Project Authors',
+      license: 'OFL-1.1',
+      url: 'https://github.com/vercel/geist-font',
+      note: 'The HeloCode Labs wordmark.',
+    ),
+    Attribution(
       name: 'Flutter',
       author: 'Google LLC',
       license: 'BSD-3-Clause',

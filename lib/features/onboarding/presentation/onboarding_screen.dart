@@ -40,7 +40,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _nameController = TextEditingController();
 
   int _step = 0;
-  static const _stepCount = 5;
+
+  /// Name, date, time, place. Language used to be the first step; it moved to
+  /// the welcome flow so the intro is read in it too (KAN-81).
+  static const _stepCount = 4;
 
   DateTime? _birthDate;
   Duration? _birthTime;
@@ -67,10 +70,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (existing != null) {
       _editing = true;
 
-      // Straight to the name. The language step is behind them — they chose
-      // once, and the screen they came from has a language row of its own.
-      _step = 1;
-
       _nameController.text = existing.name;
       _birthDate = existing.birthDate;
       _birthTime = existing.birthTime;
@@ -89,11 +88,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   bool get _canAdvance => switch (_step) {
-    0 => true,
-    1 => _nameController.text.trim().isNotEmpty,
-    2 => _birthDate != null,
-    3 => _birthTime != null || !_birthTimeKnown,
-    4 => _place != null,
+    0 => _nameController.text.trim().isNotEmpty,
+    1 => _birthDate != null,
+    2 => _birthTime != null || !_birthTimeKnown,
+    3 => _place != null,
     _ => false,
   };
 
@@ -110,7 +108,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  /// Back from the first question returns to the last intro slide, for a new
+  /// reader. Editing or adding a person came from Settings or Home, and the
+  /// system back button already returns there.
+  bool get _backLeavesWizard => _step == 0 && !_editing && !widget.adding;
+
   void _back() {
+    if (_backLeavesWizard) {
+      context.go(Routes.welcomeLastSlide);
+      return;
+    }
     if (_step == 0) return;
     setState(() => _step--);
     _pageController.animateToPage(
@@ -142,9 +149,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // The system back button does what the arrow does. The wizard is reached
+    // with go(), so there is nothing beneath it: without this, back on any
+    // question closed the app and lost everything typed so far.
+    final handlesBack = _step > 0 || _backLeavesWizard;
+    return PopScope(
+      canPop: !handlesBack,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _back();
+      },
+      child: _scaffold(context),
+    );
+  }
+
+  Widget _scaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: _step > (_editing ? 1 : 0)
+        leading: _step > 0 || _backLeavesWizard
             ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _back)
             : null,
         title: LinearProgressIndicator(
@@ -161,7 +182,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _LanguageStep(onChanged: () => setState(() {})),
                   _NameStep(
                     controller: _nameController,
                     onChanged: () => setState(() {}),
@@ -262,47 +282,6 @@ class _StepScaffold extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
       child: scrollable ? SingleChildScrollView(child: content) : content,
-    );
-  }
-}
-
-class _LanguageStep extends ConsumerWidget {
-  const _LanguageStep({required this.onChanged});
-  final VoidCallback onChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(localeProvider);
-    return _StepScaffold(
-      // Its own ListView scrolls the three languages.
-      scrollable: false,
-      title: L10n.of(context).onboardingChooseLanguage,
-      subtitle: 'භාෂාව තෝරන්න · மொழியைத் தேர்ந்தெடுக்கவும்',
-      child: ListView(
-        children: [
-          // A plain selectable tile rather than RadioListTile: the Radio
-          // group API is deprecated in this Flutter version, and a check mark
-          // reads more clearly at this size anyway.
-          for (final locale in AppLocale.values)
-            Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              child: ListTile(
-                selected: locale == current,
-                onTap: () async {
-                  await ref.read(localeProvider.notifier).set(locale);
-                  onChanged();
-                },
-                title: Text(locale.nativeName),
-                subtitle: locale.nativeName == locale.englishName
-                    ? null
-                    : Text(locale.englishName),
-                trailing: locale == current
-                    ? const Icon(Icons.check_circle)
-                    : const Icon(Icons.circle_outlined),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
@@ -521,7 +500,8 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
                         // Name alone is not an identity once the list is
                         // worldwide — the coordinates are what differ between
                         // two towns that share a name.
-                        final selected = widget.value?.en == p.en &&
+                        final selected =
+                            widget.value?.en == p.en &&
                             widget.value?.latitude == p.latitude &&
                             widget.value?.longitude == p.longitude;
                         return ListTile(

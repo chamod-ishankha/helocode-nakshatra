@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'core/config/flavor.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/launch/presentation/launch_overlay.dart';
 import 'features/onboarding/data/profile_repository.dart';
 import 'l10n/generated/app_localizations.dart';
 
@@ -37,6 +38,10 @@ class NakshatraApp extends ConsumerWidget {
       localizationsDelegates: L10n.localizationsDelegates,
 
       routerConfig: router,
+
+      // The HeloCode moment and the splash play over the first screen while
+      // it builds, then fade (KAN-81).
+      builder: (context, child) => LaunchOverlay(child: child!),
     );
   }
 }

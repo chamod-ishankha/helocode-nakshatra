@@ -33,9 +33,7 @@ class CountryField extends ConsumerWidget {
       (AsyncData(value: final c), AsyncData(value: final list)) =>
         list
             .where((e) => e.code == c)
-            .map(
-              (e) => e.label(locale == AppLocale.si, locale == AppLocale.ta),
-            )
+            .map((e) => e.label(locale == AppLocale.si, locale == AppLocale.ta))
             .firstOrNull,
       _ => null,
     };

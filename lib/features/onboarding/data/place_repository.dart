@@ -100,9 +100,7 @@ class PlaceRepository {
     // The country code is written once at the top of the file rather than
     // repeated on all 3,779 Indian rows, and stamped onto each place here.
     final places = (json['places'] as List)
-        .map(
-          (e) => Place.fromJson({...e as Map<String, dynamic>, 'cc': code}),
-        )
+        .map((e) => Place.fromJson({...e as Map<String, dynamic>, 'cc': code}))
         .toList(growable: false);
 
     // Dart maps iterate in insertion order, so the first key is the least
@@ -184,6 +182,5 @@ final effectiveCountryProvider = Provider<AsyncValue<String>>((ref) {
 typedef PlaceQuery = ({String countryCode, String query});
 
 final placeSearchProvider = FutureProvider.family<List<Place>, PlaceQuery>(
-  (ref, q) =>
-      ref.watch(placeRepositoryProvider).search(q.countryCode, q.query),
+  (ref, q) => ref.watch(placeRepositoryProvider).search(q.countryCode, q.query),
 );

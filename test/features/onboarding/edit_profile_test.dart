@@ -81,35 +81,35 @@ void main() {
     expect(name.controller?.text, 'Chamod');
   });
 
-  testWidgets('an edit skips the language step', (tester) async {
-    // The reader has already chosen a language — twice over, since the screen
-    // they came from has a language row of its own. Making them pass through
-    // it again to reach the field they wanted is friction with no purpose.
+  testWidgets('an edit opens on the name step', (tester) async {
+    // Language is no longer a question in the wizard at all — it moved to the
+    // welcome (KAN-81) — so an edit and a first run both start on the name.
     await pump(tester, withProfile: true);
 
-    expect(
-      find.byType(TextField),
-      findsWidgets,
-      reason: 'an edit should open on the name step, not the language step',
-    );
+    expect(find.byType(TextField), findsWidgets);
   });
 
-  testWidgets('a first run starts empty, on the language step', (tester) async {
-    // The other half of the same rule: nothing to prefill, and the language
-    // step is the first thing a new user should see.
+  testWidgets('a first run starts empty, on the name step', (tester) async {
+    // Nothing to prefill. The language was chosen on the welcome, before the
+    // intro, so the wizard opens straight on the first real question.
     await pump(tester, withProfile: false);
 
-    expect(
-      find.byType(TextField),
-      findsNothing,
-      reason: 'a first run should open on the language step',
-    );
+    final name = tester.widget<TextField>(find.byType(TextField).first);
+    expect(name.controller?.text, isEmpty);
+  });
+
+  testWidgets('a first run can go back to the intro', (tester) async {
+    // The wizard is reached with go(), so nothing is beneath it. Without the
+    // arrow on the first question, a new reader who wanted to reread the
+    // intro had only the system back button, which closed the app.
+    await pump(tester, withProfile: false);
+
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
   });
 
   testWidgets('an edit cannot go back past its first step', (tester) async {
-    // The wizard's back arrow appears from step 1 onward. An edit starts on
-    // step 1, so an unguarded arrow would walk the reader into the language
-    // step the edit deliberately skipped.
+    // An edit came from Settings; there is no intro behind it to return to,
+    // and an arrow that led there would show a returning reader the welcome.
     await pump(tester, withProfile: true);
 
     expect(find.byIcon(Icons.arrow_back), findsNothing);

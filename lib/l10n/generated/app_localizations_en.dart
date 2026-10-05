@@ -1501,4 +1501,57 @@ class L10nEn extends L10n {
 
   @override
   String get settingsLicencesHint => 'Open-source components and data sources';
+
+  @override
+  String get splashTagline => 'Your almanac, worked out on your phone.';
+
+  @override
+  String get splashPublisher => 'a HeloCode Labs app';
+
+  @override
+  String get welcomeLanguageHint => 'You can change this any time in Settings.';
+
+  @override
+  String introProgress(int step, int total) {
+    return '$step of $total';
+  }
+
+  @override
+  String get introSkip => 'Skip';
+
+  @override
+  String get introNext => 'Next';
+
+  @override
+  String get introStart => 'Get started';
+
+  @override
+  String get introOnPhoneKicker => 'On your phone';
+
+  @override
+  String get introOnPhoneTitle => 'Worked out here, not looked up';
+
+  @override
+  String get introOnPhoneBody =>
+      'Every chart and pañcāṅga is calculated on your device. No connection needed.';
+
+  @override
+  String get introLanguagesKicker => 'Three languages';
+
+  @override
+  String get introLanguagesTitle => 'Written the way it is read';
+
+  @override
+  String get introLanguagesBody =>
+      'Sinhala, Tamil and English, each in its own script. Switch any time.';
+
+  @override
+  String get introPrivateKicker => 'Private by design';
+
+  @override
+  String get introPrivateTitle => 'Yours alone';
+
+  @override
+  String get introPrivateBody =>
+      'Your birth details stay on this phone unless you choose to back them up.';
 }

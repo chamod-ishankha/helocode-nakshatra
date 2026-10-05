@@ -2678,6 +2678,102 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Open-source components and data sources'**
   String get settingsLicencesHint;
+
+  /// Under the brand name on the splash. Says what makes the app different: it computes, it does not look up.
+  ///
+  /// In en, this message translates to:
+  /// **'Your almanac, worked out on your phone.'**
+  String get splashTagline;
+
+  /// Publisher line at the foot of the splash. "HeloCode Labs" is a name and stays in Latin.
+  ///
+  /// In en, this message translates to:
+  /// **'a HeloCode Labs app'**
+  String get splashPublisher;
+
+  /// No description provided for @welcomeLanguageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this any time in Settings.'**
+  String get welcomeLanguageHint;
+
+  /// Which intro slide this is, e.g. "1 of 3".
+  ///
+  /// In en, this message translates to:
+  /// **'{step} of {total}'**
+  String introProgress(int step, int total);
+
+  /// No description provided for @introSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get introSkip;
+
+  /// No description provided for @introNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get introNext;
+
+  /// Last intro slide. Leads into the birth-details questions.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get introStart;
+
+  /// No description provided for @introOnPhoneKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'On your phone'**
+  String get introOnPhoneKicker;
+
+  /// No description provided for @introOnPhoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Worked out here, not looked up'**
+  String get introOnPhoneTitle;
+
+  /// No description provided for @introOnPhoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every chart and pañcāṅga is calculated on your device. No connection needed.'**
+  String get introOnPhoneBody;
+
+  /// No description provided for @introLanguagesKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Three languages'**
+  String get introLanguagesKicker;
+
+  /// No description provided for @introLanguagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Written the way it is read'**
+  String get introLanguagesTitle;
+
+  /// No description provided for @introLanguagesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sinhala, Tamil and English, each in its own script. Switch any time.'**
+  String get introLanguagesBody;
+
+  /// No description provided for @introPrivateKicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Private by design'**
+  String get introPrivateKicker;
+
+  /// No description provided for @introPrivateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours alone'**
+  String get introPrivateTitle;
+
+  /// No description provided for @introPrivateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your birth details stay on this phone unless you choose to back them up.'**
+  String get introPrivateBody;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

@@ -122,6 +122,23 @@ flutter:
       fonts:
         - asset: assets/fonts/NotoSansTamil.ttf
 
+    # The redesign's display face (KAN-80): times, titles, the brand name.
+    # Latin only, so Sinhala and Tamil in a display style fall back to Noto.
+    # Static 600 at the 144 optical size. OFL-1.1, assets/fonts/OFL-Fraunces.txt.
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/Fraunces-SemiBold.ttf
+          weight: 600
+
+    # HeloCode's own face, for the publisher's wordmark only (KAN-81).
+    # OFL-1.1, assets/fonts/OFL-Geist.txt.
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Geist-SemiBold.ttf
+          weight: 600
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
@@ -169,15 +186,22 @@ flutter_launcher_icons:
 # ─────────────────────────────────────────────────────────────────────────────
 # Native splash screen.  Regenerate with:
 #   dart run flutter_native_splash:create
+#
+# Light and dark follow the phone, and each matches the first Flutter frame
+# (BrandPalette.background), so the hand-off to the launch scenes does not
+# flash from night to parchment (KAN-81).
 flutter_native_splash:
-  color: "#171437"
+  color: "#FBF6EC"
+  color_dark: "#171437"
   image: "assets/splash/splash_logo.png"
   android_gravity: center
   ios_content_mode: center
 
   android_12:
-    color: "#171437"
+    color: "#FBF6EC"
+    color_dark: "#171437"
     image: "assets/splash/splash_logo.png"
-    icon_background_color: "#171437"
+    icon_background_color: "#FBF6EC"
+    icon_background_color_dark: "#171437"
 
   web: false

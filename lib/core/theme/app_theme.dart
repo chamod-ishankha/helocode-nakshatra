@@ -38,6 +38,10 @@ abstract final class AppTheme {
   /// empty boxes.
   static const List<String> _fallbacks = [sinhalaFont, tamilFont];
 
+  /// [_fallbacks], for a style built outside the theme — a display face that
+  /// has no Sinhala or Tamil of its own still has to draw them.
+  static const List<String> scriptFallbacks = _fallbacks;
+
   /// The font a locale reads best in, or null to keep the Material default.
   ///
   /// English stays on the default face: Noto Sans Sinhala covers Latin, but

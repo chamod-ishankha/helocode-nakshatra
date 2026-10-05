@@ -19,26 +19,40 @@ import 'package:nakshatra/core/router/app_router.dart';
 /// to closed testing.
 void main() {
   group('without a profile', () {
-    test('every route funnels into onboarding', () {
+    test('every route funnels into the welcome', () {
       for (final target in [
         Routes.home,
         Routes.chart,
         Routes.settings,
         Routes.calendar,
       ]) {
+        // The welcome, not the wizard: a new reader chooses a language
+        // before reading anything, and the intro is in it (KAN-81).
         expect(
           redirectFor(location: target, hasProfile: false),
-          Routes.onboarding,
-          reason: '$target should redirect to onboarding',
+          Routes.welcome,
+          reason: '$target should redirect to the welcome',
         );
       }
     });
 
     test('onboarding itself is left alone', () {
+      // It is where the welcome hands over. Redirecting it back to the
+      // welcome would make the last intro slide a loop.
       expect(
         redirectFor(location: Routes.onboarding, hasProfile: false),
         isNull,
       );
+    });
+
+    test('the welcome is left alone, at any slide', () {
+      for (final location in [Routes.welcome, Routes.welcomeLastSlide]) {
+        expect(
+          redirectFor(location: location, hasProfile: false),
+          isNull,
+          reason: '$location should not redirect',
+        );
+      }
     });
 
     test('the edit flag changes nothing when there is nothing to edit', () {
@@ -50,6 +64,19 @@ void main() {
   });
 
   group('with a profile', () {
+    test('the welcome is not shown again', () {
+      // A returning reader on the welcome — a restored location, a stale
+      // link — would otherwise be asked to choose a language and read the
+      // intro every time.
+      for (final location in [Routes.welcome, Routes.welcomeLastSlide]) {
+        expect(
+          redirectFor(location: location, hasProfile: true),
+          Routes.home,
+          reason: '$location should go home',
+        );
+      }
+    });
+
     test('landing on onboarding by accident goes home', () {
       expect(
         redirectFor(location: Routes.onboarding, hasProfile: true),
@@ -88,6 +115,16 @@ void main() {
         );
       }
     });
+  });
+
+  test('the last-slide location is the welcome path, on its last page', () {
+    // Back from the first question lands here. If the path drifted, the
+    // redirect would treat it as an unknown route and funnel it to the start
+    // of the welcome — the language list again.
+    final uri = Uri.parse(Routes.welcomeLastSlide);
+
+    expect(uri.path, Routes.welcome);
+    expect(uri.queryParameters['page'], '3');
   });
 
   test('the edit location is the onboarding path with the flag', () {

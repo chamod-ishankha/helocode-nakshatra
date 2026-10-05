@@ -429,5 +429,21 @@
   "placeCountryPick": "රටකක් තෝරන්න",
   "placeCountrySearch": "රටවල් ගොනු කරන්න",
   "settingsLicences": "බලට්ර",
-  "settingsLicencesHint": "විවෘත මූලාශ්‍ර කොම්පොනෙන්ටවර් සහ දත්ත මූලාශ්‍ර"
+  "settingsLicencesHint": "විවෘත මූලාශ්‍ර කොම්පොනෙන්ටවර් සහ දත්ත මූලාශ්‍ර",
+  "splashTagline": "ඔබේ ලිත, ඔබේ දුරකථනයේම ගණනය කෙරේ.",
+  "splashPublisher": "HeloCode Labs නිර්මාණයකි",
+  "welcomeLanguageHint": "ඕනෑම වේලාවක සැකසුම් තුළින් මෙය වෙනස් කළ හැක.",
+  "introProgress": "{total}න් {step}",
+  "introSkip": "මඟ හරින්න",
+  "introNext": "ඊළඟ",
+  "introStart": "ආරම්භ කරන්න",
+  "introOnPhoneKicker": "ඔබේ දුරකථනයේ",
+  "introOnPhoneTitle": "මෙහිම ගණනය කරයි, සොයා ගන්නේ නැත",
+  "introOnPhoneBody": "සෑම කේන්දරයක්ම සහ පංචාංගයක්ම ගණනය වන්නේ ඔබේ උපාංගයේමය. ජාල සම්බන්ධතාවක් අවශ්‍ය නැත.",
+  "introLanguagesKicker": "භාෂා තුනක්",
+  "introLanguagesTitle": "කියවන ආකාරයටම ලියා ඇත",
+  "introLanguagesBody": "සිංහල, දෙමළ සහ ඉංග්‍රීසි — එකිනෙක තමන්ගේම අක්ෂරවලින්. ඕනෑම වේලාවක මාරු කරන්න.",
+  "introPrivateKicker": "පෞද්ගලිකත්වය",
+  "introPrivateTitle": "ඔබට පමණයි",
+  "introPrivateBody": "ඔබ උපස්ථ කිරීමට තෝරා ගන්නේ නම් මිස, ඔබේ උපන් විස්තර මෙම දුරකථනයෙන් පිටතට නොයයි."
 }

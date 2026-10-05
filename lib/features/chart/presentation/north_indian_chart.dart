@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/astro/models.dart';
+import '../../../core/theme/brand_palette.dart';
 import '../../../core/theme/semantic_colors.dart';
 import 'detail_sheets.dart';
 import 'graha_label.dart';
@@ -65,7 +66,6 @@ class NorthIndianChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final byHouse = <int, List<GrahaPosition>>{};
     for (final p in chart.positions.values) {
       byHouse.putIfAbsent(p.house, () => []).add(p);
@@ -81,7 +81,12 @@ class NorthIndianChart extends StatelessWidget {
             children: [
               CustomPaint(
                 size: Size.square(size),
-                painter: _NorthIndianPainter(color: theme.dividerColor),
+                painter: _NorthIndianPainter(
+                  line: BrandPalette.of(context).line,
+                  fill: BrandPalette.of(context).surface,
+                  gold: context.semantic.accent,
+                  goldWash: context.semantic.accentSurface,
+                ),
               ),
               for (var h = 1; h <= 12; h++)
                 _label(context, size, h, byHouse[h] ?? const [], lagnaSign),
@@ -143,7 +148,7 @@ class NorthIndianChart extends StatelessWidget {
               style: theme.textTheme.labelSmall?.copyWith(
                 color: house == 1
                     ? context.semantic.accent
-                    : theme.colorScheme.onSurfaceVariant,
+                    : BrandPalette.of(context).muted,
                 fontWeight: house == 1 ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -153,7 +158,12 @@ class NorthIndianChart extends StatelessWidget {
                 spacing: 3,
                 children: [
                   for (final g in grahas)
-                    GrahaLabel(position: g, style: theme.textTheme.labelSmall),
+                    GrahaLabel(
+                      position: g,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: BrandPalette.of(context).text,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -165,19 +175,42 @@ class NorthIndianChart extends StatelessWidget {
 }
 
 class _NorthIndianPainter extends CustomPainter {
-  _NorthIndianPainter({required this.color});
+  _NorthIndianPainter({
+    required this.line,
+    required this.fill,
+    required this.gold,
+    required this.goldWash,
+  });
 
-  final Color color;
+  final Color line, fill, gold, goldWash;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
     final w = size.width, h = size.height;
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, h), paint);
+    final frame = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, w, h),
+      const Radius.circular(18),
+    );
+
+    // House 1 — the lagna — washed and outlined in gold, as the lagna cell is
+    // in the South Indian chart, so the two styles mark it the same way.
+    final lagna = Path()
+      ..moveTo(w / 2, 0)
+      ..lineTo(w * .75, h * .25)
+      ..lineTo(w / 2, h / 2)
+      ..lineTo(w * .25, h * .25)
+      ..close();
+
+    canvas
+      ..drawRRect(frame, Paint()..color = fill)
+      ..save()
+      ..clipRRect(frame)
+      ..drawPath(lagna, Paint()..color = goldWash);
+
+    final paint = Paint()
+      ..color = line
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
 
     // Both diagonals.
     canvas.drawLine(Offset.zero, Offset(w, h), paint);
@@ -190,9 +223,20 @@ class _NorthIndianPainter extends CustomPainter {
       ..lineTo(w / 2, h)
       ..lineTo(0, h / 2)
       ..close();
-    canvas.drawPath(diamond, paint);
+    canvas
+      ..drawPath(diamond, paint)
+      ..drawPath(
+        lagna,
+        Paint()
+          ..color = gold
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.6,
+      )
+      ..restore()
+      ..drawRRect(frame, paint);
   }
 
   @override
-  bool shouldRepaint(_NorthIndianPainter old) => old.color != color;
+  bool shouldRepaint(_NorthIndianPainter old) =>
+      old.line != line || old.fill != fill || old.gold != gold;
 }

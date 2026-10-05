@@ -244,12 +244,7 @@ void main() {
     await pump(tester, birthTimeKnown: true);
     await openFirstSubPeriod(tester);
 
-    final card = tester.getRect(
-      find.descendant(
-        of: find.byType(LockedContent),
-        matching: find.byType(Card),
-      ),
-    );
+    final card = tester.getRect(find.byKey(LockedContent.promptKey));
     final timeline = tester.getRect(find.byType(DashaTimeline));
 
     expect(

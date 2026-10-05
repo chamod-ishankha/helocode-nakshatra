@@ -9,6 +9,9 @@ import '../../../core/astro/dasha.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/pro_usage.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/brand_card.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -34,7 +37,14 @@ final dashaProvider = Provider<List<DashaPeriod>?>((ref) {
 /// what is running now, so that is stated first and the table below it is
 /// collapsed by default with the current period already open.
 class DashaTimeline extends ConsumerWidget {
-  const DashaTimeline({super.key, required this.birthTimeKnown});
+  const DashaTimeline({
+    super.key,
+    required this.birthTimeKnown,
+    this.showTitle = true,
+  });
+
+  /// False on the daśā screen, whose header already names it.
+  final bool showTitle;
 
   /// Drives the accuracy warning. This matters far more for a daśā than for
   /// the houses, which is why an unknown birth time gets a caution notice
@@ -55,8 +65,10 @@ class DashaTimeline extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l.dashaTitle, style: theme.textTheme.titleMedium),
-        const SizedBox(height: AppSpacing.sm),
+        if (showTitle) ...[
+          Text(l.dashaTitle, style: theme.textTheme.titleMedium),
+          const SizedBox(height: AppSpacing.sm),
+        ],
 
         if (!birthTimeKnown) ...[
           InfoNotice(
@@ -377,3 +389,86 @@ String _shortDate(BuildContext context, DateTime utc) => DateFormat.yMMM(
 String _longDate(BuildContext context, DateTime utc) => DateFormat.yMMMd(
   Localizations.localeOf(context).languageCode,
 ).format(utc.toLocal());
+
+/// The running period, as a card that opens the full timeline (KAN-83).
+///
+/// The timeline is nine periods and eighty-one sub-periods long, and on the
+/// chart screen it pushed the report tile and everything after it a long way
+/// down. Almost nobody opens it to read 1997, so the chart shows what is
+/// running now and the rest is one tap away.
+class RunningDashaLink extends ConsumerWidget {
+  const RunningDashaLink({super.key, required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final timeline = ref.watch(dashaProvider);
+    if (timeline == null || timeline.isEmpty) return const SizedBox.shrink();
+    final running = Vimshottari.at(timeline, DateTime.now().toUtc());
+    if (running == null) return const SizedBox.shrink();
+
+    final l = L10n.of(context);
+    final locale = ref.watch(localeProvider);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final maha = running.maha;
+    final antara = running.antara;
+    final period = antara ?? maha;
+    final total = period.duration.inSeconds;
+    final done = DateTime.now().toUtc().difference(period.start).inSeconds;
+    final fraction = total <= 0 ? 0.0 : (done / total).clamp(0.0, 1.0);
+
+    return BrandCard(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: semantic.accentSurface,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(Icons.schedule_rounded, color: semantic.accent),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l.dashaRunningNow,
+                  style: TextStyle(fontSize: 13, color: palette.muted),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  antara == null
+                      ? maha.lord.label(locale)
+                      : '${maha.lord.label(locale)} — ${antara.lord.label(locale)}',
+                  style: BrandFonts.displayStyle(
+                    context,
+                    size: 20,
+                    color: palette.text,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(99),
+                  child: LinearProgressIndicator(
+                    value: fraction,
+                    minHeight: 8,
+                    color: semantic.accent,
+                    backgroundColor: palette.line,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(Icons.chevron_right_rounded, color: palette.muted),
+        ],
+      ),
+    );
+  }
+}

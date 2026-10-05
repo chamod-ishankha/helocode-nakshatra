@@ -7,6 +7,9 @@ import '../../../core/config/app_locale.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_button.dart';
+import '../../../core/ui/brand_card.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -83,7 +86,6 @@ class _ReportTileState extends ConsumerState<ReportTile> {
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
     final owned = ref.watch(featureProvider(PaidFeature.birthChartPdf));
 
     // Nothing to offer in a build with no store, unless the report is already
@@ -93,66 +95,61 @@ class _ReportTileState extends ConsumerState<ReportTile> {
       return const SizedBox.shrink();
     }
 
-    return Card(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),
-      ),
-      color: context.semantic.accentSurface,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.picture_as_pdf_outlined,
-                  color: context.semantic.accent,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    l.reportGenerate,
-                    style: theme.textTheme.titleSmall,
+    final palette = BrandPalette.of(context);
+    return BrandCard(
+      tone: BrandCardTone.gold,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.picture_as_pdf_outlined,
+                color: context.semantic.accent,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  l.reportGenerate,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: palette.text,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              owned ? l.reportRegenerateNote : l.reportGenerateHint,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
               ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            FilledButton.icon(
-              onPressed: _busy ? null : _tap,
-              icon: _busy
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Icon(owned ? Icons.ios_share : Icons.lock_open),
-              // Counted rather than spun. Building six A4 pages takes a few
-              // seconds on a cheap phone, and a bare spinner for that long
-              // reads as a hang — which is when people kill the app halfway
-              // through the thing they just paid for.
-              label: Text(
-                _busy
-                    ? (_total == 0
-                          ? l.reportPreparing
-                          : l.reportPageOf(_done, _total))
-                    // Not "Go Pro": no subscription grants this, so
-                    // a Pro label here sells the wrong product.
-                    : (owned ? l.reportGenerate : l.reportUnlock),
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            owned ? l.reportRegenerateNote : l.reportGenerateHint,
+            style: TextStyle(fontSize: 13, height: 1.5, color: palette.muted),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          BrandButton(
+            tone: owned ? BrandButtonTone.outline : BrandButtonTone.reward,
+            expand: true,
+            onPressed: _busy ? null : _tap,
+            leading: _busy
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(owned ? Icons.ios_share : Icons.lock_open),
+            // Counted rather than spun. Building six A4 pages takes a few
+            // seconds on a cheap phone, and a bare spinner for that long
+            // reads as a hang — which is when people kill the app halfway
+            // through the thing they just paid for.
+            label: _busy
+                ? (_total == 0
+                      ? l.reportPreparing
+                      : l.reportPageOf(_done, _total))
+                // Not "Go Pro": no subscription grants this, so a Pro label
+                // here sells the wrong product.
+                : (owned ? l.reportGenerate : l.reportUnlock),
+          ),
+        ],
       ),
     );
   }

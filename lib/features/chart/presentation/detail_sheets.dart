@@ -6,6 +6,7 @@ import '../../../core/astro/dignity.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
@@ -21,6 +22,7 @@ Future<void> showGrahaDetail(BuildContext context, GrahaPosition position) =>
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
+      backgroundColor: BrandPalette.of(context).background,
       builder: (_) => _GrahaDetail(position: position),
     );
 
@@ -37,6 +39,7 @@ Future<void> showHouseDetail(
 }) => showModalBottomSheet<void>(
   context: context,
   showDragHandle: true,
+  backgroundColor: BrandPalette.of(context).background,
   builder: (_) => _HouseDetail(rasi: rasi, house: house, grahas: grahas),
 );
 
@@ -64,7 +67,11 @@ class _GrahaDetail extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     position.graha.label(locale),
-                    style: theme.textTheme.headlineSmall,
+                    style: BrandFonts.displayStyle(
+                      context,
+                      size: 28,
+                      color: BrandPalette.of(context).text,
+                    ),
                   ),
                 ),
                 if (position.isRetrograde)
@@ -158,7 +165,14 @@ class _HouseDetail extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(rasi.label(locale), style: theme.textTheme.headlineSmall),
+            Text(
+              rasi.label(locale),
+              style: BrandFonts.displayStyle(
+                context,
+                size: 28,
+                color: BrandPalette.of(context).text,
+              ),
+            ),
             Text(
               l.detailHouse(house),
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -173,7 +187,11 @@ class _HouseDetail extends ConsumerWidget {
               for (final g in grahas)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(g.graha.label(locale)),
+                  leading: _GrahaTile(g),
+                  title: Text(
+                    g.graha.label(locale),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   subtitle: Text(
                     '${g.degreeInRasi.toStringAsFixed(2)}° · '
                     '${g.nakshatra.label(AppLocale.of(context))} ${g.pada}',
@@ -201,33 +219,68 @@ class _Row extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+    final palette = BrandPalette.of(context);
+    // Label and value at either end of a divided row. Not a fixed-width label
+    // column: 120 px held "Rāśi" and not "நட்சத்திரம்".
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: palette.line)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 11),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(label, style: TextStyle(color: palette.muted)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: palette.text,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
+
+/// The graha's short form in a gold tile, as in the positions list.
+class _GrahaTile extends StatelessWidget {
+  const _GrahaTile(this.position);
+
+  final GrahaPosition position;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 44,
+    height: 44,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: context.semantic.accentSurface,
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Text(
+          position.graha.shortLabel(AppLocale.of(context)),
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: context.semantic.accent,
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class _Chip extends StatelessWidget {
@@ -239,9 +292,10 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(99),
+        color: colour.withValues(alpha: 0.12),
         border: Border.all(color: colour.withValues(alpha: 0.6)),
       ),
       child: Text(

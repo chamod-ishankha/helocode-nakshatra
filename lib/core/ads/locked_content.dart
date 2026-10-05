@@ -9,6 +9,8 @@ import '../../l10n/generated/app_localizations.dart';
 import '../purchases/entitlements.dart';
 import '../purchases/purchase_controller.dart';
 import '../theme/app_spacing.dart';
+import '../theme/brand_palette.dart';
+import '../ui/brand_button.dart';
 import '../theme/semantic_colors.dart';
 import '../purchases/nudges.dart';
 import 'rewarded_analytics.dart';
@@ -64,6 +66,10 @@ class LockedContent extends ConsumerStatefulWidget {
   /// The genuine content. Always built, even while locked — it is what is
   /// behind the blur, and a placeholder there would sell nothing.
   final Widget child;
+
+  /// On the prompt card, so a test can measure where it sits without
+  /// depending on what kind of box it is drawn with.
+  static const promptKey = ValueKey('locked-content-prompt');
 
   @override
   ConsumerState<LockedContent> createState() => _LockedContentState();
@@ -154,6 +160,7 @@ class _LockedContentState extends ConsumerState<LockedContent> {
         Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: _Prompt(
+            key: LockedContent.promptKey,
             title: widget.title,
             body: widget.body,
             busy: _busy,
@@ -181,6 +188,7 @@ class _LockedContentState extends ConsumerState<LockedContent> {
 /// it and the contrast is different on every screen.
 class _Prompt extends ConsumerWidget {
   const _Prompt({
+    super.key,
     required this.title,
     required this.body,
     required this.busy,
@@ -203,17 +211,26 @@ class _Prompt extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
 
-    return Card(
-      color: context.semantic.accentSurface,
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),
+    // An opaque card, not a tint: it sits on a blurred chart, and a
+    // translucent one let the blurred lines run through the words (KAN-83).
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: palette.background,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: semantic.accent),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 30,
+            offset: Offset(0, 12),
+          ),
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -221,13 +238,17 @@ class _Prompt extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.lock_outline, size: 18),
+                Icon(Icons.lock_outline, size: 18, color: semantic.accent),
                 const SizedBox(width: AppSpacing.sm),
                 Flexible(
                   child: Text(
                     title,
-                    style: theme.textTheme.titleSmall,
                     textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: palette.text,
+                    ),
                   ),
                 ),
               ],
@@ -236,58 +257,51 @@ class _Prompt extends ConsumerWidget {
             Text(
               body,
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              style: TextStyle(fontSize: 13, height: 1.5, color: palette.muted),
             ),
             const SizedBox(height: AppSpacing.md),
-            // Whichever doors are actually open. With both, the video leads;
-            // with only the purchase, it becomes the primary button rather
-            // than a text link floating under nothing.
             if (canWatch)
-              FilledButton.icon(
+              BrandButton(
+                tone: BrandButtonTone.reward,
+                expand: true,
                 onPressed: busy ? null : onWatch,
-                icon: busy
+                leading: busy
                     ? const SizedBox(
                         width: 16,
                         height: 16,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Icon(Icons.play_circle_outline),
-                label: Text(busy ? l.unlockLoading : l.unlockWatch),
+                    : const Icon(Icons.play_arrow_rounded),
+                label: busy ? l.unlockLoading : l.unlockWatch,
               ),
-            if (canBuy)
-              canWatch
-                  ? TextButton(
-                      onPressed: busy ? null : onBuy,
-                      child: Text(l.purchaseUpgrade),
-                    )
-                  : FilledButton(
-                      onPressed: busy ? null : onBuy,
-                      child: Text(l.purchaseUpgrade),
-                    ),
+            if (canBuy) ...[
+              if (canWatch) const SizedBox(height: AppSpacing.sm),
+              BrandButton(
+                tone: canWatch
+                    ? BrandButtonTone.outline
+                    : BrandButtonTone.primary,
+                expand: true,
+                onPressed: busy ? null : onBuy,
+                label: l.purchaseUpgrade,
+              ),
+            ],
             if (failed && canWatch) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
                 l.unlockFailed,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: context.semantic.inauspicious,
-                ),
+                style: TextStyle(fontSize: 13, color: semantic.inauspicious),
               ),
             ],
             // Sets the expectation that a watched video is a day pass, so
             // tomorrow's lock reads as the design rather than as the app
             // forgetting. Untrue of a purchase, so it goes with the video.
             if (canWatch) ...[
-              const SizedBox(height: AppSpacing.xs),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 l.unlockLastsToday,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 11,
-                ),
+                style: TextStyle(fontSize: 12, color: palette.muted),
               ),
             ],
           ],

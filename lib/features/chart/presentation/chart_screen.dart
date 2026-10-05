@@ -5,12 +5,15 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_card.dart';
+import '../../../core/ui/pill_segments.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'chart_sharing.dart';
 import 'dasha_timeline.dart';
-import 'graha_label.dart';
 import 'detail_sheets.dart';
 
 import 'dart:async';
@@ -129,6 +132,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
     final result = await ChartSharing.shareBoundary(
       _shareBoundary,
       fileStem: 'nakshatra-chart',
+      background: BrandPalette.of(context).background,
       text: caption,
     );
 
@@ -143,292 +147,428 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
     final profile = ref.watch(profileProvider);
     final result = ref.watch(chartProvider);
     final style = ref.watch(chartStyleProvider);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final l = L10n.of(context);
 
     if (profile == null || result == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        backgroundColor: palette.background,
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
 
+    final locale = AppLocale.of(context);
+    final caption = l.chartShareCaption(
+      profile.name,
+      DateFormat.yMMMd().format(profile.birthDate),
+      profile.place.label(locale),
+    );
+    // Date, time and place under the name, so the person can check at a
+    // glance that the chart is cast for what they entered. No time when it
+    // was not known: a printed 6:00 AM would read as a fact.
+    final details = [
+      DateFormat.yMMMd().format(profile.birthDate),
+      if (profile.birthTimeKnown)
+        DateFormat('h:mm a').format(DateTime(2000).add(profile.birthTime)),
+      profile.place.label(locale),
+    ].join(' · ');
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          profile.name.isEmpty ? L10n.of(context).chartTitle : profile.name,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => popOrHome(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.ios_share),
-            tooltip: L10n.of(context).chartShare,
-            onPressed: () => _share(
-              L10n.of(context).chartShareCaption(
-                profile.name,
-                DateFormat.yMMMd().format(profile.birthDate),
-                profile.place.label(AppLocale.of(context)),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: L10n.of(context).chartStartOver,
-            onPressed: () async {
-              await ref.read(profileProvider.notifier).clear();
-              if (context.mounted) context.go(Routes.onboarding);
-            },
-          ),
-        ],
-      ),
-      body: result.when(
-        failure: (f) => _ChartError(failure: f),
-        success: (chart) => ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            if (!profile.birthTimeKnown) ...[
-              InfoNotice(
-                text: L10n.of(context).chartApproximate,
-                icon: Icons.info_outline,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
-            _StyleSwitcher(style: style),
-            const SizedBox(height: AppSpacing.sm),
-            _VargaSwitcher(
-              varga: _varga,
-              onChanged: (v) => setState(() => _varga = v),
-            ),
-            // Above the chart, not on it: the lock underneath works exactly as
-            // it would without this (KAN-75). Almost always renders nothing.
-            const ProNudge(
-              key: ValueKey('chart-nudge'),
-              triggers: [NudgeTrigger.navamsa, NudgeTrigger.adWatches],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            ShareableChart(
-              boundaryKey: _shareBoundary,
-              caption: L10n.of(context).chartShareCaption(
-                profile.name,
-                DateFormat.yMMMd().format(profile.birthDate),
-                profile.place.label(AppLocale.of(context)),
-              ),
-              child: switch (_varga) {
-                _Varga.rasi => _drawn(chart, style, profile.birthTimeKnown),
-                // Inside the share boundary on purpose: a screenshot of a
-                // chart the user has not opened yet should be as blurred as
-                // the screen is.
-                _Varga.navamsa => LockedContent(
-                  unlock: RewardedUnlock.navamsaChart,
-                  feature: PaidFeature.divisionalCharts,
-                  title: L10n.of(context).unlockNavamsaTitle,
-                  body: L10n.of(context).unlockNavamsaBody,
-                  child: _drawn(
-                    Varga.navamsa(chart),
-                    style,
-                    profile.birthTimeKnown,
-                  ),
+      backgroundColor: palette.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: palette.backdrop),
+        child: SafeArea(
+          bottom: false,
+          child: result.when(
+            failure: (f) => _ChartError(failure: f),
+            success: (chart) => ListView(
+              padding: const EdgeInsets.fromLTRB(18, 8, 18, 32),
+              children: [
+                _Header(
+                  name: profile.name.isEmpty ? l.chartTitle : profile.name,
+                  details: details,
+                  onBack: () => popOrHome(context),
+                  onShare: () => _share(caption),
                 ),
-              },
-            ),
-            if (_varga == _Varga.navamsa) ...[
-              const SizedBox(height: AppSpacing.md),
-              // The D9 magnifies any error in the birth time: one navāṁśa is
-              // 3°20' of the Moon's travel, which is about thirteen minutes.
-              // The rāśi chart survives a rough time; this one does not.
-              if (!profile.birthTimeKnown) ...[
-                InfoNotice(
-                  text: L10n.of(context).chartNavamsaApproximate,
-                  tone: NoticeTone.caution,
+                const SizedBox(height: AppSpacing.lg),
+                if (!profile.birthTimeKnown) ...[
+                  InfoNotice(
+                    text: l.chartApproximate,
+                    icon: Icons.info_outline,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+                PillSegments<ChartStyle>(
+                  segments: [
+                    for (final s in ChartStyle.values)
+                      (value: s, label: s.label(l)),
+                  ],
+                  selected: style,
+                  onChanged: (s) =>
+                      ref.read(chartStyleProvider.notifier).set(s),
                 ),
                 const SizedBox(height: AppSpacing.sm),
+                // Its own row rather than four segments beside the style: the
+                // two choices are independent — a North Indian D9 is a normal
+                // thing to want — and one control would imply alternatives.
+                PillSegments<_Varga>(
+                  segments: [
+                    for (final v in _Varga.values)
+                      (value: v, label: v.label(l)),
+                  ],
+                  selected: _varga,
+                  onChanged: (v) => setState(() => _varga = v),
+                ),
+                // Above the chart, not on it: the lock underneath works
+                // exactly as it would without this (KAN-75). Almost always
+                // renders nothing.
+                const ProNudge(
+                  key: ValueKey('chart-nudge'),
+                  triggers: [NudgeTrigger.navamsa, NudgeTrigger.adWatches],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                ShareableChart(
+                  boundaryKey: _shareBoundary,
+                  caption: caption,
+                  child: switch (_varga) {
+                    _Varga.rasi => _drawn(chart, style, profile.birthTimeKnown),
+                    // Inside the share boundary on purpose: a screenshot of a
+                    // chart the user has not opened yet should be as blurred
+                    // as the screen is.
+                    _Varga.navamsa => LockedContent(
+                      unlock: RewardedUnlock.navamsaChart,
+                      feature: PaidFeature.divisionalCharts,
+                      title: l.unlockNavamsaTitle,
+                      body: l.unlockNavamsaBody,
+                      child: _drawn(
+                        Varga.navamsa(chart),
+                        style,
+                        profile.birthTimeKnown,
+                      ),
+                    ),
+                  },
+                ),
+                if (_varga == _Varga.navamsa) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  // The D9 magnifies any error in the birth time: one navāṁśa
+                  // is 3°20' of the Moon's travel, which is about thirteen
+                  // minutes. The rāśi chart survives a rough time; this one
+                  // does not.
+                  if (!profile.birthTimeKnown) ...[
+                    InfoNotice(
+                      text: l.chartNavamsaApproximate,
+                      tone: NoticeTone.caution,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
+                  QuietNotice(text: l.reportNavamsaNote),
+                ],
+                const SizedBox(height: AppSpacing.lg),
+                _SummaryCard(
+                  chart: chart,
+                  approximate: !profile.birthTimeKnown,
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                _SectionTitle(l.chartPositions),
+                const SizedBox(height: AppSpacing.md),
+                _PositionsList(chart: chart),
+                const SizedBox(height: AppSpacing.xl),
+                RunningDashaLink(onTap: () => context.push(Routes.dasha)),
+                const SizedBox(height: AppSpacing.xl),
+                // Directly under everything the report will contain, so what
+                // is being sold is on screen above the button that sells it.
+                ReportTile(chart: chart),
+                const SizedBox(height: AppSpacing.xl),
+                Text(
+                  l.chartAyanamsa(chart.ayanamsa.toStringAsFixed(4)),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: palette.muted),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l.entertainmentOnly,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: palette.muted),
+                ),
               ],
-              QuietNotice(text: L10n.of(context).reportNavamsaNote),
-            ],
-            const SizedBox(height: AppSpacing.xl),
-            _SummaryCard(chart: chart),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              L10n.of(context).chartPositions,
-              style: theme.textTheme.titleMedium,
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _PositionsTable(chart: chart),
-            const SizedBox(height: AppSpacing.xl),
-            DashaTimeline(birthTimeKnown: profile.birthTimeKnown),
-            const SizedBox(height: AppSpacing.xl),
-            // Directly under everything the report will contain, so what is
-            // being sold is on screen above the button that sells it.
-            ReportTile(chart: chart),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              L10n.of(context).chartAyanamsa(chart.ayanamsa.toStringAsFixed(4)),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xxl),
-            Text(
-              L10n.of(context).entertainmentOnly,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StyleSwitcher extends ConsumerWidget {
-  const _StyleSwitcher({required this.style});
-
-  final ChartStyle style;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SegmentedButton<ChartStyle>(
-      segments: [
-        for (final s in ChartStyle.values)
-          ButtonSegment(value: s, label: Text(s.label(L10n.of(context)))),
-      ],
-      selected: {style},
-      showSelectedIcon: false,
-      onSelectionChanged: (selection) =>
-          ref.read(chartStyleProvider.notifier).set(selection.first),
-    );
-  }
-}
-
-/// Rāśi or navāṁśa.
-///
-/// Its own row rather than four segments beside the style buttons: the two
-/// choices are independent — a North Indian D9 is a normal thing to want — and
-/// folding them into one control would imply they are alternatives.
-class _VargaSwitcher extends StatelessWidget {
-  const _VargaSwitcher({required this.varga, required this.onChanged});
-
-  final _Varga varga;
-  final ValueChanged<_Varga> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SegmentedButton<_Varga>(
-      segments: [
-        for (final v in _Varga.values)
-          ButtonSegment(value: v, label: Text(v.label(L10n.of(context)))),
-      ],
-      selected: {varga},
-      showSelectedIcon: false,
-      onSelectionChanged: (selection) => onChanged(selection.first),
-    );
-  }
-}
-
-class _SummaryCard extends StatelessWidget {
-  const _SummaryCard({required this.chart});
-  final BirthChart chart;
-
-  @override
-  Widget build(BuildContext context) {
-    final moon = chart[Graha.moon];
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _row(
-              context,
-              L10n.of(context).chartLagna,
-              chart.lagnaRasi.label(AppLocale.of(context)),
-            ),
-            _row(
-              context,
-              L10n.of(context).chartMoonSign,
-              moon.rasi.label(AppLocale.of(context)),
-            ),
-            _row(
-              context,
-              L10n.of(context).chartBirthNakshatra,
-              L10n.of(context).chartNakshatraPada(
-                chart.birthNakshatra.label(AppLocale.of(context)),
-                moon.pada,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _row(BuildContext context, String label, String value) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.bodyMedium),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: context.semantic.accent,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The person's name, what the chart is cast for, and the actions.
+class _Header extends StatelessWidget {
+  const _Header({
+    required this.name,
+    required this.details,
+    required this.onBack,
+    required this.onShare,
+  });
+
+  final String name;
+  final String details;
+  final VoidCallback onBack;
+  final VoidCallback onShare;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    final l = L10n.of(context);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RoundIconButton(
+          icon: Icons.arrow_back_rounded,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: onBack,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: BrandFonts.displayStyle(
+                  context,
+                  size: 26,
+                  color: palette.text,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                details,
+                style: TextStyle(fontSize: 13, color: palette.muted),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        RoundIconButton(
+          icon: Icons.ios_share_rounded,
+          tooltip: l.chartShare,
+          onPressed: onShare,
+        ),
       ],
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 2),
+    child: Text(
+      text,
+      style: BrandFonts.displayStyle(
+        context,
+        size: 20,
+        color: BrandPalette.of(context).text,
+      ),
     ),
   );
 }
 
-class _PositionsTable extends StatelessWidget {
-  const _PositionsTable({required this.chart});
+class _SummaryCard extends StatelessWidget {
+  const _SummaryCard({required this.chart, required this.approximate});
+  final BirthChart chart;
+
+  /// Birth time unknown: the lagna is a convention, and says so here as well
+  /// as on the chart.
+  final bool approximate;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L10n.of(context);
+    final locale = AppLocale.of(context);
+    final moon = chart[Graha.moon];
+    return BrandCard(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+      child: Column(
+        children: [
+          _row(
+            context,
+            l.chartLagna,
+            approximate
+                ? '${chart.lagnaRasi.label(locale)} · ${l.chartApproximateShort}'
+                : chart.lagnaRasi.label(locale),
+            first: true,
+          ),
+          _row(context, l.chartMoonSign, moon.rasi.label(locale)),
+          _row(
+            context,
+            l.chartBirthNakshatra,
+            l.chartNakshatraPada(chart.birthNakshatra.label(locale), moon.pada),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _row(
+    BuildContext context,
+    String label,
+    String value, {
+    bool first = false,
+  }) {
+    final palette = BrandPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: first ? null : Border(top: BorderSide(color: palette.line)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(label, style: TextStyle(color: palette.muted)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: context.semantic.accent,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One row per graha, in place of the old horizontally scrolling table.
+///
+/// The table had six columns, which on a 360 dp phone meant scrolling sideways
+/// to see the house, and in Tamil the headers alone were wider than the screen.
+/// A row carries the same six facts: name, sign, degree, nakṣatra and pada on
+/// the left, house on the right.
+class _PositionsList extends StatelessWidget {
+  const _PositionsList({required this.chart});
   final BirthChart chart;
 
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
+    final locale = AppLocale.of(context);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final rows = [for (final g in Graha.values) ?chart.positions[g]];
 
-    return Card(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          // The rows are tappable so a reader can open the detail from the
-          // row they are already looking at, but onSelectChanged makes
-          // DataTable add a checkbox column, and those checkboxes select
-          // nothing — there is no bulk action to perform.
-          showCheckboxColumn: false,
-          columnSpacing: 18,
-          headingRowHeight: 40,
-          dataRowMinHeight: 38,
-          dataRowMaxHeight: 46,
-          columns: [
-            DataColumn(label: Text(l.chartColumnGraha)),
-            DataColumn(label: Text(l.chartColumnRasi)),
-            DataColumn(label: Text(l.chartColumnDegree)),
-            DataColumn(label: Text(l.chartColumnNakshatra)),
-            DataColumn(label: Text(l.chartColumnPada)),
-            DataColumn(label: Text(l.chartColumnHouse)),
-          ],
-          rows: [
-            for (final g in Graha.values)
-              if (chart.positions[g] case final p?)
-                DataRow(
-                  // The same detail as tapping the chart. Someone reading the
-                  // table is already looking at the row they want, and
-                  // sending them back to a 70 px cell to open it would be
-                  // perverse.
-                  onSelectChanged: (_) => showGrahaDetail(context, p),
-                  cells: [
-                    DataCell(GrahaLabel(position: p, abbreviated: false)),
-                    DataCell(Text(p.rasi.label(AppLocale.of(context)))),
-                    DataCell(Text('${p.degreeInRasi.toStringAsFixed(2)}°')),
-                    DataCell(Text(p.nakshatra.label(AppLocale.of(context)))),
-                    DataCell(Text('${p.pada}')),
-                    DataCell(Text('${p.house}')),
-                  ],
+    return BrandCard(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      child: Column(
+        children: [
+          for (var i = 0; i < rows.length; i++)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: i == 0
+                    ? null
+                    : Border(top: BorderSide(color: palette.line)),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                // The same detail as tapping the chart: someone reading the
+                // list is already on the row they want.
+                onTap: () => showGrahaDetail(context, rows[i]),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: semantic.accentSurface,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Text(
+                              rows[i].graha.shortLabel(locale),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: semantic.accent,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // The name, then "Retrograde" as a word beside
+                            // it: in a list there is room to say it rather
+                            // than mark it, and the word survives a reader who
+                            // cannot tell the red from the text.
+                            Text.rich(
+                              TextSpan(
+                                text: rows[i].graha.label(locale),
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: palette.text,
+                                ),
+                                children: [
+                                  if (rows[i].isRetrograde)
+                                    TextSpan(
+                                      text: '  ${l.detailRetrograde}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: semantic.inauspicious,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              [
+                                rows[i].rasi.label(locale),
+                                '${rows[i].degreeInRasi.toStringAsFixed(2)}°',
+                                '${rows[i].nakshatra.label(locale)} ${rows[i].pada}',
+                              ].join(' · '),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: palette.muted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        l.detailHouse(rows[i].house),
+                        style: TextStyle(fontSize: 12, color: palette.muted),
+                      ),
+                    ],
+                  ),
                 ),
-          ],
-        ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -440,23 +580,33 @@ class _ChartError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, size: 48),
+            Icon(
+              Icons.warning_amber_rounded,
+              size: 48,
+              color: context.semantic.inauspicious,
+            ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               L10n.of(context).chartCalculationFailed,
-              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+              style: BrandFonts.displayStyle(
+                context,
+                size: 22,
+                color: palette.text,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               failure.message,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: TextStyle(fontSize: 13, color: palette.muted),
             ),
           ],
         ),

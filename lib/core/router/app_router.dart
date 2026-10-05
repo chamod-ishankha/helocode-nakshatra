@@ -7,6 +7,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../features/account/presentation/account_screen.dart';
 import '../../features/calendar/presentation/calendar_screen.dart';
 import '../../features/chart/presentation/chart_screen.dart';
+import '../../features/chart/presentation/dasha_screen.dart';
 import '../../features/compatibility/presentation/compatibility_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/launch/presentation/welcome_screen.dart';
@@ -46,6 +47,10 @@ abstract final class Routes {
 
   static const String profiles = '/profiles';
   static const String chart = '/chart';
+
+  /// The full daśā timeline, opened from the running-period card on the
+  /// chart (KAN-83).
+  static const String dasha = '/dasha';
   static const String account = '/account';
 
   // Land in KAN-27, KAN-29 and KAN-30.
@@ -150,6 +155,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.chart,
         name: 'chart',
         builder: (context, state) => const ChartScreen(),
+      ),
+      GoRoute(
+        path: Routes.dasha,
+        name: 'dasha',
+        builder: (context, state) => const DashaScreen(),
       ),
       GoRoute(
         path: Routes.account,

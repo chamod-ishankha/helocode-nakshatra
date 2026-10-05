@@ -49,12 +49,13 @@ class GrahaLabel extends StatelessWidget {
   final GrahaPosition position;
   final TextStyle? style;
 
-  /// False in the positions table, which has room for the graha's full name.
+  /// False where there is room for the graha's full name.
   ///
-  /// The table is why this flag exists rather than a second widget: it had its
-  /// own copy of the notation and drew a bare `℞` long after both charts had
-  /// stopped, which is the drift this widget was created to prevent — it was
-  /// just never told about the third caller.
+  /// The old positions table is why this flag exists rather than a second
+  /// widget: it had its own copy of the notation and drew a bare `℞` long after
+  /// both charts had stopped. The redesigned list (KAN-83) writes
+  /// "Retrograde" out as a word instead of marking it, so it no longer uses
+  /// this; anything that marks a full name should come through here.
   final bool abbreviated;
 
   @override

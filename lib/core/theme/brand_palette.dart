@@ -71,7 +71,9 @@ class BrandPalette {
 
   static const light = BrandPalette(
     background: Color(0xFFFBF6EC),
-    backgroundDeep: Color(0xFFEDE2CB),
+    // Barely deeper than the top. A stronger fall-off read as tan by the
+    // bottom of a long screen, where the mock stays parchment throughout.
+    backgroundDeep: Color(0xFFF6EFE2),
     surface: Color(0xBFFFFFFF),
     surfaceHigh: Color(0xFFFFFFFF),
     line: Color(0x1F3C285A),

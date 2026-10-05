@@ -324,7 +324,10 @@ void main() {
     expect(boundary, findsOneWidget);
 
     final key = tester.widget<ShareableChart>(boundary).boundaryKey;
-    final result = await ChartSharing.captureBoundary(key);
+    final result = await ChartSharing.captureBoundary(
+      key,
+      background: Colors.white,
+    );
 
     expect(result.isSuccess, isTrue, reason: '${result.failureOrNull}');
     final bytes = result.valueOrNull!;

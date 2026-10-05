@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../theme/brand_palette.dart';
 
-/// The redesign's primary action: a violet pill (KAN-80).
+/// What a [BrandButton] is for, which decides how loud it is.
+enum BrandButtonTone {
+  /// The screen's one decisive action: violet.
+  primary,
+
+  /// Earning something by watching a video: gold, the colour of every
+  /// rewarded unlock, so "watch" reads the same wherever it appears.
+  reward,
+
+  /// The quieter second choice beside one of the others.
+  outline,
+}
+
+/// The redesign's button: a pill (KAN-80).
 ///
 /// Never a fixed width or a single line. "Get Pro yearly" is three words in
 /// English and runs to two lines in Tamil, so the label wraps and the pill
@@ -14,6 +27,8 @@ class BrandButton extends StatelessWidget {
     required this.onPressed,
     this.expand = false,
     this.trailing,
+    this.leading,
+    this.tone = BrandButtonTone.primary,
   });
 
   final String label;
@@ -25,21 +40,59 @@ class BrandButton extends StatelessWidget {
   /// A small glyph after the label, such as an arrow.
   final IconData? trailing;
 
+  /// A widget before the label: an icon, or a spinner while busy.
+  final Widget? leading;
+
+  final BrandButtonTone tone;
+
   @override
   Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
     final dark = Theme.of(context).brightness == Brightness.dark;
     final enabled = onPressed != null;
-    // Dark text on the light violet in the dark theme, light text on the deep
-    // violet in the light one: both clear 7:1.
-    final foreground = dark ? const Color(0xFF1A1033) : Colors.white;
-    final gradient = dark
-        ? const [Color(0xFFC9A8F2), Color(0xFF8F6CC8)]
-        : const [Color(0xFF7D5DB0), Color(0xFF55397F)];
+
+    // Each pairing clears 7:1 between label and fill.
+    final (
+      Color foreground,
+      Gradient? gradient,
+      Color? fill,
+      Color? border,
+    ) = switch (tone) {
+      BrandButtonTone.primary => (
+        dark ? const Color(0xFF1A1033) : Colors.white,
+        LinearGradient(
+          colors: dark
+              ? const [Color(0xFFC9A8F2), Color(0xFF8F6CC8)]
+              : const [Color(0xFF7D5DB0), Color(0xFF55397F)],
+        ),
+        null,
+        null,
+      ),
+      BrandButtonTone.reward => (
+        const Color(0xFF241A05),
+        const LinearGradient(colors: [Color(0xFFE6BE6A), Color(0xFFC2902F)]),
+        null,
+        null,
+      ),
+      BrandButtonTone.outline => (
+        palette.text,
+        null,
+        palette.surfaceHigh,
+        palette.line,
+      ),
+    };
 
     final content = Row(
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        if (leading != null) ...[
+          IconTheme(
+            data: IconThemeData(color: foreground, size: 18),
+            child: leading!,
+          ),
+          const SizedBox(width: 8),
+        ],
         Flexible(
           child: Text(
             label,
@@ -67,16 +120,22 @@ class BrandButton extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            gradient: LinearGradient(colors: gradient),
-            boxShadow: [
-              BoxShadow(
-                color: BrandPalette.of(
-                  context,
-                ).violet.withValues(alpha: dark ? 0.35 : 0.25),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
+            gradient: gradient,
+            color: fill,
+            border: border == null ? null : Border.all(color: border),
+            boxShadow: tone == BrandButtonTone.outline
+                ? null
+                : [
+                    BoxShadow(
+                      color:
+                          (tone == BrandButtonTone.reward
+                                  ? const Color(0xFFC2902F)
+                                  : palette.violet)
+                              .withValues(alpha: dark ? 0.35 : 0.25),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
           ),
           child: Material(
             type: MaterialType.transparency,

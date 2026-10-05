@@ -1,4 +1,5 @@
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -29,9 +30,10 @@ abstract final class ChartSharing {
   static Future<Result<void>> shareBoundary(
     GlobalKey boundaryKey, {
     required String fileStem,
+    required Color background,
     String? text,
   }) async {
-    final png = await captureBoundary(boundaryKey);
+    final png = await captureBoundary(boundaryKey, background: background);
     if (png case FailureResult(:final failure)) {
       return Result.failure(failure);
     }
@@ -58,9 +60,14 @@ abstract final class ChartSharing {
   /// Split out from [shareBoundary] so the part that can actually be wrong —
   /// finding the boundary, rasterising it, encoding it — is testable. The
   /// share sheet itself is a system UI that a test cannot assert against.
+  /// The boundary is transparent on screen, so the chart sits on the page's
+  /// own gradient; [background] is laid under it here instead. A
+  /// RepaintBoundary captures transparency as black, and a shared chart on a
+  /// dark theme would otherwise be unreadable in a light chat window.
   static Future<Result<Uint8List>> captureBoundary(
-    GlobalKey boundaryKey,
-  ) async {
+    GlobalKey boundaryKey, {
+    required Color background,
+  }) async {
     try {
       final object = boundaryKey.currentContext?.findRenderObject();
       if (object is! RenderRepaintBoundary) {
@@ -69,7 +76,19 @@ abstract final class ChartSharing {
         );
       }
 
-      final image = await object.toImage(pixelRatio: _pixelRatio);
+      final drawn = await object.toImage(pixelRatio: _pixelRatio);
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder)
+        ..drawRect(
+          Rect.fromLTWH(0, 0, drawn.width.toDouble(), drawn.height.toDouble()),
+          Paint()..color = background,
+        )
+        ..drawImage(drawn, Offset.zero, Paint());
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(drawn.width, drawn.height);
+      drawn.dispose();
+      picture.dispose();
+
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
 
@@ -109,41 +128,35 @@ class ShareableChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
 
+    // Transparent: the background goes under the image at capture time
+    // (captureBoundary), so on screen the chart sits on the page rather than
+    // in a box of its own.
     return RepaintBoundary(
       key: boundaryKey,
-      child: ColoredBox(
-        // Painted explicitly: a RepaintBoundary captures transparency as
-        // black, so a shared chart on a dark theme would otherwise be
-        // unreadable in a light chat window.
-        color: theme.colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              child,
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                caption,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            child,
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              caption,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(color: palette.muted),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              // Brand, deliberately not localised.
+              'Nakshatra · HeloCode Labs',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: palette.muted.withValues(alpha: 0.7),
               ),
-              const SizedBox(height: 2),
-              Text(
-                // Brand, deliberately not localised.
-                'Nakshatra · HeloCode Labs',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(
-                    alpha: 0.7,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

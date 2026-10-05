@@ -12,11 +12,15 @@ class RoundIconButton extends StatelessWidget {
     required this.icon,
     required this.tooltip,
     required this.onPressed,
+    this.dimension = 40,
   });
 
   final IconData icon;
   final String tooltip;
   final VoidCallback? onPressed;
+
+  /// 40 by default; 32 where it closes something small, like a nudge.
+  final double dimension;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +34,8 @@ class RoundIconButton extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           child: SizedBox.square(
-            dimension: 40,
-            child: Icon(icon, size: 20, color: palette.text),
+            dimension: dimension,
+            child: Icon(icon, size: dimension / 2, color: palette.text),
           ),
         ),
       ),

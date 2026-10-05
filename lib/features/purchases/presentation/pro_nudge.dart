@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/purchases/nudges.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/semantic_colors.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_card.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'paywall.dart';
 
@@ -90,7 +92,6 @@ class _ProNudgeState extends ConsumerState<ProNudge> {
     if (trigger == null) return const SizedBox.shrink();
 
     final l = L10n.of(context);
-    final theme = Theme.of(context);
     final store = ref.read(nudgeStoreProvider);
 
     final text = switch (trigger) {
@@ -103,39 +104,53 @@ class _ProNudgeState extends ConsumerState<ProNudge> {
       ),
     };
 
+    final palette = BrandPalette.of(context);
+
+    // Violet, the paid colour (KAN-93). It was a gold strip, the same gold as
+    // the cards that a video opens, so "watch to see this" and "pay to never
+    // see ads" looked like one offer.
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(14, 6, 4, 6),
-        decoration: BoxDecoration(
-          color: context.semantic.accentSurface,
-          borderRadius: BorderRadius.circular(10),
-        ),
+      child: BrandCard(
+        tone: BrandCardTone.paid,
+        padding: const EdgeInsets.fromLTRB(18, 14, 14, 6),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(text, style: theme.textTheme.bodyMedium),
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.45,
+                        color: palette.text,
+                      ),
+                    ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 18),
+                const SizedBox(width: 8),
+                RoundIconButton(
+                  icon: Icons.close,
+                  dimension: 32,
                   tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                   onPressed: () => _answer(trigger, tapped: false),
                 ),
               ],
             ),
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: TextButton(
-                onPressed: () => _answer(trigger, tapped: true),
-                child: Text(l.nudgeSeePro),
+            TextButton(
+              onPressed: () => _answer(trigger, tapped: true),
+              style: TextButton.styleFrom(
+                foregroundColor: palette.violet,
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(48, 40),
+                textStyle: const TextStyle(fontWeight: FontWeight.w600),
               ),
+              child: Text(l.nudgeSeePro),
             ),
           ],
         ),

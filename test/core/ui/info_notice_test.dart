@@ -106,21 +106,30 @@ void main() {
       });
     }
 
-    testWidgets('a caution notice is outlined, never filled', (tester) async {
-      // A flat tint of the inauspicious red over a light surface reads as
-      // muddy brown — hit once already on the rāhu card. The fix was a plain
-      // surface with a rule around it, and this keeps that.
-      await pump(
-        tester,
-        const InfoNotice(text: 'Careful', tone: NoticeTone.caution),
-        brightness: Brightness.light,
-      );
+    testWidgets('a caution notice is outlined, and never a see-through red', (
+      tester,
+    ) async {
+      // A translucent red over a light surface reads as muddy brown — hit
+      // once already on the rāhu card. The redesign fills caution notices
+      // (KAN-93), but only with the inauspicious surface, a tint mixed for
+      // each theme and fully opaque, and always inside a full outline.
+      for (final brightness in Brightness.values) {
+        await pump(
+          tester,
+          const InfoNotice(text: 'Careful', tone: NoticeTone.caution),
+          brightness: brightness,
+        );
 
-      final box = tester.widget<Container>(find.byType(Container));
-      final decoration = box.decoration! as BoxDecoration;
+        final box = tester.widget<Container>(find.byType(Container));
+        final decoration = box.decoration! as BoxDecoration;
 
-      expect(decoration.color, isNull, reason: 'caution must not be filled');
-      expect(decoration.border, isNotNull);
+        expect(decoration.border, isNotNull, reason: '$brightness');
+        expect(
+          decoration.color?.a,
+          anyOf(isNull, 1.0),
+          reason: '$brightness: caution filled with a translucent colour',
+        );
+      }
     });
   });
 

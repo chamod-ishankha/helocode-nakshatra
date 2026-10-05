@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_spacing.dart';
+import '../theme/brand_palette.dart';
 import '../theme/semantic_colors.dart';
 
 /// What a notice is telling the reader (KAN-51).
@@ -48,7 +49,6 @@ class InfoNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final caution = tone == NoticeTone.caution;
     final colour = caution
         ? context.semantic.inauspicious
@@ -56,31 +56,31 @@ class InfoNotice extends StatelessWidget {
 
     final mark = icon ?? (caution ? Icons.warning_amber_rounded : null);
 
+    final palette = BrandPalette.of(context);
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        // A flat tint of the inauspicious red over a light surface reads as
-        // muddy brown — hit once already on the rāhu card. Caution notices are
-        // outlined instead, and keep the surface underneath them.
-        color: caution ? null : context.semantic.accentSurface,
-        border: caution
-            ? Border.all(color: colour.withValues(alpha: 0.5))
-            : null,
-        borderRadius: BorderRadius.circular(10),
+        // Caution is outlined in full and on its own wash, info is a gold wash
+        // with no edge (KAN-93). The inauspicious surface is a tint mixed for
+        // each theme, not a translucent red over whatever lies beneath, so it
+        // does not go brown on parchment the way the old flat tint did.
+        color: caution
+            ? context.semantic.inauspiciousSurface
+            : context.semantic.accentSurface,
+        border: caution ? Border.all(color: colour) : null,
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (mark != null) ...[
-            Icon(mark, size: 18, color: colour),
-            const SizedBox(width: AppSpacing.sm),
+            Icon(mark, size: 20, color: colour),
+            const SizedBox(width: 10),
           ],
           Expanded(
             child: Text(
               text,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: caution ? null : theme.colorScheme.onSurfaceVariant,
-              ),
+              style: TextStyle(fontSize: 13, height: 1.45, color: palette.text),
             ),
           ),
         ],

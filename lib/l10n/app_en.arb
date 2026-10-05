@@ -838,5 +838,7 @@
   "homeDayArc": "Daylight from {sunrise} to {sunset}, with rāhu kālaya marked",
   "@homeDayArc": {"description": "Screen-reader label for the day arc on Home.", "placeholders": {"sunrise": {"type": "String"}, "sunset": {"type": "String"}}},
   "homePreviousDay": "Previous day",
-  "homeNextDay": "Next day"
+  "homeNextDay": "Next day",
+  "reportShare": "Share the report",
+  "@reportShare": {"description": "Button on the report tile once the report is owned."}
 }

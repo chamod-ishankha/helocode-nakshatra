@@ -1635,4 +1635,7 @@ class L10nTa extends L10n {
 
   @override
   String get homeNextDay => 'அடுத்த நாள்';
+
+  @override
+  String get reportShare => 'அறிக்கையைப் பகிரவும்';
 }

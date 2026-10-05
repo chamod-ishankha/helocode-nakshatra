@@ -29,7 +29,6 @@ Future<void> showPartnerForm(BuildContext context, WidgetRef ref) =>
       useRootNavigator: true,
       isScrollControlled: true,
       showDragHandle: true,
-      backgroundColor: BrandPalette.of(context).background,
       builder: (_) => const _PartnerForm(),
     );
 

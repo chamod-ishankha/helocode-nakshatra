@@ -138,7 +138,6 @@ Future<void> showPaywall(
     isScrollControlled: true,
     useSafeArea: true,
     shape: const RoundedRectangleBorder(),
-    backgroundColor: BrandPalette.of(context).background,
     builder: (context) => _PaywallSheet(reason: reason),
   );
 

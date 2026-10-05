@@ -24,7 +24,6 @@ Future<void> showGrahaDetail(BuildContext context, GrahaPosition position) =>
       // Over the tab bar, not under it (KAN-92).
       useRootNavigator: true,
       showDragHandle: true,
-      backgroundColor: BrandPalette.of(context).background,
       builder: (_) => _GrahaDetail(position: position),
     );
 
@@ -43,7 +42,6 @@ Future<void> showHouseDetail(
   // Over the tab bar, not under it (KAN-92).
   useRootNavigator: true,
   showDragHandle: true,
-  backgroundColor: BrandPalette.of(context).background,
   builder: (_) => _HouseDetail(rasi: rasi, house: house, grahas: grahas),
 );
 

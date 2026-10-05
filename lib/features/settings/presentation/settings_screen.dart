@@ -447,7 +447,6 @@ class _ChoiceTile<T> extends StatelessWidget {
       // Over the tab bar, not under it (KAN-92).
       useRootNavigator: true,
       showDragHandle: true,
-      backgroundColor: BrandPalette.of(context).background,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

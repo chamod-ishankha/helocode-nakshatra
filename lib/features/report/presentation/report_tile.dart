@@ -96,16 +96,60 @@ class _ReportTileState extends ConsumerState<ReportTile> {
     }
 
     final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+
+    // Counted rather than spun. Building six A4 pages takes a few seconds on
+    // a cheap phone, and a bare spinner for that long reads as a hang — which
+    // is when people kill the app halfway through the thing they just paid
+    // for. A plain card while it works: it is neither offer nor possession.
+    if (_busy) {
+      return BrandCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l.reportPreparing,
+                    style: TextStyle(fontSize: 14, color: palette.text),
+                  ),
+                ),
+                if (_total > 0)
+                  Text(
+                    l.reportPageOf(_done, _total),
+                    style: TextStyle(fontSize: 13, color: palette.muted),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(99),
+              child: LinearProgressIndicator(
+                value: _total == 0 ? null : _done / _total,
+                minHeight: 6,
+                color: semantic.accent,
+                backgroundColor: palette.line,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Gold while it is an offer, green once it is yours (KAN-93).
     return BrandCard(
-      tone: BrandCardTone.gold,
+      tone: owned ? BrandCardTone.free : BrandCardTone.gold,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
               Icon(
-                Icons.picture_as_pdf_outlined,
-                color: context.semantic.accent,
+                owned
+                    ? Icons.description_outlined
+                    : Icons.picture_as_pdf_outlined,
+                color: owned ? semantic.auspicious : semantic.accent,
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -129,25 +173,11 @@ class _ReportTileState extends ConsumerState<ReportTile> {
           BrandButton(
             tone: owned ? BrandButtonTone.outline : BrandButtonTone.reward,
             expand: true,
-            onPressed: _busy ? null : _tap,
-            leading: _busy
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(owned ? Icons.ios_share : Icons.lock_open),
-            // Counted rather than spun. Building six A4 pages takes a few
-            // seconds on a cheap phone, and a bare spinner for that long
-            // reads as a hang — which is when people kill the app halfway
-            // through the thing they just paid for.
-            label: _busy
-                ? (_total == 0
-                      ? l.reportPreparing
-                      : l.reportPageOf(_done, _total))
-                // Not "Go Pro": no subscription grants this, so a Pro label
-                // here sells the wrong product.
-                : (owned ? l.reportGenerate : l.reportUnlock),
+            onPressed: _tap,
+            leading: Icon(owned ? Icons.ios_share : Icons.lock_open),
+            // Not "Go Pro": no subscription grants this, so a Pro label here
+            // sells the wrong product.
+            label: owned ? l.reportShare : l.reportUnlock,
           ),
         ],
       ),

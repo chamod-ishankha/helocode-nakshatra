@@ -83,8 +83,9 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
     final semantic = context.semantic;
     final canBuy = ref.watch(purchasesAvailableProvider);
 
-    // The same card as the lock prompt over a blurred chart (KAN-83), so a
-    // gold card with a gold button means "watch to open" wherever it appears.
+    // Gold is "earned" in the one lock hierarchy (KAN-93): the same card as
+    // the lock prompt over a blurred chart, so a gold card with a gold button
+    // means "watch to open" wherever it appears. Paid is violet, free green.
     return BrandCard(
       tone: BrandCardTone.gold,
       child: Column(
@@ -140,20 +141,37 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
               label: l.purchaseUpgrade,
             ),
           ],
-          if (_failed) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l.unlockFailed,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: semantic.inauspicious),
-            ),
-          ],
           const SizedBox(height: AppSpacing.sm),
           Text(
             l.unlockLastsToday,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: palette.muted),
           ),
+          if (_failed) ...[
+            const SizedBox(height: AppSpacing.sm),
+            // A warning mark as well as the red: the line has to read as a
+            // problem to someone who cannot tell the red from the gold.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.warning_amber_rounded,
+                  size: 18,
+                  color: semantic.inauspicious,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l.unlockFailed,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: semantic.inauspicious,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

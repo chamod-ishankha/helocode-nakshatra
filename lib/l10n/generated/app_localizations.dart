@@ -2912,6 +2912,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Next day'**
   String get homeNextDay;
+
+  /// Button on the report tile once the report is owned.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the report'**
+  String get reportShare;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

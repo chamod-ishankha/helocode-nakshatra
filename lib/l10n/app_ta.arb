@@ -468,5 +468,6 @@
   "yesterdayLower": "நேற்று",
   "homeDayArc": "{sunrise} முதல் {sunset} வரை பகல், ராகு காலம் குறிக்கப்பட்டுள்ளது",
   "homePreviousDay": "முந்தைய நாள்",
-  "homeNextDay": "அடுத்த நாள்"
+  "homeNextDay": "அடுத்த நாள்",
+  "reportShare": "அறிக்கையைப் பகிரவும்"
 }

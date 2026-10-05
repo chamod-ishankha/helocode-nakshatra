@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/brand_palette.dart';
+import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/brand_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../data/place_repository.dart';
 
@@ -78,7 +80,10 @@ class CountryField extends ConsumerWidget {
   Future<void> _open(BuildContext context, WidgetRef ref) async {
     final picked = await showModalBottomSheet<String>(
       context: context,
+      // Over the tab bar, and over the partner form when opened from it.
+      useRootNavigator: true,
       isScrollControlled: true,
+      showDragHandle: true,
       builder: (_) => const _CountrySheet(),
     );
     if (picked == null) return;
@@ -101,67 +106,83 @@ class _CountrySheetState extends ConsumerState<_CountrySheet> {
   Widget build(BuildContext context) {
     final l = L10n.of(context);
     final locale = AppLocale.of(context);
+    final palette = BrandPalette.of(context);
     final countries = ref.watch(countryListProvider);
     final current = ref.watch(effectiveCountryProvider).value;
 
+    Widget message(String text) => Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14, color: palette.muted),
+        ),
+      ),
+    );
+
     return Padding(
       padding: EdgeInsets.only(
-        left: AppSpacing.lg,
-        right: AppSpacing.lg,
-        top: AppSpacing.lg,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
+        left: 18,
+        right: 18,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SizedBox(
         // Tall enough to show a useful number of countries without covering
         // the whole screen, which would hide what the sheet is for.
         height: MediaQuery.of(context).size.height * 0.7,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               l.placeCountryPick,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: BrandFonts.displayStyle(
+                context,
+                size: 24,
+                color: palette.text,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             TextField(
               autofocus: true,
-              decoration: InputDecoration(
-                labelText: l.placeCountrySearch,
-                prefixIcon: const Icon(Icons.search),
-                border: const OutlineInputBorder(),
+              style: TextStyle(color: palette.text),
+              decoration: brandFieldDecoration(
+                context,
+                label: l.placeCountrySearch,
+                icon: Icons.search,
               ),
               onChanged: (v) => setState(() => _query = v),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
             Expanded(
               child: countries.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) =>
-                    Center(child: Text(l.onboardingPlaceLoadFailed('$e'))),
+                error: (e, _) => message(l.onboardingPlaceLoadFailed('$e')),
                 data: (list) {
                   final q = _query.trim().toLowerCase();
+                  // Sri Lanka first while nothing is typed: most readers are
+                  // picking it back after trying another, and it should not
+                  // be 200 rows down between Spain and Sudan.
                   final matches = q.isEmpty
-                      ? list
+                      ? homeCountryFirst(list)
                       : list.where((c) => c.searchable.contains(q)).toList();
                   if (matches.isEmpty) {
-                    return Center(child: Text(l.onboardingPlaceNoMatch));
+                    return message(l.onboardingPlaceNoMatch);
                   }
                   return ListView.builder(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                     itemCount: matches.length,
                     itemBuilder: (context, i) {
                       final c = matches[i];
-                      final selected = c.code == current;
-                      return ListTile(
-                        dense: true,
-                        selected: selected,
-                        leading: selected
-                            ? const Icon(Icons.check_circle)
-                            : const Icon(Icons.public_outlined),
-                        title: Text(
-                          c.label(
-                            locale == AppLocale.si,
-                            locale == AppLocale.ta,
-                          ),
+                      return _CountryRow(
+                        name: c.label(
+                          locale == AppLocale.si,
+                          locale == AppLocale.ta,
                         ),
+                        selected: c.code == current,
+                        // A rule under the pinned country, so it does not
+                        // read as the first of an alphabetical list.
+                        divider: q.isEmpty && i == 0 && c.code == homeCountry,
                         onTap: () => Navigator.of(context).pop(c.code),
                       );
                     },
@@ -172,6 +193,75 @@ class _CountrySheetState extends ConsumerState<_CountrySheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CountryRow extends StatelessWidget {
+  const _CountryRow({
+    required this.name,
+    required this.selected,
+    required this.divider,
+    required this.onTap,
+  });
+
+  final String name;
+  final bool selected;
+  final bool divider;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+
+    final row = Material(
+      color: selected ? semantic.accentSurface : Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: selected ? BorderSide(color: semantic.accent) : BorderSide.none,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    color: selected ? semantic.accent : palette.text,
+                  ),
+                ),
+              ),
+              // A tick as well as the gold, so the choice is not told by
+              // colour alone.
+              if (selected)
+                Icon(Icons.check_rounded, size: 20, color: semantic.accent),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: divider
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                row,
+                Padding(
+                  padding: const EdgeInsets.only(top: 6, bottom: 4),
+                  child: Divider(height: 1, color: palette.line),
+                ),
+              ],
+            )
+          : row,
     );
   }
 }

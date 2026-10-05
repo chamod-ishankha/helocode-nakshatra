@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -159,24 +158,28 @@ final pickerCountryProvider = NotifierProvider<PickerCountry, String?>(
   PickerCountry.new,
 );
 
-/// Which country the place picker is showing.
+/// The country the place picker opens on.
 ///
-/// Defaults to the device's region, because the overwhelmingly common case is
-/// being born in the country the phone is set up for. Falls back to `LK` when
-/// the device region is missing, or names a country the data has no cities for
-/// — `PlaceRepository.inCountry` would throw on a missing asset, and a region
-/// like `AQ` or a bare `419` must not turn the first screen of the app into a
-/// load failure. This is a Sri Lankan app first, and a wrong guess costs one
-/// tap.
+/// Sri Lanka, whatever the phone's region says. It used to follow the region,
+/// which sounds right and is not for this app: Sri Lankan phones are very
+/// often set to the US or the UK — that is how most of them ship — so the
+/// first place search a Sri Lankan reader met was scoped to America. This is
+/// a Sri Lankan app first, and someone born elsewhere changes it in one tap.
+const homeCountry = 'LK';
+
+/// Which country the place picker is showing: the one picked, or
+/// [homeCountry].
 final effectiveCountryProvider = Provider<AsyncValue<String>>((ref) {
   final chosen = ref.watch(pickerCountryProvider);
-  return ref.watch(countryListProvider).whenData((countries) {
-    if (chosen != null) return chosen;
-    final region = ui.PlatformDispatcher.instance.locale.countryCode;
-    final known = countries.any((c) => c.code == region);
-    return known ? region! : 'LK';
-  });
+  return ref.watch(countryListProvider).whenData((_) => chosen ?? homeCountry);
 });
+
+/// [countries] with [homeCountry] first and the rest in their own order, for
+/// the picker's unfiltered list.
+List<Country> homeCountryFirst(List<Country> countries) => [
+  ...countries.where((c) => c.code == homeCountry),
+  ...countries.where((c) => c.code != homeCountry),
+];
 
 /// A place search, scoped to a country.
 typedef PlaceQuery = ({String countryCode, String query});

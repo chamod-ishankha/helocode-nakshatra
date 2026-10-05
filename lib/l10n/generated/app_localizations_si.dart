@@ -1610,4 +1610,7 @@ class L10nSi extends L10n {
 
   @override
   String get homeNextDay => 'ඊළඟ දිනය';
+
+  @override
+  String get reportShare => 'වාර්තාව බෙදාගන්න';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../config/app_locale.dart';
+import 'brand_palette.dart';
 import 'semantic_colors.dart';
 
 /// The seed colours the Material scheme is generated from (KAN-51).
@@ -84,6 +85,18 @@ abstract final class AppTheme {
         foregroundColor: scheme.onSurface,
         centerTitle: false,
         elevation: 0,
+      ),
+      // Every sheet on the redesign's background, from the theme rather than
+      // from each call. Passed at the call, the colour was the one in force
+      // when the sheet opened, and a phone switching to dark with a sheet
+      // open left light text on a parchment sheet — unreadable.
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: brightness == Brightness.dark
+            ? BrandPalette.dark.background
+            : BrandPalette.light.background,
+        modalBackgroundColor: brightness == Brightness.dark
+            ? BrandPalette.dark.background
+            : BrandPalette.light.background,
       ),
     );
   }

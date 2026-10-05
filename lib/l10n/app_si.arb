@@ -468,5 +468,6 @@
   "yesterdayLower": "ඊයේ",
   "homeDayArc": "{sunrise} සිට {sunset} දක්වා දිවා කාලය, රාහු කාලය සලකුණු කර ඇත",
   "homePreviousDay": "පෙර දිනය",
-  "homeNextDay": "ඊළඟ දිනය"
+  "homeNextDay": "ඊළඟ දිනය",
+  "reportShare": "වාර්තාව බෙදාගන්න"
 }

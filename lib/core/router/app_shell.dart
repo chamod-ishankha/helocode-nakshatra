@@ -161,13 +161,25 @@ class _NavItem extends StatelessWidget {
               // The selected tab carries a filled icon and a pill as well as
               // the gold, so it is not told by colour alone.
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                // Only the tab being entered animates. The one being left
+                // drops its pill at once, so nothing moves on a button the
+                // reader did not touch.
+                duration: selected
+                    ? const Duration(milliseconds: 200)
+                    : Duration.zero,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: selected ? semantic.accentSurface : Colors.transparent,
+                  // A clear gold, not Colors.transparent. That is clear
+                  // *black*, and fading to or from it passes through grey:
+                  // both the tab being left and the tab being entered
+                  // flashed a dark pill, which read as a touch on the wrong
+                  // button. Only the opacity should change.
+                  color: selected
+                      ? semantic.accentSurface
+                      : semantic.accentSurface.withValues(alpha: 0),
                   borderRadius: BorderRadius.circular(99),
                 ),
                 child: Badge(

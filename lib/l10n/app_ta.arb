@@ -469,5 +469,11 @@
   "homeDayArc": "{sunrise} முதல் {sunset} வரை பகல், ராகு காலம் குறிக்கப்பட்டுள்ளது",
   "homePreviousDay": "முந்தைய நாள்",
   "homeNextDay": "அடுத்த நாள்",
-  "reportShare": "அறிக்கையைப் பகிரவும்"
+  "reportShare": "அறிக்கையைப் பகிரவும்",
+  "reportSectionAntardasha": "நடப்பு தசையின் புத்திகள்",
+  "reportColumnLord": "அதிபதி",
+  "reportColumnSubPeriod": "புத்தி",
+  "reportColumnFrom": "முதல்",
+  "reportColumnTo": "வரை",
+  "reportDashaDatesNote": "தேதிகள் பிறப்பின் போது சந்திரனின் நிலையிலிருந்து கணக்கிடப்படுகின்றன. பிறந்த நேரம் தெரியாவிட்டால், அவை ஆண்டுகள் வரை மாறக்கூடும்."
 }

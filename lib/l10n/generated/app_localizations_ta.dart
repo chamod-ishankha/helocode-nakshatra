@@ -1638,4 +1638,23 @@ class L10nTa extends L10n {
 
   @override
   String get reportShare => 'அறிக்கையைப் பகிரவும்';
+
+  @override
+  String get reportSectionAntardasha => 'நடப்பு தசையின் புத்திகள்';
+
+  @override
+  String get reportColumnLord => 'அதிபதி';
+
+  @override
+  String get reportColumnSubPeriod => 'புத்தி';
+
+  @override
+  String get reportColumnFrom => 'முதல்';
+
+  @override
+  String get reportColumnTo => 'வரை';
+
+  @override
+  String get reportDashaDatesNote =>
+      'தேதிகள் பிறப்பின் போது சந்திரனின் நிலையிலிருந்து கணக்கிடப்படுகின்றன. பிறந்த நேரம் தெரியாவிட்டால், அவை ஆண்டுகள் வரை மாறக்கூடும்.';
 }

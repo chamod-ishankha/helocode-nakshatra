@@ -40,10 +40,11 @@ class ReportContent {
   }) => ReportContent(
     profile: profile,
     chart: chart,
-    // Mahādaśā only. A report is a fixed number of pages and the sub-periods
-    // of a full life run to hundreds of rows; the app is where somebody drills
-    // into those.
-    dasha: Vimshottari.forChart(chart, depth: 1),
+    // Two levels: the mahādaśā of a whole life, and the antardaśā under each
+    // so the running one can be printed (KAN-94). Not the third — the
+    // pratyantardaśā of a full life run to hundreds of rows, and the app is
+    // where somebody drills into those.
+    dasha: Vimshottari.forChart(chart, depth: 2),
     locale: locale,
     style: style,
     generatedAt: generatedAt ?? DateTime.now(),
@@ -57,7 +58,17 @@ class ReportContent {
   /// The navāṁśa (D9) chart, derived from [chart].
   final BirthChart navamsa;
 
+  /// The mahādaśā of a whole life, each carrying its antardaśā.
   final List<DashaPeriod> dasha;
+
+  /// The mahādaśā running when the report was made, if the life it covers
+  /// includes that day.
+  DashaPeriod? get runningDasha {
+    for (final period in dasha) {
+      if (period.contains(generatedAt)) return period;
+    }
+    return null;
+  }
 
   /// The language the whole document is written in. Chosen at generation time
   /// and fixed in the file — a PDF cannot change language later, so a user who

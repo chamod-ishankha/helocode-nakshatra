@@ -10,8 +10,10 @@ import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/chart_style.dart';
 import 'package:nakshatra/core/theme/app_theme.dart';
 import 'package:nakshatra/features/onboarding/domain/birth_profile.dart';
+import 'package:nakshatra/features/report/data/page_renderer.dart';
 import 'package:nakshatra/features/report/data/report_pdf.dart';
 import 'package:nakshatra/features/report/domain/report_content.dart';
+import 'package:nakshatra/features/report/presentation/report_pages.dart';
 
 import '../../support/fonts.dart';
 
@@ -40,6 +42,7 @@ void main() {
     // inside RenderObject.dispose. Loading before anything has been rendered
     // leaves nothing to notify.
     hasLatin = await loadLatinFont();
+    await loadDisplayFont();
 
     await initializeDateFormatting();
   });
@@ -102,40 +105,51 @@ void main() {
 
       for (final locale in AppLocale.values) {
         final base = AppTheme.light(locale);
-        final bytes = await ReportPdf.build(
-          theme: hasLatin
-              ? base.copyWith(
-                  textTheme: base.textTheme.apply(
-                    // Only where the app itself leaves it unset. Sinhala and
-                    // Tamil already name a real bundled face, and overriding
-                    // those would make the sample a picture of something the
-                    // app never draws.
-                    fontFamily: AppTheme.fontFor(locale) ?? testLatinFont,
-                    fontFamilyFallback: const [
-                      AppTheme.sinhalaFont,
-                      AppTheme.tamilFont,
-                      testLatinFont,
-                    ],
-                  ),
-                )
-              : null,
-          ReportContent.of(
-            profile: BirthProfile(
-              name: switch (locale) {
-                AppLocale.si => 'චමොද් ඉශංක',
-                AppLocale.ta => 'சாமோத் இஷங்க',
-                AppLocale.en => 'Chamod Ishankha',
-              },
-              birthDate: DateTime(2000, 7, 23),
-              birthTime: const Duration(hours: 11, minutes: 5),
-              birthTimeKnown: true,
-              place: colombo,
-            ),
-            chart: chart(),
-            locale: locale,
-            style: ChartStyle.southIndian,
+        final theme = hasLatin
+            ? base.copyWith(
+                textTheme: base.textTheme.apply(
+                  // Only where the app itself leaves it unset. Sinhala and
+                  // Tamil already name a real bundled face, and overriding
+                  // those would make the sample a picture of something the
+                  // app never draws.
+                  fontFamily: AppTheme.fontFor(locale) ?? testLatinFont,
+                  fontFamilyFallback: const [
+                    AppTheme.sinhalaFont,
+                    AppTheme.tamilFont,
+                    testLatinFont,
+                  ],
+                ),
+              )
+            : null;
+        final content = ReportContent.of(
+          profile: BirthProfile(
+            name: switch (locale) {
+              AppLocale.si => 'චමොද් ඉශංක',
+              AppLocale.ta => 'சாமோத் இஷங்க',
+              AppLocale.en => 'Chamod Ishankha',
+            },
+            birthDate: DateTime(2000, 7, 23),
+            birthTime: const Duration(hours: 11, minutes: 5),
+            birthTimeKnown: true,
+            place: colombo,
           ),
+          chart: chart(),
+          locale: locale,
+          style: ChartStyle.southIndian,
         );
+        final bytes = await ReportPdf.build(content, theme: theme);
+
+        // Each page as a picture too, to hold against the mock without a PDF
+        // viewer (KAN-94). Lower resolution: these are for looking at.
+        for (var i = 0; i < ReportPages.count(content); i++) {
+          final png = await PageRenderer.renderPng(
+            ReportPages.build(content, i, theme: theme),
+            pixelRatio: 1.5,
+          );
+          File(
+            '${out.path}/nakshatra-report-${locale.code}-${i + 1}.png',
+          ).writeAsBytesSync(png);
+        }
 
         final file = File('${out.path}/nakshatra-report-${locale.code}.pdf')
           ..writeAsBytesSync(bytes);

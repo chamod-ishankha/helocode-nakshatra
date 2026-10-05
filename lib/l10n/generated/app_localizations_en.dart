@@ -1640,4 +1640,23 @@ class L10nEn extends L10n {
 
   @override
   String get reportShare => 'Share the report';
+
+  @override
+  String get reportSectionAntardasha => 'Antardaśā in the running period';
+
+  @override
+  String get reportColumnLord => 'Lord';
+
+  @override
+  String get reportColumnSubPeriod => 'Sub-period';
+
+  @override
+  String get reportColumnFrom => 'From';
+
+  @override
+  String get reportColumnTo => 'To';
+
+  @override
+  String get reportDashaDatesNote =>
+      'Dates are worked out from the Moon\'s position at birth. If the birth time is unknown, they may shift by years.';
 }

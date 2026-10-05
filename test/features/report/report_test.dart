@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nakshatra/core/astro/models.dart';
@@ -11,6 +12,7 @@ import 'package:nakshatra/features/report/data/page_renderer.dart';
 import 'package:nakshatra/features/report/data/report_pdf.dart';
 import 'package:nakshatra/features/report/domain/report_content.dart';
 import 'package:nakshatra/features/report/presentation/report_pages.dart';
+import 'package:nakshatra/l10n/generated/app_localizations.dart';
 
 import '../../support/fonts.dart';
 
@@ -83,12 +85,13 @@ void main() {
     bool timeKnown = true,
     String name = 'Chamod',
     ChartStyle style = ChartStyle.southIndian,
+    DateTime? generatedAt,
   }) => ReportContent.of(
     profile: profile(timeKnown: timeKnown, name: name),
     chart: chart(),
     locale: locale,
     style: style,
-    generatedAt: DateTime(2026, 9, 10),
+    generatedAt: generatedAt ?? DateTime(2026, 9, 10),
   );
 
   group('what goes in the report', () {
@@ -115,6 +118,33 @@ void main() {
 
       expect(sinhala, 'nakshatra-report-20260910');
       expect(content(name: 'Chamod').fileStem, 'nakshatra-Chamod-20260910');
+    });
+
+    test('the running mahādaśā is the one the report was made in', () {
+      final report = content();
+      final running = report.runningDasha!;
+
+      expect(running.contains(report.generatedAt), isTrue);
+      expect(report.dasha.where((d) => d.contains(report.generatedAt)), [
+        running,
+      ]);
+      // Its antardaśā come with it: they are what the extra page prints.
+      expect(running.children, isNotEmpty);
+      expect(
+        running.children.where((c) => c.contains(report.generatedAt)),
+        hasLength(1),
+      );
+    });
+
+    test('the running sub-periods get a page of their own', () {
+      // Made inside the life the chart covers, the report has a page for the
+      // antardaśā being lived; made after it, nothing is running and the page
+      // is left out rather than printed empty.
+      final during = content();
+      final after = content(generatedAt: DateTime(2200));
+
+      expect(after.runningDasha, isNull);
+      expect(ReportPages.count(during), ReportPages.count(after) + 1);
     });
 
     test('an empty name still produces a usable filename', () {
@@ -185,6 +215,18 @@ void main() {
       });
     });
 
+    testWidgets('the navāṁśa page names the navāṁśa in its centre', (
+      tester,
+    ) async {
+      // It printed "Rāśi chart" in the middle of the D9 grid: the chart
+      // widget's default caption, because the page never passed its own.
+      final l = lookupL10n(const Locale('en'));
+      await tester.pumpWidget(ReportPages.build(content(), 2));
+
+      expect(find.text(l.chartVargaNavamsa), findsOneWidget);
+      expect(find.text(l.chartCentreCaption), findsNothing);
+    });
+
     testWidgets('both chart styles draw', (tester) async {
       await tester.runAsync(() async {
         for (final style in ChartStyle.values) {
@@ -238,9 +280,12 @@ Future<int> _inked(Uint8List png) async {
   var inked = 0;
   for (var i = 0; i < data!.lengthInBytes; i += 4) {
     if (data.getUint8(i + 3) < 255) continue;
-    if (data.getUint8(i) < 200 ||
-        data.getUint8(i + 1) < 200 ||
-        data.getUint8(i + 2) < 200) {
+    // Below 160, not 200: the page frame and the table rules are a pale
+    // #D9CFB8 (KAN-94), and at 200 the frame alone counted as some 2,700
+    // inked pixels — every blank page would have passed.
+    if (data.getUint8(i) < 160 ||
+        data.getUint8(i + 1) < 160 ||
+        data.getUint8(i + 2) < 160) {
       inked++;
     }
   }

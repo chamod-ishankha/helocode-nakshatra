@@ -840,5 +840,11 @@
   "homePreviousDay": "Previous day",
   "homeNextDay": "Next day",
   "reportShare": "Share the report",
-  "@reportShare": {"description": "Button on the report tile once the report is owned."}
+  "@reportShare": {"description": "Button on the report tile once the report is owned."},
+  "reportSectionAntardasha": "Antardaśā in the running period",
+  "reportColumnLord": "Lord",
+  "reportColumnSubPeriod": "Sub-period",
+  "reportColumnFrom": "From",
+  "reportColumnTo": "To",
+  "reportDashaDatesNote": "Dates are worked out from the Moon's position at birth. If the birth time is unknown, they may shift by years."
 }

@@ -2918,6 +2918,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Share the report'**
   String get reportShare;
+
+  /// No description provided for @reportSectionAntardasha.
+  ///
+  /// In en, this message translates to:
+  /// **'Antardaśā in the running period'**
+  String get reportSectionAntardasha;
+
+  /// No description provided for @reportColumnLord.
+  ///
+  /// In en, this message translates to:
+  /// **'Lord'**
+  String get reportColumnLord;
+
+  /// No description provided for @reportColumnSubPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-period'**
+  String get reportColumnSubPeriod;
+
+  /// No description provided for @reportColumnFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get reportColumnFrom;
+
+  /// No description provided for @reportColumnTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get reportColumnTo;
+
+  /// No description provided for @reportDashaDatesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates are worked out from the Moon\'s position at birth. If the birth time is unknown, they may shift by years.'**
+  String get reportDashaDatesNote;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

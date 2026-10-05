@@ -469,5 +469,11 @@
   "homeDayArc": "{sunrise} සිට {sunset} දක්වා දිවා කාලය, රාහු කාලය සලකුණු කර ඇත",
   "homePreviousDay": "පෙර දිනය",
   "homeNextDay": "ඊළඟ දිනය",
-  "reportShare": "වාර්තාව බෙදාගන්න"
+  "reportShare": "වාර්තාව බෙදාගන්න",
+  "reportSectionAntardasha": "ධාවනය වන කාලයේ අන්තර්දශා",
+  "reportColumnLord": "අධිපති",
+  "reportColumnSubPeriod": "අන්තර්දශාව",
+  "reportColumnFrom": "සිට",
+  "reportColumnTo": "දක්වා",
+  "reportDashaDatesNote": "දිනයන් උපතේදී චන්ද්‍රයාගේ පිහිටීමෙන් ගණනය කෙරේ. උපන් වේලාව නොදන්නේ නම්, ඒවා වසර ගණනකින් වෙනස් විය හැක."
 }

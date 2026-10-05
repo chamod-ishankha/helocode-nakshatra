@@ -1613,4 +1613,23 @@ class L10nSi extends L10n {
 
   @override
   String get reportShare => 'වාර්තාව බෙදාගන්න';
+
+  @override
+  String get reportSectionAntardasha => 'ධාවනය වන කාලයේ අන්තර්දශා';
+
+  @override
+  String get reportColumnLord => 'අධිපති';
+
+  @override
+  String get reportColumnSubPeriod => 'අන්තර්දශාව';
+
+  @override
+  String get reportColumnFrom => 'සිට';
+
+  @override
+  String get reportColumnTo => 'දක්වා';
+
+  @override
+  String get reportDashaDatesNote =>
+      'දිනයන් උපතේදී චන්ද්‍රයාගේ පිහිටීමෙන් ගණනය කෙරේ. උපන් වේලාව නොදන්නේ නම්, ඒවා වසර ගණනකින් වෙනස් විය හැක.';
 }

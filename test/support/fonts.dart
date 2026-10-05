@@ -61,6 +61,18 @@ Future<void> loadAppFonts() async {
   }
 }
 
+/// Loads Fraunces, the display face, under its own family name.
+///
+/// For the report samples only (KAN-94), whose headings are set in it. Not
+/// part of [loadAppFonts]: layout tests keep measuring headings in the
+/// placeholder, which is wider and so the safe direction.
+Future<void> loadDisplayFont() async {
+  final file = File('assets/fonts/Fraunces-SemiBold.ttf');
+  final loader = FontLoader('Fraunces')
+    ..addFont(file.readAsBytes().then((b) => ByteData.view(b.buffer)));
+  await loader.load();
+}
+
 /// The family name [loadLatinFont] registers a real face under.
 const String testLatinFont = 'RobotoForTests';
 

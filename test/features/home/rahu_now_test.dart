@@ -58,6 +58,31 @@ void main() {
     });
   });
 
+  group('shownMinutes', () {
+    test('counts between the minutes printed, not the seconds', () {
+      // 7:30:50 to 8:59:10 is 88 min 20 s, but the card reads 7:30 – 8:59,
+      // and 89 is the number that agrees with it.
+      final start = DateTime(2026, 10, 5, 7, 30, 50);
+      final end = DateTime(2026, 10, 5, 8, 59, 10);
+      expect(shownMinutes(start, end), 89);
+    });
+
+    test('is the plain difference on whole minutes', () {
+      expect(shownMinutes(at(10, 30), at(12, 0)), 90);
+    });
+  });
+
+  group('splitMinutes', () {
+    test('keeps a short window in minutes', () {
+      expect(splitMinutes(45), (hours: 0, minutes: 45));
+    });
+
+    test('splits a long one into hours and minutes', () {
+      expect(splitMinutes(89), (hours: 1, minutes: 29));
+      expect(splitMinutes(120), (hours: 2, minutes: 0));
+    });
+  });
+
   group('currentlyInauspiciousProvider', () {
     ProviderContainer containerAt(DateTime now) {
       final c = ProviderContainer(

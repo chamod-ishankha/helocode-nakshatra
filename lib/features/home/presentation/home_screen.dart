@@ -587,7 +587,7 @@ class _RahuHero extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(99),
                       ),
                       child: Text(
-                        l.durationMinutes(rahu.duration.inMinutes),
+                        _duration(l, shownMinutes(rahu.start, rahu.end)),
                         style: TextStyle(fontSize: 13, color: palette.text),
                       ),
                     ),
@@ -1458,3 +1458,11 @@ class _CardTitle extends StatelessWidget {
     ),
   );
 }
+
+/// "1 hr 29 min" rather than "89 minutes": an hour and a half is read at a
+/// glance, ninety minutes has to be worked out.
+String _duration(L10n l, int total) => switch (splitMinutes(total)) {
+  (hours: 0, :final minutes) => l.durationMinutes(minutes),
+  (:final hours, minutes: 0) => l.durationHours(hours),
+  (:final hours, :final minutes) => l.durationHoursMinutes(hours, minutes),
+};

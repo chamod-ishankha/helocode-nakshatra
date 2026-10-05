@@ -80,7 +80,8 @@ void main() {
     // scrolling — not buried under a horoscope.
     expect(find.text('රාහු කාලය'), findsOneWidget);
     expect(find.text('Rāhu kālaya'), findsOneWidget);
-    expect(find.textContaining('minutes'), findsWidgets);
+    // How long it lasts, as hours and minutes ("1 hr 29 min").
+    expect(find.textContaining(' min'), findsWidgets);
   });
 
   testWidgets('the panchanga strip shows all five limbs', (tester) async {

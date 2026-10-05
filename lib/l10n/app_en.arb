@@ -484,7 +484,7 @@
   "horoscopeByRasi": "Moon sign",
   "horoscopeSameSign": "Your lagna and moon sign are the same.",
   "horoscopeLagnaApproximate": "Your birth time is unknown, so this lagna is approximate.",
-  "durationMinutes": "{minutes} minutes",
+  "durationMinutes": "{minutes} min",
   "@durationMinutes": {
     "description": "How long an inauspicious window lasts.",
     "placeholders": {
@@ -846,5 +846,9 @@
   "stateOfflineTitle": "No connection",
   "stateOfflineBody": "Your chart still works offline. Only backup, ads and purchases need a network.",
   "placesLoadFailed": "The list of places could not be loaded.",
-  "calendarScanFailed": "This month could not be scored."
+  "calendarScanFailed": "This month could not be scored.",
+  "durationHours": "{hours} hr",
+  "durationHoursMinutes": "{hours} hr {minutes} min",
+  "@durationHours": {"description": "A whole number of hours, short.", "placeholders": {"hours": {"type": "int"}}},
+  "@durationHoursMinutes": {"description": "Hours and minutes, short: how long rāhu kālaya lasts.", "placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}}
 }

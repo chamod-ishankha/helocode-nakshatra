@@ -318,7 +318,7 @@
   "horoscopeByRasi": "ராசி",
   "horoscopeSameSign": "உங்கள் லக்னமும் ராசியும் ஒன்றே.",
   "horoscopeLagnaApproximate": "பிறந்த நேரம் தெரியாததால் இந்த லக்னம் தோராயமானது.",
-  "durationMinutes": "{minutes} நிமிடங்கள்",
+  "durationMinutes": "{minutes} நிமிடம்",
   "purchaseSectionTitle": "Nakshatra Pro",
   "purchaseStatusFree": "இலவசம்",
   "purchaseStatusAdFree": "விளம்பரங்கள் நீக்கப்பட்டன",
@@ -482,5 +482,7 @@
   "stateOfflineTitle": "இணைப்பு இல்லை",
   "stateOfflineBody": "உங்கள் ஜாதகம் இணைப்பின்றியும் இயங்கும். காப்புப்பிரதி, விளம்பரங்கள் மற்றும் வாங்குதல்களுக்கு மட்டுமே இணைப்பு தேவை.",
   "placesLoadFailed": "இடங்களின் பட்டியலை ஏற்ற முடியவில்லை.",
-  "calendarScanFailed": "இந்த மாதத்தைக் கணக்கிட முடியவில்லை."
+  "calendarScanFailed": "இந்த மாதத்தைக் கணக்கிட முடியவில்லை.",
+  "durationHours": "{hours} மணி",
+  "durationHoursMinutes": "{hours} மணி {minutes} நிமிடம்"
 }

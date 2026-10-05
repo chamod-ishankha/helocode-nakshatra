@@ -1653,4 +1653,14 @@ class L10nSi extends L10n {
 
   @override
   String get calendarScanFailed => 'මෙම මාසය ගණනය කළ නොහැකි විය.';
+
+  @override
+  String durationHours(int hours) {
+    return 'පැය $hours';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return 'පැය $hours විනාඩි $minutes';
+  }
 }

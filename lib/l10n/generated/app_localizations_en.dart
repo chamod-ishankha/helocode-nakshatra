@@ -1075,7 +1075,7 @@ class L10nEn extends L10n {
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes minutes';
+    return '$minutes min';
   }
 
   @override
@@ -1680,4 +1680,14 @@ class L10nEn extends L10n {
 
   @override
   String get calendarScanFailed => 'This month could not be scored.';
+
+  @override
+  String durationHours(int hours) {
+    return '$hours hr';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours hr $minutes min';
+  }
 }

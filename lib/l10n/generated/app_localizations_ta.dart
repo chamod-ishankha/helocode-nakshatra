@@ -1083,7 +1083,7 @@ class L10nTa extends L10n {
 
   @override
   String durationMinutes(int minutes) {
-    return '$minutes நிமிடங்கள்';
+    return '$minutes நிமிடம்';
   }
 
   @override
@@ -1678,4 +1678,14 @@ class L10nTa extends L10n {
 
   @override
   String get calendarScanFailed => 'இந்த மாதத்தைக் கணக்கிட முடியவில்லை.';
+
+  @override
+  String durationHours(int hours) {
+    return '$hours மணி';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours மணி $minutes நிமிடம்';
+  }
 }

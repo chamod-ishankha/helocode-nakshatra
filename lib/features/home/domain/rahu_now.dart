@@ -33,3 +33,20 @@ double dayFraction(DateTime sunrise, DateTime sunset, DateTime t) {
   if (day <= 0) return 0;
   return (t.difference(sunrise).inSeconds / day).clamp(0.0, 1.0);
 }
+
+/// How many minutes lie between [start] and [end] as the card prints them.
+///
+/// Counted between the clock minutes shown, not from the exact seconds: a
+/// window from 7:30:50 to 8:59:10 is 88 minutes and 20 seconds, and "88" under
+/// "7:30 – 8:59" reads as an arithmetic mistake. The reader checks one against
+/// the other, so they have to agree.
+int shownMinutes(DateTime start, DateTime end) {
+  DateTime floor(DateTime t) =>
+      DateTime(t.year, t.month, t.day, t.hour, t.minute);
+  return floor(end).difference(floor(start)).inMinutes;
+}
+
+/// [minutes] split for display: under an hour stays in minutes, so a short
+/// window is not written "0 hr 45 min".
+({int hours, int minutes}) splitMinutes(int minutes) =>
+    (hours: minutes ~/ 60, minutes: minutes % 60);

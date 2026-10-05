@@ -2010,7 +2010,7 @@ abstract class L10n {
   /// How long an inauspicious window lasts.
   ///
   /// In en, this message translates to:
-  /// **'{minutes} minutes'**
+  /// **'{minutes} min'**
   String durationMinutes(int minutes);
 
   /// No description provided for @purchaseSectionTitle.
@@ -2996,6 +2996,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'This month could not be scored.'**
   String get calendarScanFailed;
+
+  /// A whole number of hours, short.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hr'**
+  String durationHours(int hours);
+
+  /// Hours and minutes, short: how long rāhu kālaya lasts.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hr {minutes} min'**
+  String durationHoursMinutes(int hours, int minutes);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

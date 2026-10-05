@@ -245,7 +245,20 @@ void main() {
     await openFirstSubPeriod(tester);
 
     final card = tester.getRect(find.byKey(LockedContent.promptKey));
-    final timeline = tester.getRect(find.byType(DashaTimeline));
+    // Measured against the sub-period card it sits in, not the whole
+    // timeline: since KAN-84 that card is indented to the right of the rail
+    // on purpose. What must not happen is the old fault — padding on one side
+    // only, pushing the lock off the middle of its own container.
+    final timeline = tester.getRect(
+      find.ancestor(
+        of: find.byKey(LockedContent.promptKey),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w.key is ValueKey<String> &&
+              (w.key! as ValueKey<String>).value.startsWith('dasha-sub-'),
+        ),
+      ),
+    );
 
     expect(
       card.center.dx,

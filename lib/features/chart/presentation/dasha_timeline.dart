@@ -55,7 +55,7 @@ class DashaTimeline extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final timeline = ref.watch(dashaProvider);
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
 
     if (timeline == null || timeline.isEmpty) return const SizedBox.shrink();
 
@@ -66,7 +66,14 @@ class DashaTimeline extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showTitle) ...[
-          Text(l.dashaTitle, style: theme.textTheme.titleMedium),
+          Text(
+            l.dashaTitle,
+            style: BrandFonts.displayStyle(
+              context,
+              size: 20,
+              color: palette.text,
+            ),
+          ),
           const SizedBox(height: AppSpacing.sm),
         ],
 
@@ -80,30 +87,49 @@ class DashaTimeline extends ConsumerWidget {
 
         if (running != null) ...[
           _RunningCard(snapshot: running),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.lg),
         ],
 
-        for (final maha in timeline)
-          _MahaTile(
-            maha: maha,
-            isCurrent: running?.maha == maha,
-            currentAntara: running?.antara,
-            // Only the first period is a partial one, and only because part
-            // of it had already run when the user was born.
-            isBalance: maha == timeline.first,
-          ),
+        // The periods on a rail (KAN-84): one line down the side, a dot per
+        // period. Where you are in 120 years is visible before a date is read.
+        Stack(
+          children: [
+            PositionedDirectional(
+              start: _railX - 1,
+              top: 24,
+              bottom: 24,
+              child: Container(width: 2, color: palette.line),
+            ),
+            Column(
+              children: [
+                for (final maha in timeline)
+                  _MahaTile(
+                    maha: maha,
+                    isCurrent: running?.maha == maha,
+                    isPast: !maha.end.isAfter(now),
+                    currentAntara: running?.antara,
+                    // Only the first period is a partial one, and only
+                    // because part of it had already run when the user was
+                    // born.
+                    isBalance: maha == timeline.first,
+                  ),
+              ],
+            ),
+          ],
+        ),
 
         const SizedBox(height: AppSpacing.sm),
         Text(
           l.dashaBalanceNote,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+          style: TextStyle(fontSize: 13, height: 1.5, color: palette.muted),
         ),
       ],
     );
   }
 }
+
+/// Where the rail runs, measured from the start edge: the centre of the dot.
+const double _railX = 10;
 
 class _RunningCard extends ConsumerWidget {
   const _RunningCard({required this.snapshot});
@@ -112,20 +138,31 @@ class _RunningCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final l = L10n.of(context);
     final locale = ref.watch(localeProvider);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
     final maha = snapshot.maha;
     final antara = snapshot.antara;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-        border: Border(
-          left: BorderSide(color: theme.colorScheme.primary, width: 4),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: semantic.accent),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          // Composited onto the card colour so both stops share its
+          // transparency; see the note on the South Indian centre panel.
+          colors: [
+            Color.alphaBlend(
+              semantic.accent.withValues(alpha: 0.18),
+              palette.surface,
+            ),
+            palette.surface,
+          ],
         ),
       ),
       child: Column(
@@ -133,25 +170,25 @@ class _RunningCard extends ConsumerWidget {
         children: [
           Text(
             l.dashaRunningNow,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.primary,
-            ),
+            style: TextStyle(fontSize: 13, color: palette.muted),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             antara == null
                 ? maha.lord.label(locale)
                 : '${maha.lord.label(locale)} — ${antara.lord.label(locale)}',
-            style: theme.textTheme.titleLarge,
+            style: BrandFonts.displayStyle(
+              context,
+              size: 32,
+              color: palette.text,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             l.dashaEnds(_longDate(context, (antara ?? maha).end)),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 13, color: palette.muted),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.md),
           _Progress(period: antara ?? maha),
         ],
       ),
@@ -173,8 +210,46 @@ class _Progress extends StatelessWidget {
     final fraction = total <= 0 ? 0.0 : (done / total).clamp(0.0, 1.0);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: LinearProgressIndicator(value: fraction, minHeight: 6),
+      borderRadius: BorderRadius.circular(99),
+      child: LinearProgressIndicator(
+        value: fraction,
+        minHeight: 8,
+        color: context.semantic.accent,
+        backgroundColor: BrandPalette.of(context).line,
+      ),
+    );
+  }
+}
+
+/// A period's place on the rail: past, running, or still to come.
+///
+/// Shape as well as colour — filled, ringed, hollow — so it reads for someone
+/// who cannot tell the gold from the grey.
+class _RailDot extends StatelessWidget {
+  const _RailDot({required this.isCurrent, required this.isPast});
+
+  final bool isCurrent;
+  final bool isPast;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    final gold = context.semantic.accent;
+    return Container(
+      width: 14,
+      height: 14,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isCurrent
+            ? gold
+            : isPast
+            ? palette.muted
+            : palette.background,
+        border: Border.all(color: isCurrent ? gold : palette.muted, width: 2),
+        boxShadow: isCurrent
+            ? [BoxShadow(color: gold.withValues(alpha: 0.35), spreadRadius: 5)]
+            : null,
+      ),
     );
   }
 }
@@ -183,67 +258,107 @@ class _MahaTile extends ConsumerWidget {
   const _MahaTile({
     required this.maha,
     required this.isCurrent,
+    required this.isPast,
     required this.currentAntara,
     required this.isBalance,
   });
 
   final DashaPeriod maha;
   final bool isCurrent;
+  final bool isPast;
   final DashaPeriod? currentAntara;
   final bool isBalance;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final l = L10n.of(context);
     final locale = ref.watch(localeProvider);
+    final palette = BrandPalette.of(context);
+    final gold = context.semantic.accent;
 
-    return ExpansionTile(
-      // Open the period the user is living in; the rest stay shut so the
-      // table does not arrive as 81 rows.
-      initiallyExpanded: isCurrent,
-      tilePadding: EdgeInsets.zero,
-      // Indented on both sides, not just the left. The nesting still reads,
-      // and anything centred inside — the lock over the third level — lands
-      // on the middle of the screen rather than 28px right of it.
-      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      shape: const Border(),
-      collapsedShape: const Border(),
-      leading: Icon(
-        isCurrent ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-        size: 18,
-        color: isCurrent
-            ? theme.colorScheme.primary
-            : theme.colorScheme.onSurfaceVariant,
-      ),
-      title: Text(
-        maha.lord.label(locale),
-        style: theme.textTheme.bodyLarge?.copyWith(
-          fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
-          color: isCurrent ? theme.colorScheme.primary : null,
+    return Theme(
+      // No divider lines above and below an open tile: the rail is the
+      // structure here.
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        // Open the period the user is living in; the rest stay shut so the
+        // table does not arrive as 81 rows.
+        initiallyExpanded: isCurrent,
+        tilePadding: EdgeInsets.zero,
+        minTileHeight: 52,
+        // Right of the rail, and nothing on the far side: the sub-period card
+        // is the full width of what is left, so anything centred in it is
+        // centred in the card.
+        childrenPadding: const EdgeInsetsDirectional.fromSTEB(
+          _railX * 2 + 12,
+          0,
+          0,
+          10,
         ),
-      ),
-      subtitle: Text(
-        '${_shortDate(context, maha.start)} — ${_shortDate(context, maha.end)}'
-        '${isBalance ? ' *' : ''}',
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            l.dashaSubPeriods,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+        shape: const Border(),
+        collapsedShape: const Border(),
+        showTrailingIcon: false,
+        leading: SizedBox(
+          width: _railX * 2,
+          child: Center(
+            child: _RailDot(isCurrent: isCurrent, isPast: isPast),
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
-        for (final antara in maha.children)
-          _AntaraTile(antara: antara, isCurrent: antara == currentAntara),
-      ],
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                maha.lord.label(locale),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600,
+                  color: isCurrent ? gold : palette.text,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '${_shortDate(context, maha.start)} — ${_shortDate(context, maha.end)}'
+              '${isBalance ? ' *' : ''}',
+              style: TextStyle(fontSize: 13, color: palette.muted),
+            ),
+          ],
+        ),
+        children: [
+          Container(
+            key: ValueKey('dasha-sub-${maha.start.toIso8601String()}'),
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
+            decoration: BoxDecoration(
+              color: palette.surface,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: palette.line),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l.dashaSubPeriods,
+                  style: TextStyle(fontSize: 12, color: palette.muted),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                for (var i = 0; i < maha.children.length; i++)
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: i == 0
+                          ? null
+                          : Border(top: BorderSide(color: palette.line)),
+                    ),
+                    child: _AntaraTile(
+                      antara: maha.children[i],
+                      isCurrent: maha.children[i] == currentAntara,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -262,19 +377,30 @@ class _AntaraTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final l = L10n.of(context);
     final locale = ref.watch(localeProvider);
+    final palette = BrandPalette.of(context);
+    final gold = context.semantic.accent;
 
     final row = Row(
       children: [
+        // A dot beside the running one as well as the gold and the weight.
+        if (isCurrent) ...[
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(color: gold, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+        ],
         Expanded(
           flex: 2,
           child: Text(
             antara.lord.label(locale),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: isCurrent ? FontWeight.w700 : null,
-              color: isCurrent ? theme.colorScheme.primary : null,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+              color: isCurrent ? gold : palette.text,
             ),
           ),
         ),
@@ -284,10 +410,10 @@ class _AntaraTile extends ConsumerWidget {
             '${_shortDate(context, antara.start)} — '
             '${_shortDate(context, antara.end)}',
             textAlign: TextAlign.end,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: isCurrent
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w400,
+              color: isCurrent ? gold : palette.muted,
             ),
           ),
         ),
@@ -298,43 +424,49 @@ class _AntaraTile extends ConsumerWidget {
     // onto nothing is worse than a plain row.
     if (antara.children.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: row,
       );
     }
 
-    return ExpansionTile(
-      // Never pre-expanded, not even for the running antara: it would put a
-      // lock on screen before the user asked for anything.
-      tilePadding: EdgeInsets.zero,
-      childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-      shape: const Border(),
-      collapsedShape: const Border(),
-      dense: true,
-      visualDensity: VisualDensity.compact,
-      title: row,
-      // Opening a period is the use the meter reports (KAN-77). Collapsing is
-      // not, and nothing is counted unless Pro is active.
-      onExpansionChanged: (open) {
-        if (!open) return;
-        ref
-            .read(proUsageRevisionProvider.notifier)
-            .record(ProUsage.dashaExplored);
-      },
-      children: [
-        LockedContent(
-          unlock: RewardedUnlock.dashaDetail,
-          feature: PaidFeature.fullDashaTimeline,
-          title: l.unlockDashaTitle,
-          body: l.unlockDashaBody,
-          child: Column(
-            children: [
-              for (final pratyantara in antara.children)
-                _PratyantaraRow(pratyantara: pratyantara),
-            ],
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        // Never pre-expanded, not even for the running antara: it would put a
+        // lock on screen before the user asked for anything.
+        tilePadding: EdgeInsets.zero,
+        // Even on both sides, so the lock lands in the middle of the card.
+        childrenPadding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+        shape: const Border(),
+        collapsedShape: const Border(),
+        dense: true,
+        visualDensity: VisualDensity.compact,
+        iconColor: palette.muted,
+        collapsedIconColor: palette.muted,
+        title: row,
+        // Opening a period is the use the meter reports (KAN-77). Collapsing
+        // is not, and nothing is counted unless Pro is active.
+        onExpansionChanged: (open) {
+          if (!open) return;
+          ref
+              .read(proUsageRevisionProvider.notifier)
+              .record(ProUsage.dashaExplored);
+        },
+        children: [
+          LockedContent(
+            unlock: RewardedUnlock.dashaDetail,
+            feature: PaidFeature.fullDashaTimeline,
+            title: l.unlockDashaTitle,
+            body: l.unlockDashaBody,
+            child: Column(
+              children: [
+                for (final pratyantara in antara.children)
+                  _PratyantaraRow(pratyantara: pratyantara),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -350,18 +482,18 @@ class _PratyantaraRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final locale = ref.watch(localeProvider);
+    final palette = BrandPalette.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Expanded(
             flex: 2,
             child: Text(
               pratyantara.lord.label(locale),
-              style: theme.textTheme.bodySmall,
+              style: TextStyle(fontSize: 13, color: palette.text),
             ),
           ),
           Expanded(
@@ -370,9 +502,7 @@ class _PratyantaraRow extends ConsumerWidget {
               '${_shortDate(context, pratyantara.start)} — '
               '${_shortDate(context, pratyantara.end)}',
               textAlign: TextAlign.end,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              style: TextStyle(fontSize: 12, color: palette.muted),
             ),
           ),
         ],

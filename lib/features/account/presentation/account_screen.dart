@@ -6,6 +6,13 @@ import '../../../core/router/app_router.dart';
 import '../../../core/sync/auth_service.dart';
 import '../../../core/sync/profile_sync.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/brand_button.dart';
+import '../../../core/ui/brand_card.dart';
+import '../../../core/ui/brand_field.dart';
+import '../../../core/ui/info_notice.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/domain/birth_profile.dart';
@@ -174,72 +181,106 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final l = L10n.of(context);
     final status = ref.watch(accountStatusProvider).value;
     final kind = status?.kind ?? AccountKind.none;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(L10n.of(context).accountTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => popOrHome(context),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _StatusCard(kind: kind, email: status?.email),
-          const SizedBox(height: AppSpacing.xl),
-          if (kind == AccountKind.permanent)
-            _SignedIn(busy: _busy, onSignOut: _signOut)
-          else if (kind == AccountKind.none)
-            const _Unavailable()
-          else ...[
-            if (AuthService.googleAvailable) ...[
-              OutlinedButton.icon(
-                onPressed: _busy ? null : _google,
-                icon: const Icon(Icons.account_circle_outlined),
-                label: Text(L10n.of(context).accountContinueWithGoogle),
-              ),
-              const SizedBox(height: AppSpacing.lg),
+      backgroundColor: palette.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: palette.backdrop),
+        child: SafeArea(
+          bottom: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 32),
+            children: [
               Row(
                 children: [
-                  const Expanded(child: Divider()),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                  RoundIconButton(
+                    icon: Icons.arrow_back_rounded,
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
+                    onPressed: () => popOrHome(context),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
                     child: Text(
-                      L10n.of(context).accountOr,
-                      style: theme.textTheme.bodySmall,
+                      l.accountTitle,
+                      style: BrandFonts.displayStyle(
+                        context,
+                        size: 26,
+                        color: palette.text,
+                      ),
                     ),
                   ),
-                  const Expanded(child: Divider()),
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
+              _StatusCard(kind: kind, email: status?.email),
+              const SizedBox(height: AppSpacing.lg),
+              if (kind == AccountKind.permanent)
+                _SignedIn(busy: _busy, onSignOut: _signOut)
+              else if (kind == AccountKind.none)
+                const _Unavailable()
+              else ...[
+                if (AuthService.googleAvailable) ...[
+                  BrandButton(
+                    tone: BrandButtonTone.outline,
+                    expand: true,
+                    onPressed: _busy ? null : _google,
+                    leading: const Icon(Icons.account_circle_outlined),
+                    label: l.accountContinueWithGoogle,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Row(
+                    children: [
+                      Expanded(child: Divider(color: palette.line)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          l.accountOr,
+                          style: TextStyle(fontSize: 13, color: palette.muted),
+                        ),
+                      ),
+                      Expanded(child: Divider(color: palette.line)),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+                _Form(
+                  formKey: _formKey,
+                  email: _email,
+                  password: _password,
+                  signingIn: _signingIn,
+                  busy: _busy,
+                  error: _error,
+                  onSubmit: _submit,
+                  onToggleMode: () => setState(() {
+                    _signingIn = !_signingIn;
+                    _error = null;
+                  }),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.xl),
+              Text(
+                l.accountFooter,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.5,
+                  color: palette.muted,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                l.entertainmentOnly,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: palette.muted),
+              ),
             ],
-            _Form(
-              formKey: _formKey,
-              email: _email,
-              password: _password,
-              signingIn: _signingIn,
-              busy: _busy,
-              error: _error,
-              onSubmit: _submit,
-              onToggleMode: () => setState(() {
-                _signingIn = !_signingIn;
-                _error = null;
-              }),
-            ),
-          ],
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            L10n.of(context).accountFooter,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -253,55 +294,77 @@ class _StatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
     final l = L10n.of(context);
 
+    // The icon and the words say the state; the tile colour only supports
+    // them.
     final (
       IconData icon,
       String title,
       String body,
       Color colour,
+      Color wash,
     ) = switch (kind) {
       AccountKind.permanent => (
         Icons.verified_user_outlined,
         l.accountSavedToEmail(email ?? ''),
         l.accountSavedToEmailHelp,
-        theme.colorScheme.primary,
+        semantic.auspicious,
+        semantic.auspiciousSurface,
       ),
       AccountKind.anonymous => (
         Icons.phonelink_lock_outlined,
         l.accountPhoneOnly,
         l.accountPhoneOnlyHelp,
-        theme.colorScheme.error,
+        semantic.inauspicious,
+        semantic.inauspiciousSurface,
       ),
       AccountKind.none => (
         Icons.cloud_off_outlined,
         l.accountUnavailable,
         l.accountUnavailableHelp,
-        theme.colorScheme.onSurfaceVariant,
+        palette.muted,
+        palette.surfaceHigh,
       ),
     };
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-        border: Border(left: BorderSide(color: colour, width: 4)),
-      ),
+    return BrandCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: colour),
-          const SizedBox(width: AppSpacing.md),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: wash,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: colour),
+          ),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: theme.textTheme.titleSmall),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: palette.text,
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(body, style: theme.textTheme.bodySmall),
+                Text(
+                  body,
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.5,
+                    color: palette.muted,
+                  ),
+                ),
               ],
             ),
           ),
@@ -334,7 +397,7 @@ class _Form extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
     final l = L10n.of(context);
 
     return Form(
@@ -344,7 +407,11 @@ class _Form extends StatelessWidget {
         children: [
           Text(
             signingIn ? l.accountSignIn : l.accountKeepSafe,
-            style: theme.textTheme.titleMedium,
+            style: BrandFonts.displayStyle(
+              context,
+              size: 20,
+              color: palette.text,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           TextFormField(
@@ -353,10 +420,8 @@ class _Form extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             autocorrect: false,
             autofillHints: const [AutofillHints.email],
-            decoration: InputDecoration(
-              labelText: l.accountEmail,
-              border: const OutlineInputBorder(),
-            ),
+            style: TextStyle(color: palette.text),
+            decoration: brandFieldDecoration(context, label: l.accountEmail),
             validator: (v) {
               final value = v?.trim() ?? '';
               if (value.isEmpty) return l.accountEnterEmail;
@@ -374,10 +439,8 @@ class _Form extends StatelessWidget {
             enabled: !busy,
             obscureText: true,
             autofillHints: const [AutofillHints.password],
-            decoration: InputDecoration(
-              labelText: l.accountPassword,
-              border: const OutlineInputBorder(),
-            ),
+            style: TextStyle(color: palette.text),
+            decoration: brandFieldDecoration(context, label: l.accountPassword),
             validator: (v) {
               if ((v ?? '').isEmpty) return l.accountEnterPassword;
               // Firebase's own minimum. Checking it here turns a round trip
@@ -394,29 +457,28 @@ class _Form extends StatelessWidget {
           ],
           if (error != null) ...[
             const SizedBox(height: AppSpacing.md),
-            Text(
-              error!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
+            InfoNotice(text: error!, tone: NoticeTone.caution),
           ],
           const SizedBox(height: 20),
-          FilledButton(
+          BrandButton(
+            expand: true,
             onPressed: busy ? null : onSubmit,
-            child: busy
+            leading: busy
                 ? const SizedBox(
-                    height: 18,
-                    width: 18,
+                    height: 16,
+                    width: 16,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(signingIn ? l.accountSignIn : l.accountCreate),
+                : null,
+            label: signingIn ? l.accountSignIn : l.accountCreate,
           ),
           const SizedBox(height: AppSpacing.sm),
           TextButton(
             onPressed: busy ? null : onToggleMode,
             child: Text(
               signingIn ? l.accountToggleToCreate : l.accountToggleToSignIn,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: context.semantic.accent),
             ),
           ),
         ],
@@ -429,33 +491,10 @@ class _Form extends StatelessWidget {
 /// themselves until the day it matters, and by then it is too late.
 class _VerificationNotice extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.info_outline,
-            size: 18,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              L10n.of(context).accountNoVerification,
-              style: theme.textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => InfoNotice(
+    text: L10n.of(context).accountNoVerification,
+    icon: Icons.info_outline,
+  );
 }
 
 class _SignedIn extends StatelessWidget {
@@ -469,15 +508,21 @@ class _SignedIn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        OutlinedButton.icon(
+        BrandButton(
+          tone: BrandButtonTone.outline,
+          expand: true,
           onPressed: busy ? null : onSignOut,
-          icon: const Icon(Icons.logout),
-          label: Text(L10n.of(context).accountSignOut),
+          leading: const Icon(Icons.logout_rounded),
+          label: L10n.of(context).accountSignOut,
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           L10n.of(context).accountSignedOutHelp,
-          style: Theme.of(context).textTheme.bodySmall,
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.5,
+            color: BrandPalette.of(context).muted,
+          ),
         ),
       ],
     );
@@ -489,9 +534,15 @@ class _Unavailable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      L10n.of(context).accountOfflineNotice,
-      style: Theme.of(context).textTheme.bodyMedium,
+    return BrandCard(
+      child: Text(
+        L10n.of(context).accountOfflineNotice,
+        style: TextStyle(
+          fontSize: 14,
+          height: 1.5,
+          color: BrandPalette.of(context).text,
+        ),
+      ),
     );
   }
 }
@@ -509,16 +560,29 @@ class _ConflictDialog extends StatelessWidget {
     final name = remote.name.isEmpty ? l.accountConflictUnnamed : remote.name;
 
     return AlertDialog(
+      backgroundColor: BrandPalette.of(context).background,
       title: Text(l.accountConflictTitle),
       content: Text(l.accountConflictBody(name)),
+      // Stacked full-width rather than two buttons in a row: both choices are
+      // sentences, and in Tamil they did not fit side by side.
+      actionsAlignment: MainAxisAlignment.center,
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text(l.accountConflictKeepPhone),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(l.accountConflictKeepAccount),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            BrandButton(
+              tone: BrandButtonTone.outline,
+              expand: true,
+              onPressed: () => Navigator.of(context).pop(false),
+              label: l.accountConflictKeepPhone,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            BrandButton(
+              expand: true,
+              onPressed: () => Navigator.of(context).pop(true),
+              label: l.accountConflictKeepAccount,
+            ),
+          ],
         ),
       ],
     );

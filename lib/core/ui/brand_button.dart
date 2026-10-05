@@ -28,6 +28,7 @@ class BrandButton extends StatelessWidget {
     this.expand = false,
     this.trailing,
     this.leading,
+    this.trailingWidget,
     this.tone = BrandButtonTone.primary,
   });
 
@@ -42,6 +43,9 @@ class BrandButton extends StatelessWidget {
 
   /// A widget before the label: an icon, or a spinner while busy.
   final Widget? leading;
+
+  /// A widget after the label, such as a small badge.
+  final Widget? trailingWidget;
 
   final BrandButtonTone tone;
 
@@ -108,6 +112,10 @@ class BrandButton extends StatelessWidget {
         if (trailing != null) ...[
           const SizedBox(width: 8),
           Icon(trailing, size: 18, color: foreground),
+        ],
+        if (trailingWidget != null) ...[
+          const SizedBox(width: 8),
+          trailingWidget!,
         ],
       ],
     );

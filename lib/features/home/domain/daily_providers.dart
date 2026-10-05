@@ -77,21 +77,44 @@ final auspiciousProvider = Provider<List<TimeWindow>>((ref) {
   return p == null ? const [] : Nekath.auspiciousWindows(p);
 });
 
+/// The time, to the minute, as far as the home screen is concerned.
+///
+/// A provider rather than `DateTime.now()` at each use, so everything that
+/// says "now" — the running-now banner, the rāhu chip, the ring and the sun on
+/// the day arc — moves together when the minute turns, rather than whenever
+/// something else happens to rebuild them. The home screen owns the timer and
+/// calls [ClockNotifier.tick]; a timer in here would outlive the screen.
+class ClockNotifier extends Notifier<DateTime> {
+  @override
+  DateTime build() => DateTime.now();
+
+  void tick() => state = DateTime.now();
+}
+
+final clockProvider = NotifierProvider<ClockNotifier, DateTime>(
+  ClockNotifier.new,
+);
+
 /// The inauspicious window currently in progress, if any.
 ///
 /// Only meaningful while viewing today — a "right now" badge on yesterday's
 /// almanac would be nonsense.
+///
+/// Watches the clock, so the banner appears when rāhu kālaya starts and goes
+/// when it ends. It used to read the time once, when the day was computed, so
+/// an app left open over lunch kept saying "running now" all afternoon.
 final currentlyInauspiciousProvider = Provider<TimeWindow?>((ref) {
-  final p = ref.watch(panchangaProvider);
-  if (p == null || !ref.watch(selectedDateProvider.notifier).isToday) {
-    return null;
-  }
-  final now = DateTime.now();
-  for (final w in Nekath.inauspicious(p)) {
+  final now = ref.watch(clockProvider);
+  final date = ref.watch(selectedDateProvider);
+  if (!isSameDay(date, now)) return null;
+  for (final w in ref.watch(inauspiciousProvider)) {
     if (w.contains(now)) return w;
   }
   return null;
 });
+
+bool isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
 
 /// The next poya on or after the selected day.
 ///

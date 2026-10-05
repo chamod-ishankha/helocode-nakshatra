@@ -8,7 +8,6 @@ import '../../../core/astro/compatibility/porondam.dart';
 import '../../../core/ads/banner_ad_slot.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
-import '../../../core/router/app_router.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/brand_palette.dart';
@@ -16,7 +15,6 @@ import '../../../core/ui/brand_button.dart';
 import '../../../core/ui/brand_card.dart';
 import '../../../core/ui/nakshatra_star.dart';
 import '../../../core/ui/pill_segments.dart';
-import '../../../core/ui/round_icon_button.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -55,14 +53,6 @@ class CompatibilityScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  RoundIconButton(
-                    icon: Icons.arrow_back_rounded,
-                    tooltip: MaterialLocalizations.of(
-                      context,
-                    ).backButtonTooltip,
-                    onPressed: () => popOrHome(context),
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       l.compatTitle,

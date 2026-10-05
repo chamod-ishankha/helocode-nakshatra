@@ -63,14 +63,6 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  RoundIconButton(
-                    icon: Icons.arrow_back_rounded,
-                    tooltip: MaterialLocalizations.of(
-                      context,
-                    ).backButtonTooltip,
-                    onPressed: () => popOrHome(context),
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       l.settingsTitle,
@@ -452,6 +444,8 @@ class _ChoiceTile<T> extends StatelessWidget {
   Future<void> _choose(BuildContext context) async {
     final chosen = await showModalBottomSheet<T>(
       context: context,
+      // Over the tab bar, not under it (KAN-92).
+      useRootNavigator: true,
       showDragHandle: true,
       backgroundColor: BrandPalette.of(context).background,
       builder: (context) => SafeArea(

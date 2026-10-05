@@ -25,6 +25,8 @@ import '../domain/compatibility_providers.dart';
 Future<void> showPartnerForm(BuildContext context, WidgetRef ref) =>
     showModalBottomSheet<void>(
       context: context,
+      // Over the tab bar, not under it (KAN-92).
+      useRootNavigator: true,
       isScrollControlled: true,
       showDragHandle: true,
       backgroundColor: BrandPalette.of(context).background,

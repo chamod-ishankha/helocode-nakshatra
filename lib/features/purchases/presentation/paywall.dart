@@ -133,6 +133,8 @@ Future<void> showPaywall(
   // navigation stack alone.
   final bought = await showModalBottomSheet<bool>(
     context: context,
+    // Over the tab bar, not under it (KAN-92).
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     shape: const RoundedRectangleBorder(),

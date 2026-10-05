@@ -139,16 +139,19 @@ void main() {
     testWidgets('a Today button appears only when away from today', (
       tester,
     ) async {
+      // "Today" also heads the page when the day shown is today, so the
+      // button is found as a button.
+      final button = find.widgetWithText(TextButton, 'Today');
       await pumpHome(tester);
-      expect(find.text('Today'), findsNothing);
+      expect(button, findsNothing);
 
       await tester.tap(find.byIcon(Icons.chevron_right));
       await tester.pumpAndSettle();
-      expect(find.text('Today'), findsOneWidget);
+      expect(button, findsOneWidget);
 
-      await tester.tap(find.text('Today'));
+      await tester.tap(button);
       await tester.pumpAndSettle();
-      expect(find.text('Today'), findsNothing);
+      expect(button, findsNothing);
     });
 
     testWidgets('the almanac actually changes with the date', (tester) async {

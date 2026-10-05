@@ -187,7 +187,6 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                 _Header(
                   name: profile.name.isEmpty ? l.chartTitle : profile.name,
                   details: details,
-                  onBack: () => popOrHome(context),
                   onShare: () => _share(caption),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -304,13 +303,11 @@ class _Header extends StatelessWidget {
   const _Header({
     required this.name,
     required this.details,
-    required this.onBack,
     required this.onShare,
   });
 
   final String name;
   final String details;
-  final VoidCallback onBack;
   final VoidCallback onShare;
 
   @override
@@ -321,12 +318,6 @@ class _Header extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RoundIconButton(
-          icon: Icons.arrow_back_rounded,
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          onPressed: onBack,
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

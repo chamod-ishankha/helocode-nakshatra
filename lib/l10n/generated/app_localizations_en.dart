@@ -1596,4 +1596,45 @@ class L10nEn extends L10n {
 
   @override
   String get paywallTierMonthly => 'Monthly';
+
+  @override
+  String get navCalendar => 'Calendar';
+
+  @override
+  String get navChart => 'Chart';
+
+  @override
+  String get navMatch => 'Match';
+
+  @override
+  String get navMore => 'More';
+
+  @override
+  String homeRahuUntil(String time) {
+    return 'Rāhu until $time';
+  }
+
+  @override
+  String homeRahuAt(String time) {
+    return 'Rāhu at $time';
+  }
+
+  @override
+  String homeDaysAgo(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String get yesterdayLower => 'yesterday';
+
+  @override
+  String homeDayArc(String sunrise, String sunset) {
+    return 'Daylight from $sunrise to $sunset, with rāhu kālaya marked';
+  }
+
+  @override
+  String get homePreviousDay => 'Previous day';
+
+  @override
+  String get homeNextDay => 'Next day';
 }

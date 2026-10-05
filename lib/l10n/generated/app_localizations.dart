@@ -2846,6 +2846,72 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Monthly'**
   String get paywallTierMonthly;
+
+  /// Bottom navigation label.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get navCalendar;
+
+  /// Bottom navigation label.
+  ///
+  /// In en, this message translates to:
+  /// **'Chart'**
+  String get navChart;
+
+  /// Bottom navigation label for compatibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get navMatch;
+
+  /// Bottom navigation label for settings and everything else.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get navMore;
+
+  /// Chip on Home while rāhu kālaya is running.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāhu until {time}'**
+  String homeRahuUntil(String time);
+
+  /// Chip on Home before today's rāhu kālaya has started.
+  ///
+  /// In en, this message translates to:
+  /// **'Rāhu at {time}'**
+  String homeRahuAt(String time);
+
+  /// Above the weekday on Home when looking at a past day.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String homeDaysAgo(int days);
+
+  /// No description provided for @yesterdayLower.
+  ///
+  /// In en, this message translates to:
+  /// **'yesterday'**
+  String get yesterdayLower;
+
+  /// Screen-reader label for the day arc on Home.
+  ///
+  /// In en, this message translates to:
+  /// **'Daylight from {sunrise} to {sunset}, with rāhu kālaya marked'**
+  String homeDayArc(String sunrise, String sunset);
+
+  /// No description provided for @homePreviousDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get homePreviousDay;
+
+  /// No description provided for @homeNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get homeNextDay;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

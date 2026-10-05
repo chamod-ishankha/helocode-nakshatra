@@ -47,14 +47,6 @@ class CalendarScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  RoundIconButton(
-                    icon: Icons.arrow_back_rounded,
-                    tooltip: MaterialLocalizations.of(
-                      context,
-                    ).backButtonTooltip,
-                    onPressed: () => popOrHome(context),
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       l.calendarTitle,

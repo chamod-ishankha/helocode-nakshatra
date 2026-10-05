@@ -1569,4 +1569,45 @@ class L10nSi extends L10n {
 
   @override
   String get paywallTierMonthly => 'මාසික';
+
+  @override
+  String get navCalendar => 'දින දර්ශනය';
+
+  @override
+  String get navChart => 'කේන්දරය';
+
+  @override
+  String get navMatch => 'පොරොන්දම්';
+
+  @override
+  String get navMore => 'තව';
+
+  @override
+  String homeRahuUntil(String time) {
+    return 'රාහු $time දක්වා';
+  }
+
+  @override
+  String homeRahuAt(String time) {
+    return 'රාහු $time ට';
+  }
+
+  @override
+  String homeDaysAgo(int days) {
+    return 'දින $daysකට පෙර';
+  }
+
+  @override
+  String get yesterdayLower => 'ඊයේ';
+
+  @override
+  String homeDayArc(String sunrise, String sunset) {
+    return '$sunrise සිට $sunset දක්වා දිවා කාලය, රාහු කාලය සලකුණු කර ඇත';
+  }
+
+  @override
+  String get homePreviousDay => 'පෙර දිනය';
+
+  @override
+  String get homeNextDay => 'ඊළඟ දිනය';
 }

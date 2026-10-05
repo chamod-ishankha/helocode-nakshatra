@@ -1594,4 +1594,45 @@ class L10nTa extends L10n {
 
   @override
   String get paywallTierMonthly => 'மாதாந்திரம்';
+
+  @override
+  String get navCalendar => 'நாட்காட்டி';
+
+  @override
+  String get navChart => 'ஜாதகம்';
+
+  @override
+  String get navMatch => 'பொருத்தம்';
+
+  @override
+  String get navMore => 'மேலும்';
+
+  @override
+  String homeRahuUntil(String time) {
+    return 'ராகு $time வரை';
+  }
+
+  @override
+  String homeRahuAt(String time) {
+    return 'ராகு $time மணிக்கு';
+  }
+
+  @override
+  String homeDaysAgo(int days) {
+    return '$days நாட்களுக்கு முன்';
+  }
+
+  @override
+  String get yesterdayLower => 'நேற்று';
+
+  @override
+  String homeDayArc(String sunrise, String sunset) {
+    return '$sunrise முதல் $sunset வரை பகல், ராகு காலம் குறிக்கப்பட்டுள்ளது';
+  }
+
+  @override
+  String get homePreviousDay => 'முந்தைய நாள்';
+
+  @override
+  String get homeNextDay => 'அடுத்த நாள்';
 }

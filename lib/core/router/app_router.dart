@@ -18,6 +18,7 @@ import '../../features/profiles/presentation/profiles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/horoscope/presentation/horoscope_screen.dart';
 import '../theme/app_spacing.dart';
+import 'app_shell.dart';
 
 /// Route paths, kept in one place so no screen hardcodes a string.
 abstract final class Routes {
@@ -127,6 +128,88 @@ final routerProvider = Provider<GoRouter>((ref) {
       hasProfile: ref.read(profileProvider) != null,
     ),
     routes: [
+      // Tabs (KAN-92). Each branch keeps its own navigation state, so the
+      // calendar month or the chart's scroll survives a visit to another tab.
+      // A page reached from a tab lives in that tab's branch and keeps the
+      // bar: the horoscope under Today, the daśā under Chart, the account and
+      // saved charts under More.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, shell) => AppShell(shell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.home,
+                name: 'home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+              GoRoute(
+                path: Routes.horoscope,
+                name: 'horoscope',
+                builder: (context, state) => const HoroscopeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.calendar,
+                name: 'calendar',
+                builder: (context, state) =>
+                    const BackToToday(child: CalendarScreen()),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.chart,
+                name: 'chart',
+                builder: (context, state) =>
+                    const BackToToday(child: ChartScreen()),
+              ),
+              GoRoute(
+                path: Routes.dasha,
+                name: 'dasha',
+                builder: (context, state) => const DashaScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.compatibility,
+                name: 'compatibility',
+                builder: (context, state) =>
+                    const BackToToday(child: CompatibilityScreen()),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.settings,
+                name: 'settings',
+                builder: (context, state) =>
+                    const BackToToday(child: SettingsScreen()),
+              ),
+              GoRoute(
+                path: Routes.account,
+                name: 'account',
+                builder: (context, state) => const AccountScreen(),
+              ),
+              GoRoute(
+                path: Routes.profiles,
+                name: 'profiles',
+                builder: (context, state) => const ProfilesScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      // Over the bar: the first-run flows, and adding a chart, which take
+      // the whole screen until they are finished or abandoned.
       GoRoute(
         path: Routes.welcome,
         name: 'welcome',
@@ -136,55 +219,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: Routes.profiles,
-        name: 'profiles',
-        builder: (context, state) => const ProfilesScreen(),
-      ),
-      GoRoute(
         path: Routes.onboarding,
         name: 'onboarding',
         builder: (context, state) =>
             OnboardingScreen(adding: state.uri.queryParameters['add'] == '1'),
-      ),
-      GoRoute(
-        path: Routes.home,
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: Routes.chart,
-        name: 'chart',
-        builder: (context, state) => const ChartScreen(),
-      ),
-      GoRoute(
-        path: Routes.dasha,
-        name: 'dasha',
-        builder: (context, state) => const DashaScreen(),
-      ),
-      GoRoute(
-        path: Routes.account,
-        name: 'account',
-        builder: (context, state) => const AccountScreen(),
-      ),
-      GoRoute(
-        path: Routes.horoscope,
-        name: 'horoscope',
-        builder: (context, state) => const HoroscopeScreen(),
-      ),
-      GoRoute(
-        path: Routes.compatibility,
-        name: 'compatibility',
-        builder: (context, state) => const CompatibilityScreen(),
-      ),
-      GoRoute(
-        path: Routes.settings,
-        name: 'settings',
-        builder: (context, state) => const SettingsScreen(),
-      ),
-      GoRoute(
-        path: Routes.calendar,
-        name: 'calendar',
-        builder: (context, state) => const CalendarScreen(),
       ),
     ],
     errorBuilder: (context, state) => _RouteErrorScreen(error: state.error),

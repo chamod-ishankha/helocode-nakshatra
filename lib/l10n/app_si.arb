@@ -457,5 +457,16 @@
   "compatShowsDoshasTitle": "දෝෂ",
   "compatShowsDoshas": "නාඩි, භකූට, රජ්ජු සහ කුජ, පැහැදිලිව",
   "paywallTierYearly": "වාර්ෂික",
-  "paywallTierMonthly": "මාසික"
+  "paywallTierMonthly": "මාසික",
+  "navCalendar": "දින දර්ශනය",
+  "navChart": "කේන්දරය",
+  "navMatch": "පොරොන්දම්",
+  "navMore": "තව",
+  "homeRahuUntil": "රාහු {time} දක්වා",
+  "homeRahuAt": "රාහු {time} ට",
+  "homeDaysAgo": "දින {days}කට පෙර",
+  "yesterdayLower": "ඊයේ",
+  "homeDayArc": "{sunrise} සිට {sunset} දක්වා දිවා කාලය, රාහු කාලය සලකුණු කර ඇත",
+  "homePreviousDay": "පෙර දිනය",
+  "homeNextDay": "ඊළඟ දිනය"
 }

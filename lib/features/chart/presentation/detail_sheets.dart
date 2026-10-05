@@ -21,6 +21,8 @@ import '../../onboarding/data/profile_repository.dart';
 Future<void> showGrahaDetail(BuildContext context, GrahaPosition position) =>
     showModalBottomSheet<void>(
       context: context,
+      // Over the tab bar, not under it (KAN-92).
+      useRootNavigator: true,
       showDragHandle: true,
       backgroundColor: BrandPalette.of(context).background,
       builder: (_) => _GrahaDetail(position: position),
@@ -38,6 +40,8 @@ Future<void> showHouseDetail(
   required List<GrahaPosition> grahas,
 }) => showModalBottomSheet<void>(
   context: context,
+  // Over the tab bar, not under it (KAN-92).
+  useRootNavigator: true,
   showDragHandle: true,
   backgroundColor: BrandPalette.of(context).background,
   builder: (_) => _HouseDetail(rasi: rasi, house: house, grahas: grahas),

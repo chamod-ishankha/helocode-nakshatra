@@ -457,5 +457,16 @@
   "compatShowsDoshasTitle": "தோஷங்கள்",
   "compatShowsDoshas": "நாடி, பாகூட், ரஜ்ஜு, குஜ — தெளிவாக",
   "paywallTierYearly": "வருடாந்திரம்",
-  "paywallTierMonthly": "மாதாந்திரம்"
+  "paywallTierMonthly": "மாதாந்திரம்",
+  "navCalendar": "நாட்காட்டி",
+  "navChart": "ஜாதகம்",
+  "navMatch": "பொருத்தம்",
+  "navMore": "மேலும்",
+  "homeRahuUntil": "ராகு {time} வரை",
+  "homeRahuAt": "ராகு {time} மணிக்கு",
+  "homeDaysAgo": "{days} நாட்களுக்கு முன்",
+  "yesterdayLower": "நேற்று",
+  "homeDayArc": "{sunrise} முதல் {sunset} வரை பகல், ராகு காலம் குறிக்கப்பட்டுள்ளது",
+  "homePreviousDay": "முந்தைய நாள்",
+  "homeNextDay": "அடுத்த நாள்"
 }

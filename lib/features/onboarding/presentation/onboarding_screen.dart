@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/brand_palette.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/brand_button.dart';
+import '../../../core/ui/brand_field.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../core/ui/round_icon_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -348,32 +349,6 @@ class _StepScaffold extends StatelessWidget {
   }
 }
 
-/// The redesign's text field: a filled, rounded box with a gold focus ring.
-InputDecoration _fieldDecoration(
-  BuildContext context, {
-  String? label,
-  IconData? icon,
-}) {
-  final palette = BrandPalette.of(context);
-  OutlineInputBorder border(Color color, [double width = 1]) =>
-      OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: color, width: width),
-      );
-  return InputDecoration(
-    labelText: label,
-    prefixIcon: icon == null ? null : Icon(icon, color: palette.muted),
-    filled: true,
-    fillColor: palette.surface,
-    labelStyle: TextStyle(color: palette.muted),
-    floatingLabelStyle: TextStyle(color: context.semantic.accent),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-    border: border(palette.line),
-    enabledBorder: border(palette.line),
-    focusedBorder: border(context.semantic.accent, 1.5),
-  );
-}
-
 class _NameStep extends StatelessWidget {
   const _NameStep({required this.controller, required this.onChanged});
   final TextEditingController controller;
@@ -433,7 +408,7 @@ class _NameStep extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: palette.text,
             ),
-            decoration: _fieldDecoration(
+            decoration: brandFieldDecoration(
               context,
               label: L10n.of(context).onboardingNameLabel,
             ),
@@ -623,7 +598,7 @@ class _PlaceStepState extends ConsumerState<_PlaceStep> {
           ),
           const SizedBox(height: AppSpacing.sm),
           TextField(
-            decoration: _fieldDecoration(
+            decoration: brandFieldDecoration(
               context,
               label: l10n.onboardingPlaceSearch,
               icon: Icons.search_rounded,

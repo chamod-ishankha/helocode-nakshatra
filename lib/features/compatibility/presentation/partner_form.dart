@@ -4,9 +4,15 @@ import 'package:intl/intl.dart';
 
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/theme/semantic_colors.dart';
+import '../../../core/ui/brand_button.dart';
+import '../../../core/ui/brand_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/place_repository.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../onboarding/presentation/birth_wheels_view.dart';
 import '../../onboarding/presentation/country_field.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import '../domain/compatibility_providers.dart';
@@ -21,6 +27,7 @@ Future<void> showPartnerForm(BuildContext context, WidgetRef ref) =>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
+      backgroundColor: BrandPalette.of(context).background,
       builder: (_) => const _PartnerForm(),
     );
 
@@ -87,7 +94,9 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final locale = AppLocale.of(context);
     final country = ref.watch(effectiveCountryProvider);
     final results = country.when(
       loading: () => const AsyncValue<List<Place>>.loading(),
@@ -95,6 +104,12 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
       data: (cc) => ref.watch(
         placeSearchProvider((countryCode: cc, query: _placeQuery.text)),
       ),
+    );
+
+    TextStyle question() => TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w600,
+      color: palette.text,
     );
 
     return Padding(
@@ -110,79 +125,100 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l.compatPartnerDetails, style: theme.textTheme.titleLarge),
+            Text(
+              l.compatPartnerDetails,
+              style: BrandFonts.displayStyle(
+                context,
+                size: 28,
+                color: palette.text,
+              ),
+            ),
             const SizedBox(height: AppSpacing.lg),
 
             TextField(
               controller: _name,
               textCapitalization: TextCapitalization.words,
-              decoration: InputDecoration(
-                labelText: l.compatPartnerName,
-                border: const OutlineInputBorder(),
+              style: TextStyle(
+                fontFamilyFallback: AppTheme.scriptFallbacks,
+                color: palette.text,
               ),
+              decoration: brandFieldDecoration(
+                context,
+                label: l.compatPartnerName,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // The same wheels as onboarding (KAN-82), in place of the
+            // Material dialogs it already dropped.
+            Text(l.onboardingDateQuestion, style: question()),
+            const SizedBox(height: AppSpacing.sm),
+            BirthDateWheels(
+              value: _date,
+              onChanged: (d) => setState(() => _date = d),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              _date == null
+                  ? l.onboardingDateWheelHint
+                  : DateFormat.yMMMMEEEEd().format(_date!),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: palette.muted),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            Text(l.onboardingTimeQuestion, style: question()),
+            const SizedBox(height: AppSpacing.sm),
+            BirthTimeWheels(
+              value: _time,
+              enabled: _timeKnown,
+              onChanged: (t) => setState(() => _time = t),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              // Through DateFormat, in the reader's language. This used to
+              // build "14:39" by hand, which is English digits and a 24-hour
+              // clock in a Sinhala or Tamil app.
+              !_timeKnown
+                  ? l.onboardingTimeUnknown
+                  : _time == null
+                  ? l.onboardingTimeWheelHint
+                  : DateFormat('h:mm a').format(DateTime(2000).add(_time!)),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: palette.muted),
             ),
             const SizedBox(height: AppSpacing.md),
-
-            OutlinedButton.icon(
-              icon: const Icon(Icons.calendar_today, size: 18),
-              onPressed: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: _date ?? DateTime(1995),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                  helpText: l.onboardingDateLabel,
-                );
-                if (picked != null) setState(() => _date = picked);
-              },
-              label: Text(
-                _date == null
-                    ? l.onboardingDatePickerTitle
-                    : DateFormat.yMMMd().format(_date!),
+            Material(
+              color: !_timeKnown ? semantic.accentSurface : palette.surface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+                side: BorderSide(
+                  color: !_timeKnown ? semantic.accent : palette.line,
+                ),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: CheckboxListTile(
+                value: !_timeKnown,
+                onChanged: (v) => setState(() => _timeKnown = !(v ?? false)),
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: semantic.accent,
+                title: Text(
+                  l.onboardingTimeUnknownLabel,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: palette.text,
+                  ),
+                ),
+                subtitle: Text(
+                  l.onboardingTimeUnknown,
+                  style: TextStyle(color: palette.muted),
+                ),
               ),
             ),
+            const SizedBox(height: AppSpacing.xl),
+
+            Text(l.onboardingPlaceQuestion, style: question()),
             const SizedBox(height: AppSpacing.sm),
-
-            OutlinedButton.icon(
-              icon: const Icon(Icons.schedule, size: 18),
-              onPressed: !_timeKnown
-                  ? null
-                  : () async {
-                      final picked = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay(
-                          hour: _time?.inHours ?? 6,
-                          minute: (_time?.inMinutes ?? 0) % 60,
-                        ),
-                        helpText: l.onboardingTimeLabel,
-                      );
-                      if (picked != null) {
-                        setState(
-                          () => _time = Duration(
-                            hours: picked.hour,
-                            minutes: picked.minute,
-                          ),
-                        );
-                      }
-                    },
-              label: Text(
-                !_timeKnown || _time == null
-                    ? l.onboardingTimePickerTitle
-                    : '${_time!.inHours.toString().padLeft(2, '0')}:'
-                          '${(_time!.inMinutes % 60).toString().padLeft(2, '0')}',
-              ),
-            ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: !_timeKnown,
-              onChanged: (v) => setState(() => _timeKnown = !v),
-              title: Text(
-                l.onboardingTimeUnknown,
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-
             // Scopes the search below it. A partner is often born in a
             // different country from the user, so this is not a formality.
             SizedBox(
@@ -195,55 +231,91 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
 
             TextField(
               controller: _placeQuery,
-              decoration: InputDecoration(
-                labelText: l.onboardingPlaceSearch,
-                prefixIcon: const Icon(Icons.search),
-                border: const OutlineInputBorder(),
+              style: TextStyle(
+                fontFamilyFallback: AppTheme.scriptFallbacks,
+                color: palette.text,
+              ),
+              decoration: brandFieldDecoration(
+                context,
+                label: l.onboardingPlaceSearch,
+                icon: Icons.search_rounded,
               ),
               onChanged: (_) => setState(() => _place = null),
             ),
             const SizedBox(height: AppSpacing.sm),
 
             if (_place != null)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.place),
-                title: Text(_place!.label(AppLocale.of(context))),
-                subtitle: Text(_place!.districtLabel(AppLocale.of(context))),
+              Material(
+                color: semantic.accentSurface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  side: BorderSide(color: semantic.accent),
+                ),
+                child: ListTile(
+                  leading: Icon(
+                    Icons.location_on_outlined,
+                    color: semantic.accent,
+                  ),
+                  title: Text(
+                    _place!.label(locale),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: palette.text,
+                    ),
+                  ),
+                  subtitle: Text(
+                    _place!.districtLabel(locale),
+                    style: TextStyle(color: palette.muted),
+                  ),
+                  // A tick as well as the gold: chosen, not just highlighted.
+                  trailing: Icon(Icons.check_rounded, color: semantic.accent),
+                ),
               )
             else
               SizedBox(
-                height: 180,
+                height: 200,
                 child: results.when(
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
                   error: (e, _) =>
                       Center(child: Text(l.onboardingPlaceLoadFailed('$e'))),
                   data: (places) => places.isEmpty
-                      ? Center(child: Text(l.onboardingPlaceNoMatch))
+                      ? Center(
+                          child: Text(
+                            l.onboardingPlaceNoMatch,
+                            style: TextStyle(color: palette.muted),
+                          ),
+                        )
                       : ListView.builder(
                           itemCount: places.length,
                           itemBuilder: (context, i) => ListTile(
                             dense: true,
-                            title: Text(places[i].label(AppLocale.of(context))),
+                            leading: Icon(
+                              Icons.location_on_outlined,
+                              color: palette.muted,
+                            ),
+                            title: Text(
+                              places[i].label(locale),
+                              style: TextStyle(color: palette.text),
+                            ),
                             subtitle: Text(
-                              places[i].districtLabel(AppLocale.of(context)),
+                              places[i].districtLabel(locale),
+                              style: TextStyle(color: palette.muted),
                             ),
                             onTap: () => setState(() {
                               _place = places[i];
-                              _placeQuery.text = places[i].label(
-                                AppLocale.of(context),
-                              );
+                              _placeQuery.text = places[i].label(locale);
                             }),
                           ),
                         ),
                 ),
               ),
 
-            const SizedBox(height: AppSpacing.lg),
-            FilledButton(
+            const SizedBox(height: AppSpacing.xl),
+            BrandButton(
+              expand: true,
               onPressed: _complete ? _save : null,
-              child: Text(l.continueLabel),
+              label: l.continueLabel,
             ),
             const SizedBox(height: AppSpacing.sm),
           ],

@@ -449,5 +449,11 @@
   "onboardingDateWheelHint": "ඔබේ උපන් දිනයට අනුචලනය කරන්න",
   "onboardingTimeWheelHint": "ඔබේ උපන් වේලාවට අනුචලනය කරන්න",
   "onboardingPlaceZone": "මෙහි වේලාවන් ගණනය කරන්නේ {zone} අනුවයි; එදින එය {offset} විය.",
-  "onboardingPlaceZoneOnly": "මෙහි වේලාවන් ගණනය කරන්නේ {zone} අනුවයි."
+  "onboardingPlaceZoneOnly": "මෙහි වේලාවන් ගණනය කරන්නේ {zone} අනුවයි.",
+  "compatAddPartner": "සහකරු එක් කරන්න",
+  "compatWillShow": "ගැළපීමකින් පෙන්වන්නේ",
+  "compatShowsAshtakoota": "සාධක අටේ ලකුණු, 36න්",
+  "compatShowsPorondam": "ශ්‍රී ලාංකීය පොරොන්දම් දොළහ, ගැළපේද නැද්ද",
+  "compatShowsDoshasTitle": "දෝෂ",
+  "compatShowsDoshas": "නාඩි, භකූට, රජ්ජු සහ කුජ, පැහැදිලිව"
 }

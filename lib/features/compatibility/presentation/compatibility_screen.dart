@@ -11,6 +11,12 @@ import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_button.dart';
+import '../../../core/ui/brand_card.dart';
+import '../../../core/ui/nakshatra_star.dart';
+import '../../../core/ui/pill_segments.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -33,162 +39,368 @@ class CompatibilityScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
     final mine = ref.watch(profileProvider);
     final partner = ref.watch(partnerProvider);
     final match = ref.watch(matchProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l.compatTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => popOrHome(context),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          Text(
-            l.compatIntro,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-
-          if (mine != null)
-            _PersonCard(label: l.compatYourDetails, profile: mine),
-          const SizedBox(height: AppSpacing.sm),
-          _PartnerCard(partner: partner),
-
-          if (partner != null) ...[
-            const SizedBox(height: 20),
-            const _RoleSelector(),
-            const SizedBox(height: 20),
-            const _SystemToggle(),
-            const SizedBox(height: AppSpacing.lg),
-          ],
-
-          if (match == null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text(
-                l.compatNeedPartner,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+      backgroundColor: palette.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: palette.backdrop),
+        child: SafeArea(
+          bottom: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 32),
+            children: [
+              Row(
+                children: [
+                  RoundIconButton(
+                    icon: Icons.arrow_back_rounded,
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
+                    onPressed: () => popOrHome(context),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      l.compatTitle,
+                      style: BrandFonts.displayStyle(
+                        context,
+                        size: 26,
+                        color: palette.text,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                l.compatIntro,
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: palette.muted,
                 ),
               ),
-            )
-          else
-            _Results(match: match),
+              const SizedBox(height: AppSpacing.lg),
 
-          const SizedBox(height: AppSpacing.xl),
-          _Caveat(text: l.compatCaveat),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            l.entertainmentOnly,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              _Pair(mine: mine, partner: partner),
+
+              if (partner != null) ...[
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: TextButton(
+                    onPressed: () => showPartnerForm(context, ref),
+                    child: Text(
+                      l.compatChangePartner,
+                      style: TextStyle(color: context.semantic.accent),
+                    ),
+                  ),
+                ),
+                const _RoleSelector(),
+                const SizedBox(height: AppSpacing.lg),
+                const _SystemToggle(),
+                const SizedBox(height: AppSpacing.lg),
+              ],
+
+              if (match == null) const _Empty() else _Results(match: match),
+
+              const SizedBox(height: AppSpacing.xl),
+              _Caveat(text: l.compatCaveat),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                l.entertainmentOnly,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: palette.muted),
+              ),
+
+              // The screen's one ad, and the last thing on it (KAN-76).
+              //
+              // Below the result, below the caveat, below the disclaimer —
+              // seen by someone who has read the whole match and scrolled
+              // past the warning, never by someone still reading it. Every
+              // control on this screen (the partner card, the bride selector,
+              // the system toggle, the unlock buttons in the breakdown) sits
+              // above that. AdMob enforces its accidental-click rule hardest
+              // beside things a user taps, and the ban is account-wide.
+              //
+              // Only once there is a result. A screen still asking for the
+              // partner's details is a form, and an ad at the foot of a form
+              // sits one thumb-length from the button that fills it in.
+              if (match != null) const BannerAdSlot(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The two people side by side, with a heart between them.
+///
+/// With no partner yet the second place is an empty, dashed "Add partner"
+/// card: the screen shows the pair it needs before asking for it.
+class _Pair extends ConsumerWidget {
+  const _Pair({required this.mine, required this.partner});
+
+  final BirthProfile? mine;
+  final BirthProfile? partner;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L10n.of(context);
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: mine == null
+                ? const SizedBox.shrink()
+                : _Person(label: l.compatYourDetails, profile: mine!),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.favorite_border_rounded,
+              size: 20,
+              color: context.semantic.accent,
             ),
           ),
-
-          // The screen's one ad, and the last thing on it (KAN-76).
-          //
-          // Below the result, below the caveat, below the disclaimer — seen
-          // by someone who has read the whole match and scrolled past the
-          // warning, never by someone still reading it. Every control on this
-          // screen (the partner card, the bride selector, the system toggle,
-          // the unlock buttons in the breakdown) sits above that. AdMob
-          // enforces its accidental-click rule hardest beside things a user
-          // taps, and the ban is account-wide.
-          //
-          // Only once there is a result. A screen still asking for the
-          // partner's details is a form, and an ad at the foot of a form sits
-          // one thumb-length from the button that fills it in.
-          if (match != null) const BannerAdSlot(),
+          Expanded(
+            child: partner == null
+                ? _AddPartner(onTap: () => showPartnerForm(context, ref))
+                : _Person(label: l.compatPartnerDetails, profile: partner!),
+          ),
         ],
       ),
     );
   }
 }
 
-class _PersonCard extends StatelessWidget {
-  const _PersonCard({required this.label, required this.profile});
+class _Person extends StatelessWidget {
+  const _Person({required this.label, required this.profile});
 
   final String label;
   final BirthProfile profile;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  profile.name.isEmpty ? '—' : profile.name,
-                  style: theme.textTheme.titleSmall,
-                ),
-                Text(
-                  '${DateFormat.yMMMd().format(profile.birthDate)} · '
-                  '${profile.place.label(AppLocale.of(context))}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final name = profile.name.isEmpty ? '—' : profile.name;
+    // Labelled as a whole for a screen reader, which otherwise hears two
+    // names with nothing saying whose is whose; the card shows it by place.
+    return Semantics(
+      container: true,
+      label: label,
+      child: BrandCard(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: semantic.accentSurface,
+              ),
+              child: Text(
+                String.fromCharCodes(name.runes.take(1)).toUpperCase(),
+                style: BrandFonts.displayStyle(
+                  context,
+                  size: 22,
+                  color: semantic.accent,
+                ).copyWith(height: 1),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: palette.text,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              '${DateFormat.yMMMd().format(profile.birthDate)} · '
+              '${profile.place.label(AppLocale.of(context))}',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: palette.muted),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _PartnerCard extends ConsumerWidget {
-  const _PartnerCard({required this.partner});
+class _AddPartner extends StatelessWidget {
+  const _AddPartner({required this.onTap});
 
-  final BirthProfile? partner;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    final gold = context.semantic.accent;
+    return Material(
+      color: palette.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(BrandCard.radius),
+        side: BorderSide(color: palette.line),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: gold),
+                ),
+                child: Icon(Icons.add_rounded, color: gold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                L10n.of(context).compatAddPartner,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: palette.text,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Before there is a partner: what a match will show, then the way in.
+class _Empty extends ConsumerWidget {
+  const _Empty();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
 
-    if (partner == null) {
-      return FilledButton.icon(
-        onPressed: () => showPartnerForm(context, ref),
-        icon: const Icon(Icons.person_add_alt),
-        label: Text(l.compatPartnerDetails),
-      );
-    }
+    Widget row(String badge, String title, String body, bool first) =>
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: first ? null : Border(top: BorderSide(color: palette.line)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: semantic.accentSurface,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    badge,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: semantic.accent,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: palette.text,
+                        ),
+                      ),
+                      Text(
+                        body,
+                        style: TextStyle(fontSize: 13, color: palette.muted),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _PersonCard(label: l.compatPartnerDetails, profile: partner!),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () => showPartnerForm(context, ref),
-            child: Text(l.compatChangePartner),
+        const SizedBox(height: AppSpacing.lg),
+        Center(
+          child: SizedBox.square(
+            dimension: 88,
+            child: CustomPaint(
+              painter: NakshatraStarPainter(
+                progress: 1,
+                color: semantic.accent.withValues(alpha: 0.6),
+              ),
+            ),
           ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        Text(
+          l.compatNeedPartner,
+          textAlign: TextAlign.center,
+          style: BrandFonts.displayStyle(
+            context,
+            size: 20,
+            color: palette.text,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        Text(
+          l.compatWillShow,
+          style: TextStyle(fontSize: 13, color: palette.muted),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        BrandCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Column(
+            children: [
+              row(
+                '36',
+                l.compatSystemAshtakoota,
+                l.compatShowsAshtakoota,
+                true,
+              ),
+              row('12', l.compatSystemPorondam, l.compatShowsPorondam, false),
+              row('!', l.compatShowsDoshasTitle, l.compatShowsDoshas, false),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        BrandButton(
+          expand: true,
+          label: l.compatAddPartner,
+          leading: const Icon(Icons.person_add_alt_1_rounded),
+          onPressed: () => showPartnerForm(context, ref),
         ),
       ],
     );
@@ -205,32 +417,33 @@ class _RoleSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
     final role = ref.watch(brideRoleProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l.compatRoleQuestion, style: theme.textTheme.titleSmall),
+        Text(
+          l.compatRoleQuestion,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: palette.text,
+          ),
+        ),
         const SizedBox(height: AppSpacing.sm),
-        SegmentedButton<BrideRole>(
+        PillSegments<BrideRole>(
           segments: [
-            ButtonSegment(value: BrideRole.me, label: Text(l.compatRoleYou)),
-            ButtonSegment(
-              value: BrideRole.partner,
-              label: Text(l.compatRolePartner),
-            ),
+            (value: BrideRole.me, label: l.compatRoleYou),
+            (value: BrideRole.partner, label: l.compatRolePartner),
           ],
-          selected: {role},
-          onSelectionChanged: (s) =>
-              ref.read(brideRoleProvider.notifier).set(s.first),
+          selected: role,
+          onChanged: (r) => ref.read(brideRoleProvider.notifier).set(r),
         ),
         const SizedBox(height: 6),
         Text(
           l.compatRoleHelp,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+          style: TextStyle(fontSize: 12, height: 1.5, color: palette.muted),
         ),
       ],
     );
@@ -245,20 +458,13 @@ class _SystemToggle extends ConsumerWidget {
     final l = L10n.of(context);
     final system = ref.watch(matchSystemProvider);
 
-    return SegmentedButton<MatchSystem>(
+    return PillSegments<MatchSystem>(
       segments: [
-        ButtonSegment(
-          value: MatchSystem.porondam,
-          label: Text(l.compatSystemPorondam),
-        ),
-        ButtonSegment(
-          value: MatchSystem.ashtakoota,
-          label: Text(l.compatSystemAshtakoota),
-        ),
+        (value: MatchSystem.porondam, label: l.compatSystemPorondam),
+        (value: MatchSystem.ashtakoota, label: l.compatSystemAshtakoota),
       ],
-      selected: {system},
-      onSelectionChanged: (s) =>
-          ref.read(matchSystemProvider.notifier).set(s.first),
+      selected: system,
+      onChanged: (m) => ref.read(matchSystemProvider.notifier).set(m),
     );
   }
 }
@@ -271,6 +477,7 @@ class _Results extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L10n.of(context);
+    final palette = BrandPalette.of(context);
     final system = ref.watch(matchSystemProvider);
     // The score and the doshas stay free. Locking the number would leave a
     // screen with nothing on it, and a warning nobody can read is worse than
@@ -278,6 +485,23 @@ class _Results extends ConsumerWidget {
     final detail = ref
         .watch(unlockStoreProvider)
         .isOpen(RewardedUnlock.compatibilityDetail);
+
+    Widget factors(List<Widget> rows) => BrandCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Column(
+        children: [
+          for (var i = 0; i < rows.length; i++)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: i == 0
+                    ? null
+                    : Border(top: BorderSide(color: palette.line)),
+              ),
+              child: rows[i],
+            ),
+        ],
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -296,6 +520,7 @@ class _Results extends ConsumerWidget {
 
         if (system == MatchSystem.ashtakoota) ...[
           _ScoreHeadline(
+            label: l.compatSystemAshtakoota,
             value: l.compatScoreOutOf(
               match.ashtakoota.total.toStringAsFixed(1),
               AshtakootaResult.maximum,
@@ -315,7 +540,9 @@ class _Results extends ConsumerWidget {
           ],
           const SizedBox(height: AppSpacing.md),
           if (detail)
-            for (final s in match.ashtakoota.scores) _KootaRow(score: s)
+            factors([
+              for (final s in match.ashtakoota.scores) _KootaRow(score: s),
+            ])
           else
             RewardedUnlockCard(
               unlock: RewardedUnlock.compatibilityDetail,
@@ -324,6 +551,7 @@ class _Results extends ConsumerWidget {
             ),
         ] else ...[
           _ScoreHeadline(
+            label: l.compatSystemPorondam,
             value: l.compatMatchedOutOf(
               match.porondam.matched,
               match.porondam.judged,
@@ -336,7 +564,9 @@ class _Results extends ConsumerWidget {
           ],
           const SizedBox(height: AppSpacing.md),
           if (detail)
-            for (final s in match.porondam.scores) _PorondamRow(score: s)
+            factors([
+              for (final s in match.porondam.scores) _PorondamRow(score: s),
+            ])
           else
             RewardedUnlockCard(
               unlock: RewardedUnlock.compatibilityDetail,
@@ -347,13 +577,11 @@ class _Results extends ConsumerWidget {
           // The gap to twenty is stated on screen, not only in the code.
           Text(
             l.compatPorondamIncomplete,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 12, height: 1.5, color: palette.muted),
           ),
         ],
 
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpacing.lg),
         _KujaSection(match: match),
       ],
     );
@@ -361,38 +589,51 @@ class _Results extends ConsumerWidget {
 }
 
 class _ScoreHeadline extends StatelessWidget {
-  const _ScoreHeadline({required this.value, required this.fraction});
+  const _ScoreHeadline({
+    required this.label,
+    required this.value,
+    required this.fraction,
+  });
 
+  final String label;
   final String value;
   final double fraction;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
     // Colour by band rather than a single accent: a score is the one thing on
-    // this screen a reader takes at a glance.
+    // this screen a reader takes at a glance. The number itself carries the
+    // meaning; the colour only groups it.
     final colour = fraction >= 0.7
         ? context.semantic.auspicious
         : fraction >= 0.5
         ? context.semantic.accent
         : context.semantic.inauspicious;
 
-    return Column(
-      children: [
-        Text(
-          value,
-          style: theme.textTheme.headlineMedium?.copyWith(color: colour),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: fraction.clamp(0.0, 1.0),
-            minHeight: 8,
-            color: colour,
+    return BrandCard(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+      child: Column(
+        children: [
+          Text(label, style: TextStyle(fontSize: 13, color: palette.muted)),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            style: BrandFonts.displayStyle(context, size: 36, color: colour),
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.md),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(99),
+            child: LinearProgressIndicator(
+              value: fraction.clamp(0.0, 1.0),
+              minHeight: 8,
+              color: colour,
+              backgroundColor: palette.line,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -433,17 +674,19 @@ class _PorondamRow extends StatelessWidget {
     final l = L10n.of(context);
     final (name, about) = porondamLabels(l, score.porondam);
 
+    // A symbol before the word as well as the colour: met, partly, not met
+    // must read in grey print and to a reader who cannot tell red from green.
     return _FactorRow(
       name: name,
       about: about,
       trailing: switch (score.verdict) {
-        PorondamVerdict.good => l.verdictGood,
-        PorondamVerdict.partial => l.verdictPartial,
-        PorondamVerdict.poor => l.verdictPoor,
+        PorondamVerdict.good => '✓ ${l.verdictGood}',
+        PorondamVerdict.partial => '◐ ${l.verdictPartial}',
+        PorondamVerdict.poor => '✕ ${l.verdictPoor}',
       },
       colour: switch (score.verdict) {
         PorondamVerdict.good => context.semantic.auspicious,
-        PorondamVerdict.partial => null,
+        PorondamVerdict.partial => context.semantic.accent,
         PorondamVerdict.poor => context.semantic.inauspicious,
       },
     );
@@ -465,10 +708,10 @@ class _FactorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -476,11 +719,20 @@ class _FactorRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: theme.textTheme.bodyMedium),
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: palette.text,
+                  ),
+                ),
+                const SizedBox(height: 2),
                 Text(
                   about,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.45,
+                    color: palette.muted,
                   ),
                 ),
               ],
@@ -489,9 +741,9 @@ class _FactorRow extends StatelessWidget {
           const SizedBox(width: AppSpacing.md),
           Text(
             trailing,
-            style: theme.textTheme.bodyMedium?.copyWith(
+            style: TextStyle(
               fontWeight: FontWeight.w700,
-              color: colour ?? theme.colorScheme.onSurface,
+              color: colour ?? palette.text,
             ),
           ),
         ],
@@ -508,7 +760,7 @@ class _KujaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
     final kuja = match.kuja;
 
     final text = kuja.cancelsOut
@@ -519,23 +771,29 @@ class _KujaSection extends StatelessWidget {
 
     final severe = kuja.bride.isSevere || kuja.groom.isSevere;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l.compatKujaTitle, style: theme.textTheme.titleSmall),
-        const SizedBox(height: 6),
-        Text(text, style: theme.textTheme.bodyMedium),
-        if (severe && kuja.isUnmatched)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              l.compatKujaSevere,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: context.semantic.inauspicious,
-              ),
+    return BrandCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.compatKujaTitle,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: palette.text,
             ),
           ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            text,
+            style: TextStyle(fontSize: 14, height: 1.5, color: palette.muted),
+          ),
+          if (severe && kuja.isUnmatched) ...[
+            const SizedBox(height: AppSpacing.sm),
+            InfoNotice(text: l.compatKujaSevere, tone: NoticeTone.caution),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -548,14 +806,17 @@ class _Caveat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: palette.line),
       ),
-      child: Text(text, style: theme.textTheme.bodySmall),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 13, height: 1.55, color: palette.muted),
+      ),
     );
   }
 }

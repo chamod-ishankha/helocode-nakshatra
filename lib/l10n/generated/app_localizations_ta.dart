@@ -1569,4 +1569,23 @@ class L10nTa extends L10n {
   String onboardingPlaceZoneOnly(String zone) {
     return 'இங்குள்ள நேரங்கள் $zone படி கணக்கிடப்படுகின்றன.';
   }
+
+  @override
+  String get compatAddPartner => 'துணையைச் சேர்க்கவும்';
+
+  @override
+  String get compatWillShow => 'பொருத்தம் காட்டுவது';
+
+  @override
+  String get compatShowsAshtakoota => 'எட்டு காரணிகளின் மதிப்பெண், 36 இல்';
+
+  @override
+  String get compatShowsPorondam =>
+      'பன்னிரண்டு இலங்கைப் பொருத்தங்கள், பொருந்துமா இல்லையா';
+
+  @override
+  String get compatShowsDoshasTitle => 'தோஷங்கள்';
+
+  @override
+  String get compatShowsDoshas => 'நாடி, பாகூட், ரஜ்ஜு, குஜ — தெளிவாக';
 }

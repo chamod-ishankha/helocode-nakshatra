@@ -1545,4 +1545,22 @@ class L10nSi extends L10n {
   String onboardingPlaceZoneOnly(String zone) {
     return 'මෙහි වේලාවන් ගණනය කරන්නේ $zone අනුවයි.';
   }
+
+  @override
+  String get compatAddPartner => 'සහකරු එක් කරන්න';
+
+  @override
+  String get compatWillShow => 'ගැළපීමකින් පෙන්වන්නේ';
+
+  @override
+  String get compatShowsAshtakoota => 'සාධක අටේ ලකුණු, 36න්';
+
+  @override
+  String get compatShowsPorondam => 'ශ්‍රී ලාංකීය පොරොන්දම් දොළහ, ගැළපේද නැද්ද';
+
+  @override
+  String get compatShowsDoshasTitle => 'දෝෂ';
+
+  @override
+  String get compatShowsDoshas => 'නාඩි, භකූට, රජ්ජු සහ කුජ, පැහැදිලිව';
 }

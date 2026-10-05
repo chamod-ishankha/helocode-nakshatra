@@ -1570,4 +1570,24 @@ class L10nEn extends L10n {
   String onboardingPlaceZoneOnly(String zone) {
     return 'Times here are worked out in $zone.';
   }
+
+  @override
+  String get compatAddPartner => 'Add partner';
+
+  @override
+  String get compatWillShow => 'A match shows';
+
+  @override
+  String get compatShowsAshtakoota => 'The eight-factor score, out of 36';
+
+  @override
+  String get compatShowsPorondam =>
+      'The twelve Sri Lankan matches, met or not met';
+
+  @override
+  String get compatShowsDoshasTitle => 'Doshas';
+
+  @override
+  String get compatShowsDoshas =>
+      'Nadi, Bhakoot, Rajju and Kuja, named plainly';
 }

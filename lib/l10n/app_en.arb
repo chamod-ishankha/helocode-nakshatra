@@ -808,5 +808,12 @@
   "onboardingPlaceZone": "Times here are worked out in {zone}, which was {offset} on that date.",
   "@onboardingPlaceZone": {"description": "Under the chosen birth place. zone is an IANA name like Asia/Colombo; offset is like UTC+5:30.", "placeholders": {"zone": {"type": "String"}, "offset": {"type": "String"}}},
   "onboardingPlaceZoneOnly": "Times here are worked out in {zone}.",
-  "@onboardingPlaceZoneOnly": {"description": "As onboardingPlaceZone, when the offset could not be looked up.", "placeholders": {"zone": {"type": "String"}}}
+  "@onboardingPlaceZoneOnly": {"description": "As onboardingPlaceZone, when the offset could not be looked up.", "placeholders": {"zone": {"type": "String"}}},
+  "compatAddPartner": "Add partner",
+  "@compatAddPartner": {"description": "Button and empty slot for entering the partner's birth details."},
+  "compatWillShow": "A match shows",
+  "compatShowsAshtakoota": "The eight-factor score, out of 36",
+  "compatShowsPorondam": "The twelve Sri Lankan matches, met or not met",
+  "compatShowsDoshasTitle": "Doshas",
+  "compatShowsDoshas": "Nadi, Bhakoot, Rajju and Kuja, named plainly"
 }

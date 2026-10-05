@@ -449,5 +449,11 @@
   "onboardingDateWheelHint": "உங்கள் பிறந்த தேதிக்கு உருட்டவும்",
   "onboardingTimeWheelHint": "உங்கள் பிறந்த நேரத்திற்கு உருட்டவும்",
   "onboardingPlaceZone": "இங்குள்ள நேரங்கள் {zone} படி கணக்கிடப்படுகின்றன; அன்று அது {offset} ஆக இருந்தது.",
-  "onboardingPlaceZoneOnly": "இங்குள்ள நேரங்கள் {zone} படி கணக்கிடப்படுகின்றன."
+  "onboardingPlaceZoneOnly": "இங்குள்ள நேரங்கள் {zone} படி கணக்கிடப்படுகின்றன.",
+  "compatAddPartner": "துணையைச் சேர்க்கவும்",
+  "compatWillShow": "பொருத்தம் காட்டுவது",
+  "compatShowsAshtakoota": "எட்டு காரணிகளின் மதிப்பெண், 36 இல்",
+  "compatShowsPorondam": "பன்னிரண்டு இலங்கைப் பொருத்தங்கள், பொருந்துமா இல்லையா",
+  "compatShowsDoshasTitle": "தோஷங்கள்",
+  "compatShowsDoshas": "நாடி, பாகூட், ரஜ்ஜு, குஜ — தெளிவாக"
 }

@@ -2798,6 +2798,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Times here are worked out in {zone}.'**
   String onboardingPlaceZoneOnly(String zone);
+
+  /// Button and empty slot for entering the partner's birth details.
+  ///
+  /// In en, this message translates to:
+  /// **'Add partner'**
+  String get compatAddPartner;
+
+  /// No description provided for @compatWillShow.
+  ///
+  /// In en, this message translates to:
+  /// **'A match shows'**
+  String get compatWillShow;
+
+  /// No description provided for @compatShowsAshtakoota.
+  ///
+  /// In en, this message translates to:
+  /// **'The eight-factor score, out of 36'**
+  String get compatShowsAshtakoota;
+
+  /// No description provided for @compatShowsPorondam.
+  ///
+  /// In en, this message translates to:
+  /// **'The twelve Sri Lankan matches, met or not met'**
+  String get compatShowsPorondam;
+
+  /// No description provided for @compatShowsDoshasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Doshas'**
+  String get compatShowsDoshasTitle;
+
+  /// No description provided for @compatShowsDoshas.
+  ///
+  /// In en, this message translates to:
+  /// **'Nadi, Bhakoot, Rajju and Kuja, named plainly'**
+  String get compatShowsDoshas;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

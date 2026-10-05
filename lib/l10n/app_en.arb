@@ -850,5 +850,7 @@
   "durationHours": "{hours} hr",
   "durationHoursMinutes": "{hours} hr {minutes} min",
   "@durationHours": {"description": "A whole number of hours, short.", "placeholders": {"hours": {"type": "int"}}},
-  "@durationHoursMinutes": {"description": "Hours and minutes, short: how long rāhu kālaya lasts.", "placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}}
+  "@durationHoursMinutes": {"description": "Hours and minutes, short: how long rāhu kālaya lasts.", "placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "homeFullMoonOn": "Full moon on {date} at {time}",
+  "@homeFullMoonOn": {"description": "On a poya day whose full moon falls on another day, usually the next morning.", "placeholders": {"date": {"type": "String"}, "time": {"type": "String"}}}
 }

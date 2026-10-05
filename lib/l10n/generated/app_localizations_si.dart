@@ -1663,4 +1663,9 @@ class L10nSi extends L10n {
   String durationHoursMinutes(int hours, int minutes) {
     return 'පැය $hours විනාඩි $minutes';
   }
+
+  @override
+  String homeFullMoonOn(String date, String time) {
+    return 'පුර පසළොස්වක $date $time ට';
+  }
 }

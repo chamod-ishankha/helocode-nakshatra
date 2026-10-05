@@ -1688,4 +1688,9 @@ class L10nTa extends L10n {
   String durationHoursMinutes(int hours, int minutes) {
     return '$hours மணி $minutes நிமிடம்';
   }
+
+  @override
+  String homeFullMoonOn(String date, String time) {
+    return '$date அன்று $time மணிக்கு பௌர்ணமி';
+  }
 }

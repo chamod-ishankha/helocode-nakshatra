@@ -374,9 +374,14 @@ class _PoyaTodayBanner extends ConsumerWidget {
 
     final semantic = context.semantic;
     final palette = BrandPalette.of(context);
-    final fullMoon = L10n.of(
-      context,
-    ).homeFullMoonAt(_time.format(poya.fullMoon));
+    final l = L10n.of(context);
+    final time = _time.format(poya.fullMoon);
+    // The poya is kept on the day of pūrṇimā, so the full moon itself is
+    // often the next morning (KAN-96). "Full moon at 9:41 AM" on the 25th
+    // would read as that morning, which has already passed.
+    final fullMoon = isSameDay(poya.fullMoon, poya.date)
+        ? l.homeFullMoonAt(time)
+        : l.homeFullMoonOn(DateFormat.MMMEd().format(poya.fullMoon), time);
 
     return _Banner(
       border: semantic.accent,

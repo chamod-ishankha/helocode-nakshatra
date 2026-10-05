@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:nakshatra/core/astro/calendar_models.dart';
 import 'package:nakshatra/core/astro/ephemeris.dart';
+import 'package:nakshatra/core/astro/official_poya_days.dart';
 import 'package:nakshatra/core/astro/sri_lankan_calendar.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 
@@ -48,12 +49,73 @@ void main() {
       }
     });
 
-    test('the full moon falls on the day it is assigned to', () {
-      for (final p in SriLankanCalendar.poyaDaysIn(2026)) {
-        expect(p.fullMoon.year, p.date.year, reason: p.name);
-        expect(p.fullMoon.month, p.date.month, reason: p.name);
-        expect(p.fullMoon.day, p.date.day, reason: p.name);
+    test('the poya is the day of the full moon or the day before', () {
+      // Kept on the day of pūrṇimā, the tithi that ends at the full moon, so
+      // it can be the day before a full moon early in the morning — never
+      // later, and never two days off (KAN-96).
+      for (final year in [2024, 2025, 2026, 2027, 2028]) {
+        for (final p in SriLankanCalendar.poyaDaysIn(year)) {
+          final fullDay = DateTime(
+            p.fullMoon.year,
+            p.fullMoon.month,
+            p.fullMoon.day,
+          );
+          final lag = fullDay.difference(p.date).inDays;
+          expect(lag, inInclusiveRange(0, 1), reason: '${p.name} ${p.date}');
+        }
       }
+    });
+
+    test('Vap 2026 is Sunday 25 October', () {
+      // The reported case: the Moon is full at 9:41 on the 26th, and the
+      // calendar keeps the poya on the 25th.
+      final vap = SriLankanCalendar.poyaDaysIn(
+        2026,
+      ).singleWhere((p) => p.month == PoyaMonth.vap);
+      expect(vap.date, DateTime(2026, 10, 25));
+      expect(vap.fullMoon.day, 26);
+    });
+
+    test('every published poya day is in the calendar, by name', () {
+      for (final MapEntry(key: date, value: official)
+          in officialPoyaDays.entries) {
+        final day = DateTime.parse(date);
+        final match = SriLankanCalendar.poyaDaysIn(
+          day.year,
+        ).where((p) => p.date == day).toList();
+        expect(match, hasLength(1), reason: date);
+        expect(match.single.month, official.month, reason: date);
+        expect(match.single.isAdhi, official.isAdhi, reason: date);
+      }
+    });
+
+    test('the rule alone matches all but two published days and names', () {
+      // Measured when the rule was chosen: 59 of 61 on both counts, where
+      // "the day of the full moon" managed 21. The two days it misses are a
+      // tithi beginning a minute after sunset and one the almanac rounds the
+      // other way; the two names are 2023's Adhi Esala, which Sri Lanka kept a
+      // month earlier than the astronomy puts it. This guards against the
+      // rule drifting, not a claim that it is the almanac.
+      var days = 0, names = 0;
+      for (final MapEntry(key: date, value: official)
+          in officialPoyaDays.entries) {
+        final day = DateTime.parse(date);
+        final computed = SriLankanCalendar.poyaDaysIn(
+          day.year,
+          useOfficial: false,
+        );
+        if (computed.any((p) => p.date == day)) days++;
+        final near = computed.where(
+          (p) => p.date.difference(day).inDays.abs() <= 1,
+        );
+        if (near.any(
+          (p) => p.month == official.month && p.isAdhi == official.isAdhi,
+        )) {
+          names++;
+        }
+      }
+      expect(days, greaterThanOrEqualTo(officialPoyaDays.length - 2));
+      expect(names, greaterThanOrEqualTo(officialPoyaDays.length - 2));
     });
 
     test('the Moon really is opposite the Sun at that instant', () {
@@ -81,21 +143,20 @@ void main() {
       expect(elongation, closeTo(180, 0.05));
     });
 
-    test('May 2026 is a doubled month, so an Adhi poya is inserted', () {
-      // 2026 has full moons on both 1 and 31 May. Which of the pair Sri Lanka
-      // names "Vesak" and which "Adhi Vesak" is a calendrical convention, not
-      // something astronomy decides — so assert only the structure here. The
-      // naming is flagged for litha verification in KAN-24.
-      final may = SriLankanCalendar.poyaDaysIn(
-        2026,
-      ).where((p) => p.date.month == 5).toList();
+    test('2026 has Adhi Poson between Vesak and Poson', () {
+      // The Sun enters no sign between the new moons of 16 May and 15 June,
+      // so that lunar month is intercalary. It used to be decided by the
+      // Gregorian month, which named 1 May "Adhi Vesak" and 31 May "Vesak".
+      final poyas = SriLankanCalendar.poyaDaysIn(2026);
+      PoyaDay on(int month, int day) =>
+          poyas.singleWhere((p) => p.date == DateTime(2026, month, day));
 
-      expect(may.length, 2, reason: 'May 2026 has two full moons');
-      expect(may.first.date.day, 1);
-      expect(may.last.date.day, 31);
-      expect(may.where((p) => p.isAdhi).length, 1);
-      expect(may.first.isAdhi, isTrue, reason: 'the earlier one takes Adhi');
-      expect(may.every((p) => p.month == PoyaMonth.vesak), isTrue);
+      expect(on(5, 1).month, PoyaMonth.vesak);
+      expect(on(5, 1).isAdhi, isFalse);
+      expect(on(5, 30).month, PoyaMonth.poson);
+      expect(on(5, 30).isAdhi, isTrue);
+      expect(on(6, 29).month, PoyaMonth.poson);
+      expect(on(6, 29).isAdhi, isFalse);
     });
 
     test('a normal month yields exactly one poya with no Adhi', () {
@@ -122,14 +183,13 @@ void main() {
       expect(next.daysFrom(from), greaterThanOrEqualTo(0));
     });
 
-    test('an Adhi poya is only ever the first of a doubled month', () {
+    test('an Adhi poya is followed by the regular one of its name', () {
       for (final year in [2024, 2025, 2026, 2027, 2028]) {
         final poyas = SriLankanCalendar.poyaDaysIn(year);
-        final adhi = poyas.where((p) => p.isAdhi);
-        for (final a in adhi) {
-          final sameMonth = poyas.where((p) => p.date.month == a.date.month);
-          expect(sameMonth.length, 2, reason: '${a.name} in $year');
-          expect(sameMonth.first.date, a.date);
+        for (var i = 0; i + 1 < poyas.length; i++) {
+          if (!poyas[i].isAdhi) continue;
+          expect(poyas[i + 1].month, poyas[i].month, reason: '$year');
+          expect(poyas[i + 1].isAdhi, isFalse, reason: '$year');
         }
       }
     });

@@ -484,5 +484,6 @@
   "placesLoadFailed": "இடங்களின் பட்டியலை ஏற்ற முடியவில்லை.",
   "calendarScanFailed": "இந்த மாதத்தைக் கணக்கிட முடியவில்லை.",
   "durationHours": "{hours} மணி",
-  "durationHoursMinutes": "{hours} மணி {minutes} நிமிடம்"
+  "durationHoursMinutes": "{hours} மணி {minutes} நிமிடம்",
+  "homeFullMoonOn": "{date} அன்று {time} மணிக்கு பௌர்ணமி"
 }

@@ -3008,6 +3008,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'{hours} hr {minutes} min'**
   String durationHoursMinutes(int hours, int minutes);
+
+  /// On a poya day whose full moon falls on another day, usually the next morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Full moon on {date} at {time}'**
+  String homeFullMoonOn(String date, String time);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

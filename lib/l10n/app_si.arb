@@ -484,5 +484,6 @@
   "placesLoadFailed": "ස්ථාන ලැයිස්තුව පූරණය කළ නොහැකි විය.",
   "calendarScanFailed": "මෙම මාසය ගණනය කළ නොහැකි විය.",
   "durationHours": "පැය {hours}",
-  "durationHoursMinutes": "පැය {hours} විනාඩි {minutes}"
+  "durationHoursMinutes": "පැය {hours} විනාඩි {minutes}",
+  "homeFullMoonOn": "පුර පසළොස්වක {date} {time} ට"
 }

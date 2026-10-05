@@ -1690,4 +1690,9 @@ class L10nEn extends L10n {
   String durationHoursMinutes(int hours, int minutes) {
     return '$hours hr $minutes min';
   }
+
+  @override
+  String homeFullMoonOn(String date, String time) {
+    return 'Full moon on $date at $time';
+  }
 }

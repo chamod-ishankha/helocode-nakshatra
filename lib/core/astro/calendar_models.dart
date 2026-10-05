@@ -2,23 +2,24 @@ import '../config/app_locale.dart';
 
 /// The twelve poya of the Sinhala Buddhist year.
 ///
-/// Each is a full moon, named for the lunar month it falls in. When two full
-/// moons land in the same month an intercalary "Adhi" poya is inserted.
+/// Each is a full moon, named for the lunar month it falls in. A lunar month
+/// in which the Sun enters no sign is intercalary, and its poya is the "Adhi"
+/// one of the month after (see `poyaMonthFor`).
 enum PoyaMonth {
-  duruthu('Duruthu', 'දුරුතු', 'துருத்து', 1),
-  navam('Navam', 'නවම්', 'நவம்', 2),
-  medin('Medin', 'මැදින්', 'மெதின்', 3),
-  bak('Bak', 'බක්', 'பக்', 4),
-  vesak('Vesak', 'වෙසක්', 'வெசாக்', 5),
-  poson('Poson', 'පොසොන්', 'பொசொன்', 6),
-  esala('Esala', 'ඇසළ', 'எசல', 7),
-  nikini('Nikini', 'නිකිණි', 'நிக்கிணி', 8),
-  binara('Binara', 'බිනර', 'பினர', 9),
-  vap('Vap', 'වප්', 'வப்', 10),
-  il('Il', 'ඉල්', 'இல்', 11),
-  unduvap('Unduvap', 'උඳුවප්', 'உந்துவப்', 12);
+  duruthu('Duruthu', 'දුරුතු', 'துருத்து'),
+  navam('Navam', 'නවම්', 'நவம்'),
+  medin('Medin', 'මැදින්', 'மெதின்'),
+  bak('Bak', 'බක්', 'பக்'),
+  vesak('Vesak', 'වෙසක්', 'வெசாக்'),
+  poson('Poson', 'පොසොන්', 'பொசொன்'),
+  esala('Esala', 'ඇසළ', 'எசல'),
+  nikini('Nikini', 'නිකිණි', 'நிக்கிணி'),
+  binara('Binara', 'බිනර', 'பினர'),
+  vap('Vap', 'වප්', 'வப்'),
+  il('Il', 'ඉල්', 'இல்'),
+  unduvap('Unduvap', 'උඳුවප්', 'உந்துவப்');
 
-  const PoyaMonth(this.en, this.si, this.ta, this.gregorianMonth);
+  const PoyaMonth(this.en, this.si, this.ta);
 
   final String en;
   final String si;
@@ -32,17 +33,11 @@ enum PoyaMonth {
   /// — "La", "Su" — which spells a sound that means nothing.
   final String ta;
 
-  /// The Gregorian month this poya normally falls in.
-  final int gregorianMonth;
-
   String label(AppLocale locale) => switch (locale) {
     AppLocale.si => si,
     AppLocale.ta => ta,
     AppLocale.en => en,
   };
-
-  static PoyaMonth forGregorianMonth(int month) =>
-      PoyaMonth.values.firstWhere((p) => p.gregorianMonth == month);
 
   /// What the day commemorates. Vesak and Poson carry the most weight in Sri
   /// Lanka — Vesak marks the birth, enlightenment and passing of the Buddha,
@@ -142,13 +137,13 @@ class PoyaDay extends Festival {
 
   final PoyaMonth month;
 
-  /// True for the intercalary poya inserted when two full moons fall in the
-  /// same Gregorian month.
+  /// True for the poya of an intercalary lunar month — Adhi Poson in 2026.
   final bool isAdhi;
 
   /// The exact instant of full moon, in Sri Lankan local time.
   ///
-  /// The poya *day* is whichever calendar day contains this moment, so a full
-  /// moon just after midnight belongs to the day that is only minutes old.
+  /// Not always on the poya day itself. The poya is kept on the day of
+  /// pūrṇimā, the tithi that ends at this moment, so a full moon early in the
+  /// morning belongs to the poya of the day before (KAN-96).
   DateTime get fullMoon => exactMoment!;
 }

@@ -2,6 +2,8 @@ import 'package:sweph/sweph.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import 'calendar_models.dart';
+import 'official_poya_days.dart';
+import 'poya_rule.dart';
 
 /// Poya days, the New Year ingress, and the fixed festivals.
 ///
@@ -34,55 +36,74 @@ abstract final class SriLankanCalendar {
 
   /// Every poya day in [year], in order.
   ///
-  /// A poya is a full moon: the moment the Moon's elongation from the Sun
-  /// reaches exactly 180°. The poya *day* is the Sri Lankan calendar day
-  /// containing that instant.
+  /// Each full moon gives one poya. Its day and name come from the published
+  /// calendar where Sri Lanka has published one (`officialPoyaDays`), and
+  /// otherwise from the rule in `poyaDayFor` and `poyaMonthFor` — see those
+  /// for why the day is not simply the day of the full moon (KAN-96).
   ///
-  /// A Gregorian month occasionally holds two full moons. Sri Lankan practice
-  /// inserts an intercalary "Adhi" poya, and the earlier of the pair takes that
-  /// name.
-  static List<PoyaDay> poyaDaysIn(int year) {
+  /// [useOfficial] is for the device test that measures the rule on its own
+  /// against the published dates; the app always leaves it on.
+  static List<PoyaDay> poyaDaysIn(int year, {bool useOfficial = true}) =>
+      List.unmodifiable(
+        _poyaCache[(year, useOfficial)] ??= _computePoyaDays(
+          year,
+          useOfficial: useOfficial,
+        ),
+      );
+
+  /// Each year worked out once. The answer cannot change while the app runs,
+  /// and a year is some fifty ephemeris searches — about a third of a second
+  /// on a mid-range phone — which Home would otherwise repeat every time the
+  /// date arrows are tapped.
+  static final Map<(int, bool), List<PoyaDay>> _poyaCache = {};
+
+  static List<PoyaDay> _computePoyaDays(int year, {required bool useOfficial}) {
     final location = tz.getLocation(_zone);
-    final moments = <DateTime>[];
-
-    // A synodic month is about 29.53 days, so stepping 25 days at a time cannot
-    // skip a full moon while keeping the number of searches low.
-    DateTime cursor = tz.TZDateTime(location, year - 1, 12, 1).toUtc();
-    final DateTime end = tz.TZDateTime(location, year + 1, 1, 15).toUtc();
-
-    while (cursor.isBefore(end)) {
-      final jd = _toJulianDay(cursor);
-      final found = _nextElongation(jd, 180);
-      if (found == null) break;
-
-      final moment = _fromJulianDay(found, location);
-      if (moment.year == year && (moments.isEmpty || moment != moments.last)) {
-        moments.add(moment);
-      }
-      cursor = _fromJulianDay(found + 1, location).toUtc();
-    }
-
-    // Group by Gregorian month so a doubled month can be detected.
-    final byMonth = <int, List<DateTime>>{};
-    for (final m in moments) {
-      byMonth.putIfAbsent(m.month, () => []).add(m);
-    }
-
     final result = <PoyaDay>[];
-    for (final entry in byMonth.entries) {
-      final list = entry.value..sort();
-      for (var i = 0; i < list.length; i++) {
-        final moment = list[i];
-        result.add(
-          PoyaDay(
-            date: DateTime(moment.year, moment.month, moment.day),
-            month: PoyaMonth.forGregorianMonth(entry.key),
-            // With two in one month the first is the intercalary one.
-            isAdhi: list.length > 1 && i == 0,
-            fullMoon: moment,
-          ),
-        );
+
+    // A synodic month is about 29.53 days, so stepping on from each full moon
+    // cannot skip the next one. The window runs past both ends of the year
+    // because a poya can fall on the day before its full moon.
+    var cursor = _toJulianDay(tz.TZDateTime(location, year - 1, 12, 1).toUtc());
+    final end = _toJulianDay(tz.TZDateTime(location, year + 1, 1, 15).toUtc());
+
+    while (cursor < end) {
+      final full = _nextElongation(cursor, 180);
+      if (full == null) break;
+      cursor = full + 1;
+
+      // Pūrṇimā is the fifteenth tithi: elongation from 168° to 180°.
+      final purnima = _nextElongation(full - 1.5, 168)!;
+      final fullMoon = _fromJulianDay(full, location);
+
+      var date = poyaDayFor(
+        purnimaStart: _fromJulianDay(purnima, location),
+        fullMoon: fullMoon,
+        sunsetOn: (day) => _sunsetInColombo(day, location),
+        noonOn: (day) =>
+            tz.TZDateTime(location, day.year, day.month, day.day, 12),
+      );
+
+      // The new moons either side bound the lunar month the name comes from.
+      final named = poyaMonthFor(
+        sunSignAtNewMoonBefore: _sunSign(_nextElongation(full - 20, 0)!),
+        sunSignAtNewMoonAfter: _sunSign(_nextElongation(full, 0)!),
+      );
+      var month = named.month;
+      var isAdhi = named.isAdhi;
+
+      if (useOfficial) {
+        if (officialPoyaNear(date) case final published?) {
+          date = published.date;
+          month = published.month;
+          isAdhi = published.isAdhi;
+        }
       }
+
+      if (date.year != year) continue;
+      result.add(
+        PoyaDay(date: date, month: month, isAdhi: isAdhi, fullMoon: fullMoon),
+      );
     }
 
     result.sort((a, b) => a.date.compareTo(b.date));
@@ -289,6 +310,41 @@ abstract final class SriLankanCalendar {
     }
     return null;
   }
+
+  /// Sunset on [day] in Colombo, computed as the almanac computes it: the
+  /// centre of the disc on the horizon, without refraction, as in Panchangam.
+  /// Poya is national, so it is reckoned for the capital rather than for
+  /// wherever the phone is.
+  static DateTime _sunsetInColombo(DateTime day, tz.Location location) {
+    final colombo = GeoPosition(79.8612, 6.9271);
+    final midnight = _toJulianDay(
+      tz.TZDateTime(location, day.year, day.month, day.day).toUtc(),
+    );
+    final rise = Sweph.swe_rise_trans(
+      midnight,
+      HeavenlyBody.SE_SUN,
+      _tropical,
+      const RiseSetTransitFlag(1 | 128 | 256 | 512),
+      colombo,
+      0,
+      0,
+    )!;
+    final set = Sweph.swe_rise_trans(
+      rise,
+      HeavenlyBody.SE_SUN,
+      _tropical,
+      const RiseSetTransitFlag(2 | 128 | 256 | 512),
+      colombo,
+      0,
+      0,
+    )!;
+    return _fromJulianDay(set, location);
+  }
+
+  /// The Sun's sidereal sign at [jd], 0 for Mēṣa to 11 for Mīna.
+  static int _sunSign(double jd) =>
+      (Sweph.swe_calc_ut(jd, HeavenlyBody.SE_SUN, _sidereal).longitude % 360) ~/
+      30;
 
   static double _bisect(
     double lo,

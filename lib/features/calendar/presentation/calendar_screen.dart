@@ -432,9 +432,9 @@ class _MonthEvents extends ConsumerWidget {
                                 width: 36,
                                 child: Text(
                                   '${rows[i].day}',
-                                  style: BrandFonts.displayStyle(
-                                    context,
-                                    size: 18,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
                                     color: palette.text,
                                   ),
                                 ),
@@ -692,11 +692,12 @@ class _DayRow extends ConsumerWidget {
             const SizedBox(width: 12),
             // The number is the signal; the colour only says whether it
             // cleared 80.
+            // Body face: Fraunces' open 4 reads as a 1 (KAN-91).
             Text(
               '${score.best.score}',
-              style: BrandFonts.displayStyle(
-                context,
-                size: 22,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
                 color: strong
                     ? context.semantic.auspicious
                     : context.semantic.accent,

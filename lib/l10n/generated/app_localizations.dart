@@ -2834,6 +2834,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Nadi, Bhakoot, Rajju and Kuja, named plainly'**
   String get compatShowsDoshas;
+
+  /// Title of the yearly plan card.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get paywallTierYearly;
+
+  /// Title of the monthly plan card.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get paywallTierMonthly;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

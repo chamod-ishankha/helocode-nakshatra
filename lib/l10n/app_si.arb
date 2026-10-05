@@ -455,5 +455,7 @@
   "compatShowsAshtakoota": "සාධක අටේ ලකුණු, 36න්",
   "compatShowsPorondam": "ශ්‍රී ලාංකීය පොරොන්දම් දොළහ, ගැළපේද නැද්ද",
   "compatShowsDoshasTitle": "දෝෂ",
-  "compatShowsDoshas": "නාඩි, භකූට, රජ්ජු සහ කුජ, පැහැදිලිව"
+  "compatShowsDoshas": "නාඩි, භකූට, රජ්ජු සහ කුජ, පැහැදිලිව",
+  "paywallTierYearly": "වාර්ෂික",
+  "paywallTierMonthly": "මාසික"
 }

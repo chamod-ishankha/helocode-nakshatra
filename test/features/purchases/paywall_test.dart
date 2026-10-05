@@ -128,9 +128,14 @@ void main() {
 
       for (var i = 0; i < find.byType(Card).evaluate().length; i++) {
         final height = tester.getSize(find.byType(Card).at(i)).height;
+        // 200 since KAN-91: the redesigned tier card is taller by design —
+        // a 52px pill button and a 24px display-face price — and in this test
+        // Latin draws in the wide placeholder face. The failure this guards
+        // against is KAN-60's, a row squeezed into a ribbon several hundred
+        // pixels tall, which 200 still catches.
         expect(
           height,
-          lessThan(160),
+          lessThan(200),
           reason:
               'a tier row is ${height.toStringAsFixed(0)}px tall in '
               '${locale.englishName} — its text column has been squeezed',

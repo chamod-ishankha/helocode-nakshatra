@@ -1590,4 +1590,10 @@ class L10nEn extends L10n {
   @override
   String get compatShowsDoshas =>
       'Nadi, Bhakoot, Rajju and Kuja, named plainly';
+
+  @override
+  String get paywallTierYearly => 'Yearly';
+
+  @override
+  String get paywallTierMonthly => 'Monthly';
 }

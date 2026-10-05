@@ -455,5 +455,7 @@
   "compatShowsAshtakoota": "எட்டு காரணிகளின் மதிப்பெண், 36 இல்",
   "compatShowsPorondam": "பன்னிரண்டு இலங்கைப் பொருத்தங்கள், பொருந்துமா இல்லையா",
   "compatShowsDoshasTitle": "தோஷங்கள்",
-  "compatShowsDoshas": "நாடி, பாகூட், ரஜ்ஜு, குஜ — தெளிவாக"
+  "compatShowsDoshas": "நாடி, பாகூட், ரஜ்ஜு, குஜ — தெளிவாக",
+  "paywallTierYearly": "வருடாந்திரம்",
+  "paywallTierMonthly": "மாதாந்திரம்"
 }

@@ -1563,4 +1563,10 @@ class L10nSi extends L10n {
 
   @override
   String get compatShowsDoshas => 'නාඩි, භකූට, රජ්ජු සහ කුජ, පැහැදිලිව';
+
+  @override
+  String get paywallTierYearly => 'වාර්ෂික';
+
+  @override
+  String get paywallTierMonthly => 'මාසික';
 }

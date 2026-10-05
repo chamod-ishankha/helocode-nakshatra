@@ -1588,4 +1588,10 @@ class L10nTa extends L10n {
 
   @override
   String get compatShowsDoshas => 'நாடி, பாகூட், ரஜ்ஜு, குஜ — தெளிவாக';
+
+  @override
+  String get paywallTierYearly => 'வருடாந்திரம்';
+
+  @override
+  String get paywallTierMonthly => 'மாதாந்திரம்';
 }

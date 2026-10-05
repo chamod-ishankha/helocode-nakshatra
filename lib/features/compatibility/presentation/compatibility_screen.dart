@@ -620,7 +620,14 @@ class _ScoreHeadline extends StatelessWidget {
           Text(
             value,
             textAlign: TextAlign.center,
-            style: BrandFonts.displayStyle(context, size: 36, color: colour),
+            // The body face, bold: Fraunces' open 4 reads as a 1 and its 3 as
+            // a 5, and a score must not be misread (KAN-91).
+            style: TextStyle(
+              fontSize: 34,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+              color: colour,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           ClipRRect(

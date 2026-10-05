@@ -536,11 +536,13 @@ class _Lucky extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
             ],
             Flexible(
+              // Body face: the lucky number is a digit, and Fraunces' open 4
+              // reads as a 1 (KAN-91).
               child: Text(
                 value,
-                style: BrandFonts.displayStyle(
-                  context,
-                  size: 24,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
                   color: BrandPalette.of(context).text,
                 ),
               ),

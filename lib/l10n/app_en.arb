@@ -815,5 +815,9 @@
   "compatShowsAshtakoota": "The eight-factor score, out of 36",
   "compatShowsPorondam": "The twelve Sri Lankan matches, met or not met",
   "compatShowsDoshasTitle": "Doshas",
-  "compatShowsDoshas": "Nadi, Bhakoot, Rajju and Kuja, named plainly"
+  "compatShowsDoshas": "Nadi, Bhakoot, Rajju and Kuja, named plainly",
+  "paywallTierYearly": "Yearly",
+  "@paywallTierYearly": {"description": "Title of the yearly plan card."},
+  "paywallTierMonthly": "Monthly",
+  "@paywallTierMonthly": {"description": "Title of the monthly plan card."}
 }

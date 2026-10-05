@@ -6,6 +6,9 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../features/purchases/presentation/paywall.dart';
 import '../purchases/purchase_controller.dart';
 import '../theme/app_spacing.dart';
+import '../theme/brand_palette.dart';
+import '../ui/brand_button.dart';
+import '../ui/brand_card.dart';
 import '../theme/semantic_colors.dart';
 import '../purchases/nudges.dart';
 import 'rewarded_analytics.dart';
@@ -76,83 +79,82 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
-    final theme = Theme.of(context);
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    final canBuy = ref.watch(purchasesAvailableProvider);
 
-    return Card(
-      color: context.semantic.accentSurface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: context.semantic.accent.withValues(alpha: 0.4)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.lock_outline, size: 18),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(widget.title, style: theme.textTheme.titleSmall),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              widget.body,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            FilledButton.icon(
-              onPressed: _busy ? null : _watch,
-              icon: _busy
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.play_circle_outline),
-              label: Text(_busy ? l.unlockLoading : l.unlockWatch),
-            ),
-            // The paid path, beside the free one rather than instead of it
-            // (KAN-36). Someone who would rather not watch a video every day
-            // has to be able to see that there is another way out; someone who
-            // will never pay keeps the button they came for.
-            if (ref.watch(purchasesAvailableProvider))
-              TextButton(
-                onPressed: _busy
-                    ? null
-                    : () => showPaywall(
-                        context,
-                        ref,
-                        reason: PaywallReason.forUnlock(widget.unlock),
-                      ),
-                child: Text(l.purchaseUpgrade),
-              ),
-            if (_failed) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                l.unlockFailed,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: context.semantic.inauspicious,
+    // The same card as the lock prompt over a blurred chart (KAN-83), so a
+    // gold card with a gold button means "watch to open" wherever it appears.
+    return BrandCard(
+      tone: BrandCardTone.gold,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.lock_outline, size: 20, color: semantic.accent),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: palette.text,
+                  ),
                 ),
               ),
             ],
-            const SizedBox(height: AppSpacing.xs),
-            // Sets the expectation that this is a day pass, so tomorrow's
-            // lock reads as the design rather than as the app forgetting.
-            Text(
-              l.unlockLastsToday,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 11,
-              ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            widget.body,
+            style: TextStyle(fontSize: 14, height: 1.5, color: palette.muted),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          BrandButton(
+            tone: BrandButtonTone.reward,
+            expand: true,
+            onPressed: _busy ? null : _watch,
+            leading: _busy
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.play_arrow_rounded),
+            label: _busy ? l.unlockLoading : l.unlockWatch,
+          ),
+          if (canBuy) ...[
+            const SizedBox(height: AppSpacing.sm),
+            BrandButton(
+              tone: BrandButtonTone.outline,
+              expand: true,
+              onPressed: _busy
+                  ? null
+                  : () => showPaywall(
+                      context,
+                      ref,
+                      reason: PaywallReason.forUnlock(widget.unlock),
+                    ),
+              label: l.purchaseUpgrade,
             ),
           ],
-        ),
+          if (_failed) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              l.unlockFailed,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: semantic.inauspicious),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l.unlockLastsToday,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: palette.muted),
+          ),
+        ],
       ),
     );
   }

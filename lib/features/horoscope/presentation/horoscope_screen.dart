@@ -1,10 +1,18 @@
+import '../../../core/astro/models.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/brand_palette.dart';
+import '../../../core/ui/brand_card.dart';
+import '../../../core/ui/info_notice.dart';
+import '../../../core/ui/nakshatra_star.dart';
+import '../../../core/ui/pill_segments.dart';
+import '../../../core/ui/round_icon_button.dart';
 import '../../../core/theme/semantic_colors.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/ads/interstitial.dart';
 import '../../../core/ads/rewarded_unlock.dart';
@@ -118,6 +126,8 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
     final bothSame = lagna != null && lagna == moon;
     final sign = ref.watch(horoscopeSignProvider(axis));
 
+    final palette = BrandPalette.of(context);
+
     return PopScope(
       // The system back gesture pops on its own; this only needs to know it
       // happened. Blocking a back press to show an ad would be both hostile
@@ -126,126 +136,222 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
         if (didPop) _leaving();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(l.horoscopeTitle),
-          leading: BackButton(
-            onPressed: () {
-              _leaving();
-              popOrHome(context);
-            },
-          ),
-        ),
-        body: ListView(
-          controller: _scroll,
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-          children: [
-            if (!bothSame && lagna != null && moon != null) ...[
-              _AxisToggle(axis: axis),
-              const SizedBox(height: AppSpacing.md),
-            ],
-
-            if (sign != null)
-              Text(
-                sign.label(locale),
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-            if (bothSame)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  l.horoscopeSameSign,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+        backgroundColor: palette.background,
+        body: DecoratedBox(
+          decoration: BoxDecoration(gradient: palette.backdrop),
+          child: SafeArea(
+            bottom: false,
+            child: ListView(
+              controller: _scroll,
+              padding: const EdgeInsets.fromLTRB(18, 8, 18, 32),
+              children: [
+                Row(
+                  children: [
+                    RoundIconButton(
+                      icon: Icons.arrow_back_rounded,
+                      tooltip: MaterialLocalizations.of(
+                        context,
+                      ).backButtonTooltip,
+                      onPressed: () {
+                        _leaving();
+                        popOrHome(context);
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l.horoscopeTitle,
+                        style: BrandFonts.displayStyle(
+                          context,
+                          size: 26,
+                          color: palette.text,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+                const SizedBox(height: AppSpacing.lg),
 
-            // The lagna moves a sign every two hours, so without a birth time it
-            // is a guess. Saying nothing would present a coin flip as a reading.
-            if (axis == HoroscopeAxis.lagna &&
-                ref.watch(lagnaIsApproximateProvider))
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  l.horoscopeLagnaApproximate,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: context.semantic.inauspicious,
+                if (!bothSame && lagna != null && moon != null) ...[
+                  PillSegments<HoroscopeAxis>(
+                    segments: [
+                      (value: HoroscopeAxis.lagna, label: l.horoscopeByLagna),
+                      (value: HoroscopeAxis.rasi, label: l.horoscopeByRasi),
+                    ],
+                    selected: axis,
+                    onChanged: (a) =>
+                        ref.read(horoscopeAxisProvider.notifier).set(a),
                   ),
-                ),
-              ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
 
-            const SizedBox(height: AppSpacing.lg),
-
-            if (locked)
-              RewardedUnlockCard(
-                unlock: RewardedUnlock.futureDay,
-                title: l.unlockFutureTitle,
-                body: l.unlockFutureBody,
-              )
-            else if (horoscope == null)
-              // No chart yet, or no bundled copy for this build. Neither is
-              // worth an error: the rest of the app still works.
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Text(
-                  l.horoscopeUnavailable,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                if (sign != null)
+                  _SignMedallion(
+                    sign: sign,
+                    name: sign.label(locale),
+                    date: DateFormat.MMMMEEEEd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(date),
                   ),
-                ),
-              )
-            else ...[
-              for (final category in HoroscopeEngine.sectionOrder)
-                if (horoscope[category] case final text?)
-                  _Section(category: category, text: text),
-              const SizedBox(height: AppSpacing.sm),
-              _LuckyRow(horoscope: horoscope),
-            ],
+                if (bothSame)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      l.horoscopeSameSign,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 13, color: palette.muted),
+                    ),
+                  ),
 
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              l.entertainmentOnly,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                // The lagna moves a sign every two hours, so without a birth
+                // time it is a guess. Saying nothing would present a coin flip
+                // as a reading. A notice with its warning icon: it was red text
+                // alone, which is colour carrying the meaning (KAN-86).
+                if (axis == HoroscopeAxis.lagna &&
+                    ref.watch(lagnaIsApproximateProvider)) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  InfoNotice(
+                    text: l.horoscopeLagnaApproximate,
+                    tone: NoticeTone.caution,
+                  ),
+                ],
+
+                const SizedBox(height: AppSpacing.lg),
+
+                if (locked)
+                  RewardedUnlockCard(
+                    unlock: RewardedUnlock.futureDay,
+                    title: l.unlockFutureTitle,
+                    body: l.unlockFutureBody,
+                  )
+                else if (horoscope == null)
+                  // No bundled copy for this build. Not worth an error: the
+                  // rest of the app still works.
+                  _Empty(text: l.horoscopeUnavailable)
+                else ...[
+                  for (final category in HoroscopeEngine.sectionOrder)
+                    if (horoscope[category] case final text?)
+                      _Section(category: category, text: text),
+                  _LuckyRow(horoscope: horoscope),
+                ],
+
+                const SizedBox(height: AppSpacing.xl),
+                Text(
+                  l.entertainmentOnly,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: palette.muted),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Lagna or rāśi. Same shape as the compatibility screen's system toggle, so
-/// the two "which system are you reading" choices in the app look alike.
-class _AxisToggle extends ConsumerWidget {
-  const _AxisToggle({required this.axis});
+/// The sign being read, as a medallion: its symbol in a gold ring, the name
+/// beneath, then the day.
+class _SignMedallion extends StatelessWidget {
+  const _SignMedallion({
+    required this.sign,
+    required this.name,
+    required this.date,
+  });
 
-  final HoroscopeAxis axis;
+  final Rasi sign;
+  final String name;
+  final String date;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = L10n.of(context);
-
-    return SegmentedButton<HoroscopeAxis>(
-      segments: [
-        ButtonSegment(
-          value: HoroscopeAxis.lagna,
-          label: Text(l.horoscopeByLagna),
+  Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
+    return Column(
+      children: [
+        Container(
+          width: 88,
+          height: 88,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: semantic.accent),
+            gradient: RadialGradient(
+              colors: [
+                Color.alphaBlend(
+                  semantic.accent.withValues(alpha: 0.18),
+                  palette.surface,
+                ),
+                palette.surface,
+              ],
+            ),
+          ),
+          // The zodiac symbol, U+2648 onwards in rāśi order, from the bundled
+          // zodiac subset. Left to the system, Android draws it from the
+          // colour emoji font as a blue tile, and the text presentation
+          // selector did not stop it.
+          child: ExcludeSemantics(
+            child: Text(
+              String.fromCharCode(0x2648 + sign.index),
+              style: TextStyle(
+                fontFamily: 'NotoZodiac',
+                fontSize: 42,
+                height: 1,
+                color: semantic.accent,
+              ),
+            ),
+          ),
         ),
-        ButtonSegment(
-          value: HoroscopeAxis.rasi,
-          label: Text(l.horoscopeByRasi),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          name,
+          textAlign: TextAlign.center,
+          style: BrandFonts.displayStyle(
+            context,
+            size: 30,
+            color: palette.text,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          date,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, color: palette.muted),
         ),
       ],
-      selected: {axis},
-      onSelectionChanged: (s) =>
-          ref.read(horoscopeAxisProvider.notifier).set(s.first),
+    );
+  }
+}
+
+class _Empty extends StatelessWidget {
+  const _Empty({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = BrandPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: Column(
+        children: [
+          SizedBox.square(
+            dimension: 96,
+            child: CustomPaint(
+              painter: NakshatraStarPainter(
+                progress: 1,
+                color: context.semantic.accent.withValues(alpha: 0.6),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 15, height: 1.5, color: palette.muted),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -258,7 +364,6 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l = L10n.of(context);
 
     final (label, icon) = switch (category) {
@@ -273,26 +378,50 @@ class _Section extends StatelessWidget {
       HoroscopeCategory.advice => (l.horoscopeAdvice, Icons.lightbulb_outline),
     };
 
+    final palette = BrandPalette.of(context);
+    final semantic = context.semantic;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 18, color: context.semantic.accent),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                label,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: context.semantic.accent,
-                ),
+      padding: const EdgeInsets.only(bottom: 12),
+      child: BrandCard(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: semantic.accentSurface,
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(text, style: theme.textTheme.bodyMedium),
-        ],
+              child: Icon(icon, size: 20, color: semantic.accent),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: palette.text,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 15,
+                      height: 1.55,
+                      color: palette.muted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -308,32 +437,31 @@ class _LuckyRow extends StatelessWidget {
     final l = L10n.of(context);
     final theme = Theme.of(context);
 
-    return Card(
-      elevation: 0,
-      color: context.semantic.auspiciousSurface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: context.semantic.auspicious.withValues(alpha: 0.4),
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+      decoration: BoxDecoration(
+        color: context.semantic.auspiciousSurface,
+        borderRadius: BorderRadius.circular(BrandCard.radius),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      child: IntrinsicHeight(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _Lucky(
-              label: l.horoscopeLuckyNumber,
-              value: '${horoscope.luckyNumber}',
+            Expanded(
+              child: _Lucky(
+                label: l.horoscopeLuckyNumber,
+                value: '${horoscope.luckyNumber}',
+              ),
             ),
-            Container(width: 1, height: 32, color: theme.dividerColor),
-            _Lucky(
-              label: l.horoscopeLuckyColour,
-              value: _colourName(l, horoscope.luckyColour),
-              // Naming a colour in a different colour reads as a mistake: the
-              // card's green accent made "Red" look wrong. Show the swatch
-              // instead, so the word and the colour agree.
-              swatch: _swatch(horoscope.luckyColour),
+            VerticalDivider(width: 1, color: theme.dividerColor),
+            Expanded(
+              child: _Lucky(
+                label: l.horoscopeLuckyColour,
+                value: _colourName(l, horoscope.luckyColour),
+                // Naming a colour in a different colour reads as a mistake:
+                // the card's green accent made "Red" look wrong. Show the
+                // swatch instead, so the word and the colour agree.
+                swatch: _swatch(horoscope.luckyColour),
+              ),
             ),
           ],
         ),
@@ -388,9 +516,8 @@ class _Lucky extends StatelessWidget {
       children: [
         Text(
           label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, color: BrandPalette.of(context).muted),
         ),
         const SizedBox(height: AppSpacing.xs),
         Row(
@@ -408,10 +535,14 @@ class _Lucky extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
             ],
-            Text(
-              value,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: context.semantic.auspicious,
+            Flexible(
+              child: Text(
+                value,
+                style: BrandFonts.displayStyle(
+                  context,
+                  size: 24,
+                  color: BrandPalette.of(context).text,
+                ),
               ),
             ),
           ],

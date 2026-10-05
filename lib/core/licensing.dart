@@ -50,11 +50,12 @@ abstract final class Licensing {
           'every country. Sri Lankan places are our own list.',
     ),
     Attribution(
-      name: 'Noto Sans Sinhala and Noto Sans Tamil',
+      name: 'Noto Sans Sinhala, Noto Sans Tamil and Noto Sans Symbols',
       author: 'Google LLC',
       license: 'OFL-1.1',
       url: 'https://fonts.google.com/noto',
-      note: 'The Sinhala and Tamil text throughout the app.',
+      note:
+          'The Sinhala and Tamil text throughout the app, and the zodiac signs.',
     ),
     Attribution(
       name: 'Fraunces',

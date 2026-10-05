@@ -130,6 +130,14 @@ flutter:
         - asset: assets/fonts/Fraunces-SemiBold.ttf
           weight: 600
 
+    # The twelve zodiac signs and nothing else (U+2648..2653), subset from
+    # Noto Sans Symbols: 3.5 KB. Without it Android draws the signs from its
+    # colour emoji font, even with the text presentation selector (KAN-86).
+    # OFL-1.1, assets/fonts/OFL-NotoSansSymbols.txt.
+    - family: NotoZodiac
+      fonts:
+        - asset: assets/fonts/NotoSansSymbols-Zodiac.ttf
+
     # HeloCode's own face, for the publisher's wordmark only (KAN-81).
     # OFL-1.1, assets/fonts/OFL-Geist.txt.
     - family: Geist

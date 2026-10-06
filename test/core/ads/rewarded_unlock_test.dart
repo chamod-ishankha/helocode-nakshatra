@@ -65,26 +65,32 @@ void main() {
   group('earning and expiry', () {
     test('locked until something is earned', () {
       final s = store(now: DateTime(2026, 9, 6, 9));
-      expect(s.state(RewardedUnlock.futureDay), UnlockState.locked);
-      expect(s.isOpen(RewardedUnlock.futureDay), isFalse);
+      expect(s.state(RewardedUnlock.compatibilityDetail), UnlockState.locked);
+      expect(s.isOpen(RewardedUnlock.compatibilityDetail), isFalse);
     });
 
     test('open for the rest of the same day', () async {
-      await store(now: DateTime(2026, 9, 6, 9)).grant(RewardedUnlock.futureDay);
+      await store(
+        now: DateTime(2026, 9, 6, 9),
+      ).grant(RewardedUnlock.compatibilityDetail);
 
       expect(
         store(
           now: DateTime(2026, 9, 6, 23, 59),
-        ).state(RewardedUnlock.futureDay),
+        ).state(RewardedUnlock.compatibilityDetail),
         UnlockState.earned,
       );
     });
 
     test('locked again the next calendar day', () async {
-      await store(now: DateTime(2026, 9, 6, 9)).grant(RewardedUnlock.futureDay);
+      await store(
+        now: DateTime(2026, 9, 6, 9),
+      ).grant(RewardedUnlock.compatibilityDetail);
 
       expect(
-        store(now: DateTime(2026, 9, 7, 9)).state(RewardedUnlock.futureDay),
+        store(
+          now: DateTime(2026, 9, 7, 9),
+        ).state(RewardedUnlock.compatibilityDetail),
         UnlockState.locked,
       );
     });
@@ -97,12 +103,12 @@ void main() {
         // and would have given this user nearly two days from one video.
         await store(
           now: DateTime(2026, 9, 6, 23, 50),
-        ).grant(RewardedUnlock.futureDay);
+        ).grant(RewardedUnlock.compatibilityDetail);
 
         expect(
           store(
             now: DateTime(2026, 9, 7, 0, 1),
-          ).state(RewardedUnlock.futureDay),
+          ).state(RewardedUnlock.compatibilityDetail),
           UnlockState.locked,
         );
       },
@@ -111,23 +117,89 @@ void main() {
     test('unlocks do not open each other', () async {
       // Sharing one key would mean watching a video for tomorrow's nekath
       // also revealed the compatibility breakdown, halving the inventory.
-      await store(now: DateTime(2026, 9, 6)).grant(RewardedUnlock.futureDay);
+      await store(now: DateTime(2026, 9, 6)).grant(RewardedUnlock.navamsaChart);
 
       final s = store(now: DateTime(2026, 9, 6));
-      expect(s.state(RewardedUnlock.futureDay), UnlockState.earned);
+      expect(s.state(RewardedUnlock.navamsaChart), UnlockState.earned);
       expect(s.state(RewardedUnlock.compatibilityDetail), UnlockState.locked);
     });
 
-    test('revokeAll closes everything', () async {
+    test('revokeAll closes everything, per-day grants included', () async {
       final s = store(now: DateTime(2026, 9, 6));
+      final ahead = DateTime(2026, 9, 9);
       for (final u in RewardedUnlock.values) {
-        await s.grant(u);
+        await s.grant(u, day: ahead);
       }
       await s.revokeAll();
 
       for (final u in RewardedUnlock.values) {
-        expect(s.state(u), UnlockState.locked, reason: u.name);
+        expect(s.state(u, day: ahead), UnlockState.locked, reason: u.name);
       }
+    });
+  });
+
+  group('a future day opens only the day watched for (KAN-97)', () {
+    final today = DateTime(2026, 10, 6, 9);
+    final eighth = DateTime(2026, 10, 8);
+    final ninth = DateTime(2026, 10, 9);
+
+    test('a video for the 8th opens the 8th and not the 9th', () async {
+      // The reported bug: one video opened every day ahead until midnight.
+      await store(now: today).grant(RewardedUnlock.futureDay, day: eighth);
+
+      final s = store(now: DateTime(2026, 10, 6, 18));
+      expect(s.isOpen(RewardedUnlock.futureDay, day: eighth), isTrue);
+      expect(s.isOpen(RewardedUnlock.futureDay, day: ninth), isFalse);
+    });
+
+    test('the time of day of the date asked about does not matter', () async {
+      await store(now: today).grant(RewardedUnlock.futureDay, day: eighth);
+
+      expect(
+        store(
+          now: today,
+        ).isOpen(RewardedUnlock.futureDay, day: DateTime(2026, 10, 8, 23, 30)),
+        isTrue,
+      );
+    });
+
+    test('still lasts only until the end of today', () async {
+      await store(now: today).grant(RewardedUnlock.futureDay, day: eighth);
+
+      expect(
+        store(
+          now: DateTime(2026, 10, 7, 0, 1),
+        ).isOpen(RewardedUnlock.futureDay, day: eighth),
+        isFalse,
+      );
+    });
+
+    test('a grant written by an older build opens nothing', () async {
+      // Before the fix the grant was kept for the kind, not the date. One
+      // still on a phone today must not keep opening every day ahead.
+      await prefs.setString('unlock.futureDay', UnlockStore.stampFor(today));
+
+      expect(
+        store(now: today).isOpen(RewardedUnlock.futureDay, day: eighth),
+        isFalse,
+      );
+    });
+
+    test('grants from past days are cleared on the next one', () async {
+      await store(
+        now: DateTime(2026, 10, 1),
+      ).grant(RewardedUnlock.futureDay, day: DateTime(2026, 10, 3));
+      await store(now: today).grant(RewardedUnlock.futureDay, day: eighth);
+
+      expect(prefs.getKeys().where((k) => k.startsWith('unlock.futureDay.')), [
+        'unlock.futureDay.2026-10-08',
+      ]);
+    });
+
+    test('a purchase still opens every day', () {
+      final s = store(entitled: true, now: today);
+      expect(s.isOpen(RewardedUnlock.futureDay, day: eighth), isTrue);
+      expect(s.isOpen(RewardedUnlock.futureDay, day: ninth), isTrue);
     });
   });
 
@@ -148,7 +220,9 @@ void main() {
     test('a stored stamp from another day never matches today', () async {
       // Guards against a comparison that accidentally comes out true for
       // every value, which would make the lock permanently open.
-      await store(now: DateTime(2026, 1, 1)).grant(RewardedUnlock.futureDay);
+      await store(
+        now: DateTime(2026, 1, 1),
+      ).grant(RewardedUnlock.compatibilityDetail);
 
       for (final day in [
         DateTime(2025, 12, 31),
@@ -157,7 +231,7 @@ void main() {
         DateTime(2027, 1, 1),
       ]) {
         expect(
-          store(now: day).state(RewardedUnlock.futureDay),
+          store(now: day).state(RewardedUnlock.compatibilityDetail),
           UnlockState.locked,
           reason: '$day',
         );
@@ -192,13 +266,14 @@ void main() {
 
         final ok = await c
             .read(unlockRevisionProvider.notifier)
-            .earn(RewardedUnlock.futureDay);
+            .earn(RewardedUnlock.futureDay, day: DateTime(2026, 10, 8));
 
         expect(ok, isTrue);
         expect(c.read(unlockRevisionProvider), greaterThan(before));
-        // Persisted under today's stamp, so a rebuild reads it back as earned.
+        // Persisted for that date under today's stamp, so a rebuild reads it
+        // back as earned.
         expect(
-          prefs.getString('unlock.futureDay'),
+          prefs.getString('unlock.futureDay.2026-10-08'),
           UnlockStore.stampFor(DateTime.now()),
         );
       },
@@ -209,10 +284,10 @@ void main() {
 
       final ok = await c
           .read(unlockRevisionProvider.notifier)
-          .earn(RewardedUnlock.futureDay);
+          .earn(RewardedUnlock.futureDay, day: DateTime(2026, 10, 8));
 
       expect(ok, isFalse);
-      expect(prefs.getString('unlock.futureDay'), isNull);
+      expect(prefs.getKeys().where((k) => k.startsWith('unlock.')), isEmpty);
     });
 
     test('the store provider resolves without a dependency cycle', () {

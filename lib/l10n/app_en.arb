@@ -456,8 +456,6 @@
   "unlockNavamsaBody": "The D9, read alongside your rāśi chart for marriage and for the real strength of each planet.",
   "unlockDashaTitle": "The third daśā level",
   "unlockDashaBody": "Break every antardaśā down into its pratyantardaśā periods.",
-  "unlockFutureTitle": "Nekath for other days",
-  "unlockFutureBody": "Open any day ahead — auspicious times, rahu kalaya and the full panchanga.",
   "authErrorGoogleRepeated": "Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.",
   "horoscopeTitle": "Daily horoscope",
   "horoscopeUnavailable": "Your horoscope needs your birth details. Finish setting up your chart to see it.",
@@ -852,5 +850,10 @@
   "@durationHours": {"description": "A whole number of hours, short.", "placeholders": {"hours": {"type": "int"}}},
   "@durationHoursMinutes": {"description": "Hours and minutes, short: how long rāhu kālaya lasts.", "placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
   "homeFullMoonOn": "Full moon on {date} at {time}",
-  "@homeFullMoonOn": {"description": "On a poya day whose full moon falls on another day, usually the next morning.", "placeholders": {"date": {"type": "String"}, "time": {"type": "String"}}}
+  "@homeFullMoonOn": {"description": "On a poya day whose full moon falls on another day, usually the next morning.", "placeholders": {"date": {"type": "String"}, "time": {"type": "String"}}},
+  "unlockDayTitle": "See {date}",
+  "unlockDayBody": "Today and the days before it are free. Each day ahead opens with a short video, for that day only.",
+  "@unlockDayTitle": {"description": "Title of the card on a locked future day; date is the weekday and date being viewed.", "placeholders": {"date": {"type": "String"}}},
+  "homeClearTimesOn": "Clear times on {date}",
+  "@homeClearTimesOn": {"description": "Heading of the clear-times card when the day shown is not today.", "placeholders": {"date": {"type": "String"}}}
 }

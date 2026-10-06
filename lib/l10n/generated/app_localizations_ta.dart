@@ -993,13 +993,6 @@ class L10nTa extends L10n {
       'ஒவ்வொரு அந்தர்தசையையும் அதன் பிரத்யந்தர்தசைக் காலங்களாகப் பிரித்துப் பார்க்கலாம்.';
 
   @override
-  String get unlockFutureTitle => 'மற்ற நாட்களின் நேரம்';
-
-  @override
-  String get unlockFutureBody =>
-      'வரும் எந்த நாளையும் திறக்கலாம் — நல்ல நேரங்கள், ராகு காலம் மற்றும் முழு பஞ்சாங்கம்.';
-
-  @override
   String get authErrorGoogleRepeated =>
       'Google உள்நுழைவு நிறைவடையவில்லை. இது தொடர்ந்து நிகழ்ந்தால், இந்தப் பதிப்பிற்கு அது அமைக்கப்படாமல் இருக்கலாம்.';
 
@@ -1692,5 +1685,19 @@ class L10nTa extends L10n {
   @override
   String homeFullMoonOn(String date, String time) {
     return '$date அன்று $time மணிக்கு பௌர்ணமி';
+  }
+
+  @override
+  String unlockDayTitle(String date) {
+    return '$date பார்க்க';
+  }
+
+  @override
+  String get unlockDayBody =>
+      'இன்றும் அதற்கு முந்தைய நாட்களும் இலவசம். வரும் ஒவ்வொரு நாளும் ஒரு சிறிய வீடியோவால் திறக்கும், அந்த நாளுக்கு மட்டும்.';
+
+  @override
+  String homeClearTimesOn(String date) {
+    return '$date நல்ல நேரங்கள்';
   }
 }

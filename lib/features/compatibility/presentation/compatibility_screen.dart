@@ -24,6 +24,7 @@ import '../domain/compatibility_providers.dart';
 import 'partner_form.dart';
 import '../../../core/purchases/nudges.dart';
 import '../../purchases/presentation/pro_nudge.dart';
+import '../../../core/ads/lock_preview.dart';
 
 /// Marriage matching (KAN-29).
 ///
@@ -533,12 +534,22 @@ class _Results extends ConsumerWidget {
             factors([
               for (final s in match.ashtakoota.scores) _KootaRow(score: s),
             ])
-          else
+          else ...[
+            // The first factors in the clear, so the breakdown being offered
+            // is one the reader has already seen the shape of (KAN-70).
+            factors([
+              for (final s in match.ashtakoota.scores.take(
+                previewCount(match.ashtakoota.scores.length),
+              ))
+                _KootaRow(score: s),
+            ]),
+            const SizedBox(height: AppSpacing.md),
             RewardedUnlockCard(
               unlock: RewardedUnlock.compatibilityDetail,
               title: l.unlockCompatTitle,
               body: l.unlockCompatBody,
             ),
+          ],
         ] else ...[
           _ScoreHeadline(
             label: l.compatSystemPorondam,
@@ -557,12 +568,22 @@ class _Results extends ConsumerWidget {
             factors([
               for (final s in match.porondam.scores) _PorondamRow(score: s),
             ])
-          else
+          else ...[
+            // The first factors in the clear, so the breakdown being offered
+            // is one the reader has already seen the shape of (KAN-70).
+            factors([
+              for (final s in match.porondam.scores.take(
+                previewCount(match.porondam.scores.length),
+              ))
+                _PorondamRow(score: s),
+            ]),
+            const SizedBox(height: AppSpacing.md),
             RewardedUnlockCard(
               unlock: RewardedUnlock.compatibilityDetail,
               title: l.unlockCompatTitle,
               body: l.unlockCompatBody,
             ),
+          ],
           const SizedBox(height: AppSpacing.md),
           // The gap to twenty is stated on screen, not only in the code.
           Text(

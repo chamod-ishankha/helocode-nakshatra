@@ -19,7 +19,8 @@ enum RewardedUnlock {
   /// locking the number would make the screen worthless rather than tempting.
   compatibilityDetail,
 
-  /// Any day after today. Looking back is free; looking ahead is the ask.
+  /// A day after today, one date per video. Looking back is free; looking
+  /// ahead is the ask.
   futureDay,
 
   /// The navāṃśa (D9). The rāśi chart — the one people came for, and the one
@@ -28,7 +29,14 @@ enum RewardedUnlock {
 
   /// The third level of the daśā tree. The running period and the mahā/antara
   /// list stay free, so the timeline is a whole feature without paying.
-  dashaDetail,
+  dashaDetail;
+
+  /// Granted for one date rather than for the whole kind (KAN-97).
+  ///
+  /// A future-day video used to be kept as "futureDay, earned today", and
+  /// every screen asked only whether that was open — so one video opened
+  /// every day ahead until midnight. It is now kept per date watched for.
+  bool get perDay => this == futureDay;
 }
 
 /// Why an unlock is currently open, or what it would take to open it.
@@ -70,7 +78,22 @@ class UnlockStore {
   final bool _adsConfigured;
   final DateTime Function() _clock;
 
-  static String _key(RewardedUnlock u) => 'unlock.${u.name}';
+  /// Where a grant is kept: one key per kind, and for a [RewardedUnlock.perDay]
+  /// unlock one key per date — `unlock.futureDay.2026-10-08`.
+  ///
+  /// The bare `unlock.futureDay` that older builds wrote is never read for a
+  /// date, so a grant made before the fix opens nothing.
+  static String _key(RewardedUnlock u, DateTime? day) {
+    assert(
+      !u.perDay || day != null,
+      '${u.name} is granted per day; pass the day it is for',
+    );
+    return u.perDay && day != null
+        ? '${_prefix(u)}${stampFor(day)}'
+        : 'unlock.${u.name}';
+  }
+
+  static String _prefix(RewardedUnlock u) => 'unlock.${u.name}.';
 
   /// The local calendar day, as a sortable stamp.
   ///
@@ -82,7 +105,10 @@ class UnlockStore {
       '${local.month.toString().padLeft(2, '0')}-'
       '${local.day.toString().padLeft(2, '0')}';
 
-  UnlockState state(RewardedUnlock unlock) {
+  /// [day] is the date being asked about, and is required for a
+  /// [RewardedUnlock.perDay] unlock: the answer for 8 October says nothing
+  /// about the 9th.
+  UnlockState state(RewardedUnlock unlock, {DateTime? day}) {
     // Checked first so a purchase can never be overridden by a later rule.
     if (_hasEntitlement) return UnlockState.purchased;
 
@@ -91,14 +117,15 @@ class UnlockStore {
     // clone with no env file must still be a whole app.
     if (!_adsConfigured) return UnlockState.unavailable;
 
-    final stored = _prefs.getString(_key(unlock));
+    final stored = _prefs.getString(_key(unlock, day));
     if (stored != null && stored == stampFor(_clock())) {
       return UnlockState.earned;
     }
     return UnlockState.locked;
   }
 
-  bool isOpen(RewardedUnlock unlock) => state(unlock) != UnlockState.locked;
+  bool isOpen(RewardedUnlock unlock, {DateTime? day}) =>
+      state(unlock, day: day) != UnlockState.locked;
 
   /// Whether a video was actually watched for [unlock] today.
   ///
@@ -108,15 +135,15 @@ class UnlockStore {
   /// bought Remove Ads has not bought Pro, and treating the two as one would
   /// make the cheaper one-time purchase strictly better value than the
   /// subscription — everything Pro sells, for less, once.
-  bool earnedToday(RewardedUnlock unlock) =>
-      _prefs.getString(_key(unlock)) == stampFor(_clock());
+  bool earnedToday(RewardedUnlock unlock, {DateTime? day}) =>
+      _prefs.getString(_key(unlock, day)) == stampFor(_clock());
 
   /// Records a reward that was actually earned.
   ///
   /// Only ever called after the SDK reports the reward. Calling it when the
   /// user dismissed the ad early would teach them that dismissing works.
-  Future<void> grant(RewardedUnlock unlock) =>
-      write(_prefs, unlock, clock: _clock);
+  Future<void> grant(RewardedUnlock unlock, {DateTime? day}) =>
+      write(_prefs, unlock, clock: _clock, day: day);
 
   /// The same write, reachable without an [UnlockStore] instance.
   ///
@@ -129,11 +156,24 @@ class UnlockStore {
     SharedPreferences prefs,
     RewardedUnlock unlock, {
     DateTime Function()? clock,
-  }) => prefs.setString(_key(unlock), stampFor((clock ?? DateTime.now)()));
+    DateTime? day,
+  }) async {
+    final today = stampFor((clock ?? DateTime.now)());
+    if (unlock.perDay) {
+      // Grants from earlier days are dead weight once their day is over;
+      // dropped here so the keys do not pile up one per date ever opened.
+      for (final key in prefs.getKeys().toList()) {
+        if (key.startsWith(_prefix(unlock)) && prefs.getString(key) != today) {
+          await prefs.remove(key);
+        }
+      }
+    }
+    await prefs.setString(_key(unlock, day), today);
+  }
 
   Future<void> revokeAll() async {
-    for (final u in RewardedUnlock.values) {
-      await _prefs.remove(_key(u));
+    for (final key in _prefs.getKeys().toList()) {
+      if (key.startsWith('unlock.')) await _prefs.remove(key);
     }
   }
 }
@@ -162,7 +202,9 @@ class UnlockNotifier extends Notifier<int> {
     unawaited(ref.read(nudgeRevisionProvider.notifier).watched());
   }
 
-  Future<bool> earn(RewardedUnlock unlock) async {
+  /// [day] is the date the video is for, required for a
+  /// [RewardedUnlock.perDay] unlock.
+  Future<bool> earn(RewardedUnlock unlock, {DateTime? day}) async {
     final earned = await ref.read(rewardedPresenterProvider)();
 
     // Logged here and not in the lock or the card, because both come through
@@ -174,7 +216,11 @@ class UnlockNotifier extends Notifier<int> {
     );
 
     if (!earned) return false;
-    await UnlockStore.write(ref.read(sharedPreferencesProvider), unlock);
+    await UnlockStore.write(
+      ref.read(sharedPreferencesProvider),
+      unlock,
+      day: day,
+    );
     state++;
     unawaited(ref.read(nudgeRevisionProvider.notifier).watched());
     return true;

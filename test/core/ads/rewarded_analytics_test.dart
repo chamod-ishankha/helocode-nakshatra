@@ -76,7 +76,7 @@ void main() {
       final notifier = c.read(unlockRevisionProvider.notifier);
 
       return Future.wait([
-        notifier.earn(RewardedUnlock.futureDay),
+        notifier.earn(RewardedUnlock.futureDay, day: DateTime(2026, 10, 8)),
         notifier.earn(RewardedUnlock.compatibilityDetail),
       ]).then((_) {
         expect(sent.map((e) => e.$1), [

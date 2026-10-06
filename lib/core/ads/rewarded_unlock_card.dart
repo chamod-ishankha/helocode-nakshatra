@@ -30,12 +30,16 @@ class RewardedUnlockCard extends ConsumerStatefulWidget {
     required this.unlock,
     required this.title,
     required this.body,
+    this.day,
     super.key,
   });
 
   final RewardedUnlock unlock;
   final String title;
   final String body;
+
+  /// The date a [RewardedUnlock.perDay] video opens, and only that date.
+  final DateTime? day;
 
   @override
   ConsumerState<RewardedUnlockCard> createState() => _RewardedUnlockCardState();
@@ -65,7 +69,7 @@ class _RewardedUnlockCardState extends ConsumerState<RewardedUnlockCard> {
 
     final earned = await ref
         .read(unlockRevisionProvider.notifier)
-        .earn(widget.unlock);
+        .earn(widget.unlock, day: widget.day);
 
     if (!mounted) return;
     setState(() {

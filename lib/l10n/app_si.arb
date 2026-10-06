@@ -290,8 +290,6 @@
   "unlockNavamsaBody": "D9 — විවාහය සහ එක් එක් ග්‍රහයාගේ සැබැ ශක්තිය සදහා ඔබේ රාශි කේන්දරය සමඟ කියවරෙනු ලැබේ.",
   "unlockDashaTitle": "තුන්වන දශා මට්ටම",
   "unlockDashaBody": "සැම අන්තර්දශාවක්ම එහි ප්‍රත්‍යන්තර්දශා කාලවලට බෙදා දකින්න.",
-  "unlockFutureTitle": "වෙනත් දිනවල නැකත්",
-  "unlockFutureBody": "ඉදිරි ඕනෑම දිනක් බලන්න — සුබ මුහූර්ත, රාහු කාලය සහ සම්පූර්ණ පංචාංගය.",
   "authErrorGoogleRepeated": "Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.",
   "horoscopeTitle": "දෛනික පලාපල",
   "horoscopeUnavailable": "ලග්න පලාපල සඳහා ඔබේ උපන් තොරතුරු අවශ්‍යයි. කේන්දරය සකසා අවසන් කරන්න.",
@@ -485,5 +483,8 @@
   "calendarScanFailed": "මෙම මාසය ගණනය කළ නොහැකි විය.",
   "durationHours": "පැය {hours}",
   "durationHoursMinutes": "පැය {hours} විනාඩි {minutes}",
-  "homeFullMoonOn": "පුර පසළොස්වක {date} {time} ට"
+  "homeFullMoonOn": "පුර පසළොස්වක {date} {time} ට",
+  "unlockDayTitle": "{date} බලන්න",
+  "unlockDayBody": "අද සහ ඊට පෙර දින නොමිලේ. ඉදිරි සෑම දිනක්ම කෙටි වීඩියෝවකින් විවෘත වේ, එම දිනයට පමණි.",
+  "homeClearTimesOn": "{date} සුබ වේලාවන්"
 }

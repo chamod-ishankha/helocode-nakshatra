@@ -1839,18 +1839,6 @@ abstract class L10n {
   /// **'Break every antardaśā down into its pratyantardaśā periods.'**
   String get unlockDashaBody;
 
-  /// No description provided for @unlockFutureTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Nekath for other days'**
-  String get unlockFutureTitle;
-
-  /// No description provided for @unlockFutureBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Open any day ahead — auspicious times, rahu kalaya and the full panchanga.'**
-  String get unlockFutureBody;
-
   /// No description provided for @authErrorGoogleRepeated.
   ///
   /// In en, this message translates to:
@@ -3014,6 +3002,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Full moon on {date} at {time}'**
   String homeFullMoonOn(String date, String time);
+
+  /// Title of the card on a locked future day; date is the weekday and date being viewed.
+  ///
+  /// In en, this message translates to:
+  /// **'See {date}'**
+  String unlockDayTitle(String date);
+
+  /// No description provided for @unlockDayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Today and the days before it are free. Each day ahead opens with a short video, for that day only.'**
+  String get unlockDayBody;
+
+  /// Heading of the clear-times card when the day shown is not today.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear times on {date}'**
+  String homeClearTimesOn(String date);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

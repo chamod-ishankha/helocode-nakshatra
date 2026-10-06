@@ -118,7 +118,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final isAhead = selected.isAfter(DateTime(now.year, now.month, now.day));
     final dayLocked =
         isAhead &&
-        !ref.watch(unlockStoreProvider).isOpen(RewardedUnlock.futureDay);
+        !ref
+            .watch(unlockStoreProvider)
+            .isOpen(RewardedUnlock.futureDay, day: selected);
 
     if (profile == null || panchanga == null) {
       return Scaffold(
@@ -159,8 +161,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   gutter(
                     RewardedUnlockCard(
                       unlock: RewardedUnlock.futureDay,
-                      title: l.unlockFutureTitle,
-                      body: l.unlockFutureBody,
+                      // One video, one date (KAN-97).
+                      day: selected,
+                      title: l.unlockDayTitle(
+                        DateFormat.MMMMEEEEd().format(selected),
+                      ),
+                      body: l.unlockDayBody,
                     ),
                     top: 16,
                   )
@@ -1135,6 +1141,7 @@ class _ClearTimes extends ConsumerWidget {
     final palette = BrandPalette.of(context);
     final good = context.semantic.auspicious;
     final windows = ref.watch(auspiciousProvider);
+    final date = ref.watch(selectedDateProvider);
 
     return Container(
       width: double.infinity,
@@ -1150,7 +1157,16 @@ class _ClearTimes extends ConsumerWidget {
             children: [
               Icon(Icons.check_circle_outline, size: 20, color: good),
               const SizedBox(width: 8),
-              Expanded(child: _CardTitle(l.homeClearTimes, colour: good)),
+              Expanded(
+                child: _CardTitle(
+                  // "Today" only when it is: on any other day the heading
+                  // named the wrong one.
+                  isSameDay(date, ref.watch(clockProvider))
+                      ? l.homeClearTimes
+                      : l.homeClearTimesOn(DateFormat.MMMEd().format(date)),
+                  colour: good,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 4),

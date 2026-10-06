@@ -979,13 +979,6 @@ class L10nSi extends L10n {
       'සැම අන්තර්දශාවක්ම එහි ප්‍රත්‍යන්තර්දශා කාලවලට බෙදා දකින්න.';
 
   @override
-  String get unlockFutureTitle => 'වෙනත් දිනවල නැකත්';
-
-  @override
-  String get unlockFutureBody =>
-      'ඉදිරි ඕනෑම දිනක් බලන්න — සුබ මුහූර්ත, රාහු කාලය සහ සම්පූර්ණ පංචාංගය.';
-
-  @override
   String get authErrorGoogleRepeated =>
       'Google පිවිසුම සම්පූර්ණ නොවීය. මෙය දිගටම සිදුවේ නම්, මෙම අනුවාදය සඳහා එය සකසා නොතිබිය හැක.';
 
@@ -1667,5 +1660,19 @@ class L10nSi extends L10n {
   @override
   String homeFullMoonOn(String date, String time) {
     return 'පුර පසළොස්වක $date $time ට';
+  }
+
+  @override
+  String unlockDayTitle(String date) {
+    return '$date බලන්න';
+  }
+
+  @override
+  String get unlockDayBody =>
+      'අද සහ ඊට පෙර දින නොමිලේ. ඉදිරි සෑම දිනක්ම කෙටි වීඩියෝවකින් විවෘත වේ, එම දිනයට පමණි.';
+
+  @override
+  String homeClearTimesOn(String date) {
+    return '$date සුබ වේලාවන්';
   }
 }

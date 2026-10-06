@@ -985,13 +985,6 @@ class L10nEn extends L10n {
       'Break every antardaśā down into its pratyantardaśā periods.';
 
   @override
-  String get unlockFutureTitle => 'Nekath for other days';
-
-  @override
-  String get unlockFutureBody =>
-      'Open any day ahead — auspicious times, rahu kalaya and the full panchanga.';
-
-  @override
   String get authErrorGoogleRepeated =>
       'Google sign-in did not complete. If this keeps happening, it may not be set up for this version of the app.';
 
@@ -1694,5 +1687,19 @@ class L10nEn extends L10n {
   @override
   String homeFullMoonOn(String date, String time) {
     return 'Full moon on $date at $time';
+  }
+
+  @override
+  String unlockDayTitle(String date) {
+    return 'See $date';
+  }
+
+  @override
+  String get unlockDayBody =>
+      'Today and the days before it are free. Each day ahead opens with a short video, for that day only.';
+
+  @override
+  String homeClearTimesOn(String date) {
+    return 'Clear times on $date';
   }
 }

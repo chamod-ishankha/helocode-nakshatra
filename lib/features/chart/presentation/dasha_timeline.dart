@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/ads/lock_preview.dart';
 import '../../../core/ads/locked_content.dart';
 import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/astro/dasha.dart';
@@ -429,6 +430,8 @@ class _AntaraTile extends ConsumerWidget {
       );
     }
 
+    final free = previewCount(antara.children.length);
+
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
@@ -453,6 +456,11 @@ class _AntaraTile extends ConsumerWidget {
               .record(ProUsage.dashaExplored);
         },
         children: [
+          // The first sub-periods in the clear, the rest behind the lock: the
+          // reader sees what the third level is before being asked for it
+          // (KAN-70). Unlocked, the two halves read as one list.
+          for (final pratyantara in antara.children.take(free))
+            _PratyantaraRow(pratyantara: pratyantara),
           LockedContent(
             unlock: RewardedUnlock.dashaDetail,
             feature: PaidFeature.fullDashaTimeline,
@@ -460,7 +468,7 @@ class _AntaraTile extends ConsumerWidget {
             body: l.unlockDashaBody,
             child: Column(
               children: [
-                for (final pratyantara in antara.children)
+                for (final pratyantara in antara.children.skip(free))
                   _PratyantaraRow(pratyantara: pratyantara),
               ],
             ),

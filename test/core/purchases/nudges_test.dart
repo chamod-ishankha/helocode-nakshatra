@@ -317,7 +317,7 @@ void main() {
 
       await c
           .read(unlockRevisionProvider.notifier)
-          .earn(RewardedUnlock.futureDay);
+          .earn(RewardedUnlock.futureDay, day: DateTime(2026, 10, 8));
       // The watch is recorded without awaiting, like analytics.
       await Future<void>.delayed(Duration.zero);
 
@@ -337,7 +337,7 @@ void main() {
 
       await c
           .read(unlockRevisionProvider.notifier)
-          .earn(RewardedUnlock.futureDay);
+          .earn(RewardedUnlock.futureDay, day: DateTime(2026, 10, 8));
       await Future<void>.delayed(Duration.zero);
 
       expect(c.read(nudgeStoreProvider).count(NudgeTrigger.adWatches), 0);

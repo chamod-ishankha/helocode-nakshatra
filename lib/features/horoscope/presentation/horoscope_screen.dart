@@ -113,7 +113,9 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
     final ahead = date.isAfter(DateTime(now.year, now.month, now.day));
     final locked =
         ahead &&
-        !ref.watch(unlockStoreProvider).isOpen(RewardedUnlock.futureDay);
+        !ref
+            .watch(unlockStoreProvider)
+            .isOpen(RewardedUnlock.futureDay, day: date);
 
     final axis = ref.watch(horoscopeAxisProvider);
     final horoscope = locked ? null : ref.watch(horoscopeProvider(axis));
@@ -221,8 +223,12 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
                 if (locked)
                   RewardedUnlockCard(
                     unlock: RewardedUnlock.futureDay,
-                    title: l.unlockFutureTitle,
-                    body: l.unlockFutureBody,
+                    // One video, one date (KAN-97).
+                    day: date,
+                    title: l.unlockDayTitle(
+                      DateFormat.MMMMEEEEd().format(date),
+                    ),
+                    body: l.unlockDayBody,
                   )
                 else if (horoscope == null)
                   // No bundled copy for this build. Not worth an error: the

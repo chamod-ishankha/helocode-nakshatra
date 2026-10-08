@@ -334,6 +334,24 @@ class L10nSi extends L10n {
   String get compatPartnerName => 'සහකරුගේ නම';
 
   @override
+  String get compatPartnerDateQuestion => 'සහකරු උපන්නේ කවදාද?';
+
+  @override
+  String get compatPartnerDateWheelHint => 'සහකරුගේ උපන් දිනයට අනුචලනය කරන්න';
+
+  @override
+  String get compatPartnerTimeQuestion => 'සහකරු උපන්නේ කීයටද?';
+
+  @override
+  String get compatPartnerPlaceQuestion => 'සහකරු උපන්නේ කොහේද?';
+
+  @override
+  String get compatPartnerTimeUnknownLabel => 'සහකරුගේ උපන් වේලාව මම නොදනිමි';
+
+  @override
+  String get compatPartnerFromSaved => 'ඔබ සුරැකි කේන්දරවලින්';
+
+  @override
   String get compatRoleQuestion => 'මනාලිය කවුද?';
 
   @override

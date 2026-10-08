@@ -9,6 +9,7 @@ import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
 import '../../../core/purchases/pro_usage.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../data/partner_repository.dart';
 import '../../onboarding/domain/birth_profile.dart';
 
 /// Which matching system is on screen.
@@ -21,17 +22,18 @@ enum MatchSystem { porondam, ashtakoota }
 /// app has to ask rather than assume.
 enum BrideRole { me, partner }
 
-/// The partner's details.
+/// The partner's details, kept on this phone between launches.
 ///
-/// Held in memory only. Saving a second person needs the multi-profile storage
-/// from KAN-19, and writing one to the single-profile slot would overwrite the
-/// user's own chart.
+/// It used to be held in memory only, so Android reclaiming the app in the
+/// background silently dropped the partner and the reader had to type them in
+/// again. See [PartnerRepository] for why it is stored locally and not synced.
 class PartnerNotifier extends Notifier<BirthProfile?> {
   @override
-  BirthProfile? build() => null;
+  BirthProfile? build() => ref.watch(partnerRepositoryProvider).load();
 
   void set(BirthProfile profile) {
     state = profile;
+    unawaited(ref.read(partnerRepositoryProvider).save(profile));
     // A partner entered is a match checked — counted for Pro's meter (KAN-77).
     unawaited(
       ref
@@ -40,8 +42,38 @@ class PartnerNotifier extends Notifier<BirthProfile?> {
     );
   }
 
-  void clear() => state = null;
+  Future<void> clear() async {
+    state = null;
+    await ref.read(partnerRepositoryProvider).clear();
+  }
 }
+
+/// The partner the form describes.
+///
+/// The time wheel opens on 6:00 AM and that is what the reader sees as their
+/// answer, so an untouched wheel ([time] null) is 6:00 AM, known. It used to
+/// count as "time unknown", which put the missing-time warning on a match
+/// where nobody had said the time was missing. Only the box ([timeKnown]
+/// false) says that.
+BirthProfile partnerFromForm({
+  required String name,
+  required DateTime date,
+  required Duration? time,
+  required bool timeKnown,
+  required Place place,
+}) => BirthProfile(
+  name: name.trim(),
+  birthDate: date,
+  birthTime: timeKnown
+      ? (time ?? BirthProfile.defaultUnknownTime)
+      : BirthProfile.defaultUnknownTime,
+  place: place,
+  birthTimeKnown: timeKnown,
+);
+
+final partnerRepositoryProvider = Provider<PartnerRepository>(
+  (ref) => PartnerRepository(ref.watch(sharedPreferencesProvider)),
+);
 
 final partnerProvider = NotifierProvider<PartnerNotifier, BirthProfile?>(
   PartnerNotifier.new,

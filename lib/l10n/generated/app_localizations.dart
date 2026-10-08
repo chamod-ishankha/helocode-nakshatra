@@ -681,6 +681,42 @@ abstract class L10n {
   /// **'Partner\'s name'**
   String get compatPartnerName;
 
+  /// No description provided for @compatPartnerDateQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'When was your partner born?'**
+  String get compatPartnerDateQuestion;
+
+  /// No description provided for @compatPartnerDateWheelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to your partner\'s date of birth'**
+  String get compatPartnerDateWheelHint;
+
+  /// No description provided for @compatPartnerTimeQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'What time was your partner born?'**
+  String get compatPartnerTimeQuestion;
+
+  /// No description provided for @compatPartnerPlaceQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Where was your partner born?'**
+  String get compatPartnerPlaceQuestion;
+
+  /// No description provided for @compatPartnerTimeUnknownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t know their birth time'**
+  String get compatPartnerTimeUnknownLabel;
+
+  /// No description provided for @compatPartnerFromSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'From your saved charts'**
+  String get compatPartnerFromSaved;
+
   /// No description provided for @compatRoleQuestion.
   ///
   /// In en, this message translates to:

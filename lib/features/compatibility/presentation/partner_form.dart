@@ -75,20 +75,30 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
 
   bool get _complete => _date != null && _place != null;
 
+  /// Fills the form from one of the reader's saved charts — a spouse or
+  /// fiancé already entered once should not have to be typed in again.
+  void _fillFrom(BirthProfile p) {
+    setState(() {
+      _name.text = p.name;
+      _date = p.birthDate;
+      _time = p.birthTime;
+      _timeKnown = p.birthTimeKnown;
+      _place = p.place;
+      _placeQuery.text = p.place.label(ref.read(localeProvider));
+    });
+  }
+
   void _save() {
     if (!_complete) return;
     ref
         .read(partnerProvider.notifier)
         .set(
-          BirthProfile(
-            name: _name.text.trim(),
-            birthDate: _date!,
-            // Sunrise, matching what onboarding assumes when the time is unknown.
-            birthTime: _timeKnown
-                ? (_time ?? const Duration(hours: 6))
-                : const Duration(hours: 6),
+          partnerFromForm(
+            name: _name.text,
+            date: _date!,
+            time: _time,
+            timeKnown: _timeKnown,
             place: _place!,
-            birthTimeKnown: _timeKnown && _time != null,
           ),
         );
     Navigator.of(context).pop();
@@ -138,6 +148,8 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
             ),
             const SizedBox(height: AppSpacing.lg),
 
+            _SavedCharts(onPick: _fillFrom),
+
             TextField(
               controller: _name,
               textCapitalization: TextCapitalization.words,
@@ -154,7 +166,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
 
             // The same wheels as onboarding (KAN-82), in place of the
             // Material dialogs it already dropped.
-            Text(l.onboardingDateQuestion, style: question()),
+            Text(l.compatPartnerDateQuestion, style: question()),
             const SizedBox(height: AppSpacing.sm),
             BirthDateWheels(
               value: _date,
@@ -163,14 +175,14 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
             const SizedBox(height: AppSpacing.sm),
             Text(
               _date == null
-                  ? l.onboardingDateWheelHint
+                  ? l.compatPartnerDateWheelHint
                   : DateFormat.yMMMMEEEEd().format(_date!),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13, color: palette.muted),
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            Text(l.onboardingTimeQuestion, style: question()),
+            Text(l.compatPartnerTimeQuestion, style: question()),
             const SizedBox(height: AppSpacing.sm),
             BirthTimeWheels(
               value: _time,
@@ -182,11 +194,16 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
               // Through DateFormat, in the reader's language. This used to
               // build "14:39" by hand, which is English digits and a 24-hour
               // clock in a Sinhala or Tamil app.
+              // The time that will be used, always: an untouched wheel is
+              // 6:00 AM, and saying "scroll to your time" beside it suggested
+              // nothing had been chosen yet.
               !_timeKnown
                   ? l.onboardingTimeUnknown
-                  : _time == null
-                  ? l.onboardingTimeWheelHint
-                  : DateFormat('h:mm a').format(DateTime(2000).add(_time!)),
+                  : DateFormat('h:mm a').format(
+                      DateTime(
+                        2000,
+                      ).add(_time ?? BirthProfile.defaultUnknownTime),
+                    ),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13, color: palette.muted),
             ),
@@ -206,7 +223,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                 controlAffinity: ListTileControlAffinity.leading,
                 activeColor: semantic.accent,
                 title: Text(
-                  l.onboardingTimeUnknownLabel,
+                  l.compatPartnerTimeUnknownLabel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: palette.text,
@@ -220,7 +237,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            Text(l.onboardingPlaceQuestion, style: question()),
+            Text(l.compatPartnerPlaceQuestion, style: question()),
             const SizedBox(height: AppSpacing.sm),
             // Scopes the search below it. A partner is often born in a
             // different country from the user, so this is not a formality.
@@ -330,6 +347,59 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
             const SizedBox(height: AppSpacing.sm),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// The reader's other saved charts, as one-tap partners. Hidden when there
+/// are none besides the reader's own.
+class _SavedCharts extends ConsumerWidget {
+  const _SavedCharts({required this.onPick});
+
+  final void Function(BirthProfile) onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final others = [
+      for (final s in ref.watch(savedProfilesProvider).value ?? const [])
+        if (!s.isSelected) s.profile,
+    ];
+    if (others.isEmpty) return const SizedBox.shrink();
+
+    final l = L10n.of(context);
+    final palette = BrandPalette.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.compatPartnerFromSaved,
+            style: TextStyle(fontSize: 13, color: palette.muted),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final p in others)
+                ActionChip(
+                  avatar: const Icon(Icons.person_outline, size: 18),
+                  label: Text(
+                    p.name.isEmpty
+                        ? DateFormat.yMMMd().format(p.birthDate)
+                        : p.name,
+                    style: TextStyle(
+                      fontFamilyFallback: AppTheme.scriptFallbacks,
+                      color: palette.text,
+                    ),
+                  ),
+                  onPressed: () => onPick(p),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

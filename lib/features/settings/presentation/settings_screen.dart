@@ -27,6 +27,7 @@ import '../../../core/notifications/notification_coordinator.dart';
 import '../../../core/notifications/notification_prefs.dart';
 import '../../../core/notifications/notification_service.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../compatibility/domain/compatibility_providers.dart';
 
 /// Settings (KAN-30).
 ///
@@ -242,6 +243,8 @@ class SettingsScreen extends ConsumerWidget {
     // the uid and the rules only let its owner touch it, so deleting the
     // account first would strand the document permanently out of reach.
     await ref.read(profileProvider.notifier).clear();
+    // The partner is someone else's birth data; it goes too.
+    await ref.read(partnerProvider.notifier).clear();
     final account = await ref.read(authServiceProvider).deleteAccount();
 
     if (!context.mounted) return;

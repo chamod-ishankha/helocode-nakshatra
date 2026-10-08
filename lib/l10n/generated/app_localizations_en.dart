@@ -335,6 +335,25 @@ class L10nEn extends L10n {
   String get compatPartnerName => 'Partner\'s name';
 
   @override
+  String get compatPartnerDateQuestion => 'When was your partner born?';
+
+  @override
+  String get compatPartnerDateWheelHint =>
+      'Scroll to your partner\'s date of birth';
+
+  @override
+  String get compatPartnerTimeQuestion => 'What time was your partner born?';
+
+  @override
+  String get compatPartnerPlaceQuestion => 'Where was your partner born?';
+
+  @override
+  String get compatPartnerTimeUnknownLabel => 'I don\'t know their birth time';
+
+  @override
+  String get compatPartnerFromSaved => 'From your saved charts';
+
+  @override
   String get compatRoleQuestion => 'Who is the bride?';
 
   @override

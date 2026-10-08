@@ -338,6 +338,26 @@ class L10nTa extends L10n {
   String get compatPartnerName => 'துணைவரின் பெயர்';
 
   @override
+  String get compatPartnerDateQuestion => 'துணைவர் எப்போது பிறந்தார்?';
+
+  @override
+  String get compatPartnerDateWheelHint =>
+      'துணைவரின் பிறந்த தேதிக்கு உருட்டவும்';
+
+  @override
+  String get compatPartnerTimeQuestion => 'துணைவர் எத்தனை மணிக்குப் பிறந்தார்?';
+
+  @override
+  String get compatPartnerPlaceQuestion => 'துணைவர் எங்கு பிறந்தார்?';
+
+  @override
+  String get compatPartnerTimeUnknownLabel =>
+      'துணைவரின் பிறந்த நேரம் எனக்குத் தெரியாது';
+
+  @override
+  String get compatPartnerFromSaved => 'நீங்கள் சேமித்த ஜாதகங்களிலிருந்து';
+
+  @override
   String get compatRoleQuestion => 'மணமகள் யார்?';
 
   @override

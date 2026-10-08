@@ -176,7 +176,10 @@ class _ProTilesState extends ConsumerState<ProTiles> {
             data: ListTileThemeData(
               iconColor: palette.muted,
               textColor: palette.text,
-              subtitleTextStyle: TextStyle(fontSize: 13, color: palette.muted),
+              // From the theme, as in Settings' groups: a bare style would drop
+              // the locale's font and fallbacks.
+              subtitleTextStyle: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(fontSize: 13, color: palette.muted),
             ),
             child: Column(
               children: [

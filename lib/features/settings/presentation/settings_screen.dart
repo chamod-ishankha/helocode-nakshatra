@@ -314,11 +314,14 @@ class _Group extends StatelessWidget {
             data: ListTileThemeData(
               iconColor: palette.muted,
               textColor: palette.text,
-              subtitleTextStyle: TextStyle(
-                fontSize: 13,
-                height: 1.45,
-                color: palette.muted,
-              ),
+              // From the theme's body style, not a bare TextStyle. Material 3
+              // uses a tile theme's subtitle style *instead of* the text
+              // theme rather than on top of it, so a bare style dropped the
+              // locale's font, its fallbacks and the letter spacing: every
+              // hint in Settings rendered in the platform face, visibly
+              // unlike the titles above it and the rows built by hand.
+              subtitleTextStyle: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(fontSize: 13, height: 1.45, color: palette.muted),
             ),
             child: Column(
               children: [

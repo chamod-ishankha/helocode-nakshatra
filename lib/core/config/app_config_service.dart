@@ -95,7 +95,7 @@ class AppConfigService {
         await _prefs.remove(_cacheKey);
         return AppConfig.none;
       }
-      final config = AppConfig.fromJson(_plain(data));
+      final config = AppConfig.fromJson(plainJson(data));
       await _prefs.setString(_cacheKey, jsonEncode(config.toJson()));
       AppLogger.info(
         'App config ${config.publishedAt?.toIso8601String() ?? '(unstamped)'} in force',
@@ -109,7 +109,7 @@ class AppConfigService {
 
   /// Firestore hands back Timestamps and nested maps of its own types; the
   /// parser wants plain JSON, and the cache has to be JSON anyway.
-  static Map<String, dynamic> _plain(Map<String, dynamic> data) {
+  static Map<String, dynamic> plainJson(Map<String, dynamic> data) {
     Object? walk(Object? v) => switch (v) {
       Timestamp t => t.toDate().toUtc().toIso8601String(),
       Map m => {for (final e in m.entries) e.key.toString(): walk(e.value)},

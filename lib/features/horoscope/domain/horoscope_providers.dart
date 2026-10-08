@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/astro/dasha.dart';
 import '../../../core/astro/ephemeris.dart';
 import '../../../core/astro/models.dart';
+import '../../../core/content/content_bundle.dart';
+import '../../../core/content/content_service.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../chart/domain/chart_providers.dart';
 import '../../home/domain/daily_providers.dart';
@@ -18,11 +20,22 @@ import 'horoscope_signals.dart';
 
 /// The authored fragments for the current language.
 ///
-/// Only English exists so far; si and ta are KAN-32. Falling back to English
-/// rather than failing means the feature degrades to a readable horoscope in
-/// the wrong language instead of an empty screen.
+/// A content bundle published from the admin panel wins when this phone holds
+/// one (KAN-49): it has already passed the same checks as the bundled files,
+/// so it is used whole. Otherwise the copy shipped in the assets. Falling back
+/// to English rather than failing means a missing language degrades to a
+/// readable horoscope in the wrong language instead of an empty screen.
 final horoscopeFragmentsProvider = FutureProvider<List<Fragment>>((ref) async {
   final locale = ref.watch(localeProvider);
+
+  ContentBundle? bundle;
+  try {
+    bundle = await ref.watch(contentBundleProvider.future);
+  } on Object catch (e) {
+    AppLogger.warn('Content bundle unavailable, using bundled copy: $e');
+  }
+  final published = bundle?.fragmentsFor(locale.name);
+  if (published != null && published.isNotEmpty) return published;
 
   Future<String?> load(String code) async {
     try {

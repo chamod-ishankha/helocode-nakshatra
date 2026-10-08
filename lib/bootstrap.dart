@@ -15,6 +15,7 @@ import 'core/astro/ephemeris.dart';
 import 'core/config/env.dart';
 import 'core/config/flavor.dart';
 import 'core/config/app_config_service.dart';
+import 'core/content/content_service.dart';
 import 'core/db/app_database.dart';
 import 'core/db/profile_store.dart';
 import 'core/logging/analytics_service.dart';
@@ -159,6 +160,12 @@ Future<void> bootstrap(Flavor flavor) async {
   // Before the profile restore, so a quota failure here degrades to defaults
   // rather than blocking a reinstall (FRD §7).
   unawaited(container.read(appConfigProvider.notifier).refresh());
+
+  // Built now rather than when the horoscope is first opened: it is what
+  // listens for the config's content pointer, so building it lazily would
+  // start a newer bundle's download only once someone is already reading the
+  // old copy. It loads from local storage and fetches in the background.
+  container.read(contentBundleProvider);
 
   // If this install has no profile but the account has a backup, recover it so
   // a reinstall skips onboarding. Failure here is silent and simply means the

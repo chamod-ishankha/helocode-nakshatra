@@ -39,13 +39,12 @@ import '../../../core/ui/disclaimer.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  /// Published from the helocode-site repo. Play requires the privacy policy
-  /// to be reachable without installing the app, which is why these are links
-  /// rather than bundled text.
-  static const _privacyUrl =
-      'https://chamod-ishankha.github.io/helocode-site/nakshatra/privacy.html';
-  static const _termsUrl =
-      'https://chamod-ishankha.github.io/helocode-site/nakshatra/terms.html';
+  /// Published on the developer site, helocode.top. Play requires the privacy
+  /// policy to be reachable without installing the app, which is why these are
+  /// links rather than bundled text. The paths without `.html` are the ones
+  /// the site serves; the `.html` forms only redirect to them.
+  static const _privacyUrl = 'https://helocode.top/nakshatra/privacy';
+  static const _termsUrl = 'https://helocode.top/nakshatra/terms';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

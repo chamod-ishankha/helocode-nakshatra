@@ -85,7 +85,7 @@ and not "Start over" on the chart screen, which resets the profile without
 touching the backup.
 
 **Web deletion URL to enter:**
-`https://chamod-ishankha.github.io/helocode-site/nakshatra/delete-account.html`
+`https://helocode.top/nakshatra/delete-account`
 
 Play's account-deletion policy wants a route reachable without installing the
 app, as well as the in-app one, and it is checked at review. The page is live.

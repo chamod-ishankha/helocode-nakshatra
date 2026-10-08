@@ -855,5 +855,11 @@
   "unlockDayBody": "Today and the days before it are free. Each day ahead opens with a short video, for that day only.",
   "@unlockDayTitle": {"description": "Title of the card on a locked future day; date is the weekday and date being viewed.", "placeholders": {"date": {"type": "String"}}},
   "homeClearTimesOn": "Clear times on {date}",
-  "@homeClearTimesOn": {"description": "Heading of the clear-times card when the day shown is not today.", "placeholders": {"date": {"type": "String"}}}
+  "@homeClearTimesOn": {"description": "Heading of the clear-times card when the day shown is not today.", "placeholders": {"date": {"type": "String"}}},
+  "updateRequiredTitle": "Update required",
+  "updateRequiredBody": "This version of Nakshatra is no longer supported. Please update from Google Play to keep using it.",
+  "updateOpenStore": "Open Google Play",
+  "updateAvailableTitle": "A newer version is available",
+  "updateAvailableBody": "Update from Google Play for the latest fixes.",
+  "announcementOpenLink": "Read more"
 }

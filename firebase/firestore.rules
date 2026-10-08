@@ -22,6 +22,21 @@ service cloud.firestore {
                          && request.auth.uid == userId;
     }
 
+    // What the admin panel publishes and every install reads at launch
+    // (KAN-49): the version gate, an announcement, the kill switches, and
+    // the content bundles. Readable by anyone, signed in or not: they hold
+    // nothing private, and the gate has to be readable by exactly the phone
+    // whose sign-in has failed. Written by nobody from a client — the panel
+    // writes with the Admin SDK, which these rules do not govern.
+    match /config/app {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /content/{version} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Anything not matched above is denied. Stated explicitly rather than
     // relied upon, so a later rule cannot widen access by accident.
     match /{document=**} {

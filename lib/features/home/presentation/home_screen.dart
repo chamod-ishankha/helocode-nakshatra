@@ -26,6 +26,8 @@ import '../../profiles/presentation/add_family_member.dart';
 import '../domain/daily_providers.dart';
 import '../domain/rahu_now.dart';
 import '../../../core/ui/state_views.dart';
+import '../../../core/config/announcement_card.dart';
+import '../../../core/config/version_gate.dart';
 
 /// Built at each use rather than once: a format made at first use keeps the
 /// language it was made in, so after switching to Tamil every time on the
@@ -157,6 +159,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 gutter(const _Header(), top: 2),
                 gutter(const _DateRow(), top: 6),
+                // What the admin panel has to say, above the day (KAN-49):
+                // an update worth taking, and a notice inside its window.
+                const UpdateAvailableCard(),
+                const AnnouncementCard(),
                 if (dayLocked)
                   gutter(
                     RewardedUnlockCard(

@@ -3020,6 +3020,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Clear times on {date}'**
   String homeClearTimesOn(String date);
+
+  /// No description provided for @updateRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update required'**
+  String get updateRequiredTitle;
+
+  /// No description provided for @updateRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This version of Nakshatra is no longer supported. Please update from Google Play to keep using it.'**
+  String get updateRequiredBody;
+
+  /// No description provided for @updateOpenStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Google Play'**
+  String get updateOpenStore;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A newer version is available'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Update from Google Play for the latest fixes.'**
+  String get updateAvailableBody;
+
+  /// No description provided for @announcementOpenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Read more'**
+  String get announcementOpenLink;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

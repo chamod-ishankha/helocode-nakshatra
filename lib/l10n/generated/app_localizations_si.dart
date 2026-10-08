@@ -1675,4 +1675,24 @@ class L10nSi extends L10n {
   String homeClearTimesOn(String date) {
     return '$date සුබ වේලාවන්';
   }
+
+  @override
+  String get updateRequiredTitle => 'යාවත්කාලීන කිරීම අවශ්‍යයි';
+
+  @override
+  String get updateRequiredBody =>
+      'Nakshatra හි මෙම අනුවාදය තවදුරටත් සහාය නොදක්වයි. දිගටම භාවිතා කිරීමට Google Play වෙතින් යාවත්කාලීන කරන්න.';
+
+  @override
+  String get updateOpenStore => 'Google Play විවෘත කරන්න';
+
+  @override
+  String get updateAvailableTitle => 'නව අනුවාදයක් ඇත';
+
+  @override
+  String get updateAvailableBody =>
+      'නවතම නිවැරදි කිරීම් සඳහා Google Play වෙතින් යාවත්කාලීන කරන්න.';
+
+  @override
+  String get announcementOpenLink => 'තව කියවන්න';
 }

@@ -486,5 +486,11 @@
   "homeFullMoonOn": "{date} அன்று {time} மணிக்கு பௌர்ணமி",
   "unlockDayTitle": "{date} பார்க்க",
   "unlockDayBody": "இன்றும் அதற்கு முந்தைய நாட்களும் இலவசம். வரும் ஒவ்வொரு நாளும் ஒரு சிறிய வீடியோவால் திறக்கும், அந்த நாளுக்கு மட்டும்.",
-  "homeClearTimesOn": "{date} நல்ல நேரங்கள்"
+  "homeClearTimesOn": "{date} நல்ல நேரங்கள்",
+  "updateRequiredTitle": "புதுப்பிப்பு தேவை",
+  "updateRequiredBody": "Nakshatra இன் இந்தப் பதிப்பு இனி ஆதரிக்கப்படாது. தொடர்ந்து பயன்படுத்த Google Play இலிருந்து புதுப்பிக்கவும்.",
+  "updateOpenStore": "Google Play ஐத் திறக்கவும்",
+  "updateAvailableTitle": "புதிய பதிப்பு உள்ளது",
+  "updateAvailableBody": "சமீபத்திய திருத்தங்களுக்கு Google Play இலிருந்து புதுப்பிக்கவும்.",
+  "announcementOpenLink": "மேலும் படிக்க"
 }

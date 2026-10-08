@@ -486,5 +486,11 @@
   "homeFullMoonOn": "පුර පසළොස්වක {date} {time} ට",
   "unlockDayTitle": "{date} බලන්න",
   "unlockDayBody": "අද සහ ඊට පෙර දින නොමිලේ. ඉදිරි සෑම දිනක්ම කෙටි වීඩියෝවකින් විවෘත වේ, එම දිනයට පමණි.",
-  "homeClearTimesOn": "{date} සුබ වේලාවන්"
+  "homeClearTimesOn": "{date} සුබ වේලාවන්",
+  "updateRequiredTitle": "යාවත්කාලීන කිරීම අවශ්‍යයි",
+  "updateRequiredBody": "Nakshatra හි මෙම අනුවාදය තවදුරටත් සහාය නොදක්වයි. දිගටම භාවිතා කිරීමට Google Play වෙතින් යාවත්කාලීන කරන්න.",
+  "updateOpenStore": "Google Play විවෘත කරන්න",
+  "updateAvailableTitle": "නව අනුවාදයක් ඇත",
+  "updateAvailableBody": "නවතම නිවැරදි කිරීම් සඳහා Google Play වෙතින් යාවත්කාලීන කරන්න.",
+  "announcementOpenLink": "තව කියවන්න"
 }

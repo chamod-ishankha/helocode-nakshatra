@@ -7,6 +7,7 @@ import '../../features/onboarding/data/profile_repository.dart';
 import 'ad_gate.dart';
 import '../purchases/nudges.dart';
 import 'rewarded_analytics.dart';
+import '../config/app_config_service.dart';
 
 /// Content a user can open by watching a rewarded video (KAN-34).
 ///
@@ -260,7 +261,10 @@ final rewardedPresenterProvider = Provider<Future<bool> Function()>(
 /// Its own provider so a test can say which of the two doors is open without
 /// reaching into static configuration.
 final rewardedAvailableProvider = Provider<bool>(
-  (ref) => AdUnits.isConfigured && !ref.watch(adFreeEntitlementProvider),
+  (ref) =>
+      AdUnits.isConfigured &&
+      ref.watch(switchesProvider).adsEnabled &&
+      !ref.watch(adFreeEntitlementProvider),
 );
 
 final unlockStoreProvider = Provider<UnlockStore>((ref) {

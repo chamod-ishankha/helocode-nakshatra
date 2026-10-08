@@ -1702,4 +1702,24 @@ class L10nEn extends L10n {
   String homeClearTimesOn(String date) {
     return 'Clear times on $date';
   }
+
+  @override
+  String get updateRequiredTitle => 'Update required';
+
+  @override
+  String get updateRequiredBody =>
+      'This version of Nakshatra is no longer supported. Please update from Google Play to keep using it.';
+
+  @override
+  String get updateOpenStore => 'Open Google Play';
+
+  @override
+  String get updateAvailableTitle => 'A newer version is available';
+
+  @override
+  String get updateAvailableBody =>
+      'Update from Google Play for the latest fixes.';
+
+  @override
+  String get announcementOpenLink => 'Read more';
 }

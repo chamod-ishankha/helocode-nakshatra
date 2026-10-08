@@ -1700,4 +1700,24 @@ class L10nTa extends L10n {
   String homeClearTimesOn(String date) {
     return '$date நல்ல நேரங்கள்';
   }
+
+  @override
+  String get updateRequiredTitle => 'புதுப்பிப்பு தேவை';
+
+  @override
+  String get updateRequiredBody =>
+      'Nakshatra இன் இந்தப் பதிப்பு இனி ஆதரிக்கப்படாது. தொடர்ந்து பயன்படுத்த Google Play இலிருந்து புதுப்பிக்கவும்.';
+
+  @override
+  String get updateOpenStore => 'Google Play ஐத் திறக்கவும்';
+
+  @override
+  String get updateAvailableTitle => 'புதிய பதிப்பு உள்ளது';
+
+  @override
+  String get updateAvailableBody =>
+      'சமீபத்திய திருத்தங்களுக்கு Google Play இலிருந்து புதுப்பிக்கவும்.';
+
+  @override
+  String get announcementOpenLink => 'மேலும் படிக்க';
 }

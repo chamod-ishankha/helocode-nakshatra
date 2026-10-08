@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../config/env.dart';
 import '../config/flavor.dart';
-import '../config/remote_config_service.dart';
 import '../logging/analytics_service.dart';
 import '../logging/app_logger.dart';
 import 'entitlement_cache.dart';
@@ -11,6 +10,7 @@ import 'entitlements.dart';
 import 'paywall_config.dart';
 import 'products.dart';
 import 'purchase_gateway.dart';
+import '../config/app_config_service.dart';
 
 /// How restoring purchases ended. Each needs its own sentence on screen: a
 /// user who taps Restore because they are seeing ads they paid to remove has
@@ -167,22 +167,22 @@ final featureProvider = Provider.family<bool, PaidFeature>((ref, feature) {
   return snapshot.has(feature, ref.watch(purchaseClockProvider)());
 });
 
-/// What Remote Config currently says about the paywall (KAN-36).
-///
-/// Read once per launch. Remote Config answers from a local cache that
-/// [RemoteConfigService.initialize] refreshes in the background, so this is a
-/// synchronous read of whatever arrived last time.
+/// The paywall's dials (KAN-36). Remote Config, which fed them, moved behind
+/// the Blaze plan; until the admin panel carries them (a later step of
+/// KAN-49) every value is the compiled-in default, which is what a phone that
+/// never reached Firebase always drew anyway.
 final paywallConfigProvider = Provider<PaywallConfig>(
-  (ref) => PaywallConfig.parse(
-    variant: RemoteConfigService.string('paywall_variant'),
-    freeFeatures: RemoteConfigService.string('paywall_free_features'),
-    highlight: RemoteConfigService.string('paywall_highlight_tier'),
-  ),
+  (ref) => PaywallConfig.defaults,
 );
 
 /// Whether anything can be bought in this build.
 final purchasesAvailableProvider = Provider<bool>(
-  (ref) => ref.watch(purchaseGatewayProvider).isReady,
+  // Off from the admin panel is the same state as a build with no store
+  // key: the paywall shows unavailable, and what is already owned stays
+  // owned, because entitlements are read separately (KAN-49 §8.4).
+  (ref) =>
+      ref.watch(purchaseGatewayProvider).isReady &&
+      ref.watch(switchesProvider).purchasesEnabled,
 );
 
 /// Store prices, in the user's own currency.

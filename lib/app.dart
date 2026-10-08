@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'core/config/flavor.dart';
+import 'core/config/version_gate.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/launch/presentation/launch_overlay.dart';
@@ -41,7 +42,11 @@ class NakshatraApp extends ConsumerWidget {
 
       // The HeloCode moment and the splash play over the first screen while
       // it builds, then fade (KAN-81).
-      builder: (context, child) => LaunchOverlay(child: child!),
+      // The version gate sits around the whole router, so nothing can
+      // navigate past it (KAN-49); the launch overlay plays over the gate
+      // too, since a blocked phone still deserves the splash.
+      builder: (context, child) =>
+          LaunchOverlay(child: VersionGateGuard(child: child!)),
     );
   }
 }

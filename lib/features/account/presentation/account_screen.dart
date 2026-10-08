@@ -18,6 +18,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/domain/birth_profile.dart';
 import 'auth_messages.dart';
 import '../../../core/ui/state_views.dart';
+import '../../../core/config/app_config_service.dart';
 
 /// Attaching a real identity to the anonymous account (KAN-48).
 ///
@@ -234,7 +235,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               else if (kind == AccountKind.none)
                 const _Unavailable()
               else ...[
-                if (AuthService.googleAvailable) ...[
+                if (AuthService.googleAvailable &&
+                    ref.watch(switchesProvider).googleSignInEnabled) ...[
                   BrandButton(
                     tone: BrandButtonTone.outline,
                     expand: true,

@@ -48,7 +48,17 @@ for KAN-48.
 **Firestore Database → Create database → Start in production mode**, region
 `asia-south1` (Mumbai) — the closest to Sri Lanka, which keeps latency low.
 
-Then **Rules**, and paste the contents of `firestore.rules` from this folder.
+Then the rules. Either paste the contents of `firestore.rules` from this
+folder under **Rules**, or deploy them from the terminal, which validates
+them first and is what every later change should use:
+
+```bash
+firebase login            # once
+firebase deploy --only firestore:rules
+```
+
+`firebase.json` and `.firebaserc` at the repo root point the CLI at this
+file and at the project; neither holds a secret.
 
 > The default "test mode" rules expire after 30 days and allow anyone to read
 > every user's birth data until they do. Replace them before shipping.

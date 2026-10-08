@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../purchases/entitlements.dart';
 import '../purchases/purchase_controller.dart';
+import '../config/app_config_service.dart';
 
 /// The kinds of ad this app shows.
 enum AdSlot {
@@ -165,7 +166,11 @@ final adGateProvider = Provider<AdGate>((ref) {
     prefs: ref.watch(sharedPreferencesProvider),
     hasEntitlement: ref.watch(adFreeEntitlementProvider),
     hasProfile: ref.watch(profileProvider) != null,
-    isConfigured: AdUnits.isConfigured,
+    // Off from the admin panel reads as a build with no ad ids: every
+    // placement hides and every lock opens, the path that already exists
+    // (KAN-49 §8.4).
+    isConfigured:
+        AdUnits.isConfigured && ref.watch(switchesProvider).adsEnabled,
     launchedAt: ref.watch(appLaunchedAtProvider),
   );
 });

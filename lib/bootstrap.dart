@@ -14,7 +14,7 @@ import 'core/ads/rewarded_unlock.dart';
 import 'core/astro/ephemeris.dart';
 import 'core/config/env.dart';
 import 'core/config/flavor.dart';
-import 'core/config/remote_config_service.dart';
+import 'core/config/app_config_service.dart';
 import 'core/db/app_database.dart';
 import 'core/db/profile_store.dart';
 import 'core/logging/analytics_service.dart';
@@ -101,16 +101,6 @@ Future<void> bootstrap(Flavor flavor) async {
   // the profile is known.
   await NotificationService.initialize();
 
-  // Deliberately not awaited. The fetch has a ten-second timeout, and on a
-  // poor connection awaiting it here is ten seconds of blank screen before the
-  // app opens — paid for by every user, to decide which paywall headline to
-  // use. Everything it controls has a compiled-in default, so a launch that
-  // finishes before it does simply runs on those.
-  //
-  // It is also what makes Remote Config optional in the first place: a project
-  // that never enables it costs nothing at startup.
-  unawaited(RemoteConfigService.initialize());
-
   // Decides whether the account screen offers a Google button at all. Also
   // never throws: a project without the Google provider switched on is the
   // normal state, not an error.
@@ -160,6 +150,15 @@ Future<void> bootstrap(Flavor flavor) async {
       ),
     ],
   );
+
+  // The admin panel's config (KAN-49): the version gate, an announcement,
+  // and the kill switches. Deliberately not awaited — the first frame runs
+  // on what was cached last time (or on the compiled-in "nothing happens"),
+  // and the fetch lands behind it. Ten seconds of blank screen on a poor
+  // connection, paid by every user, would be the wrong trade for a notice.
+  // Before the profile restore, so a quota failure here degrades to defaults
+  // rather than blocking a reinstall (FRD §7).
+  unawaited(container.read(appConfigProvider.notifier).refresh());
 
   // If this install has no profile but the account has a backup, recover it so
   // a reinstall skips onboarding. Failure here is silent and simply means the

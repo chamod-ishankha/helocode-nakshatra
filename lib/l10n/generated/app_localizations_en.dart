@@ -126,9 +126,6 @@ class L10nEn extends L10n {
       'Daylight not claimed by any inauspicious period.';
 
   @override
-  String get homeStillToCome => 'Still to come';
-
-  @override
   String get homeComingUp => 'Coming up';
 
   @override
@@ -150,10 +147,6 @@ class L10nEn extends L10n {
 
   @override
   String get homeAccount => 'Account';
-
-  @override
-  String get homeFestivalsExcluded =>
-      'Deepavali, Eid and Milad un-Nabi are not listed: their dates follow regional convention and moon sighting rather than calculation, and a confidently wrong religious date would be worse than none.';
 
   @override
   String get panchangaTithi => 'Tithi';
@@ -683,13 +676,6 @@ class L10nEn extends L10n {
 
   @override
   String get calendarNoEvents => 'No poya or festival this month.';
-
-  @override
-  String get calendarAnnounced => 'Announced each year';
-
-  @override
-  String get calendarAnnouncedHelp =>
-      'These are set by moon sighting or local custom, so they are not calculated here. Check the year\'s gazette.';
 
   @override
   String get calendarBestDays => 'Best days this month';

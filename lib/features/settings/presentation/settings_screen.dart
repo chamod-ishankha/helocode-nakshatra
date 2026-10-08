@@ -28,6 +28,7 @@ import '../../../core/notifications/notification_prefs.dart';
 import '../../../core/notifications/notification_service.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../compatibility/domain/compatibility_providers.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Settings (KAN-30).
 ///
@@ -195,11 +196,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
 
               const SizedBox(height: AppSpacing.xl),
-              Text(
-                l.entertainmentOnly,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: palette.muted),
-              ),
+              const Disclaimer(),
             ],
           ),
         ),

@@ -46,7 +46,7 @@ void main() {
   test('every banner follows the disclaimer that closes the page', () {
     for (final MapEntry(key: path, value: source) in placements.entries) {
       final banner = source.indexOf('BannerAdSlot()');
-      final disclaimer = source.lastIndexOf('entertainmentOnly', banner);
+      final disclaimer = source.lastIndexOf('const Disclaimer()', banner);
 
       expect(
         disclaimer,
@@ -70,7 +70,7 @@ void main() {
 
     for (final MapEntry(key: path, value: source) in placements.entries) {
       final banner = source.indexOf('BannerAdSlot()');
-      final disclaimer = source.lastIndexOf('entertainmentOnly', banner);
+      final disclaimer = source.lastIndexOf('const Disclaimer()', banner);
       final between = source.substring(disclaimer, banner);
 
       for (final control in tappable) {

@@ -137,13 +137,6 @@ final nextFestivalProvider = Provider<Festival?>((ref) {
   return SriLankanCalendar.nextFestival(ref.watch(selectedDateProvider));
 });
 
-/// The religious holidays with no date yet for the selected year — the
-/// "still to come" note names them, and goes once they are all published.
-final unannouncedFestivalsProvider = Provider<List<String>>((ref) {
-  ref.watch(contentBundleProvider);
-  return SriLankanCalendar.unannouncedIn(ref.watch(selectedDateProvider).year);
-});
-
 /// The poya falling exactly on the selected day, if there is one.
 final poyaTodayProvider = Provider<PoyaDay?>((ref) {
   final date = ref.watch(selectedDateProvider);

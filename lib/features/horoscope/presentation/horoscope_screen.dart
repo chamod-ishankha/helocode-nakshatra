@@ -24,6 +24,7 @@ import '../../onboarding/data/profile_repository.dart';
 import '../domain/fragment.dart';
 import '../domain/horoscope_engine.dart';
 import '../domain/horoscope_providers.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// The daily reading (KAN-31).
 ///
@@ -242,11 +243,7 @@ class _HoroscopeScreenState extends ConsumerState<HoroscopeScreen> {
                 ],
 
                 const SizedBox(height: AppSpacing.xl),
-                Text(
-                  l.entertainmentOnly,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: palette.muted),
-                ),
+                const Disclaimer(),
               ],
             ),
           ),

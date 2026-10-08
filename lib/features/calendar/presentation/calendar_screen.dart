@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/muhurta.dart';
 import '../../../core/config/app_locale.dart';
-import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/brand_palette.dart';
@@ -18,6 +17,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../home/domain/daily_providers.dart';
 import '../domain/calendar_providers.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// The nekath calendar (KAN-30).
 ///
@@ -90,11 +90,7 @@ class CalendarScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.xl),
               // Was the one astrological screen without it, and the best-day
               // scores are astrological output (KAN-85).
-              Text(
-                l.entertainmentOnly,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: palette.muted),
-              ),
+              const Disclaimer(),
             ],
           ),
         ),
@@ -387,7 +383,6 @@ class _MonthEvents extends ConsumerWidget {
     final markers = ref.watch(monthMarkersProvider);
 
     final days = markers.keys.toList()..sort();
-    final month = ref.watch(visibleMonthProvider);
     final rows = [
       for (final day in days)
         for (final event in markers[day]!) (day: day, event: event),
@@ -450,20 +445,6 @@ class _MonthEvents extends ConsumerWidget {
                   ],
                 ),
         ),
-        // The year is stated because the list above is this month's and this
-        // one is not; without it the two read as the same list. Only the
-        // holidays still without a published date are named (KAN-49).
-        if (SriLankanCalendar.unannouncedIn(month.year) case final missing
-            when missing.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.md),
-          InfoNotice(
-            icon: Icons.info_outline,
-            text:
-                '${l.calendarAnnounced} (${month.year})\n'
-                '${l.calendarAnnouncedHelp}\n'
-                '${missing.join(' · ')}',
-          ),
-        ],
       ],
     );
   }

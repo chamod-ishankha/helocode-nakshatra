@@ -21,6 +21,7 @@ import 'add_family_member.dart';
 import '../../../core/purchases/nudges.dart';
 import '../../purchases/presentation/pro_nudge.dart';
 import '../../../core/ui/state_views.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Switching between saved charts (KAN-19).
 ///
@@ -112,11 +113,7 @@ class ProfilesScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.lg),
               ...children,
               const SizedBox(height: AppSpacing.xl),
-              Text(
-                l.entertainmentOnly,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: palette.muted),
-              ),
+              const Disclaimer(),
             ],
           ),
         ),

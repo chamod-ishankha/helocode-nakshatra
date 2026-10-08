@@ -125,19 +125,6 @@ void main() {
     expect(drawn, contains(l10n.calendarNoEvents));
   });
 
-  testWidgets('the festivals it cannot compute are named too', (tester) async {
-    // Four of Sri Lanka's public holidays are set by moon sighting or local
-    // custom. Silently omitting them tells the reader something false about
-    // the year, so the screen lists them and says why.
-    final drawn = await pump(tester, AppLocale.en, markers: const {});
-    final joined = drawn.join(' | ');
-
-    expect(SriLankanCalendar.unsupportedFestivals, isNotEmpty);
-    for (final name in SriLankanCalendar.unsupportedFestivals.keys) {
-      expect(joined, contains(name), reason: '$name is not named on screen');
-    }
-  });
-
   test('the announced list covers the ones with no rule', () {
     // Guards the list itself: these four are gazetted rather than calculated,
     // and dropping one from the map silently removes it from the screen.

@@ -19,6 +19,7 @@ import '../../onboarding/domain/birth_profile.dart';
 import 'auth_messages.dart';
 import '../../../core/ui/state_views.dart';
 import '../../../core/config/app_config_service.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Attaching a real identity to the anonymous account (KAN-48).
 ///
@@ -286,11 +287,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text(
-                l.entertainmentOnly,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: palette.muted),
-              ),
+              const Disclaimer(),
             ],
           ),
         ),

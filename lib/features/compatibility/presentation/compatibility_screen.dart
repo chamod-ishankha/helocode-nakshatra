@@ -25,6 +25,7 @@ import 'partner_form.dart';
 import '../../../core/purchases/nudges.dart';
 import '../../purchases/presentation/pro_nudge.dart';
 import '../../../core/ads/lock_preview.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Marriage matching (KAN-29).
 ///
@@ -101,11 +102,7 @@ class CompatibilityScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.xl),
               _Caveat(text: l.compatCaveat),
               const SizedBox(height: AppSpacing.md),
-              Text(
-                l.entertainmentOnly,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: palette.muted),
-              ),
+              const Disclaimer(),
 
               // The screen's one ad, and the last thing on it (KAN-76).
               //

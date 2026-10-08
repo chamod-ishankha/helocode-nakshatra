@@ -7,6 +7,7 @@ import '../../../core/theme/brand_palette.dart';
 import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/nakshatra_star.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// The publisher's moment: the HeloCode "Slash H" drawing itself (KAN-81).
 ///
@@ -244,11 +245,7 @@ class NakshatraSplash extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            l10n.entertainmentOnly,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: palette.muted),
-          ),
+          const Disclaimer(),
         ],
       ),
     );

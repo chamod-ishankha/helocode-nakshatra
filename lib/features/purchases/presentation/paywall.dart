@@ -17,6 +17,7 @@ import '../../../core/theme/semantic_colors.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import 'purchase_messages.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// One line in the paywall's list of what Pro gives (KAN-71).
 ///
@@ -335,11 +336,7 @@ class _PaywallSheet extends ConsumerWidget {
                 // through Settings to prove it is how refund requests start.
                 const _RestoreButton(),
                 const SizedBox(height: AppSpacing.sm),
-                Text(
-                  l.entertainmentOnly,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: palette.muted),
-                ),
+                const Disclaimer(),
               ],
             ),
           ),

@@ -7,6 +7,7 @@ import '../../../core/ui/round_icon_button.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import 'dasha_timeline.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// The full daśā timeline, on its own screen (KAN-83).
 ///
@@ -60,11 +61,7 @@ class DashaScreen extends ConsumerWidget {
                   showTitle: false,
                 ),
               const SizedBox(height: 20),
-              Text(
-                l.entertainmentOnly,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: palette.muted),
-              ),
+              const Disclaimer(),
             ],
           ),
         ),

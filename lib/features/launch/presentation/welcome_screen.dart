@@ -12,6 +12,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../onboarding/data/profile_repository.dart';
 import 'intro_art.dart';
 import 'launch_scenes.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Language first, then three slides, then the birth-details questions
 /// (KAN-81).
@@ -426,11 +427,7 @@ class _IntroPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      l10n.entertainmentOnly,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: palette.muted),
-                    ),
+                    const Disclaimer(),
                   ],
                 )
               : Row(

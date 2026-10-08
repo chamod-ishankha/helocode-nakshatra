@@ -309,12 +309,6 @@ abstract class L10n {
   /// **'Daylight not claimed by any inauspicious period.'**
   String get homeClearTimesHelp;
 
-  /// No description provided for @homeStillToCome.
-  ///
-  /// In en, this message translates to:
-  /// **'Still to come'**
-  String get homeStillToCome;
-
   /// No description provided for @homeComingUp.
   ///
   /// In en, this message translates to:
@@ -356,12 +350,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Account'**
   String get homeAccount;
-
-  /// No description provided for @homeFestivalsExcluded.
-  ///
-  /// In en, this message translates to:
-  /// **'Deepavali, Eid and Milad un-Nabi are not listed: their dates follow regional convention and moon sighting rather than calculation, and a confidently wrong religious date would be worse than none.'**
-  String get homeFestivalsExcluded;
 
   /// No description provided for @panchangaTithi.
   ///
@@ -1304,18 +1292,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'No poya or festival this month.'**
   String get calendarNoEvents;
-
-  /// No description provided for @calendarAnnounced.
-  ///
-  /// In en, this message translates to:
-  /// **'Announced each year'**
-  String get calendarAnnounced;
-
-  /// No description provided for @calendarAnnouncedHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'These are set by moon sighting or local custom, so they are not calculated here. Check the year\'s gazette.'**
-  String get calendarAnnouncedHelp;
 
   /// No description provided for @calendarBestDays.
   ///

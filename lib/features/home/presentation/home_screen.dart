@@ -12,7 +12,6 @@ import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
-import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
@@ -29,6 +28,7 @@ import '../domain/rahu_now.dart';
 import '../../../core/ui/state_views.dart';
 import '../../../core/config/announcement_card.dart';
 import '../../../core/config/version_gate.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Built at each use rather than once: a format made at first use keeps the
 /// language it was made in, so after switching to Tamil every time on the
@@ -191,15 +191,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: EdgeInsets.only(top: 14),
                   child: _ExploreRow(),
                 ),
-                gutter(const _StillToCome()),
-                gutter(
-                  Text(
-                    l.entertainmentOnly,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12, color: palette.muted),
-                  ),
-                  top: 22,
-                ),
+                gutter(const Disclaimer(), top: 22),
                 // Last thing on the page, well below the rāhu kālaya card and
                 // every other control, and the list's bottom padding keeps it
                 // clear of the tab bar beneath. Nothing here reveals a
@@ -1417,61 +1409,6 @@ class _ExploreCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Honest note on the festivals that are left out.
-///
-/// Deliberately not filled with guesses: a confidently wrong religious date
-/// would undermine the accuracy the rest of the app is built on.
-class _StillToCome extends ConsumerWidget {
-  const _StillToCome();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // The note names every one of them, so it stays only while none has a
-    // published date; once some do, they are in the lists and the calendar
-    // screen names exactly the ones still missing (KAN-49).
-    final unannounced = ref.watch(unannouncedFestivalsProvider);
-    if (unannounced.length < SriLankanCalendar.unsupportedFestivals.length) {
-      return const SizedBox.shrink();
-    }
-    final l = L10n.of(context);
-    final palette = BrandPalette.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border.all(color: palette.line),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.info_outline, size: 20, color: palette.muted),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l.homeStillToCome,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: palette.text,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  l.homeFestivalsExcluded,
-                  style: TextStyle(fontSize: 13, color: palette.muted),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

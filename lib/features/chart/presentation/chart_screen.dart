@@ -37,6 +37,7 @@ import '../../../core/purchases/nudges.dart';
 import '../../purchases/presentation/pro_nudge.dart';
 import '../../../core/ui/state_views.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/ui/disclaimer.dart';
 
 /// Which chart the screen is drawing (KAN-53).
 ///
@@ -289,11 +290,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                   style: TextStyle(fontSize: 12, color: palette.muted),
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                Text(
-                  l.entertainmentOnly,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: palette.muted),
-                ),
+                const Disclaimer(),
               ],
             ),
           ),

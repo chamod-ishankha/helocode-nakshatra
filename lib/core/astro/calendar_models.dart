@@ -73,6 +73,10 @@ enum FestivalKind {
 
   /// A fixed Gregorian date.
   fixed,
+
+  /// A date announced each year and published from the admin panel —
+  /// Deepavali, the two Eids, Milad un-Nabi (KAN-49). Never computed.
+  announced,
 }
 
 class Festival {

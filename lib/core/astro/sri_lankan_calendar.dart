@@ -4,6 +4,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'calendar_models.dart';
 import 'official_poya_days.dart';
 import 'poya_rule.dart';
+import 'published_calendar.dart';
 
 /// Poya days, the New Year ingress, and the fixed festivals.
 ///
@@ -33,6 +34,38 @@ abstract final class SriLankanCalendar {
     'Eid al-Adha': 'Determined by local moon sighting, not by calculation.',
     'Milad un-Nabi': 'Determined by local moon sighting, not by calculation.',
   };
+
+  /// The calendar published from the admin panel, or null for the bundled
+  /// one (KAN-49).
+  static PublishedCalendar? _published;
+  static Map<String, ({PoyaMonth month, bool isAdhi})> _poyaTable =
+      officialPoyaDays;
+
+  /// Puts a published calendar in force, or goes back to the bundled one.
+  ///
+  /// Clears the per-year cache, since every year's poya days may now differ.
+  /// Callers that hold computed results must recompute; the providers that do
+  /// watch the content bundle for exactly this.
+  static void usePublished(PublishedCalendar? calendar) {
+    if (identical(calendar, _published)) return;
+    _published = calendar;
+    _poyaTable = calendar?.over(officialPoyaDays) ?? officialPoyaDays;
+    _poyaCache.clear();
+  }
+
+  /// The religious holidays still without a date for [year]: the ones the
+  /// app does not compute and the panel has not published.
+  static List<String> unannouncedIn(int year) {
+    final announced = {
+      for (final f
+          in _published?.festivalsIn(year) ?? const <AnnouncedFestival>[])
+        f.en.toLowerCase(),
+    };
+    return [
+      for (final name in unsupportedFestivals.keys)
+        if (!announced.contains(name.toLowerCase())) name,
+    ];
+  }
 
   /// Every poya day in [year], in order.
   ///
@@ -93,7 +126,7 @@ abstract final class SriLankanCalendar {
       var isAdhi = named.isAdhi;
 
       if (useOfficial) {
-        if (officialPoyaNear(date) case final published?) {
+        if (officialPoyaNear(date, table: _poyaTable) case final published?) {
           date = published.date;
           month = published.month;
           isAdhi = published.isAdhi;
@@ -237,6 +270,10 @@ abstract final class SriLankanCalendar {
         note: 'The Sun enters sidereal Capricorn.',
       ),
       ...fixedFestivals(year),
+      // Announced dates, published from the admin panel with their source.
+      for (final f
+          in _published?.festivalsIn(year) ?? const <AnnouncedFestival>[])
+        f.toFestival(),
     ]..sort((a, b) => a.date.compareTo(b.date));
   }
 

@@ -1,15 +1,17 @@
 import '../../features/horoscope/domain/fragment.dart';
+import '../astro/published_calendar.dart';
 
 /// A published content version, `content/{version}` (KAN-49 FRD §5.4).
 ///
-/// Holds the horoscope copy in all three languages. Poya days and festivals
-/// join it with the calendar editor; until then their absence means "keep
-/// what is bundled".
+/// Holds the horoscope copy in all three languages, and the calendar when
+/// the panel has one. A bundle without a calendar means "keep the calendar
+/// this build shipped with".
 class ContentBundle {
   const ContentBundle({
     required this.version,
     required this.fragments,
     this.publishedAt,
+    this.calendar,
   });
 
   final int version;
@@ -17,6 +19,10 @@ class ContentBundle {
 
   /// By language code: `en`, `si`, `ta`.
   final Map<String, List<Fragment>> fragments;
+
+  /// Gazetted poya days and announced festivals, or null to use the bundled
+  /// calendar.
+  final PublishedCalendar? calendar;
 
   static const languages = ['en', 'si', 'ta'];
 
@@ -49,7 +55,8 @@ class ContentBundle {
         throw FormatException('Content bundle has no $lang copy');
       }
       final fragments = [
-        for (final f in list) Fragment.fromJson(Map<String, dynamic>.from(f as Map)),
+        for (final f in list)
+          Fragment.fromJson(Map<String, dynamic>.from(f as Map)),
       ];
       final ids = fragments.map((f) => f.id).toSet();
       if (ids.length != fragments.length) {
@@ -62,7 +69,9 @@ class ContentBundle {
     for (final lang in ['si', 'ta']) {
       final other = parsed[lang]!;
       if (other.length != en.length) {
-        throw FormatException('Content bundle $lang has a different set of lines');
+        throw FormatException(
+          'Content bundle $lang has a different set of lines',
+        );
       }
       for (final f in other) {
         final reference = en[f.id];
@@ -70,7 +79,9 @@ class ContentBundle {
             reference.category != f.category ||
             !_sameSet(reference.requires, f.requires) ||
             !_sameSet(reference.excludes, f.excludes)) {
-          throw FormatException('Content bundle $lang disagrees with en on ${f.id}');
+          throw FormatException(
+            'Content bundle $lang disagrees with en on ${f.id}',
+          );
         }
       }
     }
@@ -83,11 +94,20 @@ class ContentBundle {
       }
     }
 
+    // A wrong religious date is worse than none: a calendar that fails its
+    // checks takes the whole bundle down with it, copy included, and the
+    // phone keeps what it had.
+    final hasCalendar = json['poyaDays'] != null || json['festivals'] != null;
+    final calendar = hasCalendar
+        ? PublishedCalendar.fromJson(json['poyaDays'], json['festivals'])
+        : null;
+
     final stamp = json['publishedAt'];
     return ContentBundle(
       version: version,
       publishedAt: stamp is String ? DateTime.tryParse(stamp) : null,
       fragments: parsed,
+      calendar: calendar,
     );
   }
 

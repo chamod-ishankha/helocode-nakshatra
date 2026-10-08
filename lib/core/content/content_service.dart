@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../astro/sri_lankan_calendar.dart';
 import '../config/app_config_service.dart';
 import '../logging/app_logger.dart';
 import '../sync/firebase_service.dart';
@@ -93,7 +94,9 @@ class ContentService {
       return null;
     }
     if (bundle.version != latest) {
-      AppLogger.warn('Content $latest claims to be ${bundle.version}; rejected');
+      AppLogger.warn(
+        'Content $latest claims to be ${bundle.version}; rejected',
+      );
       return null;
     }
 
@@ -108,7 +111,9 @@ class ContentService {
       // Still use it this session; it is fetched again next launch.
       AppLogger.warn('Content $latest could not be stored: $e');
     }
-    AppLogger.info('Content $latest in force (${bundle.fragments['en']!.length} lines)');
+    AppLogger.info(
+      'Content $latest in force (${bundle.fragments['en']!.length} lines)',
+    );
     return bundle;
   }
 }
@@ -141,6 +146,7 @@ class ContentBundleNotifier extends AsyncNotifier<ContentBundle?> {
   Future<ContentBundle?> build() async {
     final service = ref.watch(contentServiceProvider);
     final stored = await service.loadStored();
+    SriLankanCalendar.usePublished(stored?.calendar);
 
     ref.listen<int>(
       appConfigProvider.select((c) => c.contentVersion),
@@ -155,12 +161,21 @@ class ContentBundleNotifier extends AsyncNotifier<ContentBundle?> {
     return stored;
   }
 
-  Future<void> _update(ContentService service, int latest, {ContentBundle? held}) async {
+  Future<void> _update(
+    ContentService service,
+    int latest, {
+    ContentBundle? held,
+  }) async {
     if (latest <= _fetching) return; // already on its way
     _fetching = latest;
     try {
       final next = await service.update(latest, held: held ?? state.value);
-      if (next != null) state = AsyncData(next);
+      if (next != null) {
+        // Before the state changes, so every provider that recomputes on it
+        // reads the new calendar.
+        SriLankanCalendar.usePublished(next.calendar);
+        state = AsyncData(next);
+      }
     } finally {
       if (_fetching == latest) _fetching = 0;
     }

@@ -5,6 +5,7 @@ import '../../../core/astro/muhurta.dart';
 import '../../../core/astro/panchanga.dart';
 import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../../core/content/content_service.dart';
 
 /// The month the calendar is showing, as its first day.
 class VisibleMonthNotifier extends Notifier<DateTime> {
@@ -38,6 +39,8 @@ final monthMarkersProvider = Provider<Map<int, List<Festival>>>((ref) {
   // festivalsIn already includes the poya days. Adding them again put every
   // poya in the day's list twice, which the dots hid — `any()` does not care
   // how many — and a list would not have.
+  // A published calendar can move a poya or add a holiday (KAN-49).
+  ref.watch(contentBundleProvider);
   final events = SriLankanCalendar.festivalsIn(month.year);
 
   final byDay = <int, List<Festival>>{};

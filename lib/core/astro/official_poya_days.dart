@@ -93,12 +93,16 @@ const Map<String, ({PoyaMonth month, bool isAdhi})> officialPoyaDays = {
 /// Two days either way: the rule and the almanac disagree by a day at most
 /// (KAN-96 measured), and neighbouring poyas are a month apart, so nothing
 /// else can be that close.
+///
+/// [table] is the published table when the admin panel has sent one
+/// (KAN-49), laid over this one; otherwise this one.
 ({DateTime date, PoyaMonth month, bool isAdhi})? officialPoyaNear(
-  DateTime computed,
-) {
+  DateTime computed, {
+  Map<String, ({PoyaMonth month, bool isAdhi})> table = officialPoyaDays,
+}) {
   for (var offset = -2; offset <= 2; offset++) {
     final day = DateTime(computed.year, computed.month, computed.day + offset);
-    final entry = officialPoyaDays[_key(day)];
+    final entry = table[_key(day)];
     if (entry != null) {
       return (date: day, month: entry.month, isAdhi: entry.isAdhi);
     }

@@ -450,16 +450,20 @@ class _MonthEvents extends ConsumerWidget {
                   ],
                 ),
         ),
-        const SizedBox(height: AppSpacing.md),
         // The year is stated because the list above is this month's and this
-        // one is not; without it the two read as the same list.
-        InfoNotice(
-          icon: Icons.info_outline,
-          text:
-              '${l.calendarAnnounced} (${month.year})\n'
-              '${l.calendarAnnouncedHelp}\n'
-              '${SriLankanCalendar.unsupportedFestivals.keys.join(' · ')}',
-        ),
+        // one is not; without it the two read as the same list. Only the
+        // holidays still without a published date are named (KAN-49).
+        if (SriLankanCalendar.unannouncedIn(month.year) case final missing
+            when missing.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.md),
+          InfoNotice(
+            icon: Icons.info_outline,
+            text:
+                '${l.calendarAnnounced} (${month.year})\n'
+                '${l.calendarAnnouncedHelp}\n'
+                '${missing.join(' · ')}',
+          ),
+        ],
       ],
     );
   }

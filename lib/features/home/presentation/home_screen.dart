@@ -12,6 +12,7 @@ import '../../../core/ads/rewarded_unlock.dart';
 import '../../../core/ads/rewarded_unlock_card.dart';
 import '../../../core/astro/calendar_models.dart';
 import '../../../core/astro/panchanga_models.dart';
+import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/purchases/entitlements.dart';
 import '../../../core/purchases/purchase_controller.dart';
@@ -1425,11 +1426,18 @@ class _ExploreCard extends StatelessWidget {
 ///
 /// Deliberately not filled with guesses: a confidently wrong religious date
 /// would undermine the accuracy the rest of the app is built on.
-class _StillToCome extends StatelessWidget {
+class _StillToCome extends ConsumerWidget {
   const _StillToCome();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // The note names every one of them, so it stays only while none has a
+    // published date; once some do, they are in the lists and the calendar
+    // screen names exactly the ones still missing (KAN-49).
+    final unannounced = ref.watch(unannouncedFestivalsProvider);
+    if (unannounced.length < SriLankanCalendar.unsupportedFestivals.length) {
+      return const SizedBox.shrink();
+    }
     final l = L10n.of(context);
     final palette = BrandPalette.of(context);
     return Container(

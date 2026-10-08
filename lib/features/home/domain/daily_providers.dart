@@ -6,6 +6,7 @@ import '../../../core/astro/panchanga.dart';
 import '../../../core/astro/panchanga_models.dart';
 import '../../../core/astro/sri_lankan_calendar.dart';
 import '../../onboarding/data/profile_repository.dart';
+import '../../../core/content/content_service.dart';
 
 /// The day the home screen is showing.
 ///
@@ -121,14 +122,27 @@ bool isSameDay(DateTime a, DateTime b) =>
 /// Scanning a year of full moons is not free, so this is computed from the
 /// selected date rather than the clock, which keeps it stable while the user
 /// pages through days.
-final nextPoyaProvider = Provider<PoyaDay?>(
-  (ref) => SriLankanCalendar.nextPoya(ref.watch(selectedDateProvider)),
-);
+///
+/// Watches the content bundle because a published calendar can move a poya
+/// (KAN-49); the calendar itself is static, so nothing else would tell this
+/// to recompute.
+final nextPoyaProvider = Provider<PoyaDay?>((ref) {
+  ref.watch(contentBundleProvider);
+  return SriLankanCalendar.nextPoya(ref.watch(selectedDateProvider));
+});
 
 /// The next festival of any kind, poya included.
-final nextFestivalProvider = Provider<Festival?>(
-  (ref) => SriLankanCalendar.nextFestival(ref.watch(selectedDateProvider)),
-);
+final nextFestivalProvider = Provider<Festival?>((ref) {
+  ref.watch(contentBundleProvider);
+  return SriLankanCalendar.nextFestival(ref.watch(selectedDateProvider));
+});
+
+/// The religious holidays with no date yet for the selected year — the
+/// "still to come" note names them, and goes once they are all published.
+final unannouncedFestivalsProvider = Provider<List<String>>((ref) {
+  ref.watch(contentBundleProvider);
+  return SriLankanCalendar.unannouncedIn(ref.watch(selectedDateProvider).year);
+});
 
 /// The poya falling exactly on the selected day, if there is one.
 final poyaTodayProvider = Provider<PoyaDay?>((ref) {

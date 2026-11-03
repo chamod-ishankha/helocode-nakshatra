@@ -198,6 +198,7 @@ class ProfileStore {
       birthDate: row.birthDate,
       birthTime: Duration(minutes: row.birthTimeMinutes),
       birthTimeKnown: row.birthTimeKnown,
+      givenLagna: BirthProfile.lagnaFromName(row.givenLagna),
       place: Place(
         en: row.placeEn,
         si: row.placeSi,
@@ -222,6 +223,7 @@ class ProfileStore {
     birthDate: Value(profile.birthDate),
     birthTimeMinutes: Value(profile.birthTime.inMinutes),
     birthTimeKnown: Value(profile.birthTimeKnown),
+    givenLagna: Value(profile.givenLagna?.name),
     placeEn: Value(profile.place.en),
     placeSi: Value(profile.place.siOrNull),
     placeTa: Value(profile.place.taOrNull),

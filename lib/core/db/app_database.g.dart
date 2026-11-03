@@ -67,6 +67,17 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _givenLagnaMeta = const VerificationMeta(
+    'givenLagna',
+  );
+  @override
+  late final GeneratedColumn<String> givenLagna = GeneratedColumn<String>(
+    'given_lagna',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _placeEnMeta = const VerificationMeta(
     'placeEn',
   );
@@ -210,6 +221,7 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
     birthDate,
     birthTimeMinutes,
     birthTimeKnown,
+    givenLagna,
     placeEn,
     placeSi,
     placeTa,
@@ -272,6 +284,12 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
           data['birth_time_known']!,
           _birthTimeKnownMeta,
         ),
+      );
+    }
+    if (data.containsKey('given_lagna')) {
+      context.handle(
+        _givenLagnaMeta,
+        givenLagna.isAcceptableOrUnknown(data['given_lagna']!, _givenLagnaMeta),
       );
     }
     if (data.containsKey('place_en')) {
@@ -390,6 +408,10 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
         DriftSqlType.bool,
         data['${effectivePrefix}birth_time_known'],
       )!,
+      givenLagna: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}given_lagna'],
+      ),
       placeEn: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}place_en'],
@@ -462,6 +484,11 @@ class Profile extends DataClass implements Insertable<Profile> {
   /// False when the user said they do not know. The lagna is then a
   /// convention rather than a computation, and every screen must say so.
   final bool birthTimeKnown;
+
+  /// The rāśi the reader said was their lagna, when they did not know the
+  /// time ([BirthProfile.givenLagna]). Null for everyone else, including every
+  /// row written before it existed.
+  final String? givenLagna;
   final String placeEn;
 
   /// Null where the place has no translation, which is most of the world.
@@ -493,6 +520,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     required this.birthDate,
     required this.birthTimeMinutes,
     required this.birthTimeKnown,
+    this.givenLagna,
     required this.placeEn,
     this.placeSi,
     this.placeTa,
@@ -514,6 +542,9 @@ class Profile extends DataClass implements Insertable<Profile> {
     map['birth_date'] = Variable<DateTime>(birthDate);
     map['birth_time_minutes'] = Variable<int>(birthTimeMinutes);
     map['birth_time_known'] = Variable<bool>(birthTimeKnown);
+    if (!nullToAbsent || givenLagna != null) {
+      map['given_lagna'] = Variable<String>(givenLagna);
+    }
     map['place_en'] = Variable<String>(placeEn);
     if (!nullToAbsent || placeSi != null) {
       map['place_si'] = Variable<String>(placeSi);
@@ -546,6 +577,9 @@ class Profile extends DataClass implements Insertable<Profile> {
       birthDate: Value(birthDate),
       birthTimeMinutes: Value(birthTimeMinutes),
       birthTimeKnown: Value(birthTimeKnown),
+      givenLagna: givenLagna == null && nullToAbsent
+          ? const Value.absent()
+          : Value(givenLagna),
       placeEn: Value(placeEn),
       placeSi: placeSi == null && nullToAbsent
           ? const Value.absent()
@@ -582,6 +616,7 @@ class Profile extends DataClass implements Insertable<Profile> {
       birthDate: serializer.fromJson<DateTime>(json['birthDate']),
       birthTimeMinutes: serializer.fromJson<int>(json['birthTimeMinutes']),
       birthTimeKnown: serializer.fromJson<bool>(json['birthTimeKnown']),
+      givenLagna: serializer.fromJson<String?>(json['givenLagna']),
       placeEn: serializer.fromJson<String>(json['placeEn']),
       placeSi: serializer.fromJson<String?>(json['placeSi']),
       placeTa: serializer.fromJson<String?>(json['placeTa']),
@@ -605,6 +640,7 @@ class Profile extends DataClass implements Insertable<Profile> {
       'birthDate': serializer.toJson<DateTime>(birthDate),
       'birthTimeMinutes': serializer.toJson<int>(birthTimeMinutes),
       'birthTimeKnown': serializer.toJson<bool>(birthTimeKnown),
+      'givenLagna': serializer.toJson<String?>(givenLagna),
       'placeEn': serializer.toJson<String>(placeEn),
       'placeSi': serializer.toJson<String?>(placeSi),
       'placeTa': serializer.toJson<String?>(placeTa),
@@ -626,6 +662,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     DateTime? birthDate,
     int? birthTimeMinutes,
     bool? birthTimeKnown,
+    Value<String?> givenLagna = const Value.absent(),
     String? placeEn,
     Value<String?> placeSi = const Value.absent(),
     Value<String?> placeTa = const Value.absent(),
@@ -644,6 +681,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     birthDate: birthDate ?? this.birthDate,
     birthTimeMinutes: birthTimeMinutes ?? this.birthTimeMinutes,
     birthTimeKnown: birthTimeKnown ?? this.birthTimeKnown,
+    givenLagna: givenLagna.present ? givenLagna.value : this.givenLagna,
     placeEn: placeEn ?? this.placeEn,
     placeSi: placeSi.present ? placeSi.value : this.placeSi,
     placeTa: placeTa.present ? placeTa.value : this.placeTa,
@@ -668,6 +706,9 @@ class Profile extends DataClass implements Insertable<Profile> {
       birthTimeKnown: data.birthTimeKnown.present
           ? data.birthTimeKnown.value
           : this.birthTimeKnown,
+      givenLagna: data.givenLagna.present
+          ? data.givenLagna.value
+          : this.givenLagna,
       placeEn: data.placeEn.present ? data.placeEn.value : this.placeEn,
       placeSi: data.placeSi.present ? data.placeSi.value : this.placeSi,
       placeTa: data.placeTa.present ? data.placeTa.value : this.placeTa,
@@ -699,6 +740,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           ..write('birthDate: $birthDate, ')
           ..write('birthTimeMinutes: $birthTimeMinutes, ')
           ..write('birthTimeKnown: $birthTimeKnown, ')
+          ..write('givenLagna: $givenLagna, ')
           ..write('placeEn: $placeEn, ')
           ..write('placeSi: $placeSi, ')
           ..write('placeTa: $placeTa, ')
@@ -722,6 +764,7 @@ class Profile extends DataClass implements Insertable<Profile> {
     birthDate,
     birthTimeMinutes,
     birthTimeKnown,
+    givenLagna,
     placeEn,
     placeSi,
     placeTa,
@@ -744,6 +787,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           other.birthDate == this.birthDate &&
           other.birthTimeMinutes == this.birthTimeMinutes &&
           other.birthTimeKnown == this.birthTimeKnown &&
+          other.givenLagna == this.givenLagna &&
           other.placeEn == this.placeEn &&
           other.placeSi == this.placeSi &&
           other.placeTa == this.placeTa &&
@@ -764,6 +808,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   final Value<DateTime> birthDate;
   final Value<int> birthTimeMinutes;
   final Value<bool> birthTimeKnown;
+  final Value<String?> givenLagna;
   final Value<String> placeEn;
   final Value<String?> placeSi;
   final Value<String?> placeTa;
@@ -782,6 +827,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.birthDate = const Value.absent(),
     this.birthTimeMinutes = const Value.absent(),
     this.birthTimeKnown = const Value.absent(),
+    this.givenLagna = const Value.absent(),
     this.placeEn = const Value.absent(),
     this.placeSi = const Value.absent(),
     this.placeTa = const Value.absent(),
@@ -801,6 +847,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     required DateTime birthDate,
     required int birthTimeMinutes,
     this.birthTimeKnown = const Value.absent(),
+    this.givenLagna = const Value.absent(),
     required String placeEn,
     this.placeSi = const Value.absent(),
     this.placeTa = const Value.absent(),
@@ -828,6 +875,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     Expression<DateTime>? birthDate,
     Expression<int>? birthTimeMinutes,
     Expression<bool>? birthTimeKnown,
+    Expression<String>? givenLagna,
     Expression<String>? placeEn,
     Expression<String>? placeSi,
     Expression<String>? placeTa,
@@ -847,6 +895,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       if (birthDate != null) 'birth_date': birthDate,
       if (birthTimeMinutes != null) 'birth_time_minutes': birthTimeMinutes,
       if (birthTimeKnown != null) 'birth_time_known': birthTimeKnown,
+      if (givenLagna != null) 'given_lagna': givenLagna,
       if (placeEn != null) 'place_en': placeEn,
       if (placeSi != null) 'place_si': placeSi,
       if (placeTa != null) 'place_ta': placeTa,
@@ -868,6 +917,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     Value<DateTime>? birthDate,
     Value<int>? birthTimeMinutes,
     Value<bool>? birthTimeKnown,
+    Value<String?>? givenLagna,
     Value<String>? placeEn,
     Value<String?>? placeSi,
     Value<String?>? placeTa,
@@ -887,6 +937,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       birthDate: birthDate ?? this.birthDate,
       birthTimeMinutes: birthTimeMinutes ?? this.birthTimeMinutes,
       birthTimeKnown: birthTimeKnown ?? this.birthTimeKnown,
+      givenLagna: givenLagna ?? this.givenLagna,
       placeEn: placeEn ?? this.placeEn,
       placeSi: placeSi ?? this.placeSi,
       placeTa: placeTa ?? this.placeTa,
@@ -919,6 +970,9 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     }
     if (birthTimeKnown.present) {
       map['birth_time_known'] = Variable<bool>(birthTimeKnown.value);
+    }
+    if (givenLagna.present) {
+      map['given_lagna'] = Variable<String>(givenLagna.value);
     }
     if (placeEn.present) {
       map['place_en'] = Variable<String>(placeEn.value);
@@ -967,6 +1021,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
           ..write('birthDate: $birthDate, ')
           ..write('birthTimeMinutes: $birthTimeMinutes, ')
           ..write('birthTimeKnown: $birthTimeKnown, ')
+          ..write('givenLagna: $givenLagna, ')
           ..write('placeEn: $placeEn, ')
           ..write('placeSi: $placeSi, ')
           ..write('placeTa: $placeTa, ')
@@ -1002,6 +1057,7 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       required DateTime birthDate,
       required int birthTimeMinutes,
       Value<bool> birthTimeKnown,
+      Value<String?> givenLagna,
       required String placeEn,
       Value<String?> placeSi,
       Value<String?> placeTa,
@@ -1022,6 +1078,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<DateTime> birthDate,
       Value<int> birthTimeMinutes,
       Value<bool> birthTimeKnown,
+      Value<String?> givenLagna,
       Value<String> placeEn,
       Value<String?> placeSi,
       Value<String?> placeTa,
@@ -1067,6 +1124,11 @@ class $$ProfilesTableFilterComposer
 
   ColumnFilters<bool> get birthTimeKnown => $composableBuilder(
     column: $table.birthTimeKnown,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get givenLagna => $composableBuilder(
+    column: $table.givenLagna,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1165,6 +1227,11 @@ class $$ProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get givenLagna => $composableBuilder(
+    column: $table.givenLagna,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get placeEn => $composableBuilder(
     column: $table.placeEn,
     builder: (column) => ColumnOrderings(column),
@@ -1254,6 +1321,11 @@ class $$ProfilesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get givenLagna => $composableBuilder(
+    column: $table.givenLagna,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get placeEn =>
       $composableBuilder(column: $table.placeEn, builder: (column) => column);
 
@@ -1332,6 +1404,7 @@ class $$ProfilesTableTableManager
                 Value<DateTime> birthDate = const Value.absent(),
                 Value<int> birthTimeMinutes = const Value.absent(),
                 Value<bool> birthTimeKnown = const Value.absent(),
+                Value<String?> givenLagna = const Value.absent(),
                 Value<String> placeEn = const Value.absent(),
                 Value<String?> placeSi = const Value.absent(),
                 Value<String?> placeTa = const Value.absent(),
@@ -1350,6 +1423,7 @@ class $$ProfilesTableTableManager
                 birthDate: birthDate,
                 birthTimeMinutes: birthTimeMinutes,
                 birthTimeKnown: birthTimeKnown,
+                givenLagna: givenLagna,
                 placeEn: placeEn,
                 placeSi: placeSi,
                 placeTa: placeTa,
@@ -1370,6 +1444,7 @@ class $$ProfilesTableTableManager
                 required DateTime birthDate,
                 required int birthTimeMinutes,
                 Value<bool> birthTimeKnown = const Value.absent(),
+                Value<String?> givenLagna = const Value.absent(),
                 required String placeEn,
                 Value<String?> placeSi = const Value.absent(),
                 Value<String?> placeTa = const Value.absent(),
@@ -1388,6 +1463,7 @@ class $$ProfilesTableTableManager
                 birthDate: birthDate,
                 birthTimeMinutes: birthTimeMinutes,
                 birthTimeKnown: birthTimeKnown,
+                givenLagna: givenLagna,
                 placeEn: placeEn,
                 placeSi: placeSi,
                 placeTa: placeTa,

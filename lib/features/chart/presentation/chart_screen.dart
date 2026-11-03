@@ -108,14 +108,14 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
   /// Keyed by style *and* varga so Flutter rebuilds rather than trying to
   /// reuse the previous element tree — the two layouts share no structure,
   /// and a D9 is a different chart even when the layout matches.
-  Widget _drawn(BirthChart chart, ChartStyle style, bool birthTimeKnown) {
+  Widget _drawn(BirthChart chart, ChartStyle style, bool housesKnown) {
     final key = ValueKey('${style.name}-${_varga.name}');
 
     return switch (style) {
       ChartStyle.southIndian => RasiChart(
         key: key,
         chart: chart,
-        approximateHouses: !birthTimeKnown,
+        approximateHouses: !housesKnown,
         // Only when it is not the rāśi chart, so the default caption stays
         // the one word people expect on the chart they came for.
         caption: _varga == _Varga.rasi ? null : _varga.label(L10n.of(context)),
@@ -123,7 +123,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
       ChartStyle.northIndian => NorthIndianChart(
         key: key,
         chart: chart,
-        approximateHouses: !birthTimeKnown,
+        approximateHouses: !housesKnown,
       ),
     };
   }
@@ -196,12 +196,34 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                   onShare: () => _share(caption),
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                if (!profile.birthTimeKnown) ...[
+                if (profile.givenLagna case final lagna?) ...[
+                  // The estimated time is said here and not in the details
+                  // line, where it would read as the reader's own.
+                  InfoNotice(
+                    text: l.chartLagnaGiven(
+                      lagna.label(locale),
+                      DateFormat(
+                        'h:mm a',
+                      ).format(DateTime(2000).add(profile.birthTime)),
+                    ),
+                    icon: Icons.info_outline,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ] else if (!profile.birthTimeKnown) ...[
                   InfoNotice(
                     text: l.chartApproximate,
                     icon: Icons.info_outline,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  // Most readers on sunrise do know their lagna; it is on the
+                  // family horoscope.
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: TextButton(
+                      onPressed: () => context.push(Routes.editProfile),
+                      child: Text(l.chartAddLagna),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
                 ],
                 PillSegments<ChartStyle>(
                   segments: [
@@ -236,7 +258,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                   boundaryKey: _shareBoundary,
                   caption: caption,
                   child: switch (_varga) {
-                    _Varga.rasi => _drawn(chart, style, profile.birthTimeKnown),
+                    _Varga.rasi => _drawn(chart, style, profile.housesKnown),
                     // Inside the share boundary on purpose: a screenshot of a
                     // chart the user has not opened yet should be as blurred
                     // as the screen is.
@@ -269,10 +291,7 @@ class _ChartScreenState extends ConsumerState<ChartScreen> {
                   QuietNotice(text: l.reportNavamsaNote),
                 ],
                 const SizedBox(height: AppSpacing.lg),
-                _SummaryCard(
-                  chart: chart,
-                  approximate: !profile.birthTimeKnown,
-                ),
+                _SummaryCard(chart: chart, approximate: !profile.housesKnown),
                 const SizedBox(height: AppSpacing.xl),
                 _SectionTitle(l.chartPositions),
                 const SizedBox(height: AppSpacing.md),

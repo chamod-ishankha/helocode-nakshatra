@@ -127,10 +127,11 @@ final lagnaRasiProvider = Provider<Rasi?>((ref) {
   return chart?.lagnaRasi;
 });
 
-/// Whether the lagna was guessed from an assumed sunrise birth.
+/// Whether the lagna was guessed from an assumed sunrise birth. Not when the
+/// reader gave their lagna: then it is theirs, whatever the time.
 final lagnaIsApproximateProvider = Provider<bool>((ref) {
   final profile = ref.watch(profileProvider);
-  return profile != null && !profile.birthTimeKnown;
+  return profile != null && !profile.housesKnown;
 });
 
 /// The sign a reading on [axis] is counted from.

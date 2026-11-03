@@ -231,6 +231,66 @@ abstract class L10n {
   /// **'Your rāśi, nakṣatra and planetary positions will still be accurate. The ascendant and house placements will be approximate, and the app will mark them as such.'**
   String get onboardingTimeUnknownHelp;
 
+  /// Asked when the birth time is unknown. The reader's lagna sets the time to when it was rising that day.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you know your lagna?'**
+  String get lagnaPickerQuestion;
+
+  /// No description provided for @lagnaPickerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It is written on your horoscope. With it, your lagna and houses will be right even without the time.'**
+  String get lagnaPickerHelp;
+
+  /// No description provided for @lagnaPickerUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t know'**
+  String get lagnaPickerUnknown;
+
+  /// No description provided for @lagnaPickerQuestionPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you know their lagna?'**
+  String get lagnaPickerQuestionPartner;
+
+  /// No description provided for @lagnaPickerHelpPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'It is written on their horoscope. With it, their lagna and houses will be right even without the time.'**
+  String get lagnaPickerHelpPartner;
+
+  /// No description provided for @compatTimeFromLagna.
+  ///
+  /// In en, this message translates to:
+  /// **'We will use the time their lagna was rising that day'**
+  String get compatTimeFromLagna;
+
+  /// No description provided for @onboardingTimeFromLagna.
+  ///
+  /// In en, this message translates to:
+  /// **'We will use the time your lagna was rising that day'**
+  String get onboardingTimeFromLagna;
+
+  /// No description provided for @chartLagnaGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'{lagna} lagna, as you gave it. The birth time was estimated from it ({time}), so the lagna and houses are right; the navāṁśa and daśā dates are approximate.'**
+  String chartLagnaGiven(String lagna, String time);
+
+  /// No description provided for @chartAddLagna.
+  ///
+  /// In en, this message translates to:
+  /// **'Know your lagna? Add it'**
+  String get chartAddLagna;
+
+  /// No description provided for @dashaLagnaTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Your birth time was estimated from your lagna, so these dates may be off by a few months.'**
+  String get dashaLagnaTime;
+
   /// No description provided for @onboardingPlaceQuestion.
   ///
   /// In en, this message translates to:

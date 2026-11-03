@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nakshatra/core/astro/lagna_window.dart';
+import 'package:nakshatra/core/astro/models.dart';
 import 'package:nakshatra/features/compatibility/data/partner_repository.dart';
 import 'package:nakshatra/features/compatibility/domain/compatibility_providers.dart';
 import 'package:nakshatra/features/onboarding/data/profile_repository.dart';
@@ -74,15 +76,32 @@ void main() {
     );
   });
 
+  RisingWindow? tulaAtFour({
+    required DateTime date,
+    required Place place,
+    required Rasi rasi,
+  }) => rasi == Rasi.tula
+      ? (
+          start: const Duration(hours: 15),
+          end: const Duration(hours: 17),
+          middle: const Duration(hours: 16),
+        )
+      : null;
+
   group('the time on the form', () {
-    BirthProfile fromForm({Duration? time, bool timeKnown = true}) =>
-        partnerFromForm(
-          name: '  Partner ',
-          date: DateTime(1992, 3, 4),
-          time: time,
-          timeKnown: timeKnown,
-          place: colombo,
-        );
+    BirthProfile fromForm({
+      Duration? time,
+      bool timeKnown = true,
+      Rasi? lagna,
+    }) => partnerFromForm(
+      name: '  Partner ',
+      date: DateTime(1992, 3, 4),
+      time: time,
+      timeKnown: timeKnown,
+      place: colombo,
+      lagna: lagna,
+      findWindow: tulaAtFour,
+    );
 
     test('an untouched wheel is the 6:00 AM it shows, and known', () {
       final p = fromForm();
@@ -100,6 +119,29 @@ void main() {
       final p = fromForm(time: const Duration(hours: 21), timeKnown: false);
       expect(p.birthTimeKnown, isFalse);
       expect(p.birthTime, BirthProfile.defaultUnknownTime);
+    });
+
+    test('with the box ticked, a known lagna sets the time to its window', () {
+      final p = fromForm(
+        time: const Duration(hours: 21),
+        timeKnown: false,
+        lagna: Rasi.tula,
+      );
+      expect(p.birthTime, const Duration(hours: 16));
+      expect(p.givenLagna, Rasi.tula);
+      expect(p.birthTimeKnown, isFalse);
+      expect(p.housesKnown, isTrue);
+    });
+
+    test('a lagna left over from before a time was given is not kept', () {
+      // Ticked, picked Tula, then unticked and scrolled to a real time.
+      final p = fromForm(
+        time: const Duration(hours: 21),
+        timeKnown: true,
+        lagna: Rasi.tula,
+      );
+      expect(p.birthTime, const Duration(hours: 21));
+      expect(p.givenLagna, isNull);
     });
 
     test('the name is trimmed', () {

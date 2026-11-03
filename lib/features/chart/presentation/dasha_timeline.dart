@@ -41,6 +41,7 @@ class DashaTimeline extends ConsumerWidget {
   const DashaTimeline({
     super.key,
     required this.birthTimeKnown,
+    this.lagnaGiven = false,
     this.showTitle = true,
   });
 
@@ -51,6 +52,11 @@ class DashaTimeline extends ConsumerWidget {
   /// the houses, which is why an unknown birth time gets a caution notice
   /// at the top of this section.
   final bool birthTimeKnown;
+
+  /// The unknown time was set from the reader's lagna. The Moon then moves
+  /// only about a degree across the window, so the dates are months out, not
+  /// the years sunrise can cost.
+  final bool lagnaGiven;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,7 +86,9 @@ class DashaTimeline extends ConsumerWidget {
 
         if (!birthTimeKnown) ...[
           InfoNotice(
-            text: L10n.of(context).dashaUnreliableTime,
+            text: lagnaGiven
+                ? L10n.of(context).dashaLagnaTime
+                : L10n.of(context).dashaUnreliableTime,
             tone: NoticeTone.caution,
           ),
           const SizedBox(height: AppSpacing.md),

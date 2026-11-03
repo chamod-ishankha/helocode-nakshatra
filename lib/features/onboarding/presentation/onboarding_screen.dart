@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/astro/lagna_window.dart';
+import '../../../core/astro/models.dart';
+import '../../../core/ui/lagna_picker.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/brand_palette.dart';
@@ -58,6 +61,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   DateTime? _birthDate;
   Duration? _birthTime;
   bool _birthTimeKnown = true;
+
+  /// The reader's lagna, when they know it but not the time.
+  Rasi? _lagna;
   Place? _place;
   bool _saving = false;
 
@@ -84,6 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _birthDate = existing.birthDate;
       _birthTime = existing.birthTime;
       _birthTimeKnown = existing.birthTimeKnown;
+      _lagna = existing.givenLagna;
       _place = existing.place;
     }
 
@@ -145,12 +152,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (_birthDate == null || _place == null) return;
     setState(() => _saving = true);
 
+    // Worked out here rather than on the time step: the window depends on
+    // the place, which is asked for after it.
+    final unknown = LagnaWindow.timeWithout(
+      date: _birthDate!,
+      place: _place!,
+      lagna: _lagna,
+    );
     final profile = BirthProfile(
       name: _nameController.text.trim(),
       birthDate: _birthDate!,
-      birthTime: _birthTime ?? BirthProfile.defaultUnknownTime,
+      // A time scrolled to before the box was ticked is not the reader's
+      // answer; it used to be saved anyway, marked unknown.
+      birthTime: _birthTimeKnown
+          ? _birthTime ?? BirthProfile.defaultUnknownTime
+          : unknown.time,
       place: _place!,
       birthTimeKnown: _birthTimeKnown,
+      givenLagna: _birthTimeKnown ? null : unknown.lagna,
     );
 
     final notifier = ref.read(profileProvider.notifier);
@@ -224,10 +243,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     _TimeStep(
                       value: _birthTime,
                       known: _birthTimeKnown,
+                      lagna: _lagna,
                       onChanged: (t, known) => setState(() {
                         _birthTime = t;
                         _birthTimeKnown = known;
                       }),
+                      onLagna: (r) => setState(() => _lagna = r),
                     ),
                     _PlaceStep(
                       value: _place,
@@ -456,12 +477,16 @@ class _TimeStep extends StatelessWidget {
   const _TimeStep({
     required this.value,
     required this.known,
+    required this.lagna,
     required this.onChanged,
+    required this.onLagna,
   });
 
   final Duration? value;
   final bool known;
+  final Rasi? lagna;
   final void Function(Duration?, bool known) onChanged;
+  final ValueChanged<Rasi?> onLagna;
 
   @override
   Widget build(BuildContext context) {
@@ -483,7 +508,9 @@ class _TimeStep extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             !known
-                ? l10n.onboardingTimeUnknown
+                ? lagna == null
+                      ? l10n.onboardingTimeUnknown
+                      : l10n.onboardingTimeFromLagna
                 : value == null
                 ? l10n.onboardingTimeWheelHint
                 : _format(value!),
@@ -514,14 +541,21 @@ class _TimeStep extends StatelessWidget {
                 ),
               ),
               subtitle: Text(
-                l10n.onboardingTimeUnknown,
+                lagna == null
+                    ? l10n.onboardingTimeUnknown
+                    : l10n.onboardingTimeFromLagna,
                 style: TextStyle(color: palette.muted),
               ),
             ),
           ),
           if (!known) ...[
-            const SizedBox(height: AppSpacing.md),
-            InfoNotice(text: l10n.onboardingTimeUnknownHelp),
+            const SizedBox(height: AppSpacing.lg),
+            LagnaPicker(value: lagna, onChanged: onLagna),
+            // What sunrise costs, only while sunrise is what they will get.
+            if (lagna == null) ...[
+              const SizedBox(height: AppSpacing.md),
+              InfoNotice(text: l10n.onboardingTimeUnknownHelp),
+            ],
           ],
         ],
       ),

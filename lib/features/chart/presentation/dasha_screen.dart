@@ -58,6 +58,7 @@ class DashaScreen extends ConsumerWidget {
               if (profile != null)
                 DashaTimeline(
                   birthTimeKnown: profile.birthTimeKnown,
+                  lagnaGiven: profile.givenLagna != null,
                   showTitle: false,
                 ),
               const SizedBox(height: 20),

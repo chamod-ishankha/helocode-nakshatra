@@ -79,10 +79,16 @@ class ReportContent {
 
   final DateTime generatedAt;
 
-  /// True when the birth time was unknown, so the lagna and the houses are a
-  /// convention rather than a computation. Every page that shows either has to
-  /// say so — a printed document outlives the screen that explained it.
-  bool get housesApproximate => !profile.birthTimeKnown;
+  /// True when the birth time was unknown and no lagna was given, so the
+  /// lagna and the houses are a convention rather than a computation. Every
+  /// page that shows either has to say so — a printed document outlives the
+  /// screen that explained it.
+  bool get housesApproximate => !profile.housesKnown;
+
+  /// True when the birth time is an estimate of any kind. The navāṁśa turns
+  /// over every thirteen minutes, so even a time from the reader's lagna
+  /// cannot place it.
+  bool get timeEstimated => !profile.birthTimeKnown;
 
   /// A filename that says whose report it is without leaking anything.
   ///

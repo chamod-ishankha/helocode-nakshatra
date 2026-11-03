@@ -81,6 +81,43 @@ class L10nEn extends L10n {
       'Your rāśi, nakṣatra and planetary positions will still be accurate. The ascendant and house placements will be approximate, and the app will mark them as such.';
 
   @override
+  String get lagnaPickerQuestion => 'Do you know your lagna?';
+
+  @override
+  String get lagnaPickerHelp =>
+      'It is written on your horoscope. With it, your lagna and houses will be right even without the time.';
+
+  @override
+  String get lagnaPickerUnknown => 'I don\'t know';
+
+  @override
+  String get lagnaPickerQuestionPartner => 'Do you know their lagna?';
+
+  @override
+  String get lagnaPickerHelpPartner =>
+      'It is written on their horoscope. With it, their lagna and houses will be right even without the time.';
+
+  @override
+  String get compatTimeFromLagna =>
+      'We will use the time their lagna was rising that day';
+
+  @override
+  String get onboardingTimeFromLagna =>
+      'We will use the time your lagna was rising that day';
+
+  @override
+  String chartLagnaGiven(String lagna, String time) {
+    return '$lagna lagna, as you gave it. The birth time was estimated from it ($time), so the lagna and houses are right; the navāṁśa and daśā dates are approximate.';
+  }
+
+  @override
+  String get chartAddLagna => 'Know your lagna? Add it';
+
+  @override
+  String get dashaLagnaTime =>
+      'Your birth time was estimated from your lagna, so these dates may be off by a few months.';
+
+  @override
   String get onboardingPlaceQuestion => 'Where were you born?';
 
   @override

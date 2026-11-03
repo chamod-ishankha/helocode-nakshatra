@@ -1,3 +1,4 @@
+import '../../../core/astro/models.dart';
 import '../../../core/config/app_locale.dart';
 
 /// A birth place with the coordinates and timezone a chart needs.
@@ -130,6 +131,7 @@ class BirthProfile {
     required this.birthTime,
     required this.place,
     required this.birthTimeKnown,
+    this.givenLagna,
   });
 
   final String name;
@@ -147,6 +149,22 @@ class BirthProfile {
   /// default. House placements and the ascendant are then approximate, and the
   /// UI must say so rather than presenting them as fact.
   final bool birthTimeKnown;
+
+  /// The lagna the reader gave when they did not know the time, or null.
+  ///
+  /// [birthTime] is then the middle of the window in which this rāśi was
+  /// rising on the birth date ([LagnaWindow]), so the lagna and the houses are
+  /// as the reader's own horoscope has them. The time itself is still an
+  /// estimate: the navāṁśa and the daśā balance stay approximate.
+  final Rasi? givenLagna;
+
+  /// Whether the lagna, and so every house, can be shown as fact: from a
+  /// known time, or from the reader's own lagna.
+  bool get housesKnown => birthTimeKnown || givenLagna != null;
+
+  /// [Rasi] by its stored name; null for absent or unrecognised.
+  static Rasi? lagnaFromName(String? name) =>
+      Rasi.values.where((r) => r.name == name).firstOrNull;
 
   /// Used when the birth time is unknown.
   ///
@@ -170,12 +188,14 @@ class BirthProfile {
     Duration? birthTime,
     Place? place,
     bool? birthTimeKnown,
+    Rasi? Function()? givenLagna,
   }) => BirthProfile(
     name: name ?? this.name,
     birthDate: birthDate ?? this.birthDate,
     birthTime: birthTime ?? this.birthTime,
     place: place ?? this.place,
     birthTimeKnown: birthTimeKnown ?? this.birthTimeKnown,
+    givenLagna: givenLagna != null ? givenLagna() : this.givenLagna,
   );
 
   Map<String, dynamic> toJson() => {
@@ -184,6 +204,7 @@ class BirthProfile {
     'birthTimeMinutes': birthTime.inMinutes,
     'place': place.toJson(),
     'birthTimeKnown': birthTimeKnown,
+    if (givenLagna != null) 'givenLagna': givenLagna!.name,
   };
 
   factory BirthProfile.fromJson(Map<String, dynamic> json) => BirthProfile(
@@ -192,5 +213,9 @@ class BirthProfile {
     birthTime: Duration(minutes: json['birthTimeMinutes'] as int),
     place: Place.fromJson(json['place'] as Map<String, dynamic>),
     birthTimeKnown: json['birthTimeKnown'] as bool? ?? true,
+    // Absent in everything written before it existed, and in every profile
+    // with a known time. A name this build does not know is dropped rather
+    // than failing the whole profile: the birth details matter more.
+    givenLagna: lagnaFromName(json['givenLagna'] as String?),
   );
 }

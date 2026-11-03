@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/astro/lagna_window.dart';
 import '../../../core/astro/compatibility/ashtakoota.dart';
 import '../../../core/astro/compatibility/kuja_dosha.dart';
 import '../../../core/astro/compatibility/porondam.dart';
@@ -55,21 +56,36 @@ class PartnerNotifier extends Notifier<BirthProfile?> {
 /// count as "time unknown", which put the missing-time warning on a match
 /// where nobody had said the time was missing. Only the box ([timeKnown]
 /// false) says that.
+///
+/// With the box ticked, a [lagna] the reader knows sets the time to when it
+/// was rising ([LagnaWindow]); kuja dosha counts from the lagna, so this
+/// changes the match, not only the chart.
 BirthProfile partnerFromForm({
   required String name,
   required DateTime date,
   required Duration? time,
   required bool timeKnown,
   required Place place,
-}) => BirthProfile(
-  name: name.trim(),
-  birthDate: date,
-  birthTime: timeKnown
-      ? (time ?? BirthProfile.defaultUnknownTime)
-      : BirthProfile.defaultUnknownTime,
-  place: place,
-  birthTimeKnown: timeKnown,
-);
+  Rasi? lagna,
+  RisingWindowFinder findWindow = LagnaWindow.forBirth,
+}) {
+  final unknown = LagnaWindow.timeWithout(
+    date: date,
+    place: place,
+    lagna: timeKnown ? null : lagna,
+    find: findWindow,
+  );
+  return BirthProfile(
+    name: name.trim(),
+    birthDate: date,
+    birthTime: timeKnown
+        ? (time ?? BirthProfile.defaultUnknownTime)
+        : unknown.time,
+    place: place,
+    birthTimeKnown: timeKnown,
+    givenLagna: unknown.lagna,
+  );
+}
 
 final partnerRepositoryProvider = Provider<PartnerRepository>(
   (ref) => PartnerRepository(ref.watch(sharedPreferencesProvider)),

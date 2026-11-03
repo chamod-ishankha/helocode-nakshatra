@@ -32,6 +32,11 @@ class Profiles extends Table {
   BoolColumn get birthTimeKnown =>
       boolean().withDefault(const Constant(true))();
 
+  /// The rāśi the reader said was their lagna, when they did not know the
+  /// time ([BirthProfile.givenLagna]). Null for everyone else, including every
+  /// row written before it existed.
+  TextColumn get givenLagna => text().nullable()();
+
   TextColumn get placeEn => text()();
 
   /// Null where the place has no translation, which is most of the world.
@@ -68,7 +73,7 @@ class AppDatabase extends _$AppDatabase {
   /// case in [migration] — a birth date is not something a user can be asked
   /// to type again because a schema moved.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,9 +96,20 @@ class AppDatabase extends _$AppDatabase {
         // a new column — the copy reads the old table, which has no such
         // column to read. A separate `addColumn` afterwards would be adding a
         // column the rebuild had already created.
+        //
+        // The rebuild creates every column of the current schema, so a v1
+        // database also gains `givenLagna` here, and the step below must not
+        // add it a second time.
         await m.alterTable(
-          TableMigration(profiles, newColumns: [profiles.countryCode]),
+          TableMigration(
+            profiles,
+            newColumns: [profiles.countryCode, profiles.givenLagna],
+          ),
         );
+      } else if (from < 3) {
+        // The lagna a reader gives when they do not know their birth time.
+        // Null for every existing row: none of them was ever asked.
+        await m.addColumn(profiles, profiles.givenLagna);
       }
     },
     beforeOpen: (details) async {

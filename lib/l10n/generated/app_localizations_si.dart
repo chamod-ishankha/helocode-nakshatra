@@ -81,6 +81,43 @@ class L10nSi extends L10n {
       'ඔබේ රාශිය, නක්ෂත්‍රය සහ ග්‍රහ පිහිටීම් නිවැරදිව පවතී. ලග්නය සහ භාව පිහිටීම් දළ වන අතර, යෙදුම එය එසේ බව සලකුණු කරයි.';
 
   @override
+  String get lagnaPickerQuestion => 'ඔබේ ලග්නය දන්නවාද?';
+
+  @override
+  String get lagnaPickerHelp =>
+      'එය ඔබේ කේන්දරයේ සඳහන් වේ. එය දුන්නොත්, උපන් වේලාව නොදැන සිටියත් ලග්නය සහ භාව නිවැරදි වේ.';
+
+  @override
+  String get lagnaPickerUnknown => 'මම නොදනිමි';
+
+  @override
+  String get lagnaPickerQuestionPartner => 'ඔවුන්ගේ ලග්නය දන්නවාද?';
+
+  @override
+  String get lagnaPickerHelpPartner =>
+      'එය ඔවුන්ගේ කේන්දරයේ සඳහන් වේ. එය දුන්නොත්, උපන් වේලාව නොදැන සිටියත් ලග්නය සහ භාව නිවැරදි වේ.';
+
+  @override
+  String get compatTimeFromLagna =>
+      'එදින ඔවුන්ගේ ලග්නය උදා වූ වේලාව අපි භාවිත කරමු';
+
+  @override
+  String get onboardingTimeFromLagna =>
+      'එදින ඔබේ ලග්නය උදා වූ වේලාව අපි භාවිත කරමු';
+
+  @override
+  String chartLagnaGiven(String lagna, String time) {
+    return 'ඔබ දුන් පරිදි $lagna ලග්නය. උපන් වේලාව ($time) එයින් ඇස්තමේන්තු කළ බැවින් ලග්නය සහ භාව නිවැරදිය; නවාංශය සහ දශා දින දළ වේ.';
+  }
+
+  @override
+  String get chartAddLagna => 'ලග්නය දන්නවාද? එකතු කරන්න';
+
+  @override
+  String get dashaLagnaTime =>
+      'ඔබේ උපන් වේලාව ලග්නයෙන් ඇස්තමේන්තු කළ බැවින්, මෙම දින මාස කිහිපයකින් වෙනස් විය හැක.';
+
+  @override
   String get onboardingPlaceQuestion => 'ඔබ උපන්නේ කොහේද?';
 
   @override

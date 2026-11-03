@@ -350,6 +350,14 @@ class _Cover extends StatelessWidget {
         if (content.housesApproximate) ...[
           const SizedBox(height: 28),
           _Note(text: l.chartApproximate, warning: true),
+        ] else if (profile.givenLagna case final lagna?) ...[
+          const SizedBox(height: 28),
+          _Note(
+            text: l.chartLagnaGiven(
+              lagna.label(content.locale),
+              _formatTime(context, profile.birthTime),
+            ),
+          ),
         ],
       ],
     );
@@ -377,6 +385,12 @@ class _ChartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L10n.of(context);
+    // The navāṁśa's houses need the time to the quarter hour, which a time
+    // from the reader's lagna does not give; the rāśi chart's do not.
+    final navamsa = !identical(chart, content.chart);
+    final approximate = navamsa
+        ? content.timeEstimated
+        : content.housesApproximate;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -390,12 +404,12 @@ class _ChartPage extends StatelessWidget {
           child: switch (content.style) {
             ChartStyle.southIndian => RasiChart(
               chart: chart,
-              approximateHouses: content.housesApproximate,
+              approximateHouses: approximate,
               caption: caption?.call(l),
             ),
             ChartStyle.northIndian => NorthIndianChart(
               chart: chart,
-              approximateHouses: content.housesApproximate,
+              approximateHouses: approximate,
             ),
           },
         ),
@@ -403,9 +417,14 @@ class _ChartPage extends StatelessWidget {
           const SizedBox(height: 14 * _k),
           Text(body(l), style: _body),
         ],
-        if (content.housesApproximate) ...[
+        if (approximate) ...[
           const SizedBox(height: 14 * _k),
-          _Note(text: l.chartApproximate, warning: true),
+          _Note(
+            text: navamsa && !content.housesApproximate
+                ? l.chartNavamsaApproximate
+                : l.chartApproximate,
+            warning: true,
+          ),
         ],
       ],
     );

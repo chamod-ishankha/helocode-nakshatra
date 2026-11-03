@@ -83,6 +83,43 @@ class L10nTa extends L10n {
       'உங்கள் ராசி, நட்சத்திரம் மற்றும் கிரக நிலைகள் இன்னும் சரியாகவே இருக்கும். லக்னமும் பாவ நிலைகளும் தோராயமானவை, செயலி அதைக் குறித்துக் காட்டும்.';
 
   @override
+  String get lagnaPickerQuestion => 'உங்கள் லக்னம் தெரியுமா?';
+
+  @override
+  String get lagnaPickerHelp =>
+      'அது உங்கள் ஜாதகத்தில் எழுதப்பட்டிருக்கும். அதைக் கொடுத்தால், நேரம் தெரியாவிட்டாலும் லக்னமும் பாவங்களும் சரியாக இருக்கும்.';
+
+  @override
+  String get lagnaPickerUnknown => 'எனக்குத் தெரியாது';
+
+  @override
+  String get lagnaPickerQuestionPartner => 'அவர்களின் லக்னம் தெரியுமா?';
+
+  @override
+  String get lagnaPickerHelpPartner =>
+      'அது அவர்களின் ஜாதகத்தில் எழுதப்பட்டிருக்கும். அதைக் கொடுத்தால், நேரம் தெரியாவிட்டாலும் லக்னமும் பாவங்களும் சரியாக இருக்கும்.';
+
+  @override
+  String get compatTimeFromLagna =>
+      'அன்று அவர்களின் லக்னம் உதித்த நேரத்தை நாங்கள் பயன்படுத்துவோம்';
+
+  @override
+  String get onboardingTimeFromLagna =>
+      'அன்று உங்கள் லக்னம் உதித்த நேரத்தை நாங்கள் பயன்படுத்துவோம்';
+
+  @override
+  String chartLagnaGiven(String lagna, String time) {
+    return 'நீங்கள் கொடுத்தபடி $lagna லக்னம். பிறந்த நேரம் ($time) அதிலிருந்து மதிப்பிடப்பட்டதால் லக்னமும் பாவங்களும் சரியானவை; நவாம்சமும் தசை தேதிகளும் தோராயமானவை.';
+  }
+
+  @override
+  String get chartAddLagna => 'லக்னம் தெரியுமா? சேர்க்கவும்';
+
+  @override
+  String get dashaLagnaTime =>
+      'உங்கள் பிறந்த நேரம் லக்னத்திலிருந்து மதிப்பிடப்பட்டதால், இந்தத் தேதிகள் சில மாதங்கள் மாறலாம்.';
+
+  @override
   String get onboardingPlaceQuestion => 'நீங்கள் எங்கு பிறந்தீர்கள்?';
 
   @override

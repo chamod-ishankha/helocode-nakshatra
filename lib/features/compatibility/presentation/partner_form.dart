@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/astro/models.dart';
+import '../../../core/ui/lagna_picker.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme.dart';
@@ -48,6 +50,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
   DateTime? _date;
   Duration? _time;
   bool _timeKnown = true;
+  Rasi? _lagna;
   Place? _place;
 
   @override
@@ -59,6 +62,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
       _date = existing.birthDate;
       _time = existing.birthTime;
       _timeKnown = existing.birthTimeKnown;
+      _lagna = existing.givenLagna;
       _place = existing.place;
       // initState cannot reach Localizations, and the provider is the
       // same source MaterialApp.locale is driven from.
@@ -83,6 +87,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
       _date = p.birthDate;
       _time = p.birthTime;
       _timeKnown = p.birthTimeKnown;
+      _lagna = p.givenLagna;
       _place = p.place;
       _placeQuery.text = p.place.label(ref.read(localeProvider));
     });
@@ -99,6 +104,7 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
             time: _time,
             timeKnown: _timeKnown,
             place: _place!,
+            lagna: _lagna,
           ),
         );
     Navigator.of(context).pop();
@@ -198,7 +204,9 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
               // 6:00 AM, and saying "scroll to your time" beside it suggested
               // nothing had been chosen yet.
               !_timeKnown
-                  ? l.onboardingTimeUnknown
+                  ? _lagna == null
+                        ? l.onboardingTimeUnknown
+                        : l.compatTimeFromLagna
                   : DateFormat('h:mm a').format(
                       DateTime(
                         2000,
@@ -230,11 +238,21 @@ class _PartnerFormState extends ConsumerState<_PartnerForm> {
                   ),
                 ),
                 subtitle: Text(
-                  l.onboardingTimeUnknown,
+                  _lagna == null
+                      ? l.onboardingTimeUnknown
+                      : l.compatTimeFromLagna,
                   style: TextStyle(color: palette.muted),
                 ),
               ),
             ),
+            if (!_timeKnown) ...[
+              const SizedBox(height: AppSpacing.lg),
+              LagnaPicker(
+                forPartner: true,
+                value: _lagna,
+                onChanged: (r) => setState(() => _lagna = r),
+              ),
+            ],
             const SizedBox(height: AppSpacing.xl),
 
             Text(l.compatPartnerPlaceQuestion, style: question()),

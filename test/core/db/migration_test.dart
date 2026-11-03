@@ -5,7 +5,8 @@ import 'package:nakshatra/core/db/app_database.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 /// Schema 1 → 2, the migration that carries saved birth profiles into the
-/// worldwide place list (KAN-66).
+/// worldwide place list (KAN-66), and 2 → 3, which adds the lagna a reader
+/// gives when they do not know their birth time.
 ///
 /// Worth its own test because the failure mode is losing someone's birth
 /// details. A birth date and an exact birth time are not things a user can be
@@ -121,6 +122,50 @@ void main() {
     expect(saved.placeTa, isNull);
     expect(saved.countryCode, 'AU');
     expect(saved.timezone, 'Australia/Melbourne');
+  });
+
+  test('a v1 profile upgrades all the way, with no lagna given', () async {
+    await openUpgradedFromV1();
+    expect((await db.select(db.profiles).get()).single.givenLagna, isNull);
+  });
+
+  test('a v2 profile gains the lagna column and keeps its details', () async {
+    // v2 as shipped: v1 with the place names nullable and a country code.
+    final raw = sqlite3.openInMemory();
+    raw.execute(
+      createV1
+          .replaceFirst('place_si TEXT NOT NULL', 'place_si TEXT NULL')
+          .replaceFirst('place_ta TEXT NOT NULL', 'place_ta TEXT NULL')
+          .replaceFirst(
+            'timezone TEXT NOT NULL,',
+            'timezone TEXT NOT NULL, country_code TEXT NULL,',
+          ),
+    );
+    raw.execute('''
+      INSERT INTO profiles (
+        name, birth_date, birth_time_minutes, birth_time_known,
+        place_en, district, latitude, longitude, timezone, country_code,
+        is_selected, created_at
+      ) VALUES (
+        'Amma', 643939200, 360, 0,
+        'Kandy', 'Kandy', 7.2906, 80.6337, 'Asia/Colombo', 'LK', 1, 643939200
+      )
+    ''');
+    raw.userVersion = 2;
+    db = AppDatabase(NativeDatabase.opened(raw));
+
+    final row = (await db.select(db.profiles).get()).single;
+    expect(row.name, 'Amma');
+    expect(row.birthTimeMinutes, 360);
+    expect(row.birthTimeKnown, isFalse);
+    expect(row.countryCode, 'LK');
+    expect(row.givenLagna, isNull);
+
+    // And the new column takes a value.
+    await db
+        .update(db.profiles)
+        .write(const ProfilesCompanion(givenLagna: Value('simha')));
+    expect((await db.select(db.profiles).get()).single.givenLagna, 'simha');
   });
 
   test('a fresh database starts at the current schema', () async {

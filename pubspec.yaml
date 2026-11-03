@@ -109,6 +109,11 @@ flutter:
     # add hundreds of lines in three languages without touching Dart.
     - assets/content/
 
+    # "What's new", one file per release in Play's tagged format. The same
+    # file is pasted into the Play Console, so the store and the app's own
+    # What's new say the same thing.
+    - assets/release-notes/
+
   # Bundled, not fetched at runtime: the app must work offline, and Roboto
   # renders Sinhala as empty boxes on many Sri Lankan devices. Variable
   # fonts, so one file covers every weight. OFL-1.1, licence in

@@ -1748,5 +1748,38 @@ class L10nSi extends L10n {
   String get reminderPromptNeverAsk => 'නැවත අසන්න එපා';
 
   @override
+  String get whatsNewTitle => 'අලුතින් ඇති දේ';
+
+  @override
+  String get whatsNewSeeAll => 'සියල්ල බලන්න';
+
+  @override
+  String get noticesTitle => 'නිවේදන';
+
+  @override
+  String get noticesHint => 'නක්ෂත්‍ර වෙතින් පුවත් සහ නිවේදන';
+
+  @override
+  String get noticesEmpty => 'තවම නිවේදන නැත. යෙදුම ගැන පුවත් මෙහි පෙන්වයි.';
+
+  @override
+  String get updatesTitle => 'යාවත්කාලීන';
+
+  @override
+  String get updatesHint => 'එක් එක් අනුවාදයේ වෙනස් වූ දේ';
+
+  @override
+  String get updatesAvailable => 'යාවත්කාලීනයක් ඇත';
+
+  @override
+  String get updatesYourVersion => 'ඔබේ අනුවාදය';
+
+  @override
+  String get updatesEarlier => 'පෙර';
+
+  @override
+  String get feedUnread => 'අලුත්';
+
+  @override
   String get announcementOpenLink => 'තව කියවන්න';
 }

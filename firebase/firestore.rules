@@ -36,6 +36,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    // Every notice and release note, for the Notices and Updates screens.
+    match /feed/{version} {
+      allow read: if true;
+      allow write: if false;
+    }
 
     // Anything not matched above is denied. Stated explicitly rather than
     // relied upon, so a later rule cannot widen access by accident.

@@ -880,5 +880,17 @@
   "reminderPromptBody": "Allow notifications to get the day's rāhu kālaya each morning, and poya days and festivals on time.",
   "reminderPromptEnable": "Enable",
   "reminderPromptNeverAsk": "Don't ask again",
+  "whatsNewTitle": "What's new",
+  "@whatsNewTitle": {"description": "Shown once on Home after an update, and as a row in More. The text itself comes from assets/release-notes."},
+  "whatsNewSeeAll": "See all",
+  "noticesTitle": "Notices",
+  "noticesHint": "News and announcements from Nakshatra",
+  "noticesEmpty": "No notices yet. News about the app will appear here.",
+  "updatesTitle": "Updates",
+  "updatesHint": "What changed in each version",
+  "updatesAvailable": "Update available",
+  "updatesYourVersion": "Your version",
+  "updatesEarlier": "Earlier",
+  "feedUnread": "New",
   "announcementOpenLink": "Read more"
 }

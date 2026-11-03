@@ -128,6 +128,7 @@ void main() {
       expect(c.announcement, isNull);
       expect(c.switches.adsEnabled, isTrue);
       expect(c.contentVersion, 0);
+      expect(c.feedVersion, 0);
     });
 
     test('a switch the document forgets stays on', () {
@@ -189,6 +190,7 @@ void main() {
           'googleSignInEnabled': true,
         },
         'content': {'latest': 7},
+        'feed': {'latest': 4},
       });
       final again = AppConfig.fromJson(original.toJson());
       expect(again.toJson(), original.toJson());
@@ -199,6 +201,7 @@ void main() {
       expect(again.announcement!.link.toString(), 'https://helocode.top');
       expect(again.switches.adsEnabled, isFalse);
       expect(again.contentVersion, 7);
+      expect(again.feedVersion, 4);
     });
   });
 

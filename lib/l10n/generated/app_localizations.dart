@@ -3147,6 +3147,72 @@ abstract class L10n {
   /// **'Don\'t ask again'**
   String get reminderPromptNeverAsk;
 
+  /// Shown once on Home after an update, and as a row in More. The text itself comes from assets/release-notes.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewTitle;
+
+  /// No description provided for @whatsNewSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get whatsNewSeeAll;
+
+  /// No description provided for @noticesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices'**
+  String get noticesTitle;
+
+  /// No description provided for @noticesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'News and announcements from Nakshatra'**
+  String get noticesHint;
+
+  /// No description provided for @noticesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notices yet. News about the app will appear here.'**
+  String get noticesEmpty;
+
+  /// No description provided for @updatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get updatesTitle;
+
+  /// No description provided for @updatesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What changed in each version'**
+  String get updatesHint;
+
+  /// No description provided for @updatesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updatesAvailable;
+
+  /// No description provided for @updatesYourVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Your version'**
+  String get updatesYourVersion;
+
+  /// No description provided for @updatesEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get updatesEarlier;
+
+  /// No description provided for @feedUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get feedUnread;
+
   /// No description provided for @announcementOpenLink.
   ///
   /// In en, this message translates to:

@@ -2,7 +2,13 @@
 
 One file per version, named for the `version:` line in `pubspec.yaml` at the
 time it shipped. Each file is the **"What's new"** text, already in Play's
-multi-language tagged format:
+multi-language tagged format.
+
+The app bundles this folder and shows the same text itself: once on Home after
+an update, and always under More → What's new (`lib/core/whats_new/`). **Write
+the file before building the release**, or the update arrives with nothing to
+say. Paragraphs are separated by a blank line; the Home card shows the first
+two.
 
 ```
 <en-US>
@@ -34,7 +40,7 @@ glyph to a reader.
 Count before pasting:
 
 ```
-python -c "import io,re,sys; t=io.open(sys.argv[1],encoding='utf-8').read(); [print('%-8s %3d' % (m.group(1), len(m.group(2)))) for m in re.finditer(r'<([a-z]{2}-[A-Z]{2})>\n(.*?)\n</\1>', t, re.S)]" docs/release-notes/1.0.1+3.txt
+python -c "import io,re,sys; t=io.open(sys.argv[1],encoding='utf-8').read(); [print('%-8s %3d' % (m.group(1), len(m.group(2)))) for m in re.finditer(r'<([a-z]{2}-[A-Z]{2})>\n(.*?)\n</\1>', t, re.S)]" assets/release-notes/1.0.1+3.txt
 ```
 
 ## What belongs in them
@@ -46,4 +52,4 @@ ships badly.
 
 Where a feature has a name in the app, use that name. The store and the app
 should say the same words; the listing copy in
-[play-listing.md](../play-listing.md) follows the same rule.
+[play-listing.md](../../docs/play-listing.md) follows the same rule.

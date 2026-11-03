@@ -1776,5 +1776,39 @@ class L10nEn extends L10n {
   String get reminderPromptNeverAsk => 'Don\'t ask again';
 
   @override
+  String get whatsNewTitle => 'What\'s new';
+
+  @override
+  String get whatsNewSeeAll => 'See all';
+
+  @override
+  String get noticesTitle => 'Notices';
+
+  @override
+  String get noticesHint => 'News and announcements from Nakshatra';
+
+  @override
+  String get noticesEmpty =>
+      'No notices yet. News about the app will appear here.';
+
+  @override
+  String get updatesTitle => 'Updates';
+
+  @override
+  String get updatesHint => 'What changed in each version';
+
+  @override
+  String get updatesAvailable => 'Update available';
+
+  @override
+  String get updatesYourVersion => 'Your version';
+
+  @override
+  String get updatesEarlier => 'Earlier';
+
+  @override
+  String get feedUnread => 'New';
+
+  @override
   String get announcementOpenLink => 'Read more';
 }

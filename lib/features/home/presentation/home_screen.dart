@@ -30,6 +30,8 @@ import '../../../core/config/announcement_card.dart';
 import '../../../core/config/version_gate.dart';
 import '../../../core/ui/disclaimer.dart';
 import '../../../core/notifications/reminder_permission_card.dart';
+import '../../feed/presentation/whats_new_card.dart';
+import 'feed_buttons.dart';
 
 /// Built at each use rather than once: a format made at first use keeps the
 /// language it was made in, so after switching to Tamil every time on the
@@ -164,10 +166,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // What the admin panel has to say, above the day (KAN-49):
                 // an update worth taking, and a notice inside its window.
                 const UpdateAvailableCard(),
+                // Once, on the first launch after an update (WhatsNew).
+                const WhatsNewCard(),
                 const AnnouncementCard(),
                 // Reminders are on, but nothing arrives until Android allows
                 // it (ReminderPrompt).
                 const ReminderPermissionCard(),
+                // Where the reader looks back at notices and each version's
+                // notes; the app has no notification tab to hold them.
+                gutter(const FeedButtons()),
                 if (dayLocked)
                   gutter(
                     RewardedUnlockCard(

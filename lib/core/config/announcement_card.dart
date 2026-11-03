@@ -6,6 +6,7 @@ import '../../features/home/domain/daily_providers.dart';
 import '../../features/onboarding/data/profile_repository.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../logging/app_logger.dart';
+import '../feed/feed_service.dart';
 import 'app_config_service.dart';
 import 'version_gate.dart';
 
@@ -18,19 +19,24 @@ class AnnouncementCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final announcement = ref.watch(appConfigProvider).announcement;
-    if (announcement == null) return const SizedBox.shrink();
-
     final prefs = ref.watch(sharedPreferencesProvider);
     // The home clock, so the card appears and goes on the minute like the
     // rāhu banner, rather than on the next rebuild.
     final now = ref.watch(clockProvider).toUtc();
-    if (!announcement.isLiveAt(
-      now,
-      dismissedId: prefs.getString(dismissedKey),
-    )) {
-      return const SizedBox.shrink();
-    }
+    final dismissed = prefs.getString(dismissedKey);
+
+    // The feed's notices once one has reached this phone; the config's single
+    // announcement only before then. The panel writes the same banner to
+    // both, for builds that predate the feed, so reading both would show it
+    // twice.
+    final feed = ref.watch(feedProvider).value;
+    final config = ref.watch(appConfigProvider).announcement;
+    final announcement = feed != null
+        ? feed.bannerAt(now, dismissedId: dismissed)
+        : config != null && config.isLiveAt(now, dismissedId: dismissed)
+        ? config
+        : null;
+    if (announcement == null) return const SizedBox.shrink();
 
     final locale = ref.watch(localeProvider);
     final link = announcement.link;

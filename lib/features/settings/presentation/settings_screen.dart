@@ -29,6 +29,7 @@ import '../../../core/notifications/notification_service.dart';
 import '../../onboarding/data/profile_repository.dart';
 import '../../compatibility/domain/compatibility_providers.dart';
 import '../../../core/ui/disclaimer.dart';
+import '../../feed/presentation/updates_screen.dart';
 
 /// Settings (KAN-30).
 ///
@@ -172,6 +173,12 @@ class SettingsScreen extends ConsumerWidget {
                     title: Text(l.settingsTerms),
                     trailing: const Icon(Icons.open_in_new, size: 18),
                     onTap: () => _open(context, _termsUrl),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.system_update_rounded),
+                    title: Text(l.updatesTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => UpdatesScreen.open(context),
                   ),
                   // Not a nicety. The Swiss Ephemeris is used under the AGPL,
                   // which obliges us to offer the source to whoever receives

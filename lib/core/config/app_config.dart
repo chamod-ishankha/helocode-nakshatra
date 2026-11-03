@@ -24,6 +24,7 @@ class AppConfig {
     required this.announcement,
     required this.switches,
     required this.contentVersion,
+    this.feedVersion = 0,
   });
 
   /// What the app runs on with no config: no gate, no notice, all on.
@@ -43,6 +44,10 @@ class AppConfig {
   /// The content bundle version the app should hold; 0 = bundled only.
   final int contentVersion;
 
+  /// The notices and release notes feed to hold (`feed/{n}`); 0 = none
+  /// published yet, and the bundled release notes stand alone.
+  final int feedVersion;
+
   VersionGate gateFor(Flavor flavor) => versions[flavor] ?? VersionGate.none;
 
   static AppConfig fromJson(Map<String, dynamic> json) {
@@ -61,6 +66,7 @@ class AppConfig {
     final rawAnnouncement = json['announcement'];
     final rawSwitches = json['switches'];
     final rawContent = json['content'];
+    final rawFeed = json['feed'];
     return AppConfig(
       publishedAt: _date(json['publishedAt']),
       versions: versions,
@@ -71,6 +77,7 @@ class AppConfig {
           ? Switches.fromJson(Map<String, dynamic>.from(rawSwitches))
           : Switches.allOn,
       contentVersion: rawContent is Map ? _int(rawContent['latest']) : 0,
+      feedVersion: rawFeed is Map ? _int(rawFeed['latest']) : 0,
     );
   }
 
@@ -83,6 +90,7 @@ class AppConfig {
     'announcement': announcement?.toJson(),
     'switches': switches.toJson(),
     'content': {'latest': contentVersion},
+    'feed': {'latest': feedVersion},
   };
 }
 
@@ -310,4 +318,13 @@ String? _url(Object? v) {
 DateTime? _date(Object? v) {
   if (v is! String) return null;
   return DateTime.tryParse(v)?.toUtc();
+}
+
+/// The same forgiving readers, for the feed (`lib/core/feed`), which carries
+/// the same shapes of date and link.
+DateTime? configDate(Object? v) => _date(v);
+
+Uri? configLink(Object? v) {
+  final url = _url(v);
+  return url == null ? null : Uri.tryParse(url);
 }

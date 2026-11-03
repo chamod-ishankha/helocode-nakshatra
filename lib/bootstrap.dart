@@ -6,6 +6,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'core/feed/feed_service.dart';
+import 'core/whats_new/whats_new.dart';
 import 'core/ads/ad_gate.dart';
 import 'core/ads/ads_service.dart';
 import 'core/ads/interstitial.dart';
@@ -83,6 +85,15 @@ Future<void> bootstrap(Flavor flavor) async {
     CrashReporter.record(e, s);
   }
 
+  // Once per launch and before the first frame: whether Home opens with
+  // "What's new". A profile already here on the first run of this code means
+  // an update, not an install.
+  final whatsNew = await WhatsNew.noteLaunch(
+    prefs,
+    build: await WhatsNew.currentBuild(),
+    hadProfile: startingProfile != null,
+  );
+
   // Firebase is awaited too, but it can never fail the launch: initialize()
   // swallows everything and leaves isAvailable false. A build with no
   // google-services.json, or a phone with no signal, still gets a fully
@@ -131,6 +142,7 @@ Future<void> bootstrap(Flavor flavor) async {
       appDatabaseProvider.overrideWithValue(database),
       initialProfileProvider.overrideWithValue(startingProfile),
       appLaunchedAtProvider.overrideWithValue(launchedAt),
+      whatsNewThisLaunchProvider.overrideWithValue(whatsNew),
       // The real rewarded ad. Defaults to "not earned" so tests and any
       // build without the SDK never hand out an unlock for free.
       rewardedPresenterProvider.overrideWithValue(AdsService.showRewarded),
@@ -166,6 +178,10 @@ Future<void> bootstrap(Flavor flavor) async {
   // start a newer bundle's download only once someone is already reading the
   // old copy. It loads from local storage and fetches in the background.
   container.read(contentBundleProvider);
+
+  // Likewise for the notices and release notes feed: it listens for its own
+  // pointer in the config, and Home's buttons read it.
+  container.read(feedProvider);
 
   // If this install has no profile but the account has a backup, recover it so
   // a reinstall skips onboarding. Failure here is silent and simply means the

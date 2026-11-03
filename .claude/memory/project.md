@@ -68,7 +68,7 @@ that is only ever `read` never fires.
 | `docs/play-listing.md` | Listing copy in three languages, declarations, content rating |
 | `docs/play-monetisation.md` | Console procedure for selling, in dependency order |
 | `docs/play-data-safety.md` | What the app collects and what to declare |
-| `docs/release-notes/` | One file per version, in Play's tagged format |
+| `assets/release-notes/` | One file per version, in Play's tagged format; pasted into Play and shown in the app's What's new |
 | `assets/data/places/README.md` | The bundled worldwide place data and its licence |
 
 ## What it took to get here

@@ -87,7 +87,7 @@ class _BlockedScreen extends ConsumerWidget {
                 : message,
             action: (
               label: l.updateOpenStore,
-              onPressed: () => _openStore(gate.storeUrl),
+              onPressed: () => openStore(gate.storeUrl),
             ),
           ),
         ),
@@ -96,7 +96,8 @@ class _BlockedScreen extends ConsumerWidget {
   }
 }
 
-Future<void> _openStore(String url) async {
+/// The store listing, outside the app. Also the Updates screen's Update.
+Future<void> openStore(String url) async {
   final uri = Uri.tryParse(url);
   if (uri == null) return;
   try {
@@ -135,7 +136,7 @@ class UpdateAvailableCard extends ConsumerWidget {
       title: l.updateAvailableTitle,
       body: l.updateAvailableBody,
       actionLabel: l.updateOpenStore,
-      onAction: () => _openStore(gate.storeUrl),
+      onAction: () => openStore(gate.storeUrl),
       onDismiss: () async {
         await prefs.setInt(_dismissedKey, gate.latestBuild);
         ref.invalidate(gateVerdictProvider);

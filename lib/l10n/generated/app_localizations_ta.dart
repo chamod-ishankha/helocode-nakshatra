@@ -1775,5 +1775,39 @@ class L10nTa extends L10n {
   String get reminderPromptNeverAsk => 'மீண்டும் கேட்க வேண்டாம்';
 
   @override
+  String get whatsNewTitle => 'புதியவை';
+
+  @override
+  String get whatsNewSeeAll => 'அனைத்தையும் காண்க';
+
+  @override
+  String get noticesTitle => 'அறிவிப்புகள்';
+
+  @override
+  String get noticesHint => 'நக்ஷத்ராவின் செய்திகளும் அறிவிப்புகளும்';
+
+  @override
+  String get noticesEmpty =>
+      'இன்னும் அறிவிப்புகள் இல்லை. செயலி பற்றிய செய்திகள் இங்கே தோன்றும்.';
+
+  @override
+  String get updatesTitle => 'புதுப்பிப்புகள்';
+
+  @override
+  String get updatesHint => 'ஒவ்வொரு பதிப்பிலும் மாறியவை';
+
+  @override
+  String get updatesAvailable => 'புதுப்பிப்பு உள்ளது';
+
+  @override
+  String get updatesYourVersion => 'உங்கள் பதிப்பு';
+
+  @override
+  String get updatesEarlier => 'முந்தையவை';
+
+  @override
+  String get feedUnread => 'புதியது';
+
+  @override
   String get announcementOpenLink => 'மேலும் படிக்க';
 }

@@ -508,5 +508,16 @@
   "reminderPromptBody": "සෑම උදෑසනකම දවසේ රාහු කාලය ද, පොහොය දින සහ උත්සව නියමිත වේලාවට ද ලැබීමට දැනුම්දීම්වලට ඉඩ දෙන්න.",
   "reminderPromptEnable": "සක්‍රිය කරන්න",
   "reminderPromptNeverAsk": "නැවත අසන්න එපා",
+  "whatsNewTitle": "අලුතින් ඇති දේ",
+  "whatsNewSeeAll": "සියල්ල බලන්න",
+  "noticesTitle": "නිවේදන",
+  "noticesHint": "නක්ෂත්‍ර වෙතින් පුවත් සහ නිවේදන",
+  "noticesEmpty": "තවම නිවේදන නැත. යෙදුම ගැන පුවත් මෙහි පෙන්වයි.",
+  "updatesTitle": "යාවත්කාලීන",
+  "updatesHint": "එක් එක් අනුවාදයේ වෙනස් වූ දේ",
+  "updatesAvailable": "යාවත්කාලීනයක් ඇත",
+  "updatesYourVersion": "ඔබේ අනුවාදය",
+  "updatesEarlier": "පෙර",
+  "feedUnread": "අලුත්",
   "announcementOpenLink": "තව කියවන්න"
 }

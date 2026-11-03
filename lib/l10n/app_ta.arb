@@ -494,5 +494,9 @@
   "updateOpenStore": "Google Play ஐத் திறக்கவும்",
   "updateAvailableTitle": "புதிய பதிப்பு உள்ளது",
   "updateAvailableBody": "சமீபத்திய திருத்தங்களுக்கு Google Play இலிருந்து புதுப்பிக்கவும்.",
+  "reminderPromptTitle": "நினைவூட்டல்களை இயக்கவும்",
+  "reminderPromptBody": "ஒவ்வொரு காலையும் அன்றைய ராகு காலத்தையும், போயா நாட்களையும் பண்டிகைகளையும் உரிய நேரத்திலும் பெற அறிவிப்புகளை அனுமதிக்கவும்.",
+  "reminderPromptEnable": "இயக்கு",
+  "reminderPromptNeverAsk": "மீண்டும் கேட்க வேண்டாம்",
   "announcementOpenLink": "மேலும் படிக்க"
 }

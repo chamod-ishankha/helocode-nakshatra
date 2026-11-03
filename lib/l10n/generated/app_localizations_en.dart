@@ -1726,5 +1726,18 @@ class L10nEn extends L10n {
       'Update from Google Play for the latest fixes.';
 
   @override
+  String get reminderPromptTitle => 'Turn on reminders';
+
+  @override
+  String get reminderPromptBody =>
+      'Allow notifications to get the day\'s rāhu kālaya each morning, and poya days and festivals on time.';
+
+  @override
+  String get reminderPromptEnable => 'Enable';
+
+  @override
+  String get reminderPromptNeverAsk => 'Don\'t ask again';
+
+  @override
   String get announcementOpenLink => 'Read more';
 }

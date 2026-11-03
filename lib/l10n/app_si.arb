@@ -494,5 +494,9 @@
   "updateOpenStore": "Google Play විවෘත කරන්න",
   "updateAvailableTitle": "නව අනුවාදයක් ඇත",
   "updateAvailableBody": "නවතම නිවැරදි කිරීම් සඳහා Google Play වෙතින් යාවත්කාලීන කරන්න.",
+  "reminderPromptTitle": "සිහිකැඳවීම් සක්‍රිය කරන්න",
+  "reminderPromptBody": "සෑම උදෑසනකම දවසේ රාහු කාලය ද, පොහොය දින සහ උත්සව නියමිත වේලාවට ද ලැබීමට දැනුම්දීම්වලට ඉඩ දෙන්න.",
+  "reminderPromptEnable": "සක්‍රිය කරන්න",
+  "reminderPromptNeverAsk": "නැවත අසන්න එපා",
   "announcementOpenLink": "තව කියවන්න"
 }

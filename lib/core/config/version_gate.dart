@@ -155,6 +155,7 @@ class NoticeCard extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.onDismiss,
+    this.footer,
   });
 
   final IconData icon;
@@ -163,6 +164,10 @@ class NoticeCard extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
   final Future<void> Function()? onDismiss;
+
+  /// Beside the action, at the start of the row: the reminder card's
+  /// "Don't ask again".
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -215,14 +220,17 @@ class NoticeCard extends StatelessWidget {
                 ),
             ],
           ),
-          if (actionLabel != null)
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: TextButton(
-                onPressed: onAction,
-                style: TextButton.styleFrom(foregroundColor: accent),
-                child: Text(actionLabel!),
-              ),
+          if (actionLabel != null || footer != null)
+            Row(
+              children: [
+                Expanded(child: footer ?? const SizedBox.shrink()),
+                if (actionLabel != null)
+                  TextButton(
+                    onPressed: onAction,
+                    style: TextButton.styleFrom(foregroundColor: accent),
+                    child: Text(actionLabel!),
+                  ),
+              ],
             ),
         ],
       ),

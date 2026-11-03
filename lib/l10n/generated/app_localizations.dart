@@ -3063,6 +3063,30 @@ abstract class L10n {
   /// **'Update from Google Play for the latest fixes.'**
   String get updateAvailableBody;
 
+  /// Card on Home asking to allow notifications for the reminders that are already on.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on reminders'**
+  String get reminderPromptTitle;
+
+  /// No description provided for @reminderPromptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications to get the day\'s rāhu kālaya each morning, and poya days and festivals on time.'**
+  String get reminderPromptBody;
+
+  /// No description provided for @reminderPromptEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get reminderPromptEnable;
+
+  /// No description provided for @reminderPromptNeverAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t ask again'**
+  String get reminderPromptNeverAsk;
+
   /// No description provided for @announcementOpenLink.
   ///
   /// In en, this message translates to:

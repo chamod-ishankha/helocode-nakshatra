@@ -1698,5 +1698,18 @@ class L10nSi extends L10n {
       'නවතම නිවැරදි කිරීම් සඳහා Google Play වෙතින් යාවත්කාලීන කරන්න.';
 
   @override
+  String get reminderPromptTitle => 'සිහිකැඳවීම් සක්‍රිය කරන්න';
+
+  @override
+  String get reminderPromptBody =>
+      'සෑම උදෑසනකම දවසේ රාහු කාලය ද, පොහොය දින සහ උත්සව නියමිත වේලාවට ද ලැබීමට දැනුම්දීම්වලට ඉඩ දෙන්න.';
+
+  @override
+  String get reminderPromptEnable => 'සක්‍රිය කරන්න';
+
+  @override
+  String get reminderPromptNeverAsk => 'නැවත අසන්න එපා';
+
+  @override
   String get announcementOpenLink => 'තව කියවන්න';
 }

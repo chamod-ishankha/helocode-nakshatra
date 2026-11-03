@@ -1725,5 +1725,18 @@ class L10nTa extends L10n {
       'சமீபத்திய திருத்தங்களுக்கு Google Play இலிருந்து புதுப்பிக்கவும்.';
 
   @override
+  String get reminderPromptTitle => 'நினைவூட்டல்களை இயக்கவும்';
+
+  @override
+  String get reminderPromptBody =>
+      'ஒவ்வொரு காலையும் அன்றைய ராகு காலத்தையும், போயா நாட்களையும் பண்டிகைகளையும் உரிய நேரத்திலும் பெற அறிவிப்புகளை அனுமதிக்கவும்.';
+
+  @override
+  String get reminderPromptEnable => 'இயக்கு';
+
+  @override
+  String get reminderPromptNeverAsk => 'மீண்டும் கேட்க வேண்டாம்';
+
+  @override
   String get announcementOpenLink => 'மேலும் படிக்க';
 }

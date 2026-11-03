@@ -18,6 +18,28 @@ import 'package:nakshatra/core/notifications/notification_service.dart';
 /// The decisions worth being sure about are the quiet ones: not firing a
 /// reminder into the past, not reminding about a poya that has gone, and not
 /// scheduling anything at all when the user has asked for nothing.
+
+/// Preferences with exactly the named switches on. The real defaults are all
+/// on; these tests are about what the planner does with each switch, so they
+/// say every one of them explicitly.
+NotificationPrefs only({
+  bool daily = false,
+  bool poya = false,
+  bool festival = false,
+  bool dasha = false,
+  bool transit = false,
+  int hour = 6,
+  int minute = 30,
+}) => NotificationPrefs(
+  daily: daily,
+  poya: poya,
+  festival: festival,
+  dasha: dasha,
+  transit: transit,
+  hour: hour,
+  minute: minute,
+);
+
 void main() {
   final strings = NotificationStrings(
     dailyTitle: 'Today',
@@ -105,7 +127,7 @@ void main() {
     test('fills the horizon, one a day', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
       );
 
       expect(planned, hasLength(NotificationService.horizonDays));
@@ -123,7 +145,7 @@ void main() {
     test('is at the configured time, not the default', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true, hour: 7, minute: 15),
+        prefs: only(daily: true, hour: 7, minute: 15),
       );
 
       expect(planned.first.at, DateTime(2026, 9, 9, 7, 15));
@@ -134,7 +156,7 @@ void main() {
       // to whoever just switched the setting on.
       final planned = plan(
         now: DateTime(2026, 9, 9, 9),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
       );
 
       expect(planned, hasLength(NotificationService.horizonDays - 1));
@@ -146,7 +168,7 @@ void main() {
       // repeating alarm: the times differ every day.
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
         rahuFor: (day) => TimeWindow(
           start: DateTime(day.year, day.month, day.day, day.day, 0),
           end: DateTime(day.year, day.month, day.day, day.day, 30),
@@ -162,7 +184,7 @@ void main() {
       // Better a reminder to open the app than a body that says "null".
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
         rahuFor: (_) => null,
       );
 
@@ -174,7 +196,7 @@ void main() {
       // notification instead of seven.
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
       );
 
       expect(planned.map((n) => n.id).toSet(), hasLength(planned.length));
@@ -185,7 +207,7 @@ void main() {
     test('lands the evening before', () {
       final planned = plan(
         now: DateTime(2026, 9, 20, 9),
-        prefs: const NotificationPrefs(poya: true),
+        prefs: only(poya: true),
         poyaDays: [poya],
       );
 
@@ -197,7 +219,7 @@ void main() {
     test('is not scheduled for a poya already past', () {
       final planned = plan(
         now: DateTime(2026, 9, 27, 9),
-        prefs: const NotificationPrefs(poya: true),
+        prefs: only(poya: true),
         poyaDays: [poya],
       );
 
@@ -209,7 +231,7 @@ void main() {
       // gets picked up when the app is next opened closer to the day.
       final planned = plan(
         now: DateTime(2026, 9, 9, 9),
-        prefs: const NotificationPrefs(poya: true),
+        prefs: only(poya: true),
         poyaDays: [poya],
       );
 
@@ -219,7 +241,7 @@ void main() {
     test('points at the poya, not at the evening it is announced', () {
       final planned = plan(
         now: DateTime(2026, 9, 20, 9),
-        prefs: const NotificationPrefs(poya: true),
+        prefs: only(poya: true),
         poyaDays: [poya],
       );
 
@@ -234,7 +256,7 @@ void main() {
     test('nothing is planned when both are off', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(),
+        prefs: only(),
         poyaDays: [poya],
       );
 
@@ -244,12 +266,12 @@ void main() {
     test('the two are independent', () {
       final dailyOnly = plan(
         now: DateTime(2026, 9, 20, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
         poyaDays: [poya],
       );
       final poyaOnly = plan(
         now: DateTime(2026, 9, 20, 5),
-        prefs: const NotificationPrefs(poya: true),
+        prefs: only(poya: true),
         poyaDays: [poya],
       );
 
@@ -260,7 +282,7 @@ void main() {
     test('daily and poya ids never collide', () {
       final planned = plan(
         now: DateTime(2026, 9, 20, 5),
-        prefs: const NotificationPrefs(daily: true, poya: true),
+        prefs: only(daily: true, poya: true),
         poyaDays: [poya],
       );
 
@@ -272,7 +294,7 @@ void main() {
     test('round-trips the day the notification is about', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
       );
 
       expect(
@@ -313,11 +335,21 @@ void main() {
       expect(prefs.minute, 0);
     });
 
-    test('an empty record is everything off', () {
-      const prefs = NotificationPrefs();
+    test('a stored record with nothing in it is everything off', () {
+      // A record on disk is a reader's own choice, made before a kind
+      // existed; the on-by-default must not override it.
+      expect(NotificationPrefs.fromJson(const {}).anyEnabled, isFalse);
+    });
 
-      expect(prefs.anyEnabled, isFalse);
-      expect(NotificationPrefs.fromJson(const {}), prefs);
+    test('a reader who never chose gets every reminder on', () {
+      const prefs = NotificationPrefs();
+      expect([
+        prefs.daily,
+        prefs.poya,
+        prefs.festival,
+        prefs.dasha,
+        prefs.transit,
+      ], everyElement(isTrue));
     });
   });
 
@@ -327,7 +359,7 @@ void main() {
     test('fires the evening before, like the poya one', () {
       final planned = plan(
         now: DateTime(2026, 4, 10, 9),
-        prefs: const NotificationPrefs(festival: true),
+        prefs: only(festival: true),
         festivals: [ingress(newYear, 'Sinhala and Tamil New Year')],
       );
 
@@ -343,7 +375,7 @@ void main() {
       // nobody asked us about.
       final planned = plan(
         now: DateTime(2026, 12, 20, 9),
-        prefs: const NotificationPrefs(festival: true),
+        prefs: only(festival: true),
         festivals: [
           Festival(
             date: DateTime(2026, 12, 25),
@@ -363,7 +395,7 @@ void main() {
       // notifications on consecutive evenings.
       final planned = plan(
         now: DateTime(2026, 4, 10, 9),
-        prefs: const NotificationPrefs(festival: true),
+        prefs: only(festival: true),
         festivals: [
           ingress(newYear, 'Sinhala and Tamil New Year'),
           Festival(
@@ -382,7 +414,7 @@ void main() {
     test('a festival that has already gone is not scheduled', () {
       final planned = plan(
         now: DateTime(2026, 4, 15, 9),
-        prefs: const NotificationPrefs(festival: true),
+        prefs: only(festival: true),
         festivals: [ingress(newYear, 'Sinhala and Tamil New Year')],
       );
 
@@ -392,7 +424,7 @@ void main() {
     test('nothing is scheduled when the switch is off', () {
       final planned = plan(
         now: DateTime(2026, 4, 10, 9),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
         festivals: [ingress(newYear, 'Sinhala and Tamil New Year')],
       );
 
@@ -406,7 +438,7 @@ void main() {
       // arrives with the morning reminder rather than as a warning.
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(dasha: true, hour: 6, minute: 30),
+        prefs: only(dasha: true, hour: 6, minute: 30),
         dashaPeriods: [
           period(DashaLevel.maha, Graha.jupiter, DateTime(2026, 9, 12)),
         ],
@@ -426,7 +458,7 @@ void main() {
       // event under the smaller one.
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(dasha: true),
+        prefs: only(dasha: true),
         dashaPeriods: [
           period(DashaLevel.antara, Graha.jupiter, DateTime(2026, 9, 12)),
           period(DashaLevel.maha, Graha.jupiter, DateTime(2026, 9, 12)),
@@ -440,7 +472,7 @@ void main() {
     test('an antardaśā on its own still fires', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(dasha: true),
+        prefs: only(dasha: true),
         dashaPeriods: [
           period(DashaLevel.antara, Graha.venus, DateTime(2026, 9, 11)),
         ],
@@ -456,7 +488,7 @@ void main() {
       // being explicit about rather than assumed.
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(dasha: true),
+        prefs: only(dasha: true),
         dashaPeriods: [
           period(DashaLevel.maha, Graha.saturn, DateTime(2026, 10, 1)),
         ],
@@ -468,7 +500,7 @@ void main() {
     test('a period that began in the past is not announced', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(dasha: true),
+        prefs: only(dasha: true),
         dashaPeriods: [
           period(DashaLevel.maha, Graha.mars, DateTime(2024, 3, 3)),
         ],
@@ -480,7 +512,7 @@ void main() {
     test('nothing is scheduled when the switch is off', () {
       final planned = plan(
         now: DateTime(2026, 9, 9, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
         dashaPeriods: [
           period(DashaLevel.maha, Graha.jupiter, DateTime(2026, 9, 12)),
         ],
@@ -494,7 +526,7 @@ void main() {
     test('a sign change on a coming day is announced', () {
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         // Natal Moon in Aries, Saturn arriving in Leo: the fifth from it.
         natalMoon: Rasi.mesha,
         ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 9, 12))],
@@ -512,7 +544,7 @@ void main() {
       // house — worse than saying nothing, because it reads as authoritative.
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         natalMoon: Rasi.dhanu,
         ingresses: [moves(Graha.jupiter, Rasi.mesha, DateTime(2026, 9, 12))],
       );
@@ -527,7 +559,7 @@ void main() {
       // for and not saying it.
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         natalMoon: Rasi.mesha,
         ingresses: [moves(Graha.saturn, Rasi.meena, DateTime(2026, 9, 12))],
       );
@@ -540,7 +572,7 @@ void main() {
       // for it would invent a phase that does not exist.
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         natalMoon: Rasi.mesha,
         ingresses: [moves(Graha.jupiter, Rasi.meena, DateTime(2026, 9, 12))],
       );
@@ -554,7 +586,7 @@ void main() {
       // and the plugin would keep only the second.
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         ingresses: [
           moves(Graha.rahu, Rasi.karka, DateTime(2026, 9, 12)),
           moves(Graha.ketu, Rasi.makara, DateTime(2026, 9, 12)),
@@ -570,7 +602,7 @@ void main() {
       // because of the house, so without one there is nothing to say.
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         natalMoon: null,
         ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 9, 12))],
       );
@@ -581,7 +613,7 @@ void main() {
     test('a sign change beyond the horizon waits for the next launch', () {
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(transit: true),
+        prefs: only(transit: true),
         ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 10, 20))],
       );
 
@@ -591,7 +623,7 @@ void main() {
     test('the switch being off silences it', () {
       final planned = plan(
         now: DateTime(2026, 9, 10, 5),
-        prefs: const NotificationPrefs(daily: true),
+        prefs: only(daily: true),
         ingresses: [moves(Graha.saturn, Rasi.simha, DateTime(2026, 9, 12))],
       );
 
@@ -605,7 +637,7 @@ void main() {
       // would mean a festival reminder silently overwriting that day's nekath.
       final planned = plan(
         now: DateTime(2026, 4, 13, 5),
-        prefs: const NotificationPrefs(
+        prefs: only(
           daily: true,
           poya: true,
           festival: true,

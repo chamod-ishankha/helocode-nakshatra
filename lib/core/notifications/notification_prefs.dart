@@ -9,25 +9,29 @@ import '../../features/onboarding/data/profile_repository.dart';
 /// who only cares about poya days should not have to take a notification every
 /// morning to get one.
 ///
-/// All five are off by default, and that matters more with five than it did
-/// with two: every extra kind is another reason to turn the lot off, so none
-/// of them may arrive unasked.
+/// All five are **on** by default. They used to be off, reachable only from
+/// Settings, and almost nobody found them: in November 2026 one monthly user
+/// in five came back within a week, for an app whose reason to exist is
+/// today's rāhu kālaya. The morning reminder is what brings a reader back,
+/// so the owner turned them on.
+///
+/// "On" is a default, not a decision taken for the reader. Android 13 will
+/// not deliver anything until the reader grants the permission, so Home
+/// carries a card asking for it ([ReminderPrompt]) for as long as it is
+/// missing. Anyone who has ever saved a choice keeps it — only the
+/// never-touched default moved.
 class NotificationPrefs {
   const NotificationPrefs({
-    this.daily = false,
-    this.poya = false,
-    this.festival = false,
-    this.dasha = false,
-    this.transit = false,
+    this.daily = true,
+    this.poya = true,
+    this.festival = true,
+    this.dasha = true,
+    this.transit = true,
     this.hour = 6,
     this.minute = 30,
   });
 
-  /// The morning nekath summary.
-  ///
-  /// Off by default. A notification the user did not ask for is the fastest
-  /// way to be uninstalled, and Android 13 will not deliver one until they
-  /// have granted the permission anyway.
+  /// The morning nekath summary — the reminder that matters most.
   final bool daily;
 
   /// The evening before a poya.
@@ -94,9 +98,10 @@ class NotificationPrefs {
       NotificationPrefs(
         daily: json['daily'] as bool? ?? false,
         poya: json['poya'] as bool? ?? false,
-        // Absent in anything written before KAN-63, and absent means off —
-        // an upgrade must not start sending a kind of notification the user
-        // never agreed to.
+        // Absent in anything written before KAN-63, and absent means off.
+        // A stored record is a reader's own choice, made when this kind did
+        // not exist; the on-by-default applies only to readers who never
+        // saved one.
         festival: json['festival'] as bool? ?? false,
         dasha: json['dasha'] as bool? ?? false,
         // Likewise absent before KAN-65, and likewise off.

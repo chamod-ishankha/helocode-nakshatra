@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -91,10 +92,11 @@ abstract final class NotificationService {
 
   /// Asks for the Android 13 runtime permission.
   ///
-  /// Called when the user turns a reminder on, not at launch. Onboarding is
-  /// already the highest drop-off surface in the app; a permission dialog in
-  /// front of a benefit nobody has felt yet is refused and then cannot be
-  /// asked again.
+  /// Called when the user turns a reminder on, and from the reminder card on
+  /// Home (ReminderPrompt) once the reader taps Enable — never on its own and
+  /// never during onboarding, the highest drop-off surface in the app, where
+  /// a dialog in front of a benefit nobody has felt yet is refused and then
+  /// cannot be asked again.
   static Future<bool> requestPermission() async {
     final android = _plugin
         ?.resolvePlatformSpecificImplementation<
@@ -107,6 +109,37 @@ abstract final class NotificationService {
     } on Object catch (e) {
       AppLogger.warn('Could not ask for notification permission: $e');
       return false;
+    }
+  }
+
+  /// Whether notifications can reach the reader right now: the Android 13
+  /// permission, or the app's switch in system settings on older versions.
+  ///
+  /// Unknown counts as allowed, so a plugin that failed to start does not
+  /// put a card on Home asking for something the app cannot use anyway.
+  static Future<bool> areEnabled() async {
+    final android = _plugin
+        ?.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) return true;
+    try {
+      return await android.areNotificationsEnabled() ?? true;
+    } on Object catch (e) {
+      AppLogger.warn('Could not read notification permission: $e');
+      return true;
+    }
+  }
+
+  static const _settings = MethodChannel('io.helocode.nakshatra/settings');
+
+  /// Opens this app's notification page in system settings — the only way
+  /// back once Android has stopped showing the permission dialog.
+  static Future<void> openSettings() async {
+    try {
+      await _settings.invokeMethod<void>('openNotificationSettings');
+    } on Object catch (e) {
+      AppLogger.warn('Could not open notification settings: $e');
     }
   }
 

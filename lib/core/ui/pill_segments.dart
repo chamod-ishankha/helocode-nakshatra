@@ -24,7 +24,7 @@ class PillSegments<T> extends StatelessWidget {
   final T selected;
   final ValueChanged<T> onChanged;
 
-  /// Segments with something unread, marked with a gold dot.
+  /// Segments with something unread, marked with a red dot.
   final Set<T> dotted;
 
   /// What the dot says to a screen reader.
@@ -107,7 +107,8 @@ class PillSegments<T> extends StatelessWidget {
   }
 }
 
-/// The gold dot that says there is something not yet opened.
+/// The red dot that says there is something not yet opened, the same one
+/// the tab bar uses.
 class UnreadDot extends StatelessWidget {
   const UnreadDot({this.label, super.key});
 
@@ -121,7 +122,7 @@ class UnreadDot extends StatelessWidget {
       width: 9,
       height: 9,
       decoration: BoxDecoration(
-        color: context.semantic.accent,
+        color: context.semantic.inauspicious,
         shape: BoxShape.circle,
       ),
     ),

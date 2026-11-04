@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nakshatra/core/config/app_config.dart';
+import 'package:nakshatra/core/config/app_config_service.dart';
 import 'package:nakshatra/core/config/app_locale.dart';
 import 'package:nakshatra/core/config/flavor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The config the admin panel publishes, as the app reads it (KAN-49).
 ///
@@ -119,6 +121,52 @@ void main() {
         );
       },
     );
+  });
+
+  group('how often a phone asks again', () {
+    final now = DateTime(2026, 11, 5, 12);
+
+    Future<AppConfigService> fetchedAgo(Duration ago, Flavor flavor) async {
+      SharedPreferences.setMockInitialValues({
+        'app_config.fetched_at': now.subtract(ago).millisecondsSinceEpoch,
+      });
+      return AppConfigService(
+        prefs: await SharedPreferences.getInstance(),
+        flavor: flavor,
+        clock: () => now,
+      );
+    }
+
+    test(
+      'prod within three hours: this is how fast a block can land',
+      () async {
+        final justUnder = await fetchedAgo(
+          const Duration(hours: 2, minutes: 59),
+          Flavor.prod,
+        );
+        expect(justUnder.isStale, isFalse);
+        final justOver = await fetchedAgo(
+          const Duration(hours: 3, minutes: 1),
+          Flavor.prod,
+        );
+        expect(justOver.isStale, isTrue);
+      },
+    );
+
+    test('dev within a minute, so a publish can be seen at once', () async {
+      final service = await fetchedAgo(const Duration(minutes: 2), Flavor.dev);
+      expect(service.isStale, isTrue);
+    });
+
+    test('a phone that has never asked asks now', () async {
+      SharedPreferences.setMockInitialValues({});
+      final service = AppConfigService(
+        prefs: await SharedPreferences.getInstance(),
+        flavor: Flavor.prod,
+        clock: () => now,
+      );
+      expect(service.isStale, isTrue);
+    });
   });
 
   group('parsing is forgiving', () {

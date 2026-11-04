@@ -19,10 +19,14 @@ import 'flavor.dart';
 ///
 /// ## The Firestore budget
 ///
-/// One read per fetch, and a fetch at most once a day in prod. That is the
-/// one read that scales with users, and at Spark's 50k/day it is the ceiling
-/// on daily active users this design can serve — see FRD §7, which names the
-/// Cloudflare Pages fallback for the day that ceiling is reached.
+/// One read per fetch, and a fetch at most once in three hours in prod. That
+/// is the one read that scales with users, and at Spark's 50k/day it is the
+/// ceiling on daily active users this design can serve — see FRD §7, which
+/// names the Cloudflare Pages fallback for the day that ceiling is reached.
+///
+/// Three hours rather than a day because this document carries the version
+/// gate: a day meant an emergency block could take a day to reach a phone.
+/// Lengthen it again before that ceiling comes near.
 ///
 /// Dev refetches every minute so a publish can be seen without reinstalling.
 class AppConfigService {
@@ -46,7 +50,7 @@ class AppConfigService {
   static const _fetchedAtKey = 'app_config.fetched_at';
 
   Duration get _maxAge =>
-      _flavor.isDev ? const Duration(minutes: 1) : const Duration(hours: 24);
+      _flavor.isDev ? const Duration(minutes: 1) : const Duration(hours: 3);
 
   /// What is cached on this phone, parsed. [AppConfig.none] if nothing is.
   AppConfig cached() {

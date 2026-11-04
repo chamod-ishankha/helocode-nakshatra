@@ -12,22 +12,17 @@ import '../../../core/theme/brand_palette.dart';
 import '../../../core/ui/brand_card.dart';
 import '../../../core/ui/info_notice.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import 'feed_page.dart';
 
 /// Everything the app has told its readers, newest first — including the
-/// banners that have long since left Home.
-class NoticesScreen extends ConsumerStatefulWidget {
-  const NoticesScreen({super.key});
-
-  static Future<void> open(BuildContext context) => Navigator.of(
-    context,
-  ).push(MaterialPageRoute<void>(builder: (_) => const NoticesScreen()));
+/// banners that have long since left Home. The Notices tab of [InboxScreen].
+class NoticesTab extends ConsumerStatefulWidget {
+  const NoticesTab({super.key});
 
   @override
-  ConsumerState<NoticesScreen> createState() => _NoticesScreenState();
+  ConsumerState<NoticesTab> createState() => _NoticesTabState();
 }
 
-class _NoticesScreenState extends ConsumerState<NoticesScreen> {
+class _NoticesTabState extends ConsumerState<NoticesTab> {
   @override
   void initState() {
     super.initState();
@@ -39,18 +34,17 @@ class _NoticesScreenState extends ConsumerState<NoticesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l = L10n.of(context);
     final notices = ref.watch(noticesProvider);
-    return FeedPage(
-      title: l.noticesTitle,
+    if (notices.isEmpty) {
+      return QuietNotice(text: L10n.of(context).noticesEmpty);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (notices.isEmpty)
-          QuietNotice(text: l.noticesEmpty)
-        else
-          for (final notice in notices) ...[
-            _NoticeTile(notice: notice),
-            const SizedBox(height: AppSpacing.md),
-          ],
+        for (final notice in notices) ...[
+          _NoticeTile(notice: notice),
+          const SizedBox(height: AppSpacing.md),
+        ],
       ],
     );
   }

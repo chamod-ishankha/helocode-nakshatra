@@ -3165,12 +3165,6 @@ abstract class L10n {
   /// **'Notices'**
   String get noticesTitle;
 
-  /// No description provided for @noticesHint.
-  ///
-  /// In en, this message translates to:
-  /// **'News and announcements from Nakshatra'**
-  String get noticesHint;
-
   /// No description provided for @noticesEmpty.
   ///
   /// In en, this message translates to:
@@ -3182,12 +3176,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Updates'**
   String get updatesTitle;
-
-  /// No description provided for @updatesHint.
-  ///
-  /// In en, this message translates to:
-  /// **'What changed in each version'**
-  String get updatesHint;
 
   /// No description provided for @updatesAvailable.
   ///
@@ -3212,6 +3200,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'New'**
   String get feedUnread;
+
+  /// No description provided for @inboxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices & updates'**
+  String get inboxTitle;
+
+  /// No description provided for @updateAvailableVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available'**
+  String updateAvailableVersion(String version);
+
+  /// No description provided for @updateSeeWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'See what\'s new'**
+  String get updateSeeWhatsNew;
 
   /// No description provided for @announcementOpenLink.
   ///

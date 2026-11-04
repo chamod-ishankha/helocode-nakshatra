@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/config/app_config_service.dart';
 import '../../../core/config/app_locale.dart';
 import '../../../core/config/flavor.dart';
@@ -19,28 +18,28 @@ import 'feed_page.dart';
 ///
 /// A reader on an old build sees what the newer one brings before being
 /// asked to fetch it — the reason to update, next to the button that does.
-/// Reached from Home's Updates button, the one-time What's new card and More.
-class UpdatesScreen extends ConsumerStatefulWidget {
-  const UpdatesScreen({super.key});
-
-  static Future<void> open(BuildContext context) => Navigator.of(
-    context,
-  ).push(MaterialPageRoute<void>(builder: (_) => const UpdatesScreen()));
+/// The Updates tab of [InboxScreen].
+class UpdatesTab extends ConsumerStatefulWidget {
+  const UpdatesTab({super.key});
 
   @override
-  ConsumerState<UpdatesScreen> createState() => _UpdatesScreenState();
+  ConsumerState<UpdatesTab> createState() => _UpdatesTabState();
 }
 
-class _UpdatesScreenState extends ConsumerState<UpdatesScreen> {
+class _UpdatesTabState extends ConsumerState<UpdatesTab> {
   @override
   void initState() {
     super.initState();
-    // Opening it is reading it: the dot on Home goes.
+    // Opening it is reading it: the dot goes, including for an update the
+    // reader has now seen and chosen not to take yet.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref
           .read(feedSeenProvider.notifier)
-          .sawUpdates(ref.read(releaseNotesProvider));
+          .sawUpdates(
+            ref.read(releaseNotesProvider),
+            offer: ref.read(offeredUpdateProvider),
+          );
     });
   }
 
@@ -49,8 +48,7 @@ class _UpdatesScreenState extends ConsumerState<UpdatesScreen> {
     final l = L10n.of(context);
     final notes = ref.watch(releaseNotesProvider);
     final current = ref.watch(currentReleaseBuildProvider);
-    final updateAvailable =
-        ref.watch(gateVerdictProvider) == GateVerdict.updateAvailable;
+    final updateAvailable = ref.watch(offeredUpdateProvider) != null;
     final storeUrl = ref
         .watch(appConfigProvider)
         .gateFor(FlavorConfig.current.flavor)
@@ -67,8 +65,8 @@ class _UpdatesScreenState extends ConsumerState<UpdatesScreen> {
         ? notes
         : notes.where((n) => n.build < current).toList();
 
-    return FeedPage(
-      title: l.updatesTitle,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (updateAvailable || newer.isNotEmpty) ...[
           BrandCard(

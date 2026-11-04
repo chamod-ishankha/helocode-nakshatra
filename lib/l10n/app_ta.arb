@@ -511,13 +511,14 @@
   "whatsNewTitle": "புதியவை",
   "whatsNewSeeAll": "அனைத்தையும் காண்க",
   "noticesTitle": "அறிவிப்புகள்",
-  "noticesHint": "நக்ஷத்ராவின் செய்திகளும் அறிவிப்புகளும்",
   "noticesEmpty": "இன்னும் அறிவிப்புகள் இல்லை. செயலி பற்றிய செய்திகள் இங்கே தோன்றும்.",
   "updatesTitle": "புதுப்பிப்புகள்",
-  "updatesHint": "ஒவ்வொரு பதிப்பிலும் மாறியவை",
   "updatesAvailable": "புதுப்பிப்பு உள்ளது",
   "updatesYourVersion": "உங்கள் பதிப்பு",
   "updatesEarlier": "முந்தையவை",
   "feedUnread": "புதியது",
+  "inboxTitle": "அறிவிப்புகள் & புதுப்பிப்புகள்",
+  "updateAvailableVersion": "பதிப்பு {version} கிடைக்கிறது",
+  "updateSeeWhatsNew": "புதியவற்றைக் காண்க",
   "announcementOpenLink": "மேலும் படிக்க"
 }

@@ -511,13 +511,14 @@
   "whatsNewTitle": "අලුතින් ඇති දේ",
   "whatsNewSeeAll": "සියල්ල බලන්න",
   "noticesTitle": "නිවේදන",
-  "noticesHint": "නක්ෂත්‍ර වෙතින් පුවත් සහ නිවේදන",
   "noticesEmpty": "තවම නිවේදන නැත. යෙදුම ගැන පුවත් මෙහි පෙන්වයි.",
   "updatesTitle": "යාවත්කාලීන",
-  "updatesHint": "එක් එක් අනුවාදයේ වෙනස් වූ දේ",
   "updatesAvailable": "යාවත්කාලීනයක් ඇත",
   "updatesYourVersion": "ඔබේ අනුවාදය",
   "updatesEarlier": "පෙර",
   "feedUnread": "අලුත්",
+  "inboxTitle": "නිවේදන සහ යාවත්කාලීන",
+  "updateAvailableVersion": "{version} අනුවාදය ලැබී ඇත",
+  "updateSeeWhatsNew": "අලුත් දේ බලන්න",
   "announcementOpenLink": "තව කියවන්න"
 }

@@ -107,44 +107,6 @@ Future<void> openStore(String url) async {
   }
 }
 
-/// "A newer version is available", once per published latest build.
-///
-/// A card, not a dialog: it sits under the date row on Home and is read in
-/// passing. Dismissing it remembers the build it was for, so the next
-/// publish with a higher latest shows it again.
-class UpdateAvailableCard extends ConsumerWidget {
-  const UpdateAvailableCard({super.key});
-
-  static const _dismissedKey = 'update_available.dismissed_build';
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (ref.watch(gateVerdictProvider) != GateVerdict.updateAvailable) {
-      return const SizedBox.shrink();
-    }
-    final gate = ref
-        .watch(appConfigProvider)
-        .gateFor(FlavorConfig.current.flavor);
-    final prefs = ref.watch(sharedPreferencesProvider);
-    if (prefs.getInt(_dismissedKey) == gate.latestBuild) {
-      return const SizedBox.shrink();
-    }
-
-    final l = L10n.of(context);
-    return NoticeCard(
-      icon: Icons.system_update_rounded,
-      title: l.updateAvailableTitle,
-      body: l.updateAvailableBody,
-      actionLabel: l.updateOpenStore,
-      onAction: () => openStore(gate.storeUrl),
-      onDismiss: () async {
-        await prefs.setInt(_dismissedKey, gate.latestBuild);
-        ref.invalidate(gateVerdictProvider);
-      },
-    );
-  }
-}
-
 /// A dismissible notice on Home: the update suggestion and the announcement
 /// share it, so the two look like the same kind of thing.
 class NoticeCard extends StatelessWidget {

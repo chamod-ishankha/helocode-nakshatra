@@ -3,16 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/data/profile_repository.dart';
 import '../config/app_config.dart';
+import '../config/app_config_service.dart';
+import '../config/flavor.dart';
 import '../config/version_gate.dart';
 import '../whats_new/whats_new.dart';
 import 'feed.dart';
 import 'feed_service.dart';
 
-/// What the reader has seen of the feed, and so whether Home's Notices and
-/// Updates buttons carry a dot.
+/// What the reader has seen of the feed, and so whether Home's bell and the
+/// Notices and Updates tabs behind it carry a dot.
 abstract final class FeedReads {
   static const noticesSeenKey = 'feed.notices_seen_at_v1';
   static const updatesSeenKey = 'feed.updates_seen_build_v1';
+  static const updateOfferSeenKey = 'feed.update_offer_seen_v1';
 
   /// The bundled notes with the published ones laid over them, newest first.
   ///
@@ -36,8 +39,13 @@ abstract final class FeedReads {
       notices.isNotEmpty &&
       (seenAt == null || notices.first.publishedAt.isAfter(seenAt));
 
-  /// An update to take, or a note for a build newer than the newest the
-  /// reader has looked at.
+  /// An update the reader has not looked at yet, or a note for a build newer
+  /// than the newest they have seen.
+  ///
+  /// [offeredUpdate] is the versionCode on offer, or null when there is no
+  /// update to take. Opening Updates clears the dot for that offer: a reader
+  /// who has chosen to wait should not be nagged by a dot that cannot go. The
+  /// next, higher offer lights it again.
   ///
   /// Never having opened Updates counts as having seen up to this build: a
   /// new reader is not told the history of an app they have just installed
@@ -46,14 +54,34 @@ abstract final class FeedReads {
     required List<ReleaseNote> notes,
     required int? seenBuild,
     required int? currentBuild,
-    required bool updateAvailable,
+    required int? offeredUpdate,
+    required int? seenOffer,
   }) {
-    if (updateAvailable) return true;
+    if (offeredUpdate != null && offeredUpdate != seenOffer) return true;
     if (notes.isEmpty) return false;
     final seen = seenBuild ?? currentBuild;
     return seen != null && notes.first.build > seen;
   }
+
+  /// The newest note for a build ahead of [currentBuild]: what Home's update
+  /// card can say about the update. Null when the panel has no note for it,
+  /// or the reader's build is unknown.
+  static ReleaseNote? noteAhead(List<ReleaseNote> notes, int? currentBuild) {
+    if (currentBuild == null || notes.isEmpty) return null;
+    return notes.first.build > currentBuild ? notes.first : null;
+  }
+
+  /// Which tab the bell opens on: whichever has something new, Notices when
+  /// both or neither do. Notices first because an update stays on offer and a
+  /// notice may not.
+  static InboxTab tabToOpen({
+    required bool noticesUnread,
+    required bool updatesUnread,
+  }) => !noticesUnread && updatesUnread ? InboxTab.updates : InboxTab.notices;
 }
+
+/// The two tabs behind Home's bell.
+enum InboxTab { notices, updates }
 
 /// The notes readers see: bundled, with the published feed laid over them.
 final releaseNotesProvider = Provider<List<ReleaseNote>>(
@@ -73,16 +101,19 @@ final currentReleaseBuildProvider = Provider<int?>((ref) {
   return code == null ? null : WhatsNew.releaseBuild(code);
 });
 
-class FeedSeen extends Notifier<({DateTime? noticesAt, int? updatesBuild})> {
+typedef FeedSeenState = ({DateTime? noticesAt, int? updatesBuild, int? offer});
+
+class FeedSeen extends Notifier<FeedSeenState> {
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
   @override
-  ({DateTime? noticesAt, int? updatesBuild}) build() {
+  FeedSeenState build() {
     final prefs = ref.watch(sharedPreferencesProvider);
     final at = prefs.getString(FeedReads.noticesSeenKey);
     return (
       noticesAt: at == null ? null : DateTime.tryParse(at),
       updatesBuild: prefs.getInt(FeedReads.updatesSeenKey),
+      offer: prefs.getInt(FeedReads.updateOfferSeenKey),
     );
   }
 
@@ -90,21 +121,39 @@ class FeedSeen extends Notifier<({DateTime? noticesAt, int? updatesBuild})> {
     if (notices.isEmpty) return;
     final newest = notices.first.publishedAt;
     await _prefs.setString(FeedReads.noticesSeenKey, newest.toIso8601String());
-    state = (noticesAt: newest, updatesBuild: state.updatesBuild);
+    state = (
+      noticesAt: newest,
+      updatesBuild: state.updatesBuild,
+      offer: state.offer,
+    );
   }
 
-  Future<void> sawUpdates(List<ReleaseNote> notes) async {
-    if (notes.isEmpty) return;
-    final newest = notes.first.build;
-    await _prefs.setInt(FeedReads.updatesSeenKey, newest);
-    state = (noticesAt: state.noticesAt, updatesBuild: newest);
+  Future<void> sawUpdates(List<ReleaseNote> notes, {int? offer}) async {
+    final newest = notes.firstOrNull?.build;
+    if (newest != null) await _prefs.setInt(FeedReads.updatesSeenKey, newest);
+    if (offer != null) await _prefs.setInt(FeedReads.updateOfferSeenKey, offer);
+    state = (
+      noticesAt: state.noticesAt,
+      updatesBuild: newest ?? state.updatesBuild,
+      offer: offer ?? state.offer,
+    );
   }
 }
 
-final feedSeenProvider =
-    NotifierProvider<FeedSeen, ({DateTime? noticesAt, int? updatesBuild})>(
-      FeedSeen.new,
-    );
+final feedSeenProvider = NotifierProvider<FeedSeen, FeedSeenState>(
+  FeedSeen.new,
+);
+
+/// The versionCode the panel offers beyond this build, or null.
+final offeredUpdateProvider = Provider<int?>((ref) {
+  if (ref.watch(gateVerdictProvider) != GateVerdict.updateAvailable) {
+    return null;
+  }
+  return ref
+      .watch(appConfigProvider)
+      .gateFor(FlavorConfig.current.flavor)
+      .latestBuild;
+});
 
 final noticesUnreadProvider = Provider<bool>(
   (ref) => FeedReads.noticesUnread(
@@ -118,7 +167,7 @@ final updatesUnreadProvider = Provider<bool>(
     notes: ref.watch(releaseNotesProvider),
     seenBuild: ref.watch(feedSeenProvider).updatesBuild,
     currentBuild: ref.watch(currentReleaseBuildProvider),
-    updateAvailable:
-        ref.watch(gateVerdictProvider) == GateVerdict.updateAvailable,
+    offeredUpdate: ref.watch(offeredUpdateProvider),
+    seenOffer: ref.watch(feedSeenProvider).offer,
   ),
 );

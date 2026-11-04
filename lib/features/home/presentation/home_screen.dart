@@ -27,11 +27,11 @@ import '../domain/daily_providers.dart';
 import '../domain/rahu_now.dart';
 import '../../../core/ui/state_views.dart';
 import '../../../core/config/announcement_card.dart';
-import '../../../core/config/version_gate.dart';
 import '../../../core/ui/disclaimer.dart';
 import '../../../core/notifications/reminder_permission_card.dart';
 import '../../feed/presentation/whats_new_card.dart';
-import 'feed_buttons.dart';
+import '../../feed/presentation/update_available_card.dart';
+import 'feed_bell.dart';
 
 /// Built at each use rather than once: a format made at first use keeps the
 /// language it was made in, so after switching to Tamil every time on the
@@ -172,9 +172,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Reminders are on, but nothing arrives until Android allows
                 // it (ReminderPrompt).
                 const ReminderPermissionCard(),
-                // Where the reader looks back at notices and each version's
-                // notes; the app has no notification tab to hold them.
-                gutter(const FeedButtons()),
                 if (dayLocked)
                   gutter(
                     RewardedUnlockCard(
@@ -253,18 +250,26 @@ class _Header extends ConsumerWidget {
                 toBeginningOfSentenceCase(when),
                 style: TextStyle(fontSize: 13, color: palette.muted),
               ),
-              Text(
-                DateFormat('EEEE').format(date),
-                style: BrandFonts.displayStyle(
-                  context,
-                  size: 28,
-                  color: palette.text,
+              // Shrinks rather than wraps: beside the chip and the bell, a
+              // Tamil or Sinhala weekday can be the widest thing in the row.
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  DateFormat('EEEE').format(date),
+                  style: BrandFonts.displayStyle(
+                    context,
+                    size: 28,
+                    color: palette.text,
+                  ),
                 ),
               ),
             ],
           ),
         ),
         if (days == 0) const _RahuChip(),
+        const SizedBox(width: 8),
+        const FeedBell(),
       ],
     );
   }

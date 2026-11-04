@@ -884,13 +884,15 @@
   "@whatsNewTitle": {"description": "Shown once on Home after an update, and as a row in More. The text itself comes from assets/release-notes."},
   "whatsNewSeeAll": "See all",
   "noticesTitle": "Notices",
-  "noticesHint": "News and announcements from Nakshatra",
   "noticesEmpty": "No notices yet. News about the app will appear here.",
   "updatesTitle": "Updates",
-  "updatesHint": "What changed in each version",
   "updatesAvailable": "Update available",
   "updatesYourVersion": "Your version",
   "updatesEarlier": "Earlier",
   "feedUnread": "New",
+  "inboxTitle": "Notices & updates",
+  "updateAvailableVersion": "Version {version} is available",
+  "@updateAvailableVersion": {"placeholders": {"version": {"type": "String"}}},
+  "updateSeeWhatsNew": "See what's new",
   "announcementOpenLink": "Read more"
 }

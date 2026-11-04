@@ -1757,16 +1757,10 @@ class L10nSi extends L10n {
   String get noticesTitle => 'නිවේදන';
 
   @override
-  String get noticesHint => 'නක්ෂත්‍ර වෙතින් පුවත් සහ නිවේදන';
-
-  @override
   String get noticesEmpty => 'තවම නිවේදන නැත. යෙදුම ගැන පුවත් මෙහි පෙන්වයි.';
 
   @override
   String get updatesTitle => 'යාවත්කාලීන';
-
-  @override
-  String get updatesHint => 'එක් එක් අනුවාදයේ වෙනස් වූ දේ';
 
   @override
   String get updatesAvailable => 'යාවත්කාලීනයක් ඇත';
@@ -1779,6 +1773,17 @@ class L10nSi extends L10n {
 
   @override
   String get feedUnread => 'අලුත්';
+
+  @override
+  String get inboxTitle => 'නිවේදන සහ යාවත්කාලීන';
+
+  @override
+  String updateAvailableVersion(String version) {
+    return '$version අනුවාදය ලැබී ඇත';
+  }
+
+  @override
+  String get updateSeeWhatsNew => 'අලුත් දේ බලන්න';
 
   @override
   String get announcementOpenLink => 'තව කියවන්න';

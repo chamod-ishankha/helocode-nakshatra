@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/brand_palette.dart';
+import '../theme/semantic_colors.dart';
 
 /// One choice of a [PillSegments].
 typedef PillSegment<T> = ({T value, String label});
@@ -15,11 +16,19 @@ class PillSegments<T> extends StatelessWidget {
     required this.segments,
     required this.selected,
     required this.onChanged,
+    this.dotted = const {},
+    this.dotLabel,
   });
 
   final List<PillSegment<T>> segments;
   final T selected;
   final ValueChanged<T> onChanged;
+
+  /// Segments with something unread, marked with a gold dot.
+  final Set<T> dotted;
+
+  /// What the dot says to a screen reader.
+  final String? dotLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -66,16 +75,27 @@ class PillSegments<T> extends StatelessWidget {
                             ]
                           : null,
                     ),
-                    child: Text(
-                      s.label,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: s.value == selected
-                            ? palette.text
-                            : palette.muted,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            s.label,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: s.value == selected
+                                  ? palette.text
+                                  : palette.muted,
+                            ),
+                          ),
+                        ),
+                        if (dotted.contains(s.value)) ...[
+                          const SizedBox(width: 6),
+                          UnreadDot(label: dotLabel),
+                        ],
+                      ],
                     ),
                   ),
                 ),
@@ -85,4 +105,25 @@ class PillSegments<T> extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The gold dot that says there is something not yet opened.
+class UnreadDot extends StatelessWidget {
+  const UnreadDot({this.label, super.key});
+
+  /// What it says to a screen reader; colour alone says nothing there.
+  final String? label;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    child: Container(
+      width: 9,
+      height: 9,
+      decoration: BoxDecoration(
+        color: context.semantic.accent,
+        shape: BoxShape.circle,
+      ),
+    ),
+  );
 }

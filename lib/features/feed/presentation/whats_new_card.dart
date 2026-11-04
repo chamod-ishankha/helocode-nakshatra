@@ -6,7 +6,7 @@ import '../../../core/config/version_gate.dart';
 import '../../../core/feed/feed_reads.dart';
 import '../../../core/whats_new/whats_new.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import 'updates_screen.dart';
+import 'inbox_screen.dart';
 
 /// Home's one-time "What's new" after an update ([WhatsNew]).
 ///
@@ -35,7 +35,7 @@ class WhatsNewCard extends ConsumerWidget {
       title: l.whatsNewTitle,
       body: note.forLocale(AppLocale.of(context)).take(2).join('\n\n'),
       actionLabel: l.whatsNewSeeAll,
-      onAction: () => UpdatesScreen.open(context),
+      onAction: () => InboxScreen.open(context, tab: InboxTab.updates),
       onDismiss: () async => ref.read(whatsNewClosedProvider.notifier).close(),
     );
   }

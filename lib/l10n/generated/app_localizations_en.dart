@@ -1785,17 +1785,11 @@ class L10nEn extends L10n {
   String get noticesTitle => 'Notices';
 
   @override
-  String get noticesHint => 'News and announcements from Nakshatra';
-
-  @override
   String get noticesEmpty =>
       'No notices yet. News about the app will appear here.';
 
   @override
   String get updatesTitle => 'Updates';
-
-  @override
-  String get updatesHint => 'What changed in each version';
 
   @override
   String get updatesAvailable => 'Update available';
@@ -1808,6 +1802,17 @@ class L10nEn extends L10n {
 
   @override
   String get feedUnread => 'New';
+
+  @override
+  String get inboxTitle => 'Notices & updates';
+
+  @override
+  String updateAvailableVersion(String version) {
+    return 'Version $version is available';
+  }
+
+  @override
+  String get updateSeeWhatsNew => 'See what\'s new';
 
   @override
   String get announcementOpenLink => 'Read more';

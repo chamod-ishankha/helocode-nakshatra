@@ -175,40 +175,51 @@ void main() {
       expect(FeedReads.noticesUnread(const [], null), isFalse);
     });
 
-    test('an update to take always lights Updates', () {
-      expect(
-        FeedReads.updatesUnread(
-          notes: [n(8)],
-          seenBuild: 8,
-          currentBuild: 8,
-          updateAvailable: true,
-        ),
-        isTrue,
-      );
+    bool unread({
+      List<ReleaseNote>? notes,
+      int? seenBuild = 8,
+      int? current = 8,
+      int? offered,
+      int? seenOffer,
+    }) => FeedReads.updatesUnread(
+      notes: notes ?? [n(8)],
+      seenBuild: seenBuild,
+      currentBuild: current,
+      offeredUpdate: offered,
+      seenOffer: seenOffer,
+    );
+
+    test('an update on offer lights Updates until it has been looked at', () {
+      expect(unread(offered: 10001009), isTrue);
+      expect(unread(offered: 10001009, seenOffer: 10001009), isFalse);
+    });
+
+    test('a higher offer lights it again', () {
+      expect(unread(offered: 10001010, seenOffer: 10001009), isTrue);
     });
 
     test('a new reader is not told the history is news', () {
-      expect(
-        FeedReads.updatesUnread(
-          notes: [n(8), n(7)],
-          seenBuild: null,
-          currentBuild: 8,
-          updateAvailable: false,
-        ),
-        isFalse,
-      );
+      expect(unread(notes: [n(8), n(7)], seenBuild: null), isFalse);
     });
 
     test('a note for a build newer than the last one looked at', () {
-      expect(
-        FeedReads.updatesUnread(
-          notes: [n(9), n(8)],
-          seenBuild: 8,
-          currentBuild: 8,
-          updateAvailable: false,
-        ),
-        isTrue,
-      );
+      expect(unread(notes: [n(9), n(8)]), isTrue);
+    });
+
+    test('the update card speaks only of a build ahead of this one', () {
+      expect(FeedReads.noteAhead([n(9), n(8)], 8)?.build, 9);
+      expect(FeedReads.noteAhead([n(8), n(7)], 8), isNull);
+      expect(FeedReads.noteAhead([n(9)], null), isNull);
+      expect(FeedReads.noteAhead(const [], 8), isNull);
+    });
+
+    test('the bell opens on whichever tab has something new', () {
+      InboxTab tab(bool notices, bool updates) =>
+          FeedReads.tabToOpen(noticesUnread: notices, updatesUnread: updates);
+      expect(tab(false, true), InboxTab.updates);
+      expect(tab(true, false), InboxTab.notices);
+      expect(tab(true, true), InboxTab.notices);
+      expect(tab(false, false), InboxTab.notices);
     });
   });
 

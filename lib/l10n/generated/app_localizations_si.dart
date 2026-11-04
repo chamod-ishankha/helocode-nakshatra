@@ -1499,11 +1499,10 @@ class L10nSi extends L10n {
   String get placeCountrySearch => 'රටවල් ගොනු කරන්න';
 
   @override
-  String get settingsLicences => 'බලට්ර';
+  String get settingsLicences => 'බලපත්‍ර';
 
   @override
-  String get settingsLicencesHint =>
-      'විවෘත මූලාශ්‍ර කොම්පොනෙන්ටවර් සහ දත්ත මූලාශ්‍ර';
+  String get settingsLicencesHint => 'විවෘත මූලාශ්‍ර සංරචක සහ දත්ත මූලාශ්‍ර';
 
   @override
   String get splashTagline => 'ඔබේ ලිත, ඔබේ දුරකථනයේම ගණනය කෙරේ.';
